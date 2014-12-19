@@ -15,6 +15,12 @@
         this._propertyManager = propertyManager;
 
         /**
+         * @type {(PropertyAPI|null)}
+         * @private
+         */
+        this._propertyAPI = null;
+
+        /**
          * @type {string}
          * @private
          */
@@ -54,6 +60,14 @@
          * @private
          */
         this._isModified = false;
+
+        /**
+         * A set of callbacks which will invoked when property changes its value
+         *
+         * @type {Function[]}
+         * @private
+         */
+        this._watchers = [];
     }
 
     PropertyType.$parent = null;
@@ -88,6 +102,21 @@
     PropertyType.prototype.getPropertyManager = function()
     {
         return this._propertyManager;
+    };
+
+    /**
+     * Returns property api
+     *
+     * @param {Object} context
+     * @returns {Subclass.PropertyManager.PropertyTypes.PropertyAPI}
+     */
+    PropertyType.prototype.getAPI = function(context)
+    {
+        if (!this._propertyAPI) {
+            var apiClass = Subclass.PropertyManager.PropertyTypes.PropertyAPI;
+            this._propertyAPI = new apiClass(this, context);
+        }
+        return this._propertyAPI;
     };
 
     /**
@@ -157,7 +186,7 @@
                 && contextClass !== null
             ) || (
                 contextClass
-                && !(contextClass instanceof Subclass.ClassTypes.ClassType)
+                && !(contextClass instanceof Subclass.ClassManager.ClassTypes.ClassType)
             )
         ) {
             var message = 'Trying to set not valid context class ' +
@@ -283,6 +312,95 @@
     };
 
     /**
+     * Returns all registered watchers
+     *
+     * @returns {Function[]}
+     */
+    PropertyType.prototype.getWatchers = function()
+    {
+        return this._watchers;
+    };
+
+    /**
+     * Adds new watcher
+     *
+     * @param {Function} callback Function, that takes two arguments:
+     *      - newValue {*} New property value
+     *      - oldValue {*} Old property value
+     *
+     *      "this" variable inside callback function will link to the class instance which property belongs to
+     *      This callback function MUST return newValue value.
+     *      So you can modify it if you need.
+     */
+    PropertyType.prototype.addWatcher = function(callback)
+    {
+        if (typeof callback != "function") {
+            throw new Error('Trying to add invalid watcher to property "' + this._property.getPropertyNameFull() + '" ' +
+                (this._property.getContextClass() ? (' in class "' + this._property.getContextClass().getClassName() + '"') : "") + ". " +
+                'It must be a function.');
+        }
+        if (!this.issetWatcher(callback)) {
+            this._watchers.push(callback);
+        }
+    };
+
+    /**
+     * Checks if specified watcher callback is registered
+     *
+     * @param {Function} callback
+     * @returns {boolean}
+     */
+    PropertyType.prototype.issetWatcher = function(callback)
+    {
+        return this._watchers.indexOf(callback) >= 0;
+    };
+
+    /**
+     * Removes specified watcher callback
+     *
+     * @param callback
+     */
+    PropertyType.prototype.removeWatcher = function(callback)
+    {
+        var watcherIndex;
+
+        if ((watcherIndex = this._watchers.indexOf(callback)) >= 0) {
+            this._watchers.splice(watcherIndex, 1);
+        }
+    };
+
+    /**
+     * Unbind all watchers from current property
+     */
+    PropertyType.prototype.removeWatchers = function()
+    {
+        this._watchers = [];
+    };
+
+    /**
+     * Invokes all registerd watcher functions
+     *
+     * @param {Object} context
+     * @param {*} newValue
+     * @param {*} oldValue
+     */
+    PropertyType.prototype.invokeWatchers = function(context, newValue, oldValue)
+    {
+        if (typeof context != "object" || Array.isArray(context)) {
+            throw new Error('Trying to invoke watchers in invalid context in property "' + this._property.getPropertyNameFull() + '" ' +
+                (this._property.getContextClass() ? (' in class "' + this._property.getContextClass().getClassName() + '"') : "") + ". " +
+                'It must be an object.');
+        }
+        var watchers = this.getWatchers();
+
+        for (var i = 0; i < watchers.length; i++) {
+            newValue = watchers[i].call(context, newValue, oldValue);
+        }
+
+        return newValue;
+    };
+
+    /**
      * Returns property type
      *
      * @returns {*}
@@ -321,26 +439,6 @@
     };
 
     /**
-     * Returns callback function that triggers when trying to get property value
-     *
-     * @returns {Function|null}
-     */
-    PropertyType.prototype.getOnGet = function()
-    {
-        return this.getPropertyDefinition().onGet;
-    };
-
-    /**
-     * Returns callback function that triggers when trying to set property value
-     *
-     * @returns {Function|null}
-     */
-    PropertyType.prototype.getOnSet = function()
-    {
-        return this.getPropertyDefinition().onSet;
-    };
-
-    /**
      * Generates property getter function
      *
      * @returns {Function}
@@ -362,22 +460,12 @@
                 if (!this.hasOwnProperty(hashedPropName)) {
                     $this.attachHashedProperty(this);
                 }
-                var value = this[hashedPropName];
-
-                if ($this.getOnGet()) {
-                    value = $this.getOnSet()(value);
-                }
-                return value;
+                return this[hashedPropName];
             };
 
         } else {
             return function() {
-                var value = this[propName];
-
-                if ($this.getOnGet()) {
-                    value = $this.getOnSet()(value);
-                }
-                return value;
+                return this[propName];
             }
         }
     };
@@ -400,9 +488,7 @@
         }
 
         return function(value) {
-            if ($this.getOnSet()) {
-                value = $this.getOnSet()(value);
-            }
+            value = $this.invokeWatchers(this, value, $this.getValue(this));
             $this.validate(value);
             $this.setIsModified(true);
 
@@ -579,14 +665,20 @@
             writable: true,
 
             /**
-             * @type {(function|null)} Callback that triggers when trying to get property value
+             * @type {(function|null)} Callback that triggers when trying to set property value.
+             *      It takes two arguments: the new value and the old value of property.
              */
-            onGet: null,
-
-            /**
-             * @type {(function|null)} Callback that triggers when trying to set property value
-             */
-            onSet: null,
+            watcher: null,
+            //
+            ///**
+            // * @type {(function|null)} Callback that triggers when trying to get property value
+            // */
+            //onGet: null,
+            //
+            ///**
+            // * @type {(function|null)} Callback that triggers when trying to set property value
+            // */
+            //onSet: null,
 
             /**
              * @type {(boolean|null)} Indicates that accessor functions would be generated
@@ -613,9 +705,8 @@
     {
         var propertyDefinition = this.getPropertyDefinition();
         var accessors = propertyDefinition.accessors;
-        var onGet = propertyDefinition.onGet;
-        var onSet = propertyDefinition.onSet;
         var writable = propertyDefinition.writable;
+        var watcher = propertyDefinition.watcher;
 
         // Validating accessors attribute value
 
@@ -625,18 +716,10 @@
                 'It must be a boolean or null.');
         }
 
-        // Validating onGet attribute value
+        // Validating watcher attribute value
 
-        if (onGet !== null && typeof onGet != 'function') {
-            throw new Error('Invalid value of attribute "onGet" in definition of property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() && ' in class "' + this.getContextClass().getClassName() + '"') + '. ' +
-                'It must be a function or null.');
-        }
-
-        // Validating onSet attribute value
-
-        if (onSet !== null && typeof onSet != 'function') {
-            throw new Error('Invalid value of attribute "onSet" in definition of property "' + this.getPropertyNameFull() + '"' +
+        if (watcher !== null && typeof watcher != 'function') {
+            throw new Error('Invalid value of attribute "watcher" in definition of property "' + this.getPropertyNameFull() + '"' +
                 (this.getContextClass() && ' in class "' + this.getContextClass().getClassName() + '"') + '. ' +
                 'It must be a function or null.');
         }
@@ -657,60 +740,6 @@
             throw e.stack;
         }
     };
-
-
-    /*************************************************/
-    /*        Performing register operations         */
-    /*************************************************/
-
-    Subclass.Tools.extend(Subclass.Tools, {
-
-        /**
-         * Returns name of class property getter function
-         *
-         * @param {string} propertyName
-         * @returns {string}
-         */
-        generateGetterName: function(propertyName)
-        {
-            return generateAccessorName("get", propertyName);
-        },
-
-        /**
-         * Returns name of class property setter function
-         *
-         * @param {string} propertyName
-         * @returns {string}
-         */
-        generateSetterName: function(propertyName)
-        {
-            return generateAccessorName("set", propertyName);
-        }
-    });
-
-    /**
-     * Generates class property accessor function name
-     *
-     * @param {string} accessorType Can be "get" or "set"
-     * @param {string} propertyName
-     * @returns {string}
-     */
-    function generateAccessorName(accessorType, propertyName)
-    {
-        if (['get', 'set'].indexOf(accessorType) < 0) {
-            throw new Error('Invalid accessor type! It can be only "get" or "set".');
-        }
-        var propNameParts = propertyName.split("_");
-
-        for (var i = 0; i < propNameParts.length; i++) {
-            if (propNameParts[i] === "") {
-                continue;
-            }
-            propNameParts[i] = propNameParts[i][0].toUpperCase() + propNameParts[i].substr(1);
-        }
-
-        return accessorType + propNameParts.join("");
-    }
 
     return PropertyType;
 

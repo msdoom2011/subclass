@@ -1,11 +1,11 @@
-; Subclass.ClassTypes.Interface.Builder = (function()
+; Subclass.ClassManager.ClassTypes.Interface.Builder = (function()
 {
     function InterfaceBuilder(classManager, classType, className)
     {
         InterfaceBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    InterfaceBuilder.$parent = Subclass.ClassTypes.ClassType.Builder;
+    InterfaceBuilder.$parent = Subclass.ClassManager.ClassTypes.ClassType.Builder;
 
     InterfaceBuilder.prototype.setClassProperties = undefined;
 

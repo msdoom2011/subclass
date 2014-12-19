@@ -1,11 +1,11 @@
-; Subclass.ClassTypes.AbstractClass.Builder = (function()
+; Subclass.ClassManager.ClassTypes.AbstractClass.Builder = (function()
 {
     function AbstractClassBuilder(classManager, classType, className)
     {
         AbstractClassBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    AbstractClassBuilder.$parent = Subclass.ClassTypes.Class.Builder;
+    AbstractClassBuilder.$parent = Subclass.ClassManager.ClassTypes.Class.Builder;
 
     /**
      * Validates abstract methods argument
@@ -23,7 +23,7 @@
      * Sets abstract methods
      *
      * @param {Object.<Function>} abstractMethods
-     * @returns {Subclass.ClassTypes.AbstractClass.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.AbstractClass.Builder}
      */
     AbstractClassBuilder.prototype.setAbstractMethods = function(abstractMethods)
     {
@@ -37,7 +37,7 @@
      * Adds new abstract methods
      *
      * @param {Object.<Function>} abstractMethods
-     * @returns {Subclass.ClassTypes.AbstractClass.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.AbstractClass.Builder}
      */
     AbstractClassBuilder.prototype.addAbstractMethods = function(abstractMethods)
     {
@@ -68,7 +68,7 @@
      * Removes abstract method with specified method name
      *
      * @param {string} abstractMethodName
-     * @returns {Subclass.ClassTypes.AbstractClass.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.AbstractClass.Builder}
      */
     AbstractClassBuilder.prototype.removeAbstractMethod = function(abstractMethodName)
     {

@@ -104,12 +104,7 @@
                     this[hashedPropName] = null;
                 }
             }
-            var value = this[hashedPropName];
-
-            if ($this.getOnGet()) {
-                value = $this.getOnSet()(value);
-            }
-            return value;
+            return this[hashedPropName];
         };
     };
 
@@ -122,9 +117,7 @@
         var $this = this;
 
         return function(value) {
-            if ($this.getOnSet()) {
-                value = $this.getOnSet()(value);
-            }
+            value = $this.invokeWatchers(this, value, $this.getValue(this));
             $this.validate(value);
             $this.setIsModified(true);
 

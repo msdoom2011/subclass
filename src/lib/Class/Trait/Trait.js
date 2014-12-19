@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.Trait = (function()
+; Subclass.ClassManager.ClassTypes.Trait = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -16,7 +16,7 @@
         Trait.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Trait.$parent = Subclass.ClassTypes.ClassType;
+    Trait.$parent = Subclass.ClassManager.ClassTypes.ClassType;
 
     /**
      * @inheritDoc
@@ -31,7 +31,7 @@
      */
     Trait.getClassBuilder = function()
     {
-        return Subclass.ClassTypes.Trait.Builder;
+        return Subclass.ClassManager.ClassTypes.Trait.Builder;
     };
 
     /**
@@ -88,7 +88,7 @@
      */
     Trait.prototype.validateClassDefinition = function ()
     {
-        Subclass.ClassTypes.ClassType.prototype.validateClassDefinition.call(this);
+        Subclass.ClassManager.ClassTypes.ClassType.prototype.validateClassDefinition.call(this);
 
         var classDefinition = this.getClassDefinition();
 
@@ -123,7 +123,7 @@
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.registerClassType(Trait);
+    Subclass.ClassManager.registerClassType(Trait);
 
     return Trait;
 

@@ -1,11 +1,11 @@
-; Subclass.ClassTypes.Trait.Builder = (function()
+; Subclass.ClassManager.ClassTypes.Trait.Builder = (function()
 {
     function TraitBuilder(classManager, classType, className)
     {
         TraitBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    TraitBuilder.$parent = Subclass.ClassTypes.ClassType.Builder;
+    TraitBuilder.$parent = Subclass.ClassManager.ClassTypes.ClassType.Builder;
 
     TraitBuilder.prototype.setStatic = undefined;
 

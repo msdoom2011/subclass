@@ -107,7 +107,7 @@
 
         // Checking if property name allowed
 
-        if (!contextProperty && !Subclass.isClassPropertyNameAllowed(propertyName)) {
+        if (!contextProperty && !Subclass.ClassManager.isClassPropertyNameAllowed(propertyName)) {
             throw new Error('Trying to define property with not allowed name "' + propertyName + '"' +
                 (contextClass && ' in class "' + contextClass.getClassName() + '"' || "") +  ".");
         }

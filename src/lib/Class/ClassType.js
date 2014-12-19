@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.ClassType = (function()
+; Subclass.ClassManager.ClassTypes.ClassType = (function()
 {
     /**
      * Constructor of base class type
@@ -506,7 +506,7 @@
              *
              * @param [arguments] Any class constructor arguments
              */
-            $_constructor: function ()
+            $_constructor: function()
             {
                 // Do something
             },
@@ -518,7 +518,7 @@
              */
             getClassManager: function()
             {
-                return this.getClassWrap().getClassManager();
+                return this.$_class.getClassManager();
             },
 
             /**
@@ -526,19 +526,9 @@
              *
              * @returns {string}
              */
-            getClassName: function ()
+            getClassName: function()
             {
                 return this.$_className;
-            },
-
-            /**
-             * Returns class definition instance
-             *
-             * @returns {ClassType}
-             */
-            getClassWrap: function ()
-            {
-                return this.$_class;
             },
 
             /**
@@ -549,20 +539,20 @@
              */
             isInstanceOf: function (className)
             {
-                return this.getClassWrap().isInstanceOf(className);
+                return this.$_class.isInstanceOf(className);
             },
 
             /**
              * Returns parent class definition instance
              *
-             * @returns {ClassType} Prototype of parent class.
+             * @returns {Object} Prototype of parent class.
              */
             getParent: function ()
             {
-                if (!this.getClassWrap().getClassParent()) {
+                if (!this.$_class.getClassParent()) {
                     return null;
                 }
-                return this.getClassWrap()
+                return this.$_class
                     .getClassParent()
                     .getClassConstructor()
                     .prototype
@@ -606,105 +596,18 @@
              */
             issetProperty: function(propertyName)
             {
-                return this.getClassWrap().issetClassProperty(propertyName);
+                return this.$_class.issetClassProperty(propertyName);
             },
 
             /**
-            * Returns class typed property
-            *
-            * @param {string} propertyName
-            * @returns {PropertyType}
-            */
-            getPropertyValue: function(propertyName)
-            {
-                return this.getClassWrap().getClassProperty(propertyName).getValue(this);
-            },
-
-            /**
-            * Sets class typed property
-            *
-            * @param {string} propertyName
-            * @param {*} value
-            * @returns {PropertyType}
-            */
-            setPropertyValue: function(propertyName, value)
-            {
-                return this.getClassWrap().getClassProperty(propertyName).setValue(this, value);
-            },
-
-            /**
-             * Returns default value of typed class property
+             * Returns property api object
              *
              * @param {string} propertyName
-             * @returns {*}
+             * @returns {Subclass.PropertyManager.PropertyTypes.PropertyAPI}
              */
-            getPropertyDefaultValue: function (propertyName)
+            getProperty: function(propertyName)
             {
-                var classInst = this.getClassWrap();
-                var propertyInst = classInst.getClassProperty(propertyName);
-
-                return propertyInst.getDefaultValue();
-            },
-
-            /**
-             * Checks if specified value is valid for interesting property
-             *
-             * @param {string} propertyName
-             * @param {*} value
-             * @returns {boolean}
-             */
-            isPropertyValueValid: function(propertyName, value)
-            {
-                var classInst = this.getClassWrap();
-                var classProperty = classInst.getClassProperty(propertyName);
-
-                try {
-                    classProperty.validate(value);
-                    return true;
-
-                } catch (e) {
-                    return false;
-                }
-            },
-
-            /**
-             * Checks if property value was ever changed
-             *
-             * @param {string} propertyName
-             * @returns {boolean}
-             */
-            isPropertyModified: function(propertyName)
-            {
-                var classWrap = this.getClassWrap();
-                var classProperty = classWrap.getClassProperty(propertyName);
-
-                return classProperty.isModified();
-            },
-
-            /**
-             * Marks property as modified
-             *
-             * @param propertyName
-             */
-            setPropertyModified: function(propertyName)
-            {
-                var classWrap = this.getClassWrap();
-                var classProperty = classWrap.getClassProperty(propertyName);
-
-                classProperty.setIsModified(true);
-            },
-
-            /**
-             * Marks property as not modifield
-             *
-             * @param propertyName
-             */
-            setPropertyUnmodified: function(propertyName)
-            {
-                var classWrap = this.getClassWrap();
-                var classProperty = classWrap.getClassProperty(propertyName);
-
-                return classProperty.setIsModified(false);
+                return this.$_class.getClassProperty(propertyName).getAPI(this);
             }
         };
     };
@@ -720,7 +623,7 @@
             if (!classDefinition.hasOwnProperty(propName)) {
                 continue;
             }
-            if (!Subclass.isClassPropertyNameAllowed(propName)) {
+            if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
                 throw new Error('Trying to define property with not allowed name "' + propName + '" ' +
                     'in class "' + this.getClassName() + '".');
             }
@@ -763,7 +666,7 @@
 
     // Adding not allowed class properties
 
-    Subclass.registerNotAllowedClassPropertyNames([
+    Subclass.ClassManager.registerNotAllowedClassPropertyNames([
         "class",
         "parent",
         "classManager",

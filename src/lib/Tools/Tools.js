@@ -161,7 +161,7 @@
                     || Array.isArray(object)
                 )
             ) {
-                newObj = new object.constructor();
+                newObj = Object.create(Object.getPrototypeOf(object));
                 newObj = this.extendDeep(newObj, object, true);
 
             } else {
@@ -193,11 +193,16 @@
                 number = number.replace(/(^\s+)|(\s+$)/g, '');
                 number = number.replace(/(\d+)[\,\s]+(\d+)+/g, '$1$2');
             }
-            if (_is.undefOrNull(number) || isNaN(parseFloat(number)) || number.toString().match(/.+\-.+/)) {
+            if (
+                number === null
+                || number === undefined
+                || isNaN(parseFloat(number))
+                || number.toString().match(/.+\-.+/)
+            ) {
                 return inputNumber;
             }
             var parts = number.toString().split(".");
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            parts[0] = parts[0].replace(/\b(?=(\d{3})+(?!\d))/g, ",");
 
             return parts.join(".");
         },
@@ -210,13 +215,18 @@
             if (!string) {
                 return 0;
             }
-            if (_is.undefOrNull(string) || isNaN(parseFloat(string)) || string.match(/.+\-.+/)) {
+            if (
+                string === null
+                || string === undefined
+                || isNaN(parseFloat(string))
+                || string.match(/.+\-.+/)
+            ) {
                 return false;
             }
             var temp = string
-                    .replace(/[^0-9,\s]+$/, '')
-                    .replace(/[\,\s]+/g, '')
-                ;
+                .replace(/[^0-9,\s]+$/, '')
+                .replace(/[\,\s]+/g, '')
+            ;
             if (!isNaN(parseFloat(temp))) { // && !temp.match(/\.+\-\.+/)) {
                 return parseFloat(temp);
             }

@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.Config = (function()
+; Subclass.ClassManager.ClassTypes.Config = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -24,7 +24,7 @@
         Config.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Config.$parent = Subclass.ClassTypes.ClassType;
+    Config.$parent = Subclass.ClassManager.ClassTypes.ClassType;
 
 
     /**
@@ -40,7 +40,7 @@
      */
     Config.getClassBuilder = function()
     {
-        return Subclass.ClassTypes.Config.Builder;
+        return Subclass.ClassManager.ClassTypes.Config.Builder;
     };
 
     /**
@@ -96,7 +96,7 @@
 
         // Parsing traits
 
-        if (Subclass.issetClassType('Trait')) {
+        if (Subclass.ClassManager.issetClassType('Trait')) {
             if (classDefinition.$_traits) {
                 throw new Error('Config "' + this.getClassName() + '" can\'t contains any traits.');
             }
@@ -353,7 +353,7 @@
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.registerClassType(Config);
+    Subclass.ClassManager.registerClassType(Config);
 
     return Config;
 

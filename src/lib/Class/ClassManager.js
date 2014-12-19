@@ -1,16 +1,51 @@
-"use strict";
 
-window.Subclass = (function()
+Subclass.ClassManager = (function()
 {
     /**
      * Class manager constructor
+     *
+     * @param {Object} [configs] Allowed configs are:
+     * {
+     *      "rootPath": {string} Required
+     *          Path to root directory of the project,
+     *
+     *      "initialize": {Function} Required
+     *          Function that will called when all application files will loaded.
+     *          It takes on argument which is an instance of ClassManager.
+     *
+     *      "dataTypes": {Object.<Object>} Optional
+     *          Object, which keys will be type names (alias) and value will be its definitions.,
+     * }
+     *
      * @constructor
      */
-    function ClassManager()
+    function ClassManager(configs)
     {
+        /**
+         * Property manager instance
+         *
+         * @type {PropertyManager}
+         * @private
+         */
         this._propertyManager = Subclass.PropertyManager.create(this);
+
+        /**
+         * Collection of registered classes
+         *
+         * @type {Object.<Subclass.ClassManager.ClassTypes.ClassType>}
+         * @private
+         */
         this._classes = {};
     }
+
+    /**
+     * Invokes passed callback when all classes was defined and loaded
+     * @TODO needs to implement
+     */
+    ClassManager.prototype.initialize = function(callback)
+    {
+        callback();
+    };
 
     /**
      * Returns property manager instance
@@ -79,7 +114,7 @@ window.Subclass = (function()
         if (createInstance) {
             var inst = new classConstructor(this, className, classDefinition);
 
-            if (!(inst instanceof Subclass.ClassTypes.ClassType)) {
+            if (!(inst instanceof Subclass.ClassManager.ClassTypes.ClassType)) {
                 throw new Error('Class type factory must be instance of "ClassType" class.');
             }
             return inst;
@@ -101,7 +136,7 @@ window.Subclass = (function()
         if (!classTypeName) {
             throw new Error('Trying to register class without specifying class type.');
         }
-        if (!Subclass.issetClassType(classTypeName)) {
+        if (!Subclass.ClassManager.issetClassType(classTypeName)) {
             throw new Error('Trying to register class of unknown class type "' + classTypeName + '".');
         }
         if (!className || typeof className != 'string') {
@@ -113,7 +148,7 @@ window.Subclass = (function()
         if (this.issetClass(className)) {
             throw new Error('Trying to redefine already existed class "' + className + '".');
         }
-        var classTypeConstructor = Subclass.getClassType(classTypeName);
+        var classTypeConstructor = Subclass.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
 
         if (!this._classes[classTypeName]) {
@@ -171,7 +206,7 @@ window.Subclass = (function()
             if (className && this.issetClass(className)) {
                 classBuilderConstructor = this.getClass(className).constructor.getClassBuilder();
             } else {
-                classBuilderConstructor = Subclass.getClassType(classType).getClassBuilder();
+                classBuilderConstructor = Subclass.ClassManager.getClassType(classType).getClassBuilder();
             }
         } else {
             classBuilderConstructor = arguments[2];
@@ -202,8 +237,8 @@ window.Subclass = (function()
         if (createInstance) {
             var inst = new classBuilderConstructor(this, classType, className);
 
-            if (!(inst instanceof Subclass.ClassTypes.ClassType.Builder)) {
-                throw new Error('Class builder must be instance of "Subclass.ClassBuilder" class.');
+            if (!(inst instanceof Subclass.ClassManager.ClassTypes.ClassType.Builder)) {
+                throw new Error('Class builder must be instance of "Subclass.ClassManager.ClassBuilder" class.');
             }
             return inst;
         }
@@ -249,13 +284,14 @@ window.Subclass = (function()
         ClassTypes: {},
 
         /**
-         * Creates instance of Subclass
+         * Creates instance of Subclass.ClassManager
          *
+         * @param {Object} [configs]
          * @returns {ClassManager}
          */
-        create: function()
+        create: function(configs)
         {
-            return new ClassManager;
+            return new ClassManager(configs);
         },
 
         /**
@@ -310,6 +346,11 @@ window.Subclass = (function()
             return !!_classTypes[classTypeName];
         },
 
+        /**
+         * Return names of all registered class types
+         *
+         * @returns {Array}
+         */
         getClassTypes: function()
         {
             return Object.keys(_classTypes);
@@ -352,9 +393,9 @@ window.Subclass = (function()
          */
         isClassPropertyNameAllowed: function(propertyName)
         {
-            if (propertyName.match(/[^a-z0-9_]/i)) {
-                return false;
-            }
+            //if (propertyName.match(/[^a-z0-9_]/i)) {
+            //    return false;
+            //}
             for (var i = 0; i < _notAllowedClassPropertyNames.length; i++) {
                 var regExp = new RegExp("^_*" + _notAllowedClassPropertyNames[i] + "_*$", 'i');
 

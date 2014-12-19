@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.Interface = (function()
+; Subclass.ClassManager.ClassTypes.Interface = (function()
 {
     /*************************************************/
     /*       Describing class type "Interface"       */
@@ -16,7 +16,7 @@
         Interface.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Interface.$parent = Subclass.ClassTypes.ClassType;
+    Interface.$parent = Subclass.ClassManager.ClassTypes.ClassType;
 
     /**
      * @inheritDoc
@@ -31,7 +31,7 @@
      */
     Interface.getClassBuilder = function()
     {
-        return Subclass.ClassTypes.Interface.Builder;
+        return Subclass.ClassManager.ClassTypes.Interface.Builder;
     };
 
     /**
@@ -114,7 +114,7 @@
      */
     Interface.prototype.validateClassDefinition = function ()
     {
-        Subclass.ClassTypes.ClassType.prototype.validateClassDefinition.call(this);
+        Subclass.ClassManager.ClassTypes.ClassType.prototype.validateClassDefinition.call(this);
 
         var classDefinition = this.getClassDefinition();
 
@@ -155,7 +155,7 @@
 
         // Parsing traits
 
-        if (Subclass.issetClassType('Trait')) {
+        if (Subclass.ClassManager.issetClassType('Trait')) {
             if (classDefinition.$_traits) {
                 throw new Error('Interface "' + this.getClassName() + '" can\'t contains any traits.');
             }
@@ -166,7 +166,7 @@
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.registerClassType(Interface);
+    Subclass.ClassManager.registerClassType(Interface);
 
     return Interface;
 

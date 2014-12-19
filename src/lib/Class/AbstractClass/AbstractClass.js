@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.AbstractClass = (function() {
+; Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
 
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -19,7 +19,7 @@
     /**
      * @type {Class}
      */
-    AbstractClass.$parent = Subclass.ClassTypes.Class;
+    AbstractClass.$parent = Subclass.ClassManager.ClassTypes.Class;
 
     /**
      * @inheritDoc
@@ -34,12 +34,12 @@
      */
     AbstractClass.getClassBuilder = function()
     {
-        return Subclass.ClassTypes.AbstractClass.Builder;
+        return Subclass.ClassManager.ClassTypes.AbstractClass.Builder;
     };
 
     AbstractClass.prototype.setClassParent = function (parentClassName)
     {
-        Subclass.ClassTypes.ClassType.prototype.setClassParent.call(this, parentClassName);
+        Subclass.ClassManager.ClassTypes.ClassType.prototype.setClassParent.call(this, parentClassName);
 
         if (
             this._classParent
@@ -106,7 +106,7 @@
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.registerClassType(AbstractClass);
+    Subclass.ClassManager.registerClassType(AbstractClass);
 
     return AbstractClass;
 

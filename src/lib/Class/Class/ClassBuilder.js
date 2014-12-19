@@ -1,11 +1,11 @@
-; Subclass.ClassTypes.Class.Builder = (function()
+; Subclass.ClassManager.ClassTypes.Class.Builder = (function()
 {
     function ClassBuilder(classManager, classType, className)
     {
         ClassBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    ClassBuilder.$parent = Subclass.ClassTypes.ClassType.Builder;
+    ClassBuilder.$parent = Subclass.ClassManager.ClassTypes.ClassType.Builder;
 
     /**
      * Validates traits list argument
@@ -33,7 +33,7 @@
      * Sets traits list
      *
      * @param {string[]} traitsList
-     * @returns {Subclass.ClassTypes.Class.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.Class.Builder}
      */
     ClassBuilder.prototype.setTraits = function(traitsList)
     {
@@ -47,7 +47,7 @@
      * Adds new traits
      *
      * @param {string} traitsList
-     * @returns {Subclass.ClassTypes.Class.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.Class.Builder}
      */
     ClassBuilder.prototype.addTraits = function(traitsList)
     {
@@ -91,7 +91,7 @@
      * Sets interfaces list
      *
      * @param {string[]} interfacesList
-     * @returns {Subclass.ClassTypes.Class.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.Class.Builder}
      */
     ClassBuilder.prototype.setInterfaces = function(interfacesList)
     {
@@ -105,7 +105,7 @@
      * Adds new interfaces
      *
      * @param {string} interfacesList
-     * @returns {Subclass.ClassTypes.Class.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.Class.Builder}
      */
     ClassBuilder.prototype.addInterfaces = function(interfacesList)
     {

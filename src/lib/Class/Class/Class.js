@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.Class = (function() {
+; Subclass.ClassManager.ClassTypes.Class = (function() {
 
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -40,7 +40,7 @@
         this._traits = [];
     }
 
-    Class.$parent = Subclass.ClassTypes.ClassType;
+    Class.$parent = Subclass.ClassManager.ClassTypes.ClassType;
 
     /**
      * @inheritDoc
@@ -55,7 +55,7 @@
      */
     Class.getClassBuilder = function()
     {
-        return Subclass.ClassTypes.Class.Builder;
+        return Subclass.ClassManager.ClassTypes.Class.Builder;
     };
 
     /**
@@ -68,7 +68,7 @@
         if (
             this._classParent
             && this._classParent.constructor != Class
-            && this._classParent.constructor != Subclass.getClassType('AbstractClass')
+            && this._classParent.constructor != Subclass.ClassManager.getClassType('AbstractClass')
         ) {
             throw new Error('Class "' + this.getClassName() + '" can be inherited only from an another class or an abstract class.');
         }
@@ -79,7 +79,7 @@
      */
     Class.prototype.getClassProperties = function ()
     {
-        if (Subclass.issetClassType("Trait") && this.getTraits().length) {
+        if (Subclass.ClassManager.issetClassType("Trait") && this.getTraits().length) {
             var traits = this.getTraits();
 
             for (var i = 0; i < traits.length; i++) {
@@ -121,10 +121,10 @@
             }
         }
         if (
-            !Subclass.issetClassType('AbstractClass')
+            !Subclass.ClassManager.issetClassType('AbstractClass')
             || (
-                Subclass.issetClassType('AbstractClass')
-                && this.constructor != Subclass.ClassTypes.AbstractClass
+                Subclass.ClassManager.issetClassType('AbstractClass')
+                && this.constructor != Subclass.ClassManager.ClassTypes.AbstractClass
             )
         ) {
             for (var abstractMethodName in abstractMethods) {
@@ -175,7 +175,7 @@
     {
         var classDefinition = Class.$parent.prototype.getBaseClassDefinition();
 
-        if (Subclass.issetClassType('Trait')) {
+        if (Subclass.ClassManager.issetClassType('Trait')) {
 
             /**
              * Array of traits names
@@ -196,7 +196,7 @@
             };
         }
 
-        if (Subclass.issetClassType('Interface')) {
+        if (Subclass.ClassManager.issetClassType('Interface')) {
 
             /**
              * Array of interfaces names
@@ -230,7 +230,7 @@
 
         // Parsing traits
 
-        if (Subclass.issetClassType('Trait')) {
+        if (Subclass.ClassManager.issetClassType('Trait')) {
             for (var i = 0; i < classDefinition.$_traits.length; i++) {
                 this.addTrait(classDefinition.$_traits[i]);
             }
@@ -238,7 +238,7 @@
 
         // Parsing interfaces
 
-        if (Subclass.issetClassType('Interface')) {
+        if (Subclass.ClassManager.issetClassType('Interface')) {
             for (i = 0; i < classDefinition.$_implements.length; i++) {
                 this.addInterface(classDefinition.$_implements[i]);
             }
@@ -273,7 +273,7 @@
      */
     Class.prototype.getTraits = function ()
     {
-        if (!Subclass.issetClassType('Trait')) {
+        if (!Subclass.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "getTraits".');
         }
         return this._traits;
@@ -289,7 +289,7 @@
     {
         var classDefinition = this.getClassDefinition();
 
-        if (!Subclass.issetClassType('Trait')) {
+        if (!Subclass.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "addTrait".');
         }
         if (!traitName) {
@@ -298,7 +298,7 @@
         var traitClass = this.getClassManager().getClass(traitName);
         var traitClassConstructor = traitClass.getClassConstructor();
 
-        if (traitClass.constructor != Subclass.ClassTypes.Trait) {
+        if (traitClass.constructor != Subclass.ClassManager.ClassTypes.Trait) {
             throw new Error('Trying add to "$_traits" parameter new class "' + traitName + '" that is not trait.');
         }
         var traitProps = {};
@@ -322,7 +322,7 @@
      */
     Class.prototype.hasTrait = function (traitName)
     {
-        if (!Subclass.issetClassType('Trait')) {
+        if (!Subclass.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "hasTrait".');
         }
         if (!traitName || typeof traitName != "string") {
@@ -353,7 +353,7 @@
      */
     Class.prototype.getInterfaces = function ()
     {
-        if (!Subclass.issetClassType('Interface')) {
+        if (!Subclass.ClassManager.issetClassType('Interface')) {
             throw new Error('Trying to call non existent method "getInterfaces".');
         }
         return this._interfaces;
@@ -367,7 +367,7 @@
      */
     Class.prototype.addInterface = function (interfaceName)
     {
-        if (!Subclass.issetClassType('Interface')) {
+        if (!Subclass.ClassManager.issetClassType('Interface')) {
             throw new Error('Trying to call non existent method "addInterface".');
         }
         if (!interfaceName) {
@@ -379,7 +379,7 @@
         var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
 
-        if (interfaceClass.constructor != Subclass.ClassTypes.Interface) {
+        if (interfaceClass.constructor != Subclass.ClassManager.ClassTypes.Interface) {
             throw new Error('Trying add to "$_implements" parameter new class "' + interfaceName + '" that is not interface.');
         }
 
@@ -427,7 +427,7 @@
      */
     Class.prototype.isImplements = function (interfaceName)
     {
-        if (!Subclass.issetClassType('Interface')) {
+        if (!Subclass.ClassManager.issetClassType('Interface')) {
             throw new Error('Trying to call non existent method "isImplements".');
         }
         if (!interfaceName) {
@@ -463,7 +463,7 @@
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.registerClassType(Class);
+    Subclass.ClassManager.registerClassType(Class);
 
     return Class;
 

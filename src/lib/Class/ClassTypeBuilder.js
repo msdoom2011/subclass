@@ -1,4 +1,4 @@
-; Subclass.ClassTypes.ClassType.Builder = (function()
+; Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
 {
     function ClassTypeBuilder(classManager, classType, className)
     {
@@ -58,7 +58,7 @@
      * Sets class instance that will altered
      *
      * @param {string} className
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      * @private
      */
     ClassTypeBuilder.prototype._setClass = function(className)
@@ -77,7 +77,7 @@
      * Sets definition of class
      *
      * @param {Object} classDefinition
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      * @private
      */
     ClassTypeBuilder.prototype._setClassDefinition = function(classDefinition)
@@ -106,7 +106,7 @@
      * Sets class type
      *
      * @param {string} classType
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setClassType = function(classType)
     {
@@ -136,7 +136,7 @@
      * Sets name of class
      *
      * @param {string} className
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setClassName = function(className)
     {
@@ -162,7 +162,7 @@
      * Sets parent of class
      *
      * @param {string} parentClassName
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setClassParent = function(parentClassName)
     {
@@ -193,7 +193,7 @@
      * Sets typed properties of class
      *
      * @param {Object.<Object>} classProperties
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setClassProperties = function(classProperties)
     {
@@ -207,7 +207,7 @@
      * Adds new class properties
      *
      * @param {Object.<Object>} classProperties
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.addClassProperties = function(classProperties)
     {
@@ -238,7 +238,7 @@
      * Removes typed class property
      *
      * @param {string} propertyName
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.removeClassProperty = function(propertyName)
     {
@@ -255,7 +255,7 @@
      * Sets static properties and methods of class
      *
      * @param {Object} staticProperties
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setStatic = function(staticProperties)
     {
@@ -283,7 +283,7 @@
      *
      * @param {string} staticPropertyName
      * @param {*} staticPropertyValue
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
     {
@@ -300,7 +300,7 @@
      * Removes static property or method
      *
      * @param {string} staticPropertyName
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.removeStaticProperty = function(staticPropertyName)
     {
@@ -341,7 +341,7 @@
      * Adds new methods and properties to classBody
      *
      * @param {Object} classBody
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.addClassBody = function(classBody)
     {
@@ -357,7 +357,7 @@
      * Sets class not typed properties and methods
      *
      * @param {Object} classBody
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setClassBody = function(classBody)
     {
@@ -383,7 +383,7 @@
      * Sets class constructor function
      *
      * @param {Function }constructorFunction
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.setClassConstructor = function(constructorFunction)
     {
@@ -405,7 +405,7 @@
     /**
      * Removes class constructor
      *
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      */
     ClassTypeBuilder.prototype.removeClassConstructor = function()
     {
@@ -419,7 +419,7 @@
     /**
      * Validates current class definition
      *
-     * @returns {Subclass.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
      * @private
      */
     ClassTypeBuilder.prototype._validateClass = function()

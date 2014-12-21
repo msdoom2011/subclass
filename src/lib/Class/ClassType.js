@@ -179,11 +179,30 @@
     /**
      * Returns all typed properties in current class instance
      *
+     * @param {boolean} withInherited
      * @returns {Object.<PropertyType>}
      */
-    ClassType.prototype.getClassProperties = function()
+    ClassType.prototype.getClassProperties = function(withInherited)
     {
-        return this._classProperties;
+        var properties = {};
+
+        if (withInherited !== true) {
+            withInherited = false;
+        }
+
+        if (withInherited && this.getClassParent()) {
+            var parentClass = this.getClassParent();
+            var parentClassProperties = parentClass.getClassProperties(withInherited);
+
+            Subclass.Tools.extend(
+                properties,
+                parentClassProperties
+            );
+        }
+        return Subclass.Tools.extend(
+            properties,
+            this._classProperties
+        );
     };
 
     /**
@@ -296,7 +315,6 @@
             this.processClassDefinition();
 
             this._classConstructor = this.createClassConstructor();
-            //this._classConstructor = this.extendClassConstructor();
         }
 
         return this._classConstructor;
@@ -404,7 +422,17 @@
         }
 
         var classConstructor = this.getClassConstructor();
+        var classProperties = this.getClassProperties(true);
         var classInstance = new classConstructor();
+
+        for (var propertyName in classProperties) {
+            if (!classProperties.hasOwnProperty(propertyName)) {
+                continue;
+            }
+            classProperties[propertyName].attachHashedProperty(classInstance);
+        }
+
+        Object.seal(classInstance);
 
         if (classInstance.$_constructor) {
             classInstance.$_constructor.apply(classInstance, args);
@@ -617,7 +645,7 @@
 
         // Extending accessors
 
-        this.processClassPropertyAccessors();
+        this.extendClassPropertyAccessors();
     };
 
     /**
@@ -631,7 +659,7 @@
     *
     * @returns {Function}
     */
-    ClassType.prototype.processClassPropertyAccessors = function()
+    ClassType.prototype.extendClassPropertyAccessors = function()
     {
         var classProperties = this.getClassProperties();
         var classDefinition = this.getClassDefinition();

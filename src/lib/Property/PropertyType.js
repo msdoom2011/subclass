@@ -457,9 +457,9 @@
             )
         ) {
             return function () {
-                if (!this.hasOwnProperty(hashedPropName)) {
-                    $this.attachHashedProperty(this);
-                }
+                //if (!this.hasOwnProperty(hashedPropName)) {
+                //    $this.attachHashedProperty(this);
+                //}
                 return this[hashedPropName];
             };
 
@@ -492,9 +492,9 @@
             $this.validate(value);
             $this.setIsModified(true);
 
-            if (!this.hasOwnProperty(hashedPropName)) {
-                $this.attachHashedProperty(this);
-            }
+            //if (!this.hasOwnProperty(hashedPropName)) {
+            //    $this.attachHashedProperty(this);
+            //}
             this[hashedPropName] = value;
         };
     };

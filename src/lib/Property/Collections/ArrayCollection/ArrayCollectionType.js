@@ -54,19 +54,15 @@
             $this.setIsModified(true);
 
             if (value !== null) {
-                if (this[hashedPropName] === null) {
-                    delete this[hashedPropName];
-                }
-                if (!this.hasOwnProperty(hashedPropName) || !this[hashedPropName]) {
-                    $this.attachHashedProperty(this);
-                }
+                $this.setIsValueNull(false);
+
                 for (var i = 0; i < value.length; i++) {
                     this[hashedPropName].addItem(value[i]);
                 }
 
             } else {
-                this[hashedPropName] = null;
-                $this._collection = null;
+                $this.setIsValueNull(true);
+                $this._collection.removeItems();
             }
         };
     };

@@ -77,24 +77,6 @@
     /**
      * @inheritDoc
      */
-    Class.prototype.getClassProperties = function ()
-    {
-        //if (Subclass.ClassManager.issetClassType("Trait") && this.getTraits().length) {
-        //    var traits = this.getTraits();
-        //
-        //    for (var i = 0; i < traits.length; i++) {
-        //        var trait = traits[i];
-        //        var traitProperties = trait.getClassProperties();
-        //
-        //        Subclass.Tools.extend(this._classProperties, traitProperties);
-        //    }
-        //}
-        return this._classProperties;
-    };
-
-    /**
-     * @inheritDoc
-     */
     Class.prototype.getClassConstructorEmpty = function ()
     {
         return function Class() {};

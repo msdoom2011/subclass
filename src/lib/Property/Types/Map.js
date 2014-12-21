@@ -13,7 +13,17 @@
      */
     function MapType(propertyManager, propertyName, propertyDefinition)
     {
+        /**
+         * @type {Object.<PropertyType>}
+         * @private
+         */
         this._children = {};
+
+        /**
+         * @type {boolean}
+         * @private
+         */
+        this._isValueNull = true;
 
         MapType.$parent.call(
             this,
@@ -31,6 +41,26 @@
     MapType.getPropertyTypeName = function()
     {
         return "map";
+    };
+
+    /**
+     * Tells is property value null
+     *
+     * @returns {boolean}
+     */
+    MapType.prototype.isValueNull = function()
+    {
+        return this._isValueNull;
+    };
+
+    /**
+     * Sets marker that tells that property value is null
+     *
+     * @param {boolean} isValueNull
+     */
+    MapType.prototype.setIsValueNull = function(isValueNull)
+    {
+        this._isValueNull = isValueNull;
     };
 
     MapType.prototype.getSchema = function()
@@ -88,21 +118,16 @@
     };
 
     /**
-     * @inheritDoc
-     */
+    * @inheritDoc
+    */
     MapType.prototype.generateGetter = function()
     {
         var hashedPropName = this.getPropertyNameHashed();
         var $this = this;
 
         return function() {
-            if (!this.hasOwnProperty(hashedPropName)) {
-                if ($this.getDefaultValue() !== null) {
-                    $this.attachHashedProperty(this);
-
-                } else {
-                    this[hashedPropName] = null;
-                }
+            if ($this.isValueNull()) {
+                return null;
             }
             return this[hashedPropName];
         };
@@ -122,12 +147,7 @@
             $this.setIsModified(true);
 
             if (value !== null) {
-                if (this[hashedPropName] === null) {
-                    delete this[hashedPropName];
-                }
-                if (!this.hasOwnProperty(hashedPropName)) {
-                    $this.attachHashedProperty(this);
-                }
+                $this.setIsValueNull(false);
 
                 for (var childPropName in value) {
                     if (!value.hasOwnProperty(childPropName)) {
@@ -136,7 +156,7 @@
                     this[hashedPropName][childPropName] = value[childPropName];
                 }
             } else {
-                this[hashedPropName] = null;
+                $this.setIsValueNull(true);
             }
         };
     };
@@ -151,7 +171,7 @@
         context[hashedPropName] = {};
         this.attachChildren(context);
 
-        Object.preventExtensions(context[hashedPropName]);
+        Object.seal(context[hashedPropName]);
     };
 
     /**
@@ -291,6 +311,8 @@
     MapType.prototype.setDefaultValues = function(defaultValue)
     {
         if (defaultValue !== null && Subclass.Tools.isPlainObject(defaultValue)) {
+            this.setIsValueNull(false);
+
             for (var propName in defaultValue) {
                 if (!defaultValue.hasOwnProperty(propName)) {
                     continue;

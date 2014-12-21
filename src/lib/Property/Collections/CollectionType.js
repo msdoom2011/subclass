@@ -20,11 +20,46 @@
             propertyDefinition
         );
 
+        /**
+         * @type {boolean}
+         * @private
+         */
+        this._isValueNull = true;
+
+        /**
+         * @type {(Function|null)}
+         * @private
+         */
         this._collectionConstructor = null;
+
+        /**
+         * @type {(Collection|null)}
+         * @private
+         */
         this._collection = null;
     }
 
     CollectionType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+
+    /**
+     * Tells is property value null
+     *
+     * @returns {boolean}
+     */
+    CollectionType.prototype.isValueNull = function()
+    {
+        return this._isValueNull;
+    };
+
+    /**
+     * Sets marker that tells that property value is null
+     *
+     * @param {boolean} isValueNull
+     */
+    CollectionType.prototype.setIsValueNull = function(isValueNull)
+    {
+        this._isValueNull = isValueNull;
+    };
 
     /**
      * Returns property definition which every collection element should match
@@ -118,8 +153,8 @@
         var $this = this;
 
         return function() {
-            if (!this.hasOwnProperty(hashedPropName)) {
-                $this.attachHashedProperty(this);
+            if ($this.isValueNull()) {
+                return null;
             }
             return this[hashedPropName];
         };
@@ -138,12 +173,8 @@
             $this.setIsModified(true);
 
             if (value !== null) {
-                if (this[hashedPropName] === null) {
-                    delete this[hashedPropName];
-                }
-                if (!this.hasOwnProperty(hashedPropName) || !this[hashedPropName]) {
-                    $this.attachHashedProperty(this);
-                }
+                $this.setIsValueNull(false);
+
                 for (var childPropName in value) {
                     if (!value.hasOwnProperty(childPropName)) {
                         continue;
@@ -154,8 +185,8 @@
                     );
                 }
             } else {
-                this[hashedPropName] = null;
-                $this._collection = null;
+                $this.setIsValueNull(true);
+                $this._collection.removeItems();
             }
         };
     };
@@ -168,13 +199,15 @@
         var hashedPropName = this.getPropertyNameHashed();
         var defaultValue = this.getDefaultValue();
 
+        if (defaultValue !== null) {
+            this.setIsValueNull(false);
+        }
+
         Object.defineProperty(context, hashedPropName, {
             configurable: true,
             enumerable: true,
             writable: true,
-            value: defaultValue === null
-                ? defaultValue
-                : this.getCollection()
+            value: this.getCollection()
         });
     };
 

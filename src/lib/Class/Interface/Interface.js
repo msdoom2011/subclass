@@ -68,27 +68,27 @@
     /**
      * @inheritDoc
      */
-    Interface.prototype.setStaticProperties = function(staticProperties)
-    {
-        console.warn('Interface hasn\'t implementation of method "setStaticProperties".');
-    };
-
-    /**
-     * @inheritDoc
-     */
     Interface.prototype.getClassConstructorEmpty = function ()
     {
         return function Interface(){};
     };
 
+
+    /**
+     * @inheritDoc
+     */
+    Interface.prototype.attachStaticProperties = function() {};
+
+    /**
+     * @inheritDoc
+     */
+    Interface.prototype.attachClassProperties = function() {};
+
     /**
      * @inheritDoc
      * @throws {Error}
      */
-    Interface.prototype.createInstance = function ()
-    {
-        throw new Error('You can\'t create instance of interface "' + this.getClassName() + '".');
-    };
+    Interface.prototype.createInstance = undefined;
 
     /**
      * @inheritDoc

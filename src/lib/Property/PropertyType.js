@@ -669,16 +669,6 @@
              *      It takes two arguments: the new value and the old value of property.
              */
             watcher: null,
-            //
-            ///**
-            // * @type {(function|null)} Callback that triggers when trying to get property value
-            // */
-            //onGet: null,
-            //
-            ///**
-            // * @type {(function|null)} Callback that triggers when trying to set property value
-            // */
-            //onSet: null,
 
             /**
              * @type {(boolean|null)} Indicates that accessor functions would be generated

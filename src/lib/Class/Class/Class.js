@@ -312,6 +312,8 @@
             this.addClassProperty(propName, property.getPropertyDefinition());
         }
 
+        // Copying all properties and methods (with inherited) from trait to class definition
+
         for (propName in traitClassConstructor.prototype) {
             if (['$_extends', '$_properties'].indexOf(propName) >= 0) {
                 continue;

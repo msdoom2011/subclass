@@ -62,10 +62,7 @@
      * @inheritDoc
      * @throws {Error}
      */
-    AbstractClass.prototype.createInstance = function ()
-    {
-        throw new Error('You can\'t create instance of abstract class "' + this.getClassName() + '".');
-    };
+    AbstractClass.prototype.createInstance = undefined;
 
     /**
      * @inheritDoc
@@ -79,7 +76,6 @@
         delete classDefinition.hasTrait;
         delete classDefinition.isImplements;
         delete classDefinition.getClassName;
-        delete classDefinition.getClassWrap;
         delete classDefinition.isInstanceOf;
         delete classDefinition.getParent;
         delete classDefinition.getCopy;

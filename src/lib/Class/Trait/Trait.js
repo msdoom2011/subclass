@@ -50,6 +50,9 @@
         }
     };
 
+    /**
+     * @inheritDoc
+     */
     Trait.prototype.getClassProperties = function()
     {
         var properties = {};
@@ -64,6 +67,16 @@
     /**
      * @inheritDoc
      */
+    Trait.prototype.attachStaticProperties = function() {};
+
+    /**
+     * @inheritDoc
+     */
+    Trait.prototype.attachClassProperties = function() {};
+
+    /**
+     * @inheritDoc
+     */
     Trait.prototype.getClassConstructorEmpty = function ()
     {
         return function Trait(){};
@@ -71,12 +84,8 @@
 
     /**
      * @inheritDoc
-     * @throws {Error}
      */
-    Trait.prototype.createInstance = function ()
-    {
-        throw new Error('You can\'t create instance of trait "' + this.getClassName() + '".');
-    };
+    Trait.prototype.createInstance = undefined;
 
     /**
      * @inheritDoc

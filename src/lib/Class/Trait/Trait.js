@@ -50,6 +50,17 @@
         }
     };
 
+    Trait.prototype.getClassProperties = function()
+    {
+        var properties = {};
+
+        if (this.getClassParent()) {
+            var parentClass = this.getClassParent();
+            properties = Subclass.Tools.extend({}, parentClass.getClassProperties());
+        }
+        return Subclass.Tools.extend(properties, this._classProperties);
+    };
+
     /**
      * @inheritDoc
      */

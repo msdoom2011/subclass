@@ -79,16 +79,16 @@
      */
     Class.prototype.getClassProperties = function ()
     {
-        if (Subclass.ClassManager.issetClassType("Trait") && this.getTraits().length) {
-            var traits = this.getTraits();
-
-            for (var i = 0; i < traits.length; i++) {
-                var trait = traits[i];
-                var traitProperties = trait.getClassProperties();
-
-                Subclass.Tools.extend(this._classProperties, traitProperties);
-            }
-        }
+        //if (Subclass.ClassManager.issetClassType("Trait") && this.getTraits().length) {
+        //    var traits = this.getTraits();
+        //
+        //    for (var i = 0; i < traits.length; i++) {
+        //        var trait = traits[i];
+        //        var traitProperties = trait.getClassProperties();
+        //
+        //        Subclass.Tools.extend(this._classProperties, traitProperties);
+        //    }
+        //}
         return this._classProperties;
     };
 
@@ -192,7 +192,7 @@
              */
             classDefinition.hasTrait = function (traitName)
             {
-                return this.getClassWrap().hasTrait(traitName);
+                return this.$_class.hasTrait(traitName);
             };
         }
 
@@ -213,7 +213,7 @@
              */
             classDefinition.isImplements = function (interfaceName)
             {
-                return this.getClassWrap().isImplements(interfaceName);
+                return this.$_class.isImplements(interfaceName);
             };
         }
         return classDefinition;
@@ -224,8 +224,6 @@
      */
     Class.prototype.processClassDefinition = function ()
     {
-        Class.$parent.prototype.processClassDefinition.call(this);
-
         var classDefinition = this.getClassDefinition();
 
         // Parsing traits
@@ -243,6 +241,8 @@
                 this.addInterface(classDefinition.$_implements[i]);
             }
         }
+
+        Class.$parent.prototype.processClassDefinition.call(this);
     };
 
     /**
@@ -297,14 +297,23 @@
         }
         var traitClass = this.getClassManager().getClass(traitName);
         var traitClassConstructor = traitClass.getClassConstructor();
+        var traitClassProperties = traitClass.getClassProperties();
+        var traitProps = {};
 
         if (traitClass.constructor != Subclass.ClassManager.ClassTypes.Trait) {
             throw new Error('Trying add to "$_traits" parameter new class "' + traitName + '" that is not trait.');
         }
-        var traitProps = {};
 
-        for (var propName in traitClassConstructor.prototype) {
-            if (['$_extends', '$_properties'].indexOf >= 0) {
+        for (var propName in traitClassProperties) {
+            if (!traitClassProperties.hasOwnProperty(propName)) {
+                continue;
+            }
+            var property = traitClassProperties[propName];
+            this.addClassProperty(propName, property.getPropertyDefinition());
+        }
+
+        for (propName in traitClassConstructor.prototype) {
+            if (['$_extends', '$_properties'].indexOf(propName) >= 0) {
                 continue;
             }
             traitProps[propName] = traitClassConstructor.prototype[propName];
@@ -375,7 +384,7 @@
         }
         var interfaceClass = this.getClassManager().getClass(interfaceName);
         var interfaceClassConstructor = interfaceClass.getClassConstructor();
-        var interfaceClassConstructorProto = Subclass.Tools.copy(interfaceClassConstructor.prototype);
+        var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
         var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
 

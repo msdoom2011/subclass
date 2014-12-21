@@ -267,6 +267,8 @@
             && Subclass.Tools.isPlainObject(schema)
             && Object.keys(schema).length
         ) {
+            var defaultValue = {};
+
             for (var propName in schema) {
                 if (!schema.hasOwnProperty(propName)) {
                     continue;
@@ -275,9 +277,9 @@
                     schema[propName].writable = false;
                 }
                 this.addChild(propName, schema[propName]);
-                schema[propName] = this._children[propName].getDefaultValue();
+                defaultValue[propName] = this._children[propName].getDefaultValue();
             }
-            this.setDefaultValues(this.getDefaultValue());
+            this.setDefaultValues(defaultValue);
         }
     };
 

@@ -296,7 +296,7 @@
             this.processClassDefinition();
 
             this._classConstructor = this.createClassConstructor();
-            this._classConstructor = this.extendClassConstructor();
+            //this._classConstructor = this.extendClassConstructor();
         }
 
         return this._classConstructor;
@@ -336,48 +336,48 @@
         return classConstructor;
     };
 
-    /**
-     * Extends class constructor with specific methods.
-     *
-     * If getter or setter of any typed property was redefined in the class definition
-     * the new methods will generated. For setter it's gonna be "<setterOrGetterName>Default"
-     * where "<setterOrGetterName>" is name of redefined setter or getter name.
-     *
-     * These methods allows to interact with private properties through redefined getters and setters.
-     *
-     * @returns {Function}
-     */
-    ClassType.prototype.extendClassConstructor = function()
-    {
-        var classConstructor = this.getClassConstructor();
-        var classProperties = this.getClassProperties();
-
-        if (classProperties) {
-            var classPropertiesNames = Object.keys(classProperties);
-            var classDefinition = this.getClassDefinition();
-
-            for (var i = 0; i < classPropertiesNames.length; i++) {
-                var propertyName = classPropertiesNames[i];
-
-                if (!classProperties[propertyName].isUseAccessors()) {
-                    continue;
-                }
-                var accessors = [
-                    Subclass.Tools.generateSetterName(propertyName),
-                    Subclass.Tools.generateGetterName(propertyName)
-                ];
-                for (var j = 0; j < accessors.length; j++) {
-                    var accessorName = accessors[j];
-
-                    if (classDefinition[accessorName]) {
-                        classConstructor.prototype[accessorName + "Default"] = classConstructor.prototype[accessorName];
-                        classConstructor.prototype[accessorName] = classDefinition[accessorName];
-                    }
-                }
-            }
-        }
-        return classConstructor;
-    };
+    ///**
+    // * Extends class constructor with specific methods.
+    // *
+    // * If getter or setter of any typed property was redefined in the class definition
+    // * the new methods will generated. For setter it's gonna be "<setterOrGetterName>Default"
+    // * where "<setterOrGetterName>" is name of redefined setter or getter name.
+    // *
+    // * These methods allows to interact with private properties through redefined getters and setters.
+    // *
+    // * @returns {Function}
+    // */
+    //ClassType.prototype.extendClassConstructor = function()
+    //{
+    //    var classConstructor = this.getClassConstructor();
+    //    var classProperties = this.getClassProperties();
+    //
+    //    if (classProperties) {
+    //        var classPropertiesNames = Object.keys(classProperties);
+    //        var classDefinition = this.getClassDefinition();
+    //
+    //        for (var i = 0; i < classPropertiesNames.length; i++) {
+    //            var propertyName = classPropertiesNames[i];
+    //
+    //            if (!classProperties[propertyName].isUseAccessors()) {
+    //                continue;
+    //            }
+    //            var accessors = [
+    //                Subclass.Tools.generateSetterName(propertyName),
+    //                Subclass.Tools.generateGetterName(propertyName)
+    //            ];
+    //            for (var j = 0; j < accessors.length; j++) {
+    //                var accessorName = accessors[j];
+    //
+    //                if (classDefinition[accessorName]) {
+    //                    classConstructor.prototype[accessorName + "Default"] = classConstructor.prototype[accessorName];
+    //                    classConstructor.prototype[accessorName] = classDefinition[accessorName];
+    //                }
+    //            }
+    //        }
+    //    }
+    //    return classConstructor;
+    //};
 
     /**
      * Creates and attaches class typed properties
@@ -657,6 +657,39 @@
         if (parentClassName && typeof parentClassName == 'string') {
             this.setClassParent(parentClassName);
         }
+
+        classProperties = this.getClassProperties();
+
+        if (classProperties && Object.keys(classProperties).length) {
+            var classPropertiesNames = Object.keys(classProperties);
+
+            for (var i = 0; i < classPropertiesNames.length; i++) {
+                var propertyName = classPropertiesNames[i];
+                var property = this.getClassProperty(propertyName);
+
+                if (!classProperties[propertyName].isUseAccessors()) {
+                    continue;
+                }
+                var accessors = {
+                    Getter: Subclass.Tools.generateSetterName(propertyName),
+                    Setter: Subclass.Tools.generateGetterName(propertyName)
+                };
+                for (var accessorType in accessors) {
+                    if (!accessors.hasOwnProperty(accessorType)) {
+                        continue;
+                    }
+                    var accessorName = accessors[accessorType];
+                    var accessor = property['generate' + accessorType];
+
+                    if (classDefinition[accessorName]) {
+                        classDefinition[accessorName + "Default"] = accessor;
+                    }
+                }
+            }
+        }
+
+        console.log(this.getClassName());
+        console.log(classDefinition);
     };
 
 

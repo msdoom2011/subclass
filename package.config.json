@@ -1,0 +1,48 @@
+{
+  "src_dir": "src",
+  "build_dir": "build",
+  "compile_dir": "bin",
+  "lib": {
+    "dir": {
+      "src": "<%= config.src_dir %>/lib",
+      "build": "<%= config.build_dir %>/<%= config.lib.dir.src %>",
+      "compile": "<%= config.compile_dir %>/<%= config.lib.dir.src %>"
+    },
+    "files": {
+      "main": "Subclass.js",
+      "tools": {
+        "dir": "Tools",
+        "files": [
+          "<%= config.lib.files.tools.dir %>/Tools.js",
+          "<%= config.lib.files.tools.dir %>/**/*.js"
+        ]
+      },
+      "class": {
+        "dir": "Class",
+        "files": [
+          "<%= config.lib.files.class.dir %>/*.js",
+          "<%= config.lib.files.class.dir %>/**/*.js"
+        ]
+      },
+      "property": {
+        "dir": "Property",
+        "files": [
+          "<%= config.lib.files.property.dir %>/PropertyManager.js",
+          "<%= config.lib.files.property.dir %>/CustomTypesManager.js",
+          "<%= config.lib.files.property.dir %>/PropertyType.js",
+          "<%= config.lib.files.property.dir %>/PropertyAPI.js",
+          "<%= config.lib.files.property.dir %>/**/*.js"
+        ]
+      }
+    }
+  },
+  "demo": {
+    "dir": {
+      "src": "<%= config.src_dir %>/demo",
+      "build": "<%= config.build_dir %>/<%= config.demo.dir.build %>",
+      "compile": "<%= config.compile_dir %>/<%= config.demo.dir.compile %>"
+    },
+    "index": "index.html",
+    "files": "/**/*"
+  }
+}

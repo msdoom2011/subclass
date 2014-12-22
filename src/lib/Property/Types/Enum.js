@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Enum = (function()
+Subclass.PropertyManager.PropertyTypes.Enum = (function()
 {
     /*************************************************/
     /*       Describing property type "Enum"         */

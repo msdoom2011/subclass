@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Map = (function()
+Subclass.PropertyManager.PropertyTypes.Map = (function()
 {
     /*************************************************/
     /*        Describing property type "Map"         */

@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Array = (function()
+Subclass.PropertyManager.PropertyTypes.Array = (function()
 {
     /*************************************************/
     /*       Describing property type "Array"        */

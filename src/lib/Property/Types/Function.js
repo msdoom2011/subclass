@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Function = (function()
+Subclass.PropertyManager.PropertyTypes.Function = (function()
 {
     /*************************************************/
     /*      Describing property type "Function"      */

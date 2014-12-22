@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Config = (function()
+Subclass.ClassManager.ClassTypes.Config = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */

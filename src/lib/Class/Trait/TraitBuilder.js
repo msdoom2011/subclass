@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Trait.Builder = (function()
+Subclass.ClassManager.ClassTypes.Trait.Builder = (function()
 {
     function TraitBuilder(classManager, classType, className)
     {

@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.ObjectCollection = (function()
+Subclass.PropertyManager.PropertyTypes.ObjectCollection = (function()
 {
     /*************************************************/
     /*   Describing property type "ObjectCollection" */

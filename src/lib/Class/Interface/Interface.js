@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Interface = (function()
+Subclass.ClassManager.ClassTypes.Interface = (function()
 {
     /*************************************************/
     /*       Describing class type "Interface"       */

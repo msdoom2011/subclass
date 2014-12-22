@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.AbstractClass.Builder = (function()
+Subclass.ClassManager.ClassTypes.AbstractClass.Builder = (function()
 {
     function AbstractClassBuilder(classManager, classType, className)
     {

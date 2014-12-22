@@ -1,4 +1,4 @@
-; Subclass.Tools.Property = (function()
+Subclass.Tools.Property = (function()
 {
     Subclass.Tools.extend(Subclass.Tools, {
 

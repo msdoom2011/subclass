@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.String = (function()
+Subclass.PropertyManager.PropertyTypes.String = (function()
 {
     /*************************************************/
     /*      Describing property type "String"        */

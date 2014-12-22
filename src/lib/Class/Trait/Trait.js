@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Trait = (function()
+Subclass.ClassManager.ClassTypes.Trait = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */

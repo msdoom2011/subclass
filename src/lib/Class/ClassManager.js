@@ -1,4 +1,3 @@
-
 Subclass.ClassManager = (function()
 {
     /**

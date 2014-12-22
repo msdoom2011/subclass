@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.ClassType = (function()
+Subclass.ClassManager.ClassTypes.ClassType = (function()
 {
     /**
      * Constructor of base class type

@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
+Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
 {
     /*************************************************/
     /*        Describing property type "Map"         */

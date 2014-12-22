@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Untyped = (function()
+Subclass.PropertyManager.PropertyTypes.Untyped = (function()
 {
     /*************************************************/
     /*      Describing property type "Untyped"       */

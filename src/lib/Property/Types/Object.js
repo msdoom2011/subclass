@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Object = (function()
+Subclass.PropertyManager.PropertyTypes.Object = (function()
 {
     /*************************************************/
     /*      Describing property type "Object"        */

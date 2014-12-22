@@ -1,4 +1,4 @@
-; Subclass.PropertyManager = (function()
+Subclass.PropertyManager = (function()
 {
     /**
      * Property manager constructor

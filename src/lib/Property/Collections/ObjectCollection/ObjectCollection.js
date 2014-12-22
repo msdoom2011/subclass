@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.ObjectCollection.Collection = (function()
+Subclass.PropertyManager.PropertyTypes.ObjectCollection.Collection = (function()
 {
     /**
      * @param {CollectionType} property

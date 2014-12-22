@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Class = (function() {
+Subclass.ClassManager.ClassTypes.Class = (function() {
 
     /*************************************************/
     /*        Describing class type "Class"          */

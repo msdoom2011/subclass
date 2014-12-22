@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
+Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
 {
     function ClassTypeBuilder(classManager, classType, className)
     {

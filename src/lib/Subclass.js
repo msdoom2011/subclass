@@ -1,5 +1,3 @@
-"use strict";
-
 window.Subclass = (function()
 {
     return {

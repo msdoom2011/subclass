@@ -1,4 +1,4 @@
-; Subclass.Tools = (function()
+Subclass.Tools = (function()
 {
     return {
 

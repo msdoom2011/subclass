@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.PropertyAPI = (function()
+Subclass.PropertyManager.PropertyTypes.PropertyAPI = (function()
 {
     /**
      * @param {PropertyType} property

@@ -1,46 +1,62 @@
 {
+  "name": "Subclass",
   "src_dir": "src",
   "build_dir": "build",
-  "compile_dir": "bin",
+  "release_dir": "release",
   "lib": {
     "dir": {
       "src": "<%= config.src_dir %>/lib",
       "build": "<%= config.build_dir %>/lib",
-      "compile": "<%= config.compile_dir %>/lib"
+      "release": "<%= config.release_dir %>/lib"
     },
-    "files": {
+    "content": {
       "main": "Subclass.js",
       "tools": {
         "dir": "Tools",
         "files": [
-          "<%= config.lib.files.tools.dir %>/Tools.js",
-          "<%= config.lib.files.tools.dir %>/**/*.js"
+          "<%= config.lib.content.tools.dir %>/Tools.js",
+          "<%= config.lib.content.tools.dir %>/**/*.js"
         ]
       },
       "class": {
         "dir": "Class",
         "files": [
-          "<%= config.lib.files.class.dir %>/*.js",
-          "<%= config.lib.files.class.dir %>/**/*.js"
+          "<%= config.lib.content.class.dir %>/*.js",
+          "<%= config.lib.content.class.dir %>/Class/**/*.js",
+          "<%= config.lib.content.class.dir %>/**/*.js"
         ]
       },
       "property": {
         "dir": "Property",
         "files": [
-          "<%= config.lib.files.property.dir %>/PropertyManager.js",
-          "<%= config.lib.files.property.dir %>/CustomTypesManager.js",
-          "<%= config.lib.files.property.dir %>/PropertyType.js",
-          "<%= config.lib.files.property.dir %>/PropertyAPI.js",
-          "<%= config.lib.files.property.dir %>/**/*.js"
+          "<%= config.lib.content.property.dir %>/PropertyManager.js",
+          "<%= config.lib.content.property.dir %>/CustomTypesManager.js",
+          "<%= config.lib.content.property.dir %>/PropertyType.js",
+          "<%= config.lib.content.property.dir %>/PropertyAPI.js",
+          "<%= config.lib.content.property.dir %>/Collections/CollectionType.js",
+          "<%= config.lib.content.property.dir %>/Collections/*.js",
+          "<%= config.lib.content.property.dir %>/Collections/*Collection/*Type.js",
+          "<%= config.lib.content.property.dir %>/Collections/*Collection/*.js",
+          "<%= config.lib.content.property.dir %>/**/*.js"
         ]
       }
+    },
+    "files": [
+      "<%= config.lib.content.main %>",
+      "<%= config.lib.content.tools.files %>",
+      "<%= config.lib.content.class.files %>",
+      "<%= config.lib.content.property.files %>"
+    ],
+    "files_release": {
+      "normal": "<%= config.lib.dir.release %>/<%= config.name %>.js",
+      "minimized": "<%= config.lib.dir.release %>/<%= config.name %>.min.js"
     }
   },
   "demo": {
     "dir": {
       "src": "<%= config.src_dir %>/demo",
       "build": "<%= config.build_dir %>/demo",
-      "compile": "<%= config.compile_dir %>/demo"
+      "release": "<%= config.release_dir %>/demo"
     },
     "index": "index.html",
     "files": "/**/*"

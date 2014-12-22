@@ -1,0 +1,11 @@
+{
+  "name": "SubclassJS",
+  "version": "0.1.0",
+  "authors": [
+    "msdoom <msdoom2011@gmail.com>"
+  ],
+  "description": "A javascript framework for creating project using OOP structural elements like classes, abstract classes, interfaces, traits and config classes with ability to define typed properties in them.",
+  "main": "Gruntfile.js",
+  "license": "MIT",
+  "private": true
+}

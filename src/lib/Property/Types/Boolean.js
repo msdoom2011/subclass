@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Boolean = (function()
+Subclass.PropertyManager.PropertyTypes.Boolean = (function()
 {
     /*************************************************/
     /*      Describing property type "Boolean"       */

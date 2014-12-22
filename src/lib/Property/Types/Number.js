@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Number = (function()
+Subclass.PropertyManager.PropertyTypes.Number = (function()
 {
     /*************************************************/
     /*      Describing property type "Number"        */

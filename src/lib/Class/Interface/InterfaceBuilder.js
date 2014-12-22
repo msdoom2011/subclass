@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Interface.Builder = (function()
+Subclass.ClassManager.ClassTypes.Interface.Builder = (function()
 {
     function InterfaceBuilder(classManager, classType, className)
     {

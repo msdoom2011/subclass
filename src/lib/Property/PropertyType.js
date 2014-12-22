@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
+Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
 {
     /**
      * @param {PropertyManager} propertyManager

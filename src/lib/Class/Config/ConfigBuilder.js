@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.Config.Builder = (function()
+Subclass.ClassManager.ClassTypes.Config.Builder = (function()
 {
     function ConfigBuilder(classManager, classType, className)
     {

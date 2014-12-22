@@ -1,4 +1,4 @@
-; Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
+Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
 
     /*************************************************/
     /*        Describing class type "Class"          */

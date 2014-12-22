@@ -1,4 +1,4 @@
-; Subclass.PropertyManager.PropertyTypes.Mixed = (function()
+Subclass.PropertyManager.PropertyTypes.Mixed = (function()
 {
     /*************************************************/
     /*       Describing property type "Mixed"        */

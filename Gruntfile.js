@@ -24,15 +24,17 @@ module.exports = function(grunt) {
 
         copy: {
             build_lib: {
-                src: "<%= config.lib.dir.src %>/**/*",
-                dest: "<%= config.build_dir %>",
+                src: "**/*",
+                dest: "<%= config.lib.dir.build %>",
                 filter: "isFile",
+                cwd: "<%= config.lib.dir.src %>/",
                 expand: true
             },
             build_demo: {
-                src: "<%= config.demo.dir.src %>/**/* %>",
-                dest: "<%= config.build_dir %>",
+                src: "**/*",
+                dest: "<%= config.demo.dir.build %>",
                 filter: "isFile",
+                cwd: "<%= config.demo.dir.src %>/",
                 expand: true
             }
         },

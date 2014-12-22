@@ -5,8 +5,8 @@
   "lib": {
     "dir": {
       "src": "<%= config.src_dir %>/lib",
-      "build": "<%= config.build_dir %>/<%= config.lib.dir.src %>",
-      "compile": "<%= config.compile_dir %>/<%= config.lib.dir.src %>"
+      "build": "<%= config.build_dir %>/lib",
+      "compile": "<%= config.compile_dir %>/lib"
     },
     "files": {
       "main": "Subclass.js",
@@ -39,8 +39,8 @@
   "demo": {
     "dir": {
       "src": "<%= config.src_dir %>/demo",
-      "build": "<%= config.build_dir %>/<%= config.demo.dir.build %>",
-      "compile": "<%= config.compile_dir %>/<%= config.demo.dir.compile %>"
+      "build": "<%= config.build_dir %>/demo",
+      "compile": "<%= config.compile_dir %>/demo"
     },
     "index": "index.html",
     "files": "/**/*"

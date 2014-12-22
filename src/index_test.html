@@ -20,6 +20,7 @@
     <script src="./lib/Class/Config/Config.js"></script>
     <script src="./lib/Class/Config/ConfigBuilder.js"></script>
     <script src="./lib/Property/PropertyManager.js"></script>
+    <script src="./lib/Property/CustomTypesManager.js"></script>
     <script src="./lib/Property/PropertyType.js"></script>
     <script src="./lib/Property/PropertyAPI.js"></script>
     <script src="./lib/Property/Types/String.js"></script>
@@ -43,8 +44,15 @@
 
         var classManager = Subclass.newApp({
             rootPath: "",
-            dataTypes: {
-
+            propertyTypes: {
+                percents: {
+                    type: "string",
+                    pattern: /^\d+%$/
+                },
+                bigNumber: {
+                    type: "number",
+                    minValue: 1000000
+                }
             }
         });
 
@@ -225,8 +233,8 @@
             $_properties: {
                 typedString: {
                     type: "string",
-                    value: "my testing string!",
-                    regExp: null
+//                    type: "percents",
+                    value: "my testing string!"
                 },
                 typedObjectCollection: {
                     type: "objectCollection",

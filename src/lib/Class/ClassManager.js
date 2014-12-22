@@ -9,11 +9,7 @@ Subclass.ClassManager = (function()
      *      "rootPath": {string} Required
      *          Path to root directory of the project,
      *
-     *      "initialize": {Function} Required
-     *          Function that will called when all application files will loaded.
-     *          It takes on argument which is an instance of ClassManager.
-     *
-     *      "dataTypes": {Object.<Object>} Optional
+     *      "propertyTypes": {Object.<Object>} Optional
      *          Object, which keys will be type names (alias) and value will be its definitions.,
      * }
      *
@@ -36,15 +32,54 @@ Subclass.ClassManager = (function()
          * @private
          */
         this._classes = {};
+
+        /**
+         * Indicates that current instance of class manager was initialized
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._initialized = false;
+
+
+        // Performing configs
+
+        if (configs && !Subclass.Tools.isPlainObject(configs)) {
+            throw new Error('Specified invalid configs. It must be an object.');
+        }
+        if (configs.rootPath) {
+            this.setRootPath(configs.rootPath);
+        }
+        if (configs.propertyTypes) {
+            this.definePropertyTypes(configs.propertyTypes);
+        }
     }
 
     /**
      * Invokes passed callback when all classes was defined and loaded
-     * @TODO needs to implement
      */
     ClassManager.prototype.initialize = function(callback)
     {
-        callback();
+        if (this.isInitialized()) {
+            throw new Error('Current application is already initialized!');
+        }
+
+        //@TODO needs to implement
+    };
+
+    ClassManager.prototype.isInitialized = function()
+    {
+        return this._initialized;
+    };
+
+    ClassManager.prototype.setRootPath = function(rootPath)
+    {
+        //@TODO needs to implement
+    };
+
+    ClassManager.prototype.definePropertyTypes = function(propertyDefinitions)
+    {
+        this.getPropertyManager().defineCustomPropertyTypes(propertyDefinitions);
     };
 
     /**

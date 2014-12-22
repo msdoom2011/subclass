@@ -8,7 +8,22 @@
      */
     function PropertyManager(classManager)
     {
+        /**
+         * @type {number}
+         * @private
+         */
         this._hash = Math.round(Math.abs(new Date().getTime() * Math.random() / 100000));
+
+        /**
+         * @type {Subclass.PropertyManager.CustomTypesManager}
+         * @private
+         */
+        this._customTypesManager = new Subclass.PropertyManager.CustomTypesManager(this);
+
+        /**
+         * @type {ClassManager}
+         * @private
+         */
         this._classManager = classManager;
     }
 
@@ -20,6 +35,26 @@
     PropertyManager.prototype.getClassManager = function()
     {
         return this._classManager;
+    };
+
+    /**
+     * Returns instance of custom types manager
+     *
+     * @returns {Subclass.PropertyManager.CustomTypesManager}
+     */
+    PropertyManager.prototype.getCustomTypesManager = function()
+    {
+        return this._customTypesManager;
+    };
+
+    /**
+     * Defines custom property types
+     *
+     * @param {Object.<Object>} definitions
+     */
+    PropertyManager.prototype.defineCustomPropertyTypes = function(definitions)
+    {
+        this.getCustomTypesManager().addTypeDefinitions(definitions);
     };
 
     /**
@@ -77,27 +112,31 @@
      *
      * @param {string} propertyName
      * @param {Object} propertyDefinition
-     * @param {ClassType} contextClass
-     * @param {PropertyType} contextProperty
+     * @param {ClassType} [contextClass]
+     * @param {PropertyType} [contextProperty]
      * @returns {PropertyType}
      */
     PropertyManager.prototype.createProperty = function(propertyName, propertyDefinition, contextClass, contextProperty)
     {
+        var customTypesManager = this.getCustomTypesManager();
         var propertyTypeName = propertyDefinition.type;
 
+        if (customTypesManager.issetType(propertyTypeName)) {
+            var customTypeDefinition = Subclass.Tools.copy(customTypesManager.getTypeDefinition(propertyTypeName));
+            propertyTypeName = customTypeDefinition.type;
+
+            propertyDefinition = Subclass.Tools.extendDeep(customTypeDefinition, propertyDefinition);
+            propertyDefinition.type = propertyTypeName;
+        }
         if (!Subclass.PropertyManager.issetPropertyType(propertyTypeName)) {
             var propertyFullName = (contextProperty && contextProperty.getPropertyNameFull() + "." || '') + propertyName;
 
             throw new Error('Trying to create property "' + propertyFullName + '" of none existent type "' + propertyTypeName + '"' +
-            (contextClass && ' in class "' + contextClass.getClassName() + '"') + '.');
+                (contextClass && ' in class "' + contextClass.getClassName() + '"') + '.');
         }
 
         var classConstructor = this.createPropertyConstructor(propertyName, propertyDefinition);
-        var inst = new classConstructor(
-            this,
-            propertyName,
-            propertyDefinition
-        );
+        var inst = new classConstructor(this, propertyName, propertyDefinition);
 
         // Setting context
 

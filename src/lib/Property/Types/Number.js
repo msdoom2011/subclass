@@ -63,12 +63,12 @@
         if (value !== null && typeof value != 'number') {
             error = true;
         }
-        if (!error && minValue !== null && value < minValue) {
+        if (!error && value !== null && minValue !== null && value < minValue) {
             throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is too small ' +
                 'and must be more or equals number ' + minValue +
                 (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
         }
-        if (!error && maxValue !== null && value > maxValue) {
+        if (!error && value !== null && maxValue !== null && value > maxValue) {
             throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is too big ' +
                 'and must be less or equals number ' + maxValue +
                 (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");

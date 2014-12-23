@@ -54,12 +54,12 @@ module.exports = function(grunt) {
                 filter: "isFile",
                 expand: true
             },
-            release_lib: {
-                src: "**/*",
-                dest: "<%= config.release_dir %>/src/",
-                cwd: "<%= config.lib.dir.src %>/",
-                expand: true
-            },
+            //release_lib: {
+            //    src: "**/*",
+            //    dest: "<%= config.release_dir %>/src/",
+            //    cwd: "<%= config.lib.dir.src %>/",
+            //    expand: true
+            //},
             release_demo: {
                 src: "**/*",
                 dest: "<%= config.demo.dir.release %>",
@@ -119,7 +119,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask("release", [
         "clean:release",
-        "copy:release_lib",
+        //"copy:release_lib",
         "copy:release_demo",
         "copy:release_readme",
         "concat:release",

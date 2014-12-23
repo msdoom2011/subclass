@@ -220,6 +220,16 @@ Subclass.PropertyManager = (function()
         issetPropertyType: function(propertyTypeName)
         {
             return !!_propertyTypes[propertyTypeName];
+        },
+
+        /**
+         * Returns names of all registered property types
+         *
+         * @returns {string[]}
+         */
+        getPropertyTypes: function()
+        {
+            return Object.keys(_propertyTypes);
         }
     }
 })();

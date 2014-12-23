@@ -528,9 +528,10 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
                 if (typeof paramValue == 'undefined') {
                     paramValue = defaultValue;
                 }
-                if (typeof paramValue != paramType && paramValue !== null) {
-                    throw new Error("Trying to set not valid value of type '" + (typeof paramValue) + "'. '" + paramType + "' is expected.");
-                }
+                //if (typeof paramValue != paramType && paramValue !== null) {
+                //    throw new Error("Trying to set not valid value of type '" + (typeof paramValue) + "'. '" + paramType + "' is expected.");
+                //}
+
                 return paramValue;
             },
 

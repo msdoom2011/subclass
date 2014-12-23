@@ -31,6 +31,11 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
         return "array";
     };
 
+    ArrayType.isAllowedValue = function(value)
+    {
+        return value === null || !Array.isArray(value);
+    };
+
     /**
      * @inheritDoc
      */

@@ -802,10 +802,10 @@ console.log(inst.getProperty('typedString').getDefaultValue());
 console.log("");
 console.log("=========== Getting static values =============");
 
-console.log(inst2.getParent().constructor.staticProp);
-inst.getParent().constructor.staticProp = "psix instead test";
-console.log(inst2.getParent().constructor.staticProp);
-console.log(classManager.getClass('Class2').getClassConstructor().staticProp);
+console.log(inst2.getParent().getStatic().staticProp);
+inst.getParent().getStatic().staticProp = "psix instead test";
+console.log(inst2.getParent().getStatic().staticProp);
+console.log(classManager.getClass('Class2').getStatic().staticProp);
 
 
 console.log(inst.getInterfaceProperty());

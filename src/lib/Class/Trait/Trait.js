@@ -67,11 +67,6 @@ Subclass.ClassManager.ClassTypes.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.prototype.attachStaticProperties = function() {};
-
-    /**
-     * @inheritDoc
-     */
     Trait.prototype.attachClassProperties = function() {};
 
     /**

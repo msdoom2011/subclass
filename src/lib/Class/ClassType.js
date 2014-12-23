@@ -6,7 +6,6 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
      * @param {ClassManager} classManager
      * @param {string} className
      * @param {object} classDefinition
-     * @returns {{}}
      * @constructor
      */
     function ClassType(classManager, className, classDefinition)
@@ -56,12 +55,6 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
          * @private
          */
         this._classProperties = {};
-
-        /**
-         * @type {{}}
-         * @private
-         */
-        this._staticProperties = {};
 
         /**
          * Initializing operations
@@ -262,28 +255,9 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
         return true;
     };
 
-    /**
-     * Setup static methods and properties of current class
-     *
-     * @param staticProperties
-     */
-    ClassType.prototype.setStaticProperties = function(staticProperties)
+    ClassType.prototype.getStatic = function()
     {
-        if (!staticProperties || typeof staticProperties != "object") {
-            throw new Error('Argument with static properties must be an object ' +
-                'in class "' + this.getClassName() + '".');
-        }
-        this._staticProperties = staticProperties;
-    };
-
-    /**
-     * Returns all static methods of current class
-     *
-     * @returns {*}
-     */
-    ClassType.prototype.getStaticProperties = function()
-    {
-        return this._staticProperties;
+        return this.getClassDefinition().$_static || {};
     };
 
     /**
@@ -338,7 +312,6 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
             classConstructor.prototype = classConstructorProto;
         }
 
-        this.attachStaticProperties(classConstructor);
         this.attachClassProperties(classConstructor.prototype);
         Subclass.Tools.extend(classConstructor.prototype, this.getClassDefinition());
 
@@ -368,23 +341,6 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
                 continue;
             }
             classProperties[propName].attach(context);
-        }
-    };
-
-    /**
-     * Attaches static properties to constructor
-     *
-     * @param context
-     */
-    ClassType.prototype.attachStaticProperties = function(context)
-    {
-        var staticProperties = this.getStaticProperties();
-
-        for (var propName in staticProperties) {
-            if (!staticProperties.hasOwnProperty(propName)) {
-                continue;
-            }
-            context[propName] = staticProperties[propName];
         }
     };
 
@@ -516,6 +472,11 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
                 return this.$_className;
             },
 
+            getStatic: function()
+            {
+                return this.$_class.getStatic();
+            },
+
             /**
              * Checks if current class instance of passed class with specified name
              *
@@ -622,7 +583,6 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     {
         var classDefinition = this.getClassDefinition();
         var classProperties = classDefinition.$_properties;
-        var staticProperties = classDefinition.$_static;
         var parentClassName = classDefinition.$_extends;
 
         if (classProperties && typeof classProperties == 'object') {
@@ -635,9 +595,6 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
                     classProperties[propName]
                 );
             }
-        }
-        if (staticProperties && typeof staticProperties == 'object') {
-            this.setStaticProperties(staticProperties);
         }
         if (parentClassName && typeof parentClassName == 'string') {
             this.setClassParent(parentClassName);

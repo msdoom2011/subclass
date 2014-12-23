@@ -73,12 +73,6 @@ Subclass.ClassManager.ClassTypes.Interface = (function()
         return function Interface(){};
     };
 
-
-    /**
-     * @inheritDoc
-     */
-    Interface.prototype.attachStaticProperties = function() {};
-
     /**
      * @inheritDoc
      */

@@ -8,7 +8,7 @@ window.Subclass = (function()
          * @param {Object} [configs]
          * @returns {ClassManager}
          */
-        newApp: function(configs)
+        create: function(configs)
         {
             return Subclass.ClassManager.create(configs);
         }

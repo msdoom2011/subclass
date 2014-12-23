@@ -1,4 +1,4 @@
-var classManager = Subclass.newApp({
+var classManager = Subclass.create({
     rootPath: "",
     propertyTypes: {
         percents: {

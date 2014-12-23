@@ -26,7 +26,7 @@ module.exports = function(grunt) {
                 '(function() {\n' +
                 '"use strict";\n\n',
 
-            suffix: '})();'
+            suffix: '\n})();'
         },
 
         config: grunt.file.readJSON('package.config.json'),

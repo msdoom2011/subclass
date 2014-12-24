@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Class = (function()
 {
     /*************************************************/
@@ -34,6 +38,22 @@ Subclass.PropertyManager.PropertyTypes.Class = (function()
     /**
      * @inheritDoc
      */
+    ClassType.isAllowedValue = function(value)
+    {
+        return typeof value == 'string';
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ClassType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.ClassDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ClassType.prototype.validate = function(value)
     {
         var propertyDefinition = this.getPropertyDefinition();
@@ -46,12 +66,12 @@ Subclass.PropertyManager.PropertyTypes.Class = (function()
                 && typeof value == 'object'
                 && (
                     !value.$_className
-                    || !value.isInstanceOf(propertyDefinition.className)
+                    || !value.isInstanceOf(propertyDefinition.getClassName())
                 )
             )
         ) {
             var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be an instance of class ' +
-                '"' + propertyDefinition.className + '" or null' +
+                '"' + propertyDefinition.getClassName() + '" or null' +
                 (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : '') + '. ';
 
             if (typeof value == 'object' && value.$_className) {
@@ -66,48 +86,48 @@ Subclass.PropertyManager.PropertyTypes.Class = (function()
             throw new Error(message);
         }
     };
-
-    /**
-     * @inheritDoc
-     */
-    ClassType.prototype.getBasePropertyDefinition = function()
-    {
-        var basePropertyDefinition = ClassType.$parent.prototype.getBasePropertyDefinition.call(this);
-
-        /**
-         * Allows to specify name of class which value must implement.
-         *
-         * @type {(String|null)}
-         */
-        basePropertyDefinition.className = null;
-
-        return basePropertyDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ClassType.prototype.validatePropertyDefinition = function()
-    {
-        var propertyDefinition = this.getPropertyDefinition();
-
-        if (!propertyDefinition.className) {
-            throw new Error('Missed "className" parameter in definition ' +
-                'of class property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-        }
-
-        var contextClass = this.getContextClass();
-        var classManager = this.getPropertyManager().getClassManager();
-
-        if (!classManager.issetClass(propertyDefinition.className)) {
-            throw new Error('Specified non existent class in "className" parameter in definition ' +
-                'of property "' + this.getPropertyNameFull() + '" ' +
-                (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
-        }
-
-        ClassType.$parent.prototype.validatePropertyDefinition.call(this);
-    };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //ClassType.prototype.getBasePropertyDefinition = function()
+    //{
+    //    var basePropertyDefinition = ClassType.$parent.prototype.getBasePropertyDefinition.call(this);
+    //
+    //    /**
+    //     * Allows to specify name of class which value must implement.
+    //     *
+    //     * @type {(String|null)}
+    //     */
+    //    basePropertyDefinition.className = null;
+    //
+    //    return basePropertyDefinition;
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //ClassType.prototype.validatePropertyDefinition = function()
+    //{
+    //    var propertyDefinition = this.getPropertyDefinition();
+    //
+    //    if (!propertyDefinition.getClassName()) {
+    //        throw new Error('Missed "className" parameter in definition ' +
+    //            'of class property "' + this.getPropertyNameFull() + '"' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+    //    }
+    //
+    //    var contextClass = this.getContextClass();
+    //    var classManager = this.getPropertyManager().getClassManager();
+    //
+    //    if (!classManager.issetClass(propertyDefinition.getClassName())) {
+    //        throw new Error('Specified non existent class in "className" parameter in definition ' +
+    //            'of property "' + this.getPropertyNameFull() + '" ' +
+    //            (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
+    //    }
+    //
+    //    ClassType.$parent.prototype.validatePropertyDefinition.call(this);
+    //};
 
     /*************************************************/
     /*        Registering new property type          */

@@ -183,7 +183,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
     {
         var propertyDefinition = this.getPropertyDefinition();
 
-        if (propertyDefinition.writable) {
+        if (propertyDefinition.isWritable()) {
             var propertyNameHashed = this.getPropertyNameHashed();
             var childrenContext = context[propertyNameHashed];
             var children = this.getChildren();
@@ -279,6 +279,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
     {
         MapType.$parent.prototype.processPropertyDefinition.call(this);
 
+        var propertyDefinition = this.getPropertyDefinition();
         var schema = this.getSchema();
 
         if (
@@ -293,7 +294,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
                 if (!schema.hasOwnProperty(propName)) {
                     continue;
                 }
-                if (!this.isWritable()) {
+                if (!propertyDefinition.isWritable()) {
                     schema[propName].writable = false;
                 }
                 this.addChild(propName, schema[propName]);

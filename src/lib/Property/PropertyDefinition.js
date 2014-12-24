@@ -186,9 +186,9 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      *
      * @param {(boolean|null)} isWritable
      */
-    PropertyDefinition.prototype.seWritable = function(isWritable)
+    PropertyDefinition.prototype.setWritable = function(isWritable)
     {
-        this.validateIsWritable(isWritable);
+        this.validateWritable(isWritable);
         this.getDefinition().writable = isWritable;
     };
 

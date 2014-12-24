@@ -117,7 +117,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
                 if (!defaultValue.hasOwnProperty(propName)) {
                     continue;
                 }
-                if (!this.isWritable()) {
+                if (!this.getPropertyDefinition().isWritable()) {
                     proto.writable = false;
                 }
                 collection.addItem(defaultValue[propName]);

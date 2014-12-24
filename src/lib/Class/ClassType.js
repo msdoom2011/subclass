@@ -628,7 +628,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
             }
             var property = classProperties[propertyName];
 
-            if (!property.isUseAccessors()) {
+            if (!property.getPropertyDefinition().isAccessors()) {
                 continue;
             }
             var accessors = {

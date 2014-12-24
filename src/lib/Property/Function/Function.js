@@ -34,6 +34,22 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
     /**
      * @inheritDoc
      */
+    BooleanType.isAllowedValue = function(value)
+    {
+        return typeof value == 'function';
+    };
+
+    /**
+     * @inheritDoc
+     */
+    BooleanType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.FunctionDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     FunctionType.prototype.validate = function(value)
     {
         if (value !== null && typeof value != 'function') {

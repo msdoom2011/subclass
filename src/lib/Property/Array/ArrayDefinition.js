@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+ */
 Subclass.PropertyManager.PropertyTypes.ArrayDefinition = (function()
 {
     /**

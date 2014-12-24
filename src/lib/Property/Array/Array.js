@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Array = (function()
 {
     /*************************************************/
@@ -8,7 +12,6 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
      * @param {PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
-     * @extends {PropertyType}
      * @constructor
      */
     function ArrayType(propertyManager, propertyName, propertyDefinition)
@@ -31,9 +34,12 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
         return "array";
     };
 
+    /**
+     * @inheritDoc
+     */
     ArrayType.isAllowedValue = function(value)
     {
-        return value === null || !Array.isArray(value);
+        return Array.isArray(value);
     };
 
     /**
@@ -47,9 +53,22 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
     /**
      * @inheritDoc
      */
+    ArrayType.prototype.isEmpty = function(context)
+    {
+        var isNullable = this.getPropertyDefinition().isNullable();
+        var value = this.getValue(context);
+
+        return (isNullable && value === null) || (!isNullable && value.length === 0);
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayType.prototype.validate = function(value)
     {
-        if (!ArrayType.isAllowedValue(value)) {
+        var isNullable = this.getPropertyDefinition().isNullable();
+
+        if ((value === null && !isNullable) || !ArrayType.isAllowedValue(value)) {
             var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be an array' +
                 (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : '') + '. ';
 
@@ -64,14 +83,6 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
             }
             throw new Error(message);
         }
-    };
-
-    ArrayType.prototype.isEmpty = function(context)
-    {
-        var isNullable = this.getPropertyDefinition().isNullable();
-        var value = this.getValue(context);
-
-        return (isNullable && value === null) || (!isNullable && value.length === 0);
     };
 
     /*************************************************/

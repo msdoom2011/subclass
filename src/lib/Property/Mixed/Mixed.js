@@ -33,6 +33,22 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
     };
 
     /**
+     * @inheritDoc
+     */
+    BooleanType.isAllowedValue = function(value)
+    {
+        return typeof value == 'boolean';
+    };
+
+    /**
+     * @inheritDoc
+     */
+    BooleanType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.BooleanDefinition;
+    };
+
+    /**
      * Returns definitions of all allowed value types
      *
      * @returns {Object[]}
@@ -68,6 +84,11 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
         return this._allowedTypes;
     };
 
+    /**
+     * Adds new allowed type that property can holds
+     *
+     * @param typeDefinition
+     */
     MixedType.prototype.addAllowedType = function(typeDefinition)
     {
         this._allowedTypes.push(this.getPropertyManager().createProperty(
@@ -120,73 +141,73 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
             throw new Error(message);
         }
     };
-
-    /**
-     * @inheritDoc
-     */
-    MixedType.prototype.getBasePropertyDefinition = function()
-    {
-        var basePropertyDefinition = MixedType.$parent.prototype.getBasePropertyDefinition.call(this);
-
-        /**
-         * Allows to specify allowed types of property value.
-         * Every value in array must be property definition of needed type
-         *
-         * @type {Object[]}
-         */
-        basePropertyDefinition.allows = null;
-
-        return basePropertyDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    MixedType.prototype.processPropertyDefinition = function()
-    {
-        MixedType.$parent.prototype.processPropertyDefinition.call(this);
-
-        var allows = this.getAllows();
-
-        if (allows && Array.isArray(allows)) {
-            for (var i = 0; i < allows.length; i++) {
-                if (!Subclass.Tools.isPlainObject(allows[i])) {
-                    continue;
-                }
-                this.addAllowedType(allows[i]);
-            }
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    MixedType.prototype.validatePropertyDefinition = function()
-    {
-        var allows = this.getAllows();
-
-        if (!allows) {
-            throw new Error('Missed "allows" parameter in definition ' +
-                'of mixed type property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-        }
-        if (!Array.isArray(allows) || !allows.length) {
-            throw new Error('Specified not valid "allows" parameter in definition ' +
-                'of property "' + this.getPropertyNameFull() + '" ' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-                'It must be a not empty array with definitions of needed property types.');
-        }
-        for (var i = 0; i < allows.length; i++) {
-            if (!Subclass.Tools.isPlainObject(allows[i])) {
-                throw new Error('Specified not valid values in "allows" parameter in definition ' +
-                    'of property "' + this.getPropertyNameFull() + '" ' +
-                    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-                    'It must property definitions.');
-            }
-        }
-
-        MixedType.$parent.prototype.validatePropertyDefinition.call(this);
-    };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //MixedType.prototype.getBasePropertyDefinition = function()
+    //{
+    //    var basePropertyDefinition = MixedType.$parent.prototype.getBasePropertyDefinition.call(this);
+    //
+    //    /**
+    //     * Allows to specify allowed types of property value.
+    //     * Every value in array must be property definition of needed type
+    //     *
+    //     * @type {Object[]}
+    //     */
+    //    basePropertyDefinition.allows = null;
+    //
+    //    return basePropertyDefinition;
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //MixedType.prototype.processPropertyDefinition = function()
+    //{
+    //    MixedType.$parent.prototype.processPropertyDefinition.call(this);
+    //
+    //    var allows = this.getAllows();
+    //
+    //    if (allows && Array.isArray(allows)) {
+    //        for (var i = 0; i < allows.length; i++) {
+    //            if (!Subclass.Tools.isPlainObject(allows[i])) {
+    //                continue;
+    //            }
+    //            this.addAllowedType(allows[i]);
+    //        }
+    //    }
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //MixedType.prototype.validatePropertyDefinition = function()
+    //{
+    //    var allows = this.getAllows();
+    //
+    //    if (!allows) {
+    //        throw new Error('Missed "allows" parameter in definition ' +
+    //            'of mixed type property "' + this.getPropertyNameFull() + '"' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+    //    }
+    //    if (!Array.isArray(allows) || !allows.length) {
+    //        throw new Error('Specified not valid "allows" parameter in definition ' +
+    //            'of property "' + this.getPropertyNameFull() + '" ' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+    //            'It must be a not empty array with definitions of needed property types.');
+    //    }
+    //    for (var i = 0; i < allows.length; i++) {
+    //        if (!Subclass.Tools.isPlainObject(allows[i])) {
+    //            throw new Error('Specified not valid values in "allows" parameter in definition ' +
+    //                'of property "' + this.getPropertyNameFull() + '" ' +
+    //                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+    //                'It must property definitions.');
+    //        }
+    //    }
+    //
+    //    MixedType.$parent.prototype.validatePropertyDefinition.call(this);
+    //};
 
 
     /*************************************************/

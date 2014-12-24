@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Enum = (function()
 {
     /*************************************************/
@@ -32,21 +36,45 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
     };
 
     /**
-     * Returns allowed property values
-     *
-     * @returns {*[]}
+     * @inheritDoc
      */
-    EnumType.prototype.getAllows = function()
+    EnumType.isAllowedValue = function(value)
     {
-        return this.getPropertyDefinition().allows;
+        return ['boolean', 'string', 'number'].indexOf(typeof value) >= 0;
     };
+
+    /**
+     * @inheritDoc
+     */
+    EnumType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.EnumDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    EnumType.prototype.isEmpty = function(context)
+    {
+        return false;
+    };
+
+    ///**
+    // * Returns allowed property values
+    // *
+    // * @returns {*[]}
+    // */
+    //EnumType.prototype.getAllows = function()
+    //{
+    //    return this.getPropertyDefinition().allows;
+    //};
 
     /**
      * @inheritDoc
      */
     EnumType.prototype.validate = function(value)
     {
-        var allows = this.getAllows();
+        var allows = this.getPropertyDefinition().getAllows();
 
         if (allows.indexOf(value) < 0) {
             var message = 'The value of the property "' + this.getPropertyNameFull() + '" is not valid ' +
@@ -69,73 +97,73 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
         }
     };
 
-    /**
-     * @inheritDoc
-     */
-    EnumType.prototype.getBasePropertyDefinition = function()
-    {
-        var basePropertyDefinition = EnumType.$parent.prototype.getBasePropertyDefinition.call(this);
-
-        /**
-         * Allows to specify allowed property values.
-         * Every value in array must be one of the types: "number", "string", "boolean"
-         *
-         * @type {string[]}
-         */
-        basePropertyDefinition.allows = null;
-
-        return basePropertyDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    EnumType.prototype.processPropertyDefinition = function()
-    {
-        EnumType.$parent.prototype.processPropertyDefinition.call(this);
-
-        var propertyDefinition = this.getPropertyDefinition();
-        var defaultValue = this.getDefaultValue();
-        var allows = this.getAllows();
-
-        if (
-            !defaultValue === null
-            && allows
-            && Array.isArray(allows)
-        ) {
-            propertyDefinition.value = allows[0];
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    EnumType.prototype.validatePropertyDefinition = function()
-    {
-        var allows = this.getAllows();
-
-        if (!allows) {
-            throw new Error('Missed "allows" parameter in definition ' +
-                'of enum property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-        }
-        if (!Array.isArray(allows) || !allows.length) {
-            throw new Error('Specified not valid "allows" parameter in definition ' +
-                'of property "' + this.getPropertyNameFull() + '" ' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-                'It must be a not empty array with items of a certain types: "string", "number", "boolean".');
-        }
-        for (var i = 0; i < allows.length; i++) {
-            if (['string', 'number', 'boolean'].indexOf(typeof allows[i]) < 0) {
-                throw new Error('Specified not valid values in "allows" parameter in definition ' +
-                    'of property "' + this.getPropertyNameFull() + '" ' +
-                    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-                    'Allowed types are: "string", "number", "boolean".');
-            }
-        }
-
-        EnumType.$parent.prototype.validatePropertyDefinition.call(this);
-    };
+    ///**
+    // * @inheritDoc
+    // */
+    //EnumType.prototype.getBasePropertyDefinition = function()
+    //{
+    //    var basePropertyDefinition = EnumType.$parent.prototype.getBasePropertyDefinition.call(this);
+    //
+    //    /**
+    //     * Allows to specify allowed property values.
+    //     * Every value in array must be one of the types: "number", "string", "boolean"
+    //     *
+    //     * @type {string[]}
+    //     */
+    //    basePropertyDefinition.allows = null;
+    //
+    //    return basePropertyDefinition;
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //EnumType.prototype.processPropertyDefinition = function()
+    //{
+    //    EnumType.$parent.prototype.processPropertyDefinition.call(this);
+    //
+    //    var propertyDefinition = this.getPropertyDefinition();
+    //    var defaultValue = this.getDefaultValue();
+    //    var allows = this.getAllows();
+    //
+    //    if (
+    //        !defaultValue === null
+    //        && allows
+    //        && Array.isArray(allows)
+    //    ) {
+    //        propertyDefinition.value = allows[0];
+    //    }
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //EnumType.prototype.validatePropertyDefinition = function()
+    //{
+    //    var allows = this.getAllows();
+    //
+    //    if (!allows) {
+    //        throw new Error('Missed "allows" parameter in definition ' +
+    //            'of enum property "' + this.getPropertyNameFull() + '"' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+    //    }
+    //    if (!Array.isArray(allows) || !allows.length) {
+    //        throw new Error('Specified not valid "allows" parameter in definition ' +
+    //            'of property "' + this.getPropertyNameFull() + '" ' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+    //            'It must be a not empty array with items of a certain types: "string", "number", "boolean".');
+    //    }
+    //    for (var i = 0; i < allows.length; i++) {
+    //        if (['string', 'number', 'boolean'].indexOf(typeof allows[i]) < 0) {
+    //            throw new Error('Specified not valid values in "allows" parameter in definition ' +
+    //                'of property "' + this.getPropertyNameFull() + '" ' +
+    //                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+    //                'Allowed types are: "string", "number", "boolean".');
+    //        }
+    //    }
+    //
+    //    EnumType.$parent.prototype.validatePropertyDefinition.call(this);
+    //};
 
 
     /*************************************************/

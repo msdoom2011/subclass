@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Boolean = (function()
 {
     /*************************************************/
@@ -8,7 +12,7 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
      * @param {PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
-     * @extends {PropertyType}
+     * @alias Subclass.PropertyManager.PropertyTypes.Boolean
      * @constructor
      */
     function BooleanType(propertyManager, propertyName, propertyDefinition)
@@ -34,9 +38,27 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
     /**
      * @inheritDoc
      */
+    BooleanType.isAllowedValue = function(value)
+    {
+        return typeof value == 'boolean';
+    };
+
+    /**
+     * @inheritDoc
+     */
+    BooleanType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.BooleanDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     BooleanType.prototype.validate = function(value)
     {
-        if (typeof value != 'boolean') {
+        var isNullable = this.getPropertyDefinition().isNullable();
+
+        if ((value === null && !isNullable) || !BooleanType.isAllowedValue(value)) {
             var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a boolean' +
                 (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : '') + '. ';
 
@@ -55,18 +77,18 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
             throw new Error(message);
         }
     };
-
-    /**
-     * @inheritDoc
-     */
-    BooleanType.prototype.getBasePropertyDefinition = function()
-    {
-        var basePropertyDefinition = BooleanType.$parent.prototype.getBasePropertyDefinition.call(this);
-
-        basePropertyDefinition.value = false;
-
-        return basePropertyDefinition;
-    };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //BooleanType.prototype.getBasePropertyDefinition = function()
+    //{
+    //    var basePropertyDefinition = BooleanType.$parent.prototype.getBasePropertyDefinition.call(this);
+    //
+    //    basePropertyDefinition.value = false;
+    //
+    //    return basePropertyDefinition;
+    //};
 
 
     /*************************************************/

@@ -39,9 +39,17 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
     /**
      * @inheritDoc
      */
+    ArrayType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.ArrayDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayType.prototype.validate = function(value)
     {
-        if (value !== null && !Array.isArray(value)) {
+        if (!ArrayType.isAllowedValue(value)) {
             var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be an array' +
                 (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : '') + '. ';
 
@@ -58,6 +66,13 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
         }
     };
 
+    ArrayType.prototype.isEmpty = function(context)
+    {
+        var isNullable = this.getPropertyDefinition().isNullable();
+        var value = this.getValue(context);
+
+        return (isNullable && value === null) || (!isNullable && value.length === 0);
+    };
 
     /*************************************************/
     /*        Registering new property type          */

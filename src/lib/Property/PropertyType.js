@@ -25,20 +25,20 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         this._propertyManager = propertyManager;
 
         /**
-         * An instance of class which presents public api of current property
-         *
-         * @type {(PropertyAPI|null)}
-         * @private
-         */
-        this._propertyAPI = null;
-
-        /**
          * A definition of current property
          *
          * @type {PropertyDefinition}
          * @private
          */
         this._propertyDefinition = this.createPropertyDefinition(propertyDefinition);
+
+        /**
+         * An instance of class which presents public api of current property
+         *
+         * @type {(PropertyAPI|null)}
+         * @private
+         */
+        this._propertyAPI = null;
 
         /**
          * An instance of class which current property belongs to
@@ -125,11 +125,13 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
      */
     PropertyType.prototype.initialize = function()
     {
+        var propertyDefinition = this.getPropertyDefinition();
+
         if (this.getContextProperty()) {
-            this.setUseAccessors(false);
+            propertyDefinition.setAccessors(false);
         }
-        this.processPropertyDefinition();
-        this.validatePropertyDefinition();
+        propertyDefinition.processDefinition();
+        propertyDefinition.validateDefinition();
     };
 
     /**
@@ -143,6 +145,70 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     };
 
     /**
+     * Returns name of the chain of properties which current property belongs to.
+     *
+     * @returns {string}
+     */
+    PropertyType.prototype.getContextProperty = function()
+    {
+        return this._contextProperty;
+    };
+
+    /**
+     * Returns property clear name
+     *
+     * @returns {string}
+     */
+    PropertyType.prototype.getPropertyName = function()
+    {
+        return this._propertyName;
+    };
+
+    /**
+     * Returns property name with names of context property
+     *
+     * @returns {string}
+     */
+    PropertyType.prototype.getPropertyNameFull = function()
+    {
+        var propertyName = this.getPropertyName();
+        var contextProperty = this.getContextProperty();
+        var contextPropertyName = "";
+
+        if (contextProperty) {
+            contextPropertyName = contextProperty.getPropertyNameFull();
+        }
+
+        return (contextPropertyName && contextPropertyName + "." || "") + propertyName;
+    };
+
+    /**
+     * Returns property hashed name
+     *
+     * @returns {*}
+     */
+    PropertyType.prototype.getPropertyNameHashed = function()
+    {
+        var propertyNameHash = this.getPropertyManager().getPropertyNameHash();
+        var propertyName = this.getPropertyName();
+
+        if (propertyName.indexOf(propertyNameHash) >= 0) {
+            return propertyName;
+        }
+        return "_" + propertyName + "_" + propertyNameHash;
+    };
+
+    /**
+     * Returns property definition constructor
+     *
+     * @returns {Function}
+     */
+    PropertyType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+    };
+
+    /**
      * Creates and returns property definition instance.
      *
      * @param {Object} [propertyDefinition]
@@ -150,10 +216,47 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
      */
     PropertyType.prototype.createPropertyDefinition = function(propertyDefinition)
     {
-        return new Subclass.PropertyManager.PropertyTypes.PropertyManager(
-            this,
-            propertyDefinition
-        );
+        var construct = null;
+        var createInstance = true;
+
+        if (!arguments[1]) {
+            construct = this.getPropertyDefinitionClass();
+        } else {
+            construct = arguments[1];
+        }
+        if (arguments[2] === false) {
+            createInstance = false;
+        }
+
+        if (construct.$parent) {
+            var parentConstruct = this.createPropertyDefinition(
+                propertyDefinition,
+                construct.$parent,
+                false
+            );
+
+            var constructProto = Object.create(parentConstruct.prototype);
+
+            constructProto = Subclass.Tools.extend(
+                constructProto,
+                construct.prototype
+            );
+
+            construct.prototype = constructProto;
+            construct.prototype.constructor = construct;
+        }
+
+        if (createInstance) {
+            var inst = new construct(this, propertyDefinition);
+
+            if (!(inst instanceof Subclass.PropertyManager.PropertyTypes.PropertyDefinition)) {
+                throw new Error('Property definition class must be instance of ' +
+                    '"Subclass.PropertyManager.PropertyTypes.PropertyDefinition" class.');
+            }
+            return inst;
+        }
+
+        return construct;
     };
 
     /**
@@ -181,58 +284,58 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         return this._propertyAPI;
     };
 
-    /**
-     * Set option will accessor methods be generated or not
-     *
-     * @param {boolean} isUseAccessors
-     */
-    PropertyType.prototype.setUseAccessors = function(isUseAccessors)
-    {
-        if (typeof isUseAccessors != 'boolean') {
-            throw new Error('Argument "isUseAccessors" must be a boolean value.');
-        }
-        this.getPropertyDefinition().accessors = isUseAccessors;
-        this._useAccessors = isUseAccessors;
-    };
-
-    /**
-     * Checks is will accessor methods be generated or not
-     *
-     * @returns {boolean}
-     */
-    PropertyType.prototype.isUseAccessors = function()
-    {
-        var propertyUseAccessors = this.getPropertyDefinition().accessors;
-
-        return propertyUseAccessors === null
-            ? this._useAccessors
-            : propertyUseAccessors
-        ;
-    };
-
-    /**
-     * Defines if current property can stores null value
-     *
-     * @param {boolean} isNullable
-     */
-    PropertyType.prototype.setIsNullable = function(isNullable)
-    {
-        if (typeof isNullable != 'boolean') {
-            throw new Error('Invalid value of argument "isNullable" in method "setIsNullable" in class "PropertyType". ' +
-                'It must be a boolean.');
-        }
-        this._isNullable = isNullable;
-    };
-
-    /**
-     * Checks if current property can stores null value
-     *
-     * @returns {boolean}
-     */
-    PropertyType.prototype.isNullable = function()
-    {
-        return this._isNullable;
-    };
+    ///**
+    // * Set option will accessor methods be generated or not
+    // *
+    // * @param {boolean} isUseAccessors
+    // */
+    //PropertyType.prototype.setUseAccessors = function(isUseAccessors)
+    //{
+    //    if (typeof isUseAccessors != 'boolean') {
+    //        throw new Error('Argument "isUseAccessors" must be a boolean value.');
+    //    }
+    //    this.getPropertyDefinition().accessors = isUseAccessors;
+    //    this._useAccessors = isUseAccessors;
+    //};
+    //
+    ///**
+    // * Checks is will accessor methods be generated or not
+    // *
+    // * @returns {boolean}
+    // */
+    //PropertyType.prototype.isUseAccessors = function()
+    //{
+    //    var propertyUseAccessors = this.getPropertyDefinition().accessors;
+    //
+    //    return propertyUseAccessors === null
+    //        ? this._useAccessors
+    //        : propertyUseAccessors
+    //    ;
+    //};
+    //
+    ///**
+    // * Defines if current property can stores null value
+    // *
+    // * @param {boolean} isNullable
+    // */
+    //PropertyType.prototype.setIsNullable = function(isNullable)
+    //{
+    //    if (typeof isNullable != 'boolean') {
+    //        throw new Error('Invalid value of argument "isNullable" in method "setIsNullable" in class "PropertyType". ' +
+    //            'It must be a boolean.');
+    //    }
+    //    this._isNullable = isNullable;
+    //};
+    //
+    ///**
+    // * Checks if current property can stores null value
+    // *
+    // * @returns {boolean}
+    // */
+    //PropertyType.prototype.isNullable = function()
+    //{
+    //    return this._isNullable;
+    //};
 
     /**
      * Setup marker if current property value was ever modified
@@ -334,70 +437,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     };
 
     /**
-     * Returns name of the chain of properties which current property belongs to.
-     *
-     * @returns {string}
-     */
-    PropertyType.prototype.getContextProperty = function()
-    {
-        return this._contextProperty;
-    };
-
-    /**
-     * Returns property definition
-     *
-     * @returns {Object}
-     */
-    PropertyType.prototype.getPropertyDefinition = function()
-    {
-        return this._propertyDefinition;
-    };
-
-    /**
-     * Returns property clear name
-     *
-     * @returns {string}
-     */
-    PropertyType.prototype.getPropertyName = function()
-    {
-        return this._propertyName;
-    };
-
-    /**
-     * Returns property name with names of context property
-     *
-     * @returns {string}
-     */
-    PropertyType.prototype.getPropertyNameFull = function()
-    {
-        var propertyName = this.getPropertyName();
-        var contextProperty = this.getContextProperty();
-        var contextPropertyName = "";
-
-        if (contextProperty) {
-            contextPropertyName = contextProperty.getPropertyNameFull();
-        }
-
-        return (contextPropertyName && contextPropertyName + "." || "") + propertyName;
-    };
-
-    /**
-     * Returns property hashed name
-     *
-     * @returns {*}
-     */
-    PropertyType.prototype.getPropertyNameHashed = function()
-    {
-        var propertyNameHash = this.getPropertyManager().getPropertyNameHash();
-        var propertyName = this.getPropertyName();
-
-        if (propertyName.indexOf(propertyNameHash) >= 0) {
-            return propertyName;
-        }
-        return "_" + propertyName + "_" + propertyNameHash;
-    };
-
-    /**
      * Returns all registered watchers
      *
      * @returns {Function[]}
@@ -464,7 +503,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     };
 
     /**
-     * Invokes all registerd watcher functions
+     * Invokes all registered watcher functions
      *
      * @param {Object} context
      * @param {*} newValue
@@ -485,7 +524,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
 
         return newValue;
     };
-    //
+
     ///**
     // * Returns property type
     // *
@@ -530,6 +569,43 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     //};
 
     /**
+     * Returns value of current property
+     *
+     * @param {Object} context An object which current property belongs to.
+     */
+    PropertyType.prototype.getValue = function(context)
+    {
+        if (this.getPropertyDefinition().isAccessors()) {
+            var getterName = Subclass.Tools.generateGetterName(this.getPropertyName());
+            return context[getterName]();
+        }
+        var propName = this.getPropertyName();
+        return context[propName];
+    };
+
+    /**
+     * Sets property value
+     *
+     * @param {Object} context
+     * @param {*} value
+     * @returns {*}
+     */
+    PropertyType.prototype.setValue = function(context, value)
+    {
+        if (!this.getPropertyDefinition().isWritable()) {
+            console.warn('Trying to change not writable property "' + this.getPropertyNameFull() + '"' +
+                (this.getContextClass() && ' in class "' + this.getContextClass() + '"' || "") + ".");
+            return;
+        }
+        if (this.getPropertyDefinition().isAccessors()) {
+            var setterName = Subclass.Tools.generateSetterName(this.getPropertyName());
+            return context[setterName](value);
+        }
+        var propName = this.getPropertyName();
+        context[propName] = value;
+    };
+
+    /**
      * Generates property getter function
      *
      * @returns {Function}
@@ -540,10 +616,10 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         var propName = this.getPropertyName();
 
         if (
-            this.isUseAccessors()
+            this.getPropertyDefinition().isAccessors()
             || (
-                !this.isUseAccessors()
-                && this.isWritable()
+                !this.getPropertyDefinition().isAccessors()
+                && this.getPropertyDefinition().isWritable()
             )
         ) {
             return function () {
@@ -567,7 +643,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         var hashedPropName = this.getPropertyNameHashed();
         var $this = this;
 
-        if (!this.isWritable()) {
+        if (!this.getPropertyDefinition().isWritable()) {
             return function(value) {
                 throw new Error('Property "' + $this.getPropertyNameFull() + '" is not writable' +
                 ($this.getContextClass() && ' in class "' + $this.getContextClass().getClassName() + '"') + '.');
@@ -583,43 +659,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     };
 
     /**
-     * Returns value of current property
-     *
-     * @param {Object} context An object which current property belongs to.
-     */
-    PropertyType.prototype.getValue = function(context)
-    {
-        if (this.isUseAccessors()) {
-            var getterName = Subclass.Tools.generateGetterName(this.getPropertyName());
-            return context[getterName]();
-        }
-        var propName = this.getPropertyName();
-        return context[propName];
-    };
-
-    /**
-     * Sets property value
-     *
-     * @param {Object} context
-     * @param {*} value
-     * @returns {*}
-     */
-    PropertyType.prototype.setValue = function(context, value)
-    {
-        if (!this.isWritable()) {
-            console.warn('Trying to change not writable property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() && ' in class "' + this.getContextClass() + '"' || "") + ".");
-            return;
-        }
-        if (this.isUseAccessors()) {
-            var setterName = Subclass.Tools.generateSetterName(this.getPropertyName());
-            return context[setterName](value);
-        }
-        var propName = this.getPropertyName();
-        context[propName] = value;
-    };
-
-    /**
      * Attaches property to specified context
      *
      * @param {Object} context
@@ -631,18 +670,18 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         }
         var propName = this.getPropertyName();
 
-        if (this.isUseAccessors()) {
+        if (this.getPropertyDefinition().isAccessors()) {
             var getterName = Subclass.Tools.generateGetterName(propName);
 
             context[getterName] = this.generateGetter();
 
-            if (this.isWritable()) {
+            if (this.getPropertyDefinition().isWritable()) {
                 var setterName = Subclass.Tools.generateSetterName(propName);
 
                 context[setterName] = this.generateSetter();
             }
 
-        } else if (this.isWritable()) {
+        } else if (this.getPropertyDefinition().isWritable()) {
             Object.defineProperty(context, propName, {
                 configurable: true,
                 enumerable: true,
@@ -676,7 +715,10 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         var hashedPropName = this.getPropertyNameHashed();
         var defaultValue = this.getDefaultValue();
 
-        if (this.isWritable() && !this.isUseAccessors()) {
+        if (
+            this.getPropertyDefinition().isWritable()
+            && !this.getPropertyDefinition().isAccessors()
+        ) {
             Object.defineProperty(context, hashedPropName, {
                 configurable: true,
                 enumerable: true,
@@ -684,11 +726,11 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 value: defaultValue
             });
 
-        } else if (this.isUseAccessors()) {
+        } else if (this.getPropertyDefinition().isAccessors()) {
             Object.defineProperty(context, hashedPropName, {
                 configurable: true,
                 enumerable: true,
-                writable: this.isWritable(),
+                writable: this.getPropertyDefinition().isWritable(),
                 value: defaultValue
             });
         }
@@ -722,6 +764,18 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     PropertyType.prototype.validate = function(value)
     {
         // Do needed validations
+    };
+
+    /**
+     * Checks if property contains empty value
+     *
+     * @returns {boolean}
+     */
+    PropertyType.prototype.isEmpty = function(context)
+    {
+        var value = this.getValue(context);
+
+        return value === null;
     };
 
     ///**

@@ -32,6 +32,7 @@
           "<%= config.lib.content.property.dir %>/PropertyManager.js",
           "<%= config.lib.content.property.dir %>/CustomTypesManager.js",
           "<%= config.lib.content.property.dir %>/PropertyType.js",
+          "<%= config.lib.content.property.dir %>/PropertyDefinition.js",
           "<%= config.lib.content.property.dir %>/PropertyAPI.js",
           "<%= config.lib.content.property.dir %>/Collections/CollectionType.js",
           "<%= config.lib.content.property.dir %>/Collections/*.js",

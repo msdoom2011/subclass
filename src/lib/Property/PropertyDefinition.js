@@ -11,7 +11,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
             throw new Error('Invalid argument "propertyDefinition" in constructor of "PropertyDefinition" class.' +
                 'It must be a plain object');
         }
-
         /**
          * @type {PropertyType}
          * @private
@@ -55,6 +54,16 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
     PropertyDefinition.prototype.getType = function()
     {
         return this.getDefinition().type;
+    };
+
+    /**
+     * Returns empty property value
+     *
+     * @return {(null|*)}
+     */
+    PropertyDefinition.prototype.getEmptyValue = function()
+    {
+        return null;
     };
 
     /**
@@ -292,8 +301,13 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
     {
         var baseDefinition = this.getBaseDefinition();
         var definition = this.getDefinition();
+        var value = definition.value;
 
         this._definition = Subclass.Tools.extend(baseDefinition, definition);
+
+        if (value === undefined) {
+            this.setValue(this.getEmptyValue());
+        }
     };
 
     /**

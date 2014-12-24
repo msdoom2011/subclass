@@ -69,6 +69,16 @@ Subclass.PropertyManager.PropertyTypes.PropertyAPI = (function()
     };
 
     /**
+     * Checks if property is empty
+     *
+     * @returns {boolean}
+     */
+    PropertyAPI.prototype.isEmpty = function()
+    {
+        return this._property.isEmpty(this._context);
+    };
+
+    /**
      * Checks if property value was ever changed
      *
      * @returns {boolean}

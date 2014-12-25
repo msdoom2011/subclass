@@ -131,16 +131,12 @@ Subclass.PropertyManager.PropertyTypes.StringDefinition = (function()
     StringDefinition.prototype.validateMinMaxLengths = function()
     {
         var property = this.getProperty();
-        var propertyName = property.getPropertyNameFull();
-        var contextClass = property.getContextClass();
-
         var minLength = this.getMinLength();
         var maxLength = this.getMaxLength();
 
         if (minLength !== null && maxLength !== null && minLength > maxLength) {
             throw new Error('The "maxLength" attribute value must be more than "minLength" attribute value' +
-                ' in definition of property "' + propertyName + '" must be number or null' +
-                (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
+                ' in definition of property ' + property + ' must be number or null.');
         }
     };
 
@@ -171,57 +167,6 @@ Subclass.PropertyManager.PropertyTypes.StringDefinition = (function()
 
         return baseDefinition;
     };
-
-    ///**
-    // * @inheritDoc
-    // */
-    //StringDefinition.prototype.validateDefinition = function()
-    //{
-    //    //var minLength = this.getMinLength();
-    //    //var maxLength = this.getMaxLength();
-    //    //var pattern = this.getPattern();
-    //    //var message = "";
-    //    //
-    //    //if (pattern && pattern.constructor != RegExp) {
-    //    //    message = 'The "pattern" attribute in definition of property ' +
-    //    //    '"' + this.getPropertyNameFull() + '" must be instance of RegExp class or null' +
-    //    //    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-    //    //
-    //    //} else if (minLength !== null && typeof minLength != 'number') {
-    //    //    message = 'The "minLength" attribute in definition of property ' +
-    //    //    '"' + this.getPropertyNameFull() + '" must be number or null' +
-    //    //    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-    //    //
-    //    //} else if (maxLength !== null && typeof maxLength != 'number') {
-    //    //    message = 'The "maxLength" attribute in definition of property ' +
-    //    //    '"' + this.getPropertyNameFull() + '" must be number or null' +
-    //    //    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-    //    //}
-    //    //if (minLength !== null && maxLength !== null && minLength > maxLength) {
-    //    //    message = 'The "maxLength" attribute value must be more than "minLength" attribute value' +
-    //    //    ' in definition of property "' + this.getPropertyNameFull() + '" must be number or null' +
-    //    //    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-    //    //}
-    //    //
-    //    //if (message) {
-    //    //    if (typeof value == 'object' && pattern.$_className) {
-    //    //        message += 'Instance of class "' + pattern.$_className + '" was received instead.';
-    //    //
-    //    //    } else if (typeof value == 'object') {
-    //    //        message += 'Object with type "' + pattern.constructor.name + '" was received instead.';
-    //    //
-    //    //    } else {
-    //    //        message += 'Value with type "' + (typeof pattern) + '" was received instead.';
-    //    //    }
-    //    //
-    //    //    throw new Error(message);
-    //    //}
-    //    //
-    //
-    //    StringDefinition.$parent.prototype.validatePropertyDefinition.call(this);
-    //
-    //    this.validateMinMaxLengths();
-    //};
 
     return StringDefinition;
 

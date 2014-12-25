@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.CollectionType}
+ */
 Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
 {
     /*************************************************/
@@ -36,6 +40,22 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
+    ArrayCollectionType.isAllowedValue = function(value)
+    {
+        return Array.isArray(value);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ArrayCollectionType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.ArrayCollectionDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayCollectionType.prototype.getCollectionClass = function()
     {
         return Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection;
@@ -54,14 +74,14 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
             $this.setIsModified(true);
 
             if (value !== null) {
-                $this.setIsValueNull(false);
+                $this.setIsNull(false);
 
                 for (var i = 0; i < value.length; i++) {
                     this[hashedPropName].addItem(value[i]);
                 }
 
             } else {
-                $this.setIsValueNull(true);
+                $this.setIsNull(true);
                 $this._collection.removeItems();
             }
         };
@@ -73,15 +93,11 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
      */
     ArrayCollectionType.prototype.validate = function(value)
     {
-        if (
-            value !== null
-            && (
-                typeof value != 'object'
-                || !Array.isArray(value)
-            )
-        ) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be an array or null' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+        if (ArrayCollectionType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
+        if (!value || typeof value != 'object' || !Array.isArray(value)) {
+            var message = 'The value of the property ' + this + ' must be an array or null. ';
 
             if (typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';
@@ -93,53 +109,6 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
                 message += 'Value with type "' + (typeof value) + '" was received instead.';
             }
             throw new Error(message);
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ArrayCollectionType.prototype.processPropertyDefinition = function()
-    {
-        ArrayCollectionType.$parent.prototype.processPropertyDefinition.call(this);
-
-        var defaultValue = this.getDefaultValue();
-        var proto = this.getProto();
-
-        if (!proto) {
-            return false;
-        }
-
-        if (defaultValue && Array.isArray(defaultValue)) {
-            var collection = this.getCollection();
-
-            for (var propName in defaultValue) {
-                if (!defaultValue.hasOwnProperty(propName)) {
-                    continue;
-                }
-                if (!this.getPropertyDefinition().isWritable()) {
-                    proto.writable = false;
-                }
-                collection.addItem(defaultValue[propName]);
-            }
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ArrayCollectionType.prototype.validatePropertyDefinition = function()
-    {
-        ArrayCollectionType.$parent.prototype.validatePropertyDefinition.call(this);
-
-        var defaultValue = this.getDefaultValue();
-
-        if (
-            defaultValue !== null
-            && !Array.isArray(defaultValue)
-        ) {
-            throw new Error('Specified not valid default value for property "' + this.getPropertyName() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
         }
     };
 

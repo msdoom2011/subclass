@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.CollectionType.Collection}
+ */
 Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
 {
     /**
@@ -32,9 +36,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
         var $this = this;
 
         if (!Array.isArray(items)) {
-            throw new Error('Trying to set not array value ' +
-                'to property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+            throw new Error('Trying to set not array value to property ' + this.getProperty() + '.');
         }
 
         items.forEach(function(element, index) {
@@ -51,8 +53,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
     {
         if (typeof index != 'number') {
             throw new Error('Trying to set array element with not valid index "' + index + '" ' +
-                'in property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+                'in property ' + this.getProperty() + '.');
         }
         this.validate(value);
         this._items[index] = value;
@@ -65,9 +66,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
     ArrayCollection.prototype.setItems = function(items)
     {
         if (!Array.isArray(items)) {
-            throw new Error('Trying to set not array value ' +
-                'to property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+            throw new Error('Trying to set not array value to property ' + this.getProperty() + '.');
         }
         this._items = Object.create(Object.getPrototypeOf(this._items));
 
@@ -84,8 +83,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
     {
         if (!this.issetItem(index)) {
             throw new Error('Trying to get non existent array element with index "' + index + '" ' +
-                'in property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+                'in property ' + this.getProperty() + '.');
         }
         return this._items[index];
     };
@@ -113,8 +111,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
     {
         if (typeof index != 'number') {
             throw new Error('Trying to remove array element by not numeric index "' + index + '" ' +
-                'from property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+                'from property ' + this.getProperty() + '.');
         }
         this._items.splice(index, 1);
     };

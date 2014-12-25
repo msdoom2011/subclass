@@ -33,21 +33,21 @@ Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
     {
         if (!allows) {
             throw new Error('Missed "allows" parameter in definition ' +
-                'of enum property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+                'of enum property ' + this.getProperty() + ".");
         }
         if (!Array.isArray(allows) || !allows.length) {
             throw new Error('Specified not valid "allows" parameter in definition ' +
-                'of property "' + this.getPropertyNameFull() + '" ' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+                'of property ' + this.getProperty() + '. ' +
                 'It must be a not empty array with items of a certain types: "string", "number", "boolean".');
         }
+
+        var allowedTypes = ['string', 'number', 'boolean'];
+
         for (var i = 0; i < allows.length; i++) {
-            if (['string', 'number', 'boolean'].indexOf(typeof allows[i]) < 0) {
+            if (allowedTypes.indexOf(typeof allows[i]) < 0) {
                 throw new Error('Specified not valid values in "allows" parameter in definition ' +
-                    'of property "' + this.getPropertyNameFull() + '" ' +
-                    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-                    'Allowed types are: "string", "number", "boolean".');
+                    'of property ' + this.getProperty() + '. ' +
+                    'Allowed types are: ' + allowedTypes.join(", ") + '".');
             }
         }
     };
@@ -100,56 +100,6 @@ Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
 
         return basePropertyDefinition;
     };
-
-    ///**
-    // * @inheritDoc
-    // */
-    //EnumDefinition.prototype.processDefinition = function()
-    //{
-    //    EnumDefinition.$parent.prototype.processPropertyDefinition.call(this);
-    //
-    //    var propertyDefinition = this.getPropertyDefinition();
-    //    var defaultValue = this.getDefaultValue();
-    //    var allows = this.getAllows();
-    //
-    //    if (
-    //        !defaultValue === null
-    //        && allows
-    //        && Array.isArray(allows)
-    //    ) {
-    //        propertyDefinition.value = allows[0];
-    //    }
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //EnumDefinition.prototype.validateDefinition = function()
-    //{
-    //    var allows = this.getAllows();
-    //
-    //    if (!allows) {
-    //        throw new Error('Missed "allows" parameter in definition ' +
-    //        'of enum property "' + this.getPropertyNameFull() + '"' +
-    //        (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-    //    }
-    //    if (!Array.isArray(allows) || !allows.length) {
-    //        throw new Error('Specified not valid "allows" parameter in definition ' +
-    //        'of property "' + this.getPropertyNameFull() + '" ' +
-    //        (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-    //        'It must be a not empty array with items of a certain types: "string", "number", "boolean".');
-    //    }
-    //    for (var i = 0; i < allows.length; i++) {
-    //        if (['string', 'number', 'boolean'].indexOf(typeof allows[i]) < 0) {
-    //            throw new Error('Specified not valid values in "allows" parameter in definition ' +
-    //            'of property "' + this.getPropertyNameFull() + '" ' +
-    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-    //            'Allowed types are: "string", "number", "boolean".');
-    //        }
-    //    }
-    //
-    //    EnumDefinition.$parent.prototype.validatePropertyDefinition.call(this);
-    //};
 
     return EnumDefinition;
 

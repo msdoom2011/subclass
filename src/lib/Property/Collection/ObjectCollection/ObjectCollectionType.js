@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.CollectionType}
+ */
 Subclass.PropertyManager.PropertyTypes.ObjectCollection = (function()
 {
     /*************************************************/
@@ -36,6 +40,22 @@ Subclass.PropertyManager.PropertyTypes.ObjectCollection = (function()
     /**
      * @inheritDoc
      */
+    ObjectCollectionType.isAllowedValue = function(value)
+    {
+        return Subclass.Tools.isPlainObject(value);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ObjectCollectionType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.ObjectCollectionDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ObjectCollectionType.prototype.getCollectionClass = function()
     {
         return Subclass.PropertyManager.PropertyTypes.ObjectCollection.Collection;
@@ -47,15 +67,11 @@ Subclass.PropertyManager.PropertyTypes.ObjectCollection = (function()
      */
     ObjectCollectionType.prototype.validate = function(value)
     {
-        if (
-            value !== null
-            && (
-                typeof value != 'object'
-                || !Subclass.Tools.isPlainObject(value)
-            )
-        ) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a plain object or null' +
-            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+        if (ObjectCollectionType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
+        if (!value || typeof value != 'object' || !Subclass.Tools.isPlainObject(value)) {
+            var message = 'The value of the property ' + this + ' must be a plain object or null. ';
 
             if (typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';
@@ -67,60 +83,6 @@ Subclass.PropertyManager.PropertyTypes.ObjectCollection = (function()
                 message += 'Value with type "' + (typeof value) + '" was received instead.';
             }
             throw new Error(message);
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ObjectCollectionType.prototype.processPropertyDefinition = function()
-    {
-        ObjectCollectionType.$parent.prototype.processPropertyDefinition.call(this);
-
-        var defaultValue = this.getDefaultValue();
-        var proto = this.getProto();
-
-        if (!proto) {
-            return false;
-        }
-
-        if (
-            defaultValue
-            && typeof defaultValue == 'object'
-            && Subclass.Tools.isPlainObject(defaultValue)
-        ) {
-            var collection = this.getCollection();
-
-            for (var propName in defaultValue) {
-                if (!defaultValue.hasOwnProperty(propName)) {
-                    continue;
-                }
-                if (!this.getPropertyDefinition().isWritable()) {
-                    proto.writable = false;
-                }
-                collection.addItem(propName, defaultValue[propName]);
-            }
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ObjectCollectionType.prototype.validatePropertyDefinition = function()
-    {
-        ObjectCollectionType.$parent.prototype.validatePropertyDefinition.call(this);
-
-        var defaultValue = this.getDefaultValue();
-
-        if (
-            defaultValue !== null
-            && (
-                typeof defaultValue != 'object'
-                || !Subclass.Tools.isPlainObject(defaultValue)
-            )
-        ) {
-            throw new Error('Specified not valid default value for property "' + this.getPropertyName() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
         }
     };
 

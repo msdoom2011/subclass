@@ -1,3 +1,6 @@
+/**
+ * @class
+ */
 Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
 {
     /**
@@ -9,14 +12,8 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
         if (!property) {
             throw new Error('Missed argument "property" in collection constructor.');
         }
-        this._items = {};
         this._property = property;
-        this._itemProto = property.getPropertyManager().createProperty(
-            'collectionItem',
-            property.getProto(),
-            property.getContextClass(),
-            property
-        );
+        this._items = {};
     }
 
     /**
@@ -39,8 +36,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
     {
         if (this.issetItem(key)) {
             console.warn('Trying to add already existent collection item with key "' + key + '" ' +
-                'to property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+                'to property ' + this.getProperty() + '.');
             return;
         }
         this.validate(value);
@@ -55,9 +51,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
     Collection.prototype.addItems = function(items)
     {
         if (!Subclass.Tools.isPlainObject(items)) {
-            throw new Error('Trying to set not object value ' +
-            'to property "' + this.getProperty().getPropertyNameFull() + '" ' +
-            'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+            throw new Error('Trying to set not object value to property ' + this.getProperty() + '.');
         }
         for (var key in items) {
             if (!items.hasOwnProperty(key)) {
@@ -87,9 +81,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
     Collection.prototype.setItems = function(items)
     {
         if (!Subclass.Tools.isPlainObject(items)) {
-            throw new Error('Trying to set not object value ' +
-                'to property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+            throw new Error('Trying to set not object value to property ' + this.getProperty() + '.');
         }
         for (var key in items) {
             if (!items.hasOwnProperty(key)) {
@@ -109,8 +101,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
     {
         if (!this.issetItem(key)) {
             throw new Error('Trying to get non existent collection item with key "' + key + '" ' +
-                'in property "' + this.getProperty().getPropertyNameFull() + '" ' +
-                'in class "' + this.getProperty().getContextClass().getClassName() + '".');
+                'in property ' + this.getProperty() + '.');
         }
         return this._items[key];
     };
@@ -247,7 +238,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
      */
     Collection.prototype.validate = function(value)
     {
-        this._itemProto.validate(value);
+        this.getProperty().getProto().validate(value);
     };
 
     /**

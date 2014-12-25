@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
 {
     /*************************************************/
@@ -24,7 +28,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
          * @type {boolean}
          * @private
          */
-        this._isValueNull = true;
+        this._isNull = true;
 
         /**
          * @type {(Function|null)}
@@ -37,6 +41,12 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
          * @private
          */
         this._collection = null;
+
+        /**
+         * @type {PropertyType}
+         * @private
+         */
+        this._proto = null;
     }
 
     CollectionType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
@@ -46,19 +56,36 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
      *
      * @returns {boolean}
      */
-    CollectionType.prototype.isValueNull = function()
+    CollectionType.prototype.isNull = function()
     {
-        return this._isValueNull;
+        return this._isNull;
     };
 
     /**
      * Sets marker that tells that property value is null
      *
-     * @param {boolean} isValueNull
+     * @param {boolean} isNull
      */
-    CollectionType.prototype.setIsValueNull = function(isValueNull)
+    CollectionType.prototype.setIsNull = function(isNull)
     {
-        this._isValueNull = isValueNull;
+        this._isNull = isNull;
+    };
+
+    /**
+     * Sets prototype of collection items
+     *
+     * @param {object} proto
+     */
+    CollectionType.prototype.setProto = function(proto)
+    {
+        var propertyDefinition = this.getPropertyDefinition();
+
+        this._proto = this.getPropertyManager().createProperty(
+            'collectionItem',
+            proto,
+            this.getContextClass(),
+            this
+        );
     };
 
     /**
@@ -68,7 +95,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
      */
     CollectionType.prototype.getProto = function()
     {
-        return this.getPropertyDefinition().proto;
+        return this._proto;
     };
 
     /**
@@ -153,7 +180,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
         var $this = this;
 
         return function() {
-            if ($this.isValueNull()) {
+            if ($this.isNull()) {
                 return null;
             }
             return this[hashedPropName];
@@ -173,7 +200,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
             $this.setIsModified(true);
 
             if (value !== null) {
-                $this.setIsValueNull(false);
+                $this.setIsNull(false);
 
                 for (var childPropName in value) {
                     if (!value.hasOwnProperty(childPropName)) {
@@ -185,7 +212,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
                     );
                 }
             } else {
-                $this.setIsValueNull(true);
+                $this.setIsNull(true);
                 $this._collection.removeItems();
             }
         };
@@ -200,7 +227,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
         var defaultValue = this.getDefaultValue();
 
         if (defaultValue !== null) {
-            this.setIsValueNull(false);
+            this.setIsNull(false);
         }
 
         Object.defineProperty(context, hashedPropName, {
@@ -209,45 +236,6 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
             writable: true,
             value: this.getCollection()
         });
-    };
-
-    /**
-     * @inheritDoc
-     */
-    CollectionType.prototype.getBasePropertyDefinition = function()
-    {
-        var baseDefinition = CollectionType.$parent.prototype.getBasePropertyDefinition.call(this);
-
-        baseDefinition.proto = null;
-
-        return baseDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    CollectionType.prototype.processPropertyDefinition = function()
-    {
-        CollectionType.$parent.prototype.processPropertyDefinition.call(this);
-
-        if (!this.getProto() && Subclass.PropertyManager.issetPropertyType('untyped')) {
-            var propertyDefinition = this.getPropertyDefinition();
-            propertyDefinition.proto = { type: "untyped" }
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    CollectionType.prototype.validatePropertyDefinition = function()
-    {
-        CollectionType.$parent.prototype.validatePropertyDefinition.call(this);
-
-        if (!this.getProto()) {
-            throw new Error('Missed required parameter "proto" ' +
-                'in definition of property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-        }
     };
 
     return CollectionType;

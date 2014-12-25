@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.CollectionType.Collection}
+ */
 Subclass.PropertyManager.PropertyTypes.ObjectCollection.Collection = (function()
 {
     /**

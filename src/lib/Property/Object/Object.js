@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Object = (function()
 {
     /*************************************************/

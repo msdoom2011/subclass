@@ -98,16 +98,12 @@ Subclass.PropertyManager.PropertyTypes.NumberDefinition = (function()
     NumberDefinition.prototype.validateMinMaxValues = function()
     {
         var property = this.getProperty();
-        var propertyName = property.getPropertyNameFull();
-        var contextClass = property.getContextClass();
-
         var minValue = this.getMinValue();
         var maxValue = this.getMaxValue();
 
         if (minValue !== null && maxValue !== null && minValue > maxValue) {
             throw new Error('The "maxLength" attribute value must be more than "minLength" attribute value' +
-                ' in definition of property "' + propertyName + '" must be number or null' +
-                (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
+                ' in definition of property ' + property + ' must be number or null.');
         }
     };
 
@@ -141,42 +137,6 @@ Subclass.PropertyManager.PropertyTypes.NumberDefinition = (function()
         NumberDefinition.$parent.prototype.validateDefinition.call(this);
 
         this.validateMinMaxValues();
-
-        //var minValue = this.getMinValue();
-        //var maxValue = this.getMaxValue();
-        //var message = "";
-
-        //if (minValue !== null && typeof minValue != 'number') {
-        //    message = 'The "minValue" attribute in definition of property ' +
-        //        '"' + this.getPropertyNameFull() + '" must be number or null' +
-        //        (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-        //
-        //} else if (maxValue !== null && typeof maxValue != 'number') {
-        //    message = 'The "maxLength" attribute in definition of property ' +
-        //        '"' + this.getPropertyNameFull() + '" must be number or null' +
-        //        (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-        //}
-        //
-        //if (minValue !== null && maxValue !== null && minValue > maxValue) {
-        //    throw new Error('The "maxLength" attribute value must be more than "minLength" attribute value' +
-        //        ' in definition of property "' + this.getPropertyNameFull() + '" must be number or null' +
-        //        (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ");
-        //}
-        //
-        //if (message) {
-        //    if (typeof value == 'object' && pattern.$_className) {
-        //        message += 'Instance of class "' + pattern.$_className + '" was received instead.';
-        //
-        //    } else if (typeof value == 'object') {
-        //        message += 'Object with type "' + pattern.constructor.name + '" was received instead.';
-        //
-        //    } else {
-        //        message += 'Value with type "' + (typeof pattern) + '" was received instead.';
-        //    }
-        //
-        //    throw new Error(message);
-        //}
-
     };
 
     return NumberDefinition;

@@ -89,48 +89,6 @@ Subclass.PropertyManager.PropertyTypes.Class = (function()
             throw new Error(message);
         }
     };
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //ClassType.prototype.getBasePropertyDefinition = function()
-    //{
-    //    var basePropertyDefinition = ClassType.$parent.prototype.getBasePropertyDefinition.call(this);
-    //
-    //    /**
-    //     * Allows to specify name of class which value must implement.
-    //     *
-    //     * @type {(String|null)}
-    //     */
-    //    basePropertyDefinition.className = null;
-    //
-    //    return basePropertyDefinition;
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //ClassType.prototype.validatePropertyDefinition = function()
-    //{
-    //    var propertyDefinition = this.getPropertyDefinition();
-    //
-    //    if (!propertyDefinition.getClassName()) {
-    //        throw new Error('Missed "className" parameter in definition ' +
-    //            'of class property "' + this.getPropertyNameFull() + '"' +
-    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-    //    }
-    //
-    //    var contextClass = this.getContextClass();
-    //    var classManager = this.getPropertyManager().getClassManager();
-    //
-    //    if (!classManager.issetClass(propertyDefinition.getClassName())) {
-    //        throw new Error('Specified non existent class in "className" parameter in definition ' +
-    //            'of property "' + this.getPropertyNameFull() + '" ' +
-    //            (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
-    //    }
-    //
-    //    ClassType.$parent.prototype.validatePropertyDefinition.call(this);
-    //};
 
     /*************************************************/
     /*        Registering new property type          */

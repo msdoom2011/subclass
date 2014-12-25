@@ -132,36 +132,6 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
         MixedDefinition.$parent.prototype.processDefinition.call(this);
     };
 
-    ///**
-    // * @inheritDoc
-    // */
-    //MixedDefinition.prototype.validateDefinition = function()
-    //{
-    //    var allows = this.getAllows();
-    //
-    //    if (!allows) {
-    //        throw new Error('Missed "allows" parameter in definition ' +
-    //            'of mixed type property "' + this.getPropertyNameFull() + '"' +
-    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
-    //    }
-    //    if (!Array.isArray(allows) || !allows.length) {
-    //        throw new Error('Specified not valid "allows" parameter in definition ' +
-    //            'of property "' + this.getPropertyNameFull() + '" ' +
-    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-    //            'It must be a not empty array with definitions of needed property types.');
-    //    }
-    //    for (var i = 0; i < allows.length; i++) {
-    //        if (!Subclass.Tools.isPlainObject(allows[i])) {
-    //            throw new Error('Specified not valid values in "allows" parameter in definition ' +
-    //                'of property "' + this.getPropertyNameFull() + '" ' +
-    //                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
-    //                'It must property definitions.');
-    //        }
-    //    }
-    //
-    //    MixedDefinition.$parent.prototype.validateDefinition.call(this);
-    //};
-
     return MixedDefinition;
 
 })();

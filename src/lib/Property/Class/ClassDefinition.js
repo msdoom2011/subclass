@@ -83,30 +83,6 @@ Subclass.PropertyManager.PropertyTypes.ClassDefinition = (function()
         return basePropertyDefinition;
     };
 
-    ///**
-    // * @inheritDoc
-    // */
-    //ClassDefinition.prototype.validateDefinition = function()
-    //{
-    //    var property = this.getProperty();
-    //    var propertyName = property.getPropertyNameFull();
-    //    var contextClass = property.getContextClass();
-    //    //var classManager = property.getPropertyManager().getClassManager();
-    //
-    //    if (!this.getClassName()) {
-    //        throw new Error('Missed "className" parameter in definition of class property "' + propertyName + '"' +
-    //            (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
-    //    }
-    //
-    //    //if (!classManager.issetClass(this.getClassName())) {
-    //    //    throw new Error('Specified non existent class in "className" attribute ' +
-    //    //        'in definition of property "' + propertyName + '" ' +
-    //    //        (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
-    //    //}
-    //
-    //    ClassDefinition.$parent.prototype.validateDefinition.call(this);
-    //};
-
     return ClassDefinition;
 
 })();

@@ -1,3 +1,6 @@
+/**
+ * @class
+ */
 Subclass.PropertyManager.PropertyTypes.PropertyAPI = (function()
 {
     /**

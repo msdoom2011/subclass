@@ -1,3 +1,6 @@
+/**
+ * @class
+ */
 Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
 {
     /**
@@ -342,59 +345,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
                 this._throwMissedAttribute(attrName);
             }
         }
-
-
-        //for (var attrName in definition) {
-        //    if (!definition.hasOwnProperty(attrName)) {
-        //        continue;
-        //    }
-        //    var validatorMethod = "validate" + attrName[0].toUpperCase() + attrName.substr(1);
-        //
-        //    if (this[validatorMethod]) {
-        //        this[validatorMethod](definition[attrName]);
-        //    }
-        //}
-
-
-        //var property = this.getProperty();
-        //var propertyName = property.getPropertyNameFull();
-        //var contextClass = property.getContextClass();
-
-        //var accessors = this.isAccessors();
-        //var writable = this.isWritable();
-        //var watcher = this.getWatcher();
-        //
-        //// Validating accessors attribute value
-        //
-        //if (accessors !== null && typeof accessors != 'boolean') {
-        //    throw new Error('Invalid value of attribute "accessors" in definition of property "' + propertyName + '"' +
-        //    (contextClass && ' in class "' + contextClass.getClassName() + '"') + '. ' +
-        //    'It must be a boolean or null.');
-        //}
-        //
-        //// Validating watcher attribute value
-        //
-        //if (watcher !== null && typeof watcher != 'function') {
-        //    throw new Error('Invalid value of attribute "watcher" in definition of property "' + propertyName + '"' +
-        //    (contextClass && ' in class "' + contextClass.getClassName() + '"') + '. ' +
-        //    'It must be a function or null.');
-        //}
-        //
-        //// Validating writable attribute value
-        //
-        //if (typeof writable != 'boolean') {
-        //    throw new Error('Invalid value of attribute "writable" in definition of property "' + propertyName + '"' +
-        //    (contextClass && ' in class "' + contextClass.getClassName() + '"') + '. ' +
-        //    'It must be a boolean.');
-        //}
-        //
-        //try {
-        //    property.validate(this.getDefaultValue());
-        //
-        //} catch (e) {
-        //    console.error("Error! Invalid default value!");
-        //    throw e.stack;
-        //}
     };
 
     /**
@@ -406,8 +356,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
         var emptyValue = !definition.hasOwnProperty('value');
 
         this._definition = this.getBaseDefinition();
-
-        //this._definition = Subclass.Tools.extend(baseDefinition, definition);
 
         for (var attrName in definition) {
             if (!definition.hasOwnProperty(attrName) || attrName == 'value') {
@@ -437,10 +385,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype._throwMissedAttribute = function(attributeName)
     {
-        //var property = this.getProperty();
-        //var propertyName = property.getPropertyNameFull();
-        //var contextClass = property.getContextClass();
-
         throw new Error('Missed required attribute "' + attributeName + '" ' +
             'in definition of property ' + this.getProperty() + '.');
     };
@@ -454,10 +398,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype._throwInvalidAttribute = function(attributeName, types)
     {
-        //var property = this.getProperty();
-        //var propertyName = property.getPropertyNameFull();
-        //var contextClass = property.getContextClass();
-
         throw new Error('Invalid value of attribute "' + attributeName + '" ' +
             'in definition of property ' + this.getProperty() + '. ' +
             'It must be ' + types + '.');

@@ -47,16 +47,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
     };
 
     /**
-     * Returns property type
-     *
-     * @returns {*}
-     */
-    PropertyDefinition.prototype.getType = function()
-    {
-        return this.getDefinition().type;
-    };
-
-    /**
      * Returns empty property value
      *
      * @return {(null|*)}
@@ -67,19 +57,52 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
     };
 
     /**
+     * Validates "type" attribute value
+     *
+     * @param {*} type
+     */
+    PropertyDefinition.prototype.validateType = function(type)
+    {
+        if (typeof type != 'string') {
+            this._throwInvalidAttribute('type', 'a string');
+        }
+    };
+
+    /**
+     * Sets "type" attribute value
+     *
+     * @param {string} type
+     */
+    PropertyDefinition.prototype.setType = function(type)
+    {
+        this.validateType(type);
+        this.getDefinition().type = type;
+    };
+
+    /**
+     * Returns property type
+     *
+     * @returns {*}
+     */
+    PropertyDefinition.prototype.getType = function()
+    {
+        return this.getDefinition().type;
+    };
+
+    /**
      * Validates "value" attribute value
      *
      * @param {*} value
      */
     PropertyDefinition.prototype.validateValue = function(value)
     {
-        try {
+        //try {
             this.getProperty().validate(value);
 
-        } catch (e) {
-            console.error("Error! Invalid default value!");
-            throw e.stack;
-        }
+        //} catch (e) {
+        //    console.error("Error! Invalid default value!");
+        //    throw e.stack;
+        //}
     };
 
     /**
@@ -108,7 +131,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.validateWatcher = function(watcher)
     {
-        if (watcher !== null || typeof watcher != 'function') {
+        if (watcher !== null && typeof watcher != 'function') {
             this._throwInvalidAttribute('watcher', 'a function or null');
         }
     };
@@ -141,7 +164,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.validateAccessors = function(isAccessors)
     {
-        if (isAccessors !== null || typeof isAccessors != 'boolean') {
+        if (isAccessors !== null && typeof isAccessors != 'boolean') {
             this._throwInvalidAttribute('accessors', 'a boolean or null');
         }
     };
@@ -176,7 +199,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.validateWritable = function(isWritable)
     {
-        if (isWritable !== null || typeof isWritable != 'boolean') {
+        if (isWritable !== null && typeof isWritable != 'boolean') {
             this._throwInvalidAttribute('writable', 'a boolean or null');
         }
     };
@@ -211,7 +234,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.validateNullable = function(isNullable)
     {
-        if (isNullable !== null || typeof isNullable != 'boolean') {
+        if (isNullable !== null && typeof isNullable != 'boolean') {
             this._throwInvalidAttribute('nullable', 'a boolean or null');
         }
     };
@@ -237,6 +260,16 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
         var isNullable = this.getDefinition().nullable;
 
         return isNullable !== null ? isNullable : true;
+    };
+
+    /**
+     * Returns attributes that are required to filling
+     *
+     * @returns {string[]}
+     */
+    PropertyDefinition.prototype.getRequiredAttributes = function()
+    {
+        return ["type"];
     };
 
     /**
@@ -295,38 +328,33 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
     };
 
     /**
-     * Processing property definition
-     */
-    PropertyDefinition.prototype.processDefinition = function()
-    {
-        var baseDefinition = this.getBaseDefinition();
-        var definition = this.getDefinition();
-        var value = definition.value;
-
-        this._definition = Subclass.Tools.extend(baseDefinition, definition);
-
-        if (value === undefined) {
-            this.setValue(this.getEmptyValue());
-        }
-    };
-
-    /**
      * Validating property definition
      */
     PropertyDefinition.prototype.validateDefinition = function()
     {
+        var requiredAttributes = this.getRequiredAttributes();
         var definition = this.getDefinition();
 
-        for (var attrName in definition) {
-            if (!definition.hasOwnProperty(attrName)) {
-                continue;
-            }
-            var validatorMethod = "validate" + attrName[0].toUpperCase() + attrName.substr(1);
+        for (var i = 0; i < requiredAttributes.length; i++) {
+            var attrName = requiredAttributes[i];
 
-            if (this[validatorMethod]) {
-                this[validatorMethod](definition[attrName]);
+            if (!definition.hasOwnProperty(attrName)) {
+                this._throwMissedAttribute(attrName);
             }
         }
+
+
+        //for (var attrName in definition) {
+        //    if (!definition.hasOwnProperty(attrName)) {
+        //        continue;
+        //    }
+        //    var validatorMethod = "validate" + attrName[0].toUpperCase() + attrName.substr(1);
+        //
+        //    if (this[validatorMethod]) {
+        //        this[validatorMethod](definition[attrName]);
+        //    }
+        //}
+
 
         //var property = this.getProperty();
         //var propertyName = property.getPropertyNameFull();
@@ -369,14 +397,69 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
         //}
     };
 
+    /**
+     * Processing property definition
+     */
+    PropertyDefinition.prototype.processDefinition = function()
+    {
+        var definition = this.getDefinition();
+        var emptyValue = !definition.hasOwnProperty('value');
+
+        this._definition = this.getBaseDefinition();
+
+        //this._definition = Subclass.Tools.extend(baseDefinition, definition);
+
+        for (var attrName in definition) {
+            if (!definition.hasOwnProperty(attrName) || attrName == 'value') {
+                continue;
+            }
+            var setterMethod = "set" + attrName[0].toUpperCase() + attrName.substr(1);
+
+            if (this[setterMethod]) {
+                this[setterMethod](definition[attrName]);
+            }
+        }
+
+        if (emptyValue) {
+            this.setValue(this.getEmptyValue());
+
+        } else {
+            this.setValue(definition.value);
+        }
+    };
+
+    /**
+     * Throws error if specified argument was missed
+     *
+     * @param {string} attributeName
+     * @throws {Error}
+     * @private
+     */
+    PropertyDefinition.prototype._throwMissedAttribute = function(attributeName)
+    {
+        //var property = this.getProperty();
+        //var propertyName = property.getPropertyNameFull();
+        //var contextClass = property.getContextClass();
+
+        throw new Error('Missed required attribute "' + attributeName + '" ' +
+            'in definition of property ' + this.getProperty() + '.');
+    };
+
+    /**
+     * Throws error if specified attribute value is invalid
+     *
+     * @param {string} attributeName
+     * @param {string} types
+     * @private
+     */
     PropertyDefinition.prototype._throwInvalidAttribute = function(attributeName, types)
     {
-        var property = this.getProperty();
-        var propertyName = property.getPropertyNameFull();
-        var contextClass = property.getContextClass();
+        //var property = this.getProperty();
+        //var propertyName = property.getPropertyNameFull();
+        //var contextClass = property.getContextClass();
 
-        throw new Error('Invalid value of attribute "' + attributeName + '" in definition of property "' + propertyName + '"' +
-            (contextClass && ' in class "' + contextClass.getClassName() + '"') + '. ' +
+        throw new Error('Invalid value of attribute "' + attributeName + '" ' +
+            'in definition of property ' + this.getProperty() + '. ' +
             'It must be ' + types + '.');
     };
 

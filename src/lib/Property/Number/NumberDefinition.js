@@ -31,7 +31,7 @@ Subclass.PropertyManager.PropertyTypes.NumberDefinition = (function()
      */
     NumberDefinition.prototype.validateMaxValue = function(maxValue)
     {
-        if (maxValue !== null || typeof maxValue != 'number') {
+        if (maxValue !== null && typeof maxValue != 'number') {
             this._throwInvalidAttribute('maxValue', 'a number or null');
         }
     };
@@ -65,7 +65,7 @@ Subclass.PropertyManager.PropertyTypes.NumberDefinition = (function()
      */
     NumberDefinition.prototype.validateMinValue = function(minValue)
     {
-        if (minValue !== null || typeof minValue != 'number') {
+        if (minValue !== null && typeof minValue != 'number') {
             this._throwInvalidAttribute('minValue', 'a number or null');
         }
     };

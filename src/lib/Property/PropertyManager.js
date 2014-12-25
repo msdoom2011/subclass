@@ -128,6 +128,7 @@ Subclass.PropertyManager = (function()
             propertyDefinition = Subclass.Tools.extendDeep(customTypeDefinition, propertyDefinition);
             propertyDefinition.type = propertyTypeName;
         }
+
         if (!Subclass.PropertyManager.issetPropertyType(propertyTypeName)) {
             var propertyFullName = (contextProperty && contextProperty.getPropertyNameFull() + "." || '') + propertyName;
 
@@ -153,8 +154,8 @@ Subclass.PropertyManager = (function()
 
         inst.initialize();
 
-        if (!(inst instanceof Subclass.PropertyManager.PropertyTypes.PropertyType)) {
-            throw new Error('Property type factory must instance of "PropertyType" class.');
+        if (!(inst instanceof Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface)) {
+            throw new Error('Property type factory must instance of "PropertyTypeInterface" class.');
         }
         return inst;
     };

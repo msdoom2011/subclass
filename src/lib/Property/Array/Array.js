@@ -66,11 +66,12 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
      */
     ArrayType.prototype.validate = function(value)
     {
-        var isNullable = this.getPropertyDefinition().isNullable();
+        if (ArrayType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
 
-        if ((value === null && !isNullable) || !ArrayType.isAllowedValue(value)) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be an array' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : '') + '. ';
+        if (!ArrayType.isAllowedValue(value)) {
+            var message = 'The value of the property ' + this + ' must be an array. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

@@ -27,14 +27,11 @@ Subclass.PropertyManager.PropertyTypes.ClassDefinition = (function()
             this._throwInvalidAttribute('className', 'a string');
         }
         var property = this.getProperty();
-        var propertyName = property.getPropertyNameFull();
-        var contextClass = property.getContextClass();
         var classManager = property.getPropertyManager().getClassManager();
 
-        if (!classManager.issetClass(this.getClassName())) {
+        if (!classManager.issetClass(className)) {
             throw new Error('Specified non existent class in "className" attribute ' +
-                'in definition of property "' + propertyName + '" ' +
-                (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
+                'in definition of property ' + property + '.');
         }
     };
 
@@ -62,6 +59,16 @@ Subclass.PropertyManager.PropertyTypes.ClassDefinition = (function()
     /**
      * @inheritDoc
      */
+    ClassDefinition.prototype.getRequiredAttributes = function()
+    {
+        var attrs = ClassDefinition.$parent.prototype.getRequiredAttributes.call(this);
+
+        return attrs.concat(['className']);
+    };
+
+    /**
+     * @inheritDoc
+     */
     ClassDefinition.prototype.getBaseDefinition = function()
     {
         var basePropertyDefinition = ClassDefinition.$parent.prototype.getBaseDefinition.call(this);
@@ -76,29 +83,29 @@ Subclass.PropertyManager.PropertyTypes.ClassDefinition = (function()
         return basePropertyDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    ClassDefinition.prototype.validateDefinition = function()
-    {
-        var property = this.getProperty();
-        var propertyName = property.getPropertyNameFull();
-        var contextClass = property.getContextClass();
-        //var classManager = property.getPropertyManager().getClassManager();
-
-        if (!this.getClassName()) {
-            throw new Error('Missed "className" parameter in definition of class property "' + propertyName + '"' +
-                (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
-        }
-
-        //if (!classManager.issetClass(this.getClassName())) {
-        //    throw new Error('Specified non existent class in "className" attribute ' +
-        //        'in definition of property "' + propertyName + '" ' +
-        //        (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
-        //}
-
-        ClassDefinition.$parent.prototype.validatePropertyDefinition.call(this);
-    };
+    ///**
+    // * @inheritDoc
+    // */
+    //ClassDefinition.prototype.validateDefinition = function()
+    //{
+    //    var property = this.getProperty();
+    //    var propertyName = property.getPropertyNameFull();
+    //    var contextClass = property.getContextClass();
+    //    //var classManager = property.getPropertyManager().getClassManager();
+    //
+    //    if (!this.getClassName()) {
+    //        throw new Error('Missed "className" parameter in definition of class property "' + propertyName + '"' +
+    //            (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
+    //    }
+    //
+    //    //if (!classManager.issetClass(this.getClassName())) {
+    //    //    throw new Error('Specified non existent class in "className" attribute ' +
+    //    //        'in definition of property "' + propertyName + '" ' +
+    //    //        (contextClass ? (' in class "' + contextClass.getClassName() + '"') : "") + ".");
+    //    //}
+    //
+    //    ClassDefinition.$parent.prototype.validateDefinition.call(this);
+    //};
 
     return ClassDefinition;
 

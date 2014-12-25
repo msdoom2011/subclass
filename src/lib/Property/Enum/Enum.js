@@ -74,12 +74,14 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
      */
     EnumType.prototype.validate = function(value)
     {
+        if (EnumType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
         var allows = this.getPropertyDefinition().getAllows();
 
         if (allows.indexOf(value) < 0) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" is not valid ' +
-                'and must be one of the specified values [' + allows.join(", ") + ']' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+            var message = 'The value of the property ' + this + ' is not valid ' +
+                'and must be one of the specified values [' + allows.join(", ") + ']. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

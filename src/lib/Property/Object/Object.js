@@ -52,9 +52,11 @@ Subclass.PropertyManager.PropertyTypes.Object = (function()
      */
     ObjectType.prototype.validate = function(value)
     {
+        if (ObjectType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
         if (value !== null && (typeof value != 'object' || !Subclass.Tools.isPlainObject(value))) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a plain object' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+            var message = 'The value of the property ' + this + ' must be a plain object. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

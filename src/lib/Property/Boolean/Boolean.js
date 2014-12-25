@@ -56,11 +56,12 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
      */
     BooleanType.prototype.validate = function(value)
     {
-        var isNullable = this.getPropertyDefinition().isNullable();
+        if (BooleanType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
 
-        if ((value === null && !isNullable) || !BooleanType.isAllowedValue(value)) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a boolean' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : '') + '. ';
+        if (!BooleanType.isAllowedValue(value)) {
+            var message = 'The value of the property ' + this + ' must be a boolean. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

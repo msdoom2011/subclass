@@ -59,7 +59,8 @@ Subclass.ClassManager.ClassTypes.Trait = (function()
 
         if (this.getClassParent()) {
             var parentClass = this.getClassParent();
-            properties = Subclass.Tools.extend({}, parentClass.getClassProperties());
+            var parentProperties = parentClass.getClassProperties();
+            properties = Subclass.Tools.extend({}, parentProperties);
         }
         return Subclass.Tools.extend(properties, this._classProperties);
     };

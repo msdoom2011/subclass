@@ -45,34 +45,34 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
      */
     MixedType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.BooleanDefinition;
+        return Subclass.PropertyManager.PropertyTypes.MixedDefinition;
     };
-
-    /**
-     * Returns definitions of all allowed value types
-     *
-     * @returns {Object[]}
-     */
-    MixedType.prototype.getAllows = function()
-    {
-        return this.getPropertyDefinition().allows;
-    };
-
-    /**
-     * Returns all allowed value types according to allows parameter of property definition.
-     *
-     * @returns {string[]}
-     */
-    MixedType.prototype.getAllowedTypeNames = function()
-    {
-        var allows = this.getAllows();
-        var typeNames = [];
-
-        for (var i = 0; i < allows.length; i++) {
-            typeNames.push(allows[i].type);
-        }
-        return typeNames;
-    };
+    //
+    ///**
+    // * Returns definitions of all allowed value types
+    // *
+    // * @returns {Object[]}
+    // */
+    //MixedType.prototype.getAllows = function()
+    //{
+    //    return this.getPropertyDefinition().allows;
+    //};
+    //
+    ///**
+    // * Returns all allowed value types according to allows parameter of property definition.
+    // *
+    // * @returns {string[]}
+    // */
+    //MixedType.prototype.getAllowedTypeNames = function()
+    //{
+    //    var allows = this.getAllows();
+    //    var typeNames = [];
+    //
+    //    for (var i = 0; i < allows.length; i++) {
+    //        typeNames.push(allows[i].type);
+    //    }
+    //    return typeNames;
+    //};
 
     /**
      * Returns property instances according to allows parameter of property definition.
@@ -104,6 +104,10 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
      */
     MixedType.prototype.validate = function(value)
     {
+        if (MixedType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
+        var propertyDefinition = this.getPropertyDefinition();
         var allowedTypes = this.getAllowedTypes();
         var error = true;
 
@@ -120,11 +124,10 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
             }
         }
         if (error) {
-            var allowedTypeNames = this.getAllowedTypeNames();
+            var allowedTypeNames = propertyDefinition.getAllowsNames();
 
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" is not valid ' +
-                'and must belongs to one of the specified types [' + allowedTypeNames.join(", ") + ']' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+            var message = 'The value of the property ' + this + ' is not valid ' +
+                'and must belongs to one of the specified types [' + allowedTypeNames.join(", ") + ']. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

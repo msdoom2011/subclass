@@ -34,7 +34,7 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
     /**
      * @inheritDoc
      */
-    BooleanType.isAllowedValue = function(value)
+    FunctionType.isAllowedValue = function(value)
     {
         return typeof value == 'function';
     };
@@ -42,7 +42,7 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
     /**
      * @inheritDoc
      */
-    BooleanType.prototype.getPropertyDefinitionClass = function()
+    FunctionType.prototype.getPropertyDefinitionClass = function()
     {
         return Subclass.PropertyManager.PropertyTypes.FunctionDefinition;
     };
@@ -52,9 +52,11 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
      */
     FunctionType.prototype.validate = function(value)
     {
-        if (value !== null && typeof value != 'function') {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a function' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+        if (FunctionType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
+        if (typeof value != 'function') {
+            var message = 'The value of the property ' + this + ' must be a function. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

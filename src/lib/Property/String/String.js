@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.String = (function()
 {
     /*************************************************/
@@ -82,32 +86,32 @@ Subclass.PropertyManager.PropertyTypes.String = (function()
      */
     StringType.prototype.validate = function(value)
     {
-        var pattern = this.getPattern();
-        var minLength = this.getMinLength();
-        var maxLength = this.getMaxLength();
+        if (StringType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
+        var propertyDefinition = this.getPropertyDefinition();
+        var pattern = propertyDefinition.getPattern();
+        var minLength = propertyDefinition.getMinLength();
+        var maxLength = propertyDefinition.getMaxLength();
         var error = false;
 
-        if (value !== null && typeof value != 'string') {
+        if (typeof value != 'string') {
             error = true;
         }
         if (!error && value !== null && pattern && !pattern.test(value)) {
-            throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is not valid ' +
-                'and must match regular expression "' + pattern.toString() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+            throw new Error('The value of the property ' + this + ' is not valid ' +
+                'and must match regular expression "' + pattern.toString() + '".');
         }
         if (!error && value !== null && minLength !== null && value.length < minLength) {
-            throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is too short ' +
-                'and must consist of at least ' + minLength + ' symbols' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+            throw new Error('The value of the property ' + this + ' is too short ' +
+                'and must consist of at least ' + minLength + ' symbols.');
         }
         if (!error && value !== null && maxLength !== null && value.length > maxLength) {
-            throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is too long ' +
-                'and must be not longer than ' + maxLength + ' symbols' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+            throw new Error('The value of the property "' + this + '" is too long ' +
+                'and must be not longer than ' + maxLength + ' symbols.');
         }
         if (error) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a string' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+            var message = 'The value of the property ' + this + ' must be a string. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

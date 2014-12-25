@@ -76,27 +76,28 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
      */
     NumberType.prototype.validate = function(value)
     {
-        var minValue = this.getMinValue();
-        var maxValue = this.getMaxValue();
+        if (NumberType.$parent.prototype.validate.call(this, value)) {
+            return;
+        }
+        var propertyDefinition = this.getPropertyDefinition();
+        var minValue = propertyDefinition.getMinValue();
+        var maxValue = propertyDefinition.getMaxValue();
         var error = false;
 
-        if (value !== null && typeof value != 'number') {
+        if (typeof value != 'number') {
             error = true;
         }
         if (!error && value !== null && minValue !== null && value < minValue) {
-            throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is too small ' +
-                'and must be more or equals number ' + minValue +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+            throw new Error('The value of the property ' + this + ' is too small ' +
+                'and must be more or equals number ' + minValue + ".");
         }
         if (!error && value !== null && maxValue !== null && value > maxValue) {
-            throw new Error('The value of the property "' + this.getPropertyNameFull() + '" is too big ' +
-                'and must be less or equals number ' + maxValue +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+            throw new Error('The value of the property ' + this + ' is too big ' +
+                'and must be less or equals number ' + maxValue + ".");
         }
 
         if (error) {
-            var message = 'The value of the property "' + this.getPropertyNameFull() + '" must be a number' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+            var message = 'The value of the property ' + this + ' must be a number. ';
 
             if (value && typeof value == 'object' && value.$_className) {
                 message += 'Instance of class "' + value.$_className + '" was received instead.';

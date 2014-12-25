@@ -33,20 +33,17 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
     {
         if (!allows) {
             throw new Error('Missed "allows" parameter in definition ' +
-                'of mixed type property "' + this.getPropertyNameFull() + '"' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ".");
+                'of mixed type property ' + this.getProperty() + ".");
         }
-        if (!Array.isArray(allows) || !allows.length) {
+        if (!Array.isArray(allows) && !allows.length) {
             throw new Error('Specified not valid "allows" parameter in definition ' +
-                'of property "' + this.getPropertyNameFull() + '" ' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+                'of property ' + this.getProperty() + '. ' +
                 'It must be a not empty array with definitions of needed property types.');
         }
         for (var i = 0; i < allows.length; i++) {
             if (!Subclass.Tools.isPlainObject(allows[i])) {
                 throw new Error('Specified not valid values in "allows" parameter in definition ' +
-                    'of property "' + this.getPropertyNameFull() + '" ' +
-                    (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". " +
+                    'of property ' + this.getProperty() + '. ' +
                     'It must property definitions.');
             }
         }
@@ -74,6 +71,32 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
     };
 
     /**
+     * Returns all allowed value types according to allows parameter of property definition.
+     *
+     * @returns {string[]}
+     */
+    MixedDefinition.prototype.getAllowsNames = function()
+    {
+        var allows = this.getAllows();
+        var typeNames = [];
+
+        for (var i = 0; i < allows.length; i++) {
+            typeNames.push(allows[i].type);
+        }
+        return typeNames;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    MixedDefinition.prototype.getRequiredAttributes = function()
+    {
+        var attrs = MixedDefinition.$parent.prototype.getRequiredAttributes.call(this);
+
+        return attrs.concat(['allows']);
+    };
+
+    /**
      * @inheritDoc
      */
     MixedDefinition.prototype.getBaseDefinition = function()
@@ -86,7 +109,7 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
          *
          * @type {Object[]}
          */
-        basePropertyDefinition.allows = null;
+        basePropertyDefinition.allows = [];
 
         return basePropertyDefinition;
     };
@@ -96,8 +119,6 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
      */
     MixedDefinition.prototype.processDefinition = function()
     {
-        MixedDefinition.$parent.prototype.processDefinition.call(this);
-
         var allows = this.getAllows();
 
         if (allows && Array.isArray(allows)) {
@@ -108,6 +129,7 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
                 this.getProperty().addAllowedType(allows[i]);
             }
         }
+        MixedDefinition.$parent.prototype.processDefinition.call(this);
     };
 
     ///**

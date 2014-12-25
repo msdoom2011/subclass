@@ -76,9 +76,19 @@ Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
     /**
      * @inheritDoc
      */
+    EnumDefinition.prototype.getRequiredAttributes = function()
+    {
+        var attrs = EnumDefinition.$parent.prototype.getRequiredAttributes.call(this);
+
+        return attrs.concat(['allows']);
+    };
+
+    /**
+     * @inheritDoc
+     */
     EnumDefinition.prototype.getBaseDefinition = function()
     {
-        var basePropertyDefinition = EnumDefinition.$parent.prototype.getBasePropertyDefinition.call(this);
+        var basePropertyDefinition = EnumDefinition.$parent.prototype.getBaseDefinition.call(this);
 
         /**
          * Allows to specify allowed property values.

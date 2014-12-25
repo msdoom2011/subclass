@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Untyped = (function()
 {
     /*************************************************/
@@ -29,6 +33,22 @@ Subclass.PropertyManager.PropertyTypes.Untyped = (function()
     UntypedType.getPropertyTypeName = function()
     {
         return "untyped";
+    };
+
+    /**
+     * @inheritDoc
+     */
+    UntypedType.isAllowedValue = function(value)
+    {
+        return true;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    UntypedType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.UntypedDefinition;
     };
 
 

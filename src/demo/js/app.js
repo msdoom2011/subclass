@@ -192,40 +192,40 @@ classManager.registerAbstractClass("Class2", {
 //                    type: "percents",
             value: "my testing string!"
         },
-        typedObjectCollection: {
-            type: "objectCollection",
-            proto: { type: "number" },
-            value: {
-                num1: 1,
-                num2: 1,
-                num3: 3
-            }
-        },
-        typedArrayCollection: {
-            type: "arrayCollection",
-            proto: { type: "string" },
-            value: [
-                "str1",
-                "str2",
-                "str3"
-            ]
-        },
-        typedArrayCollectionOfMap: {
-            type: "arrayCollection",
-            proto: {
-                type: "map",
-                schema: {
-                    "propString": { type: "string" },
-                    "propNumber": { type: "number" },
-                    "propBoolean": { type: "boolean" }
-                }
-            },
-            value: [{
-                propString: "string",
-                propNumber: 111,
-                propBoolean: true
-            }]
-        },
+        //typedObjectCollection: {
+        //    type: "objectCollection",
+        //    proto: { type: "number" },
+        //    value: {
+        //        num1: 1,
+        //        num2: 1,
+        //        num3: 3
+        //    }
+        //},
+        //typedArrayCollection: {
+        //    type: "arrayCollection",
+        //    proto: { type: "string" },
+        //    value: [
+        //        "str1",
+        //        "str2",
+        //        "str3"
+        //    ]
+        //},
+        //typedArrayCollectionOfMap: {
+        //    type: "arrayCollection",
+        //    proto: {
+        //        type: "map",
+        //        schema: {
+        //            "propString": { type: "string" },
+        //            "propNumber": { type: "number" },
+        //            "propBoolean": { type: "boolean" }
+        //        }
+        //    },
+        //    value: [{
+        //        propString: "string",
+        //        propNumber: 111,
+        //        propBoolean: true
+        //    }]
+        //},
         typedMap: {
             type: "map",
             schema: {
@@ -688,100 +688,100 @@ console.log(inst.getTypedMap());
 
 
 
-console.log('');
-console.log('============= objectCollection property ==============');
-
-var objectCollection = inst.getTypedObjectCollection();
-console.log(objectCollection);
-
-objectCollection.psix = '1111';
-objectCollection.addItem("psix", 555);
-console.log(objectCollection.getItems());
-
-objectCollection.removeItem("psix");
-console.log(objectCollection.getItems());
-
-objectCollection.addItems({
-    psix: 222,
-    psix2: 111
-});
-console.log(objectCollection.getItems());
-
-objectCollection.addItem("psix", 777);
-console.log(objectCollection.getItems());
-
-console.log(objectCollection.getItem("psix"));
-console.log(objectCollection.getItems());
-
-objectCollection.removeItems();
-console.log(objectCollection.getItems());
-
-inst.setTypedObjectCollection(null);
-console.log(inst.getTypedObjectCollection());
-
-inst.setTypedObjectCollection({
-    psix: 222,
-    psix2: 111
-});
-console.log(inst.getTypedObjectCollection());
-
-
-
-console.log('');
-console.log('============= arrayCollection property ==============');
-
-var arrayCollection = inst.getTypedArrayCollection();
-console.log(arrayCollection);
-
-arrayCollection.psix = '1111';
-arrayCollection.addItem("psix");
-console.log(arrayCollection.getItems());
-
-var filteredItems = arrayCollection.filter(function(element, index) {
-    if (element.match(/^str/)) {
-        return true;
-    }
-});
-console.log(filteredItems);
-
-var removeArrayItem = arrayCollection.indexOf('psix');
-arrayCollection.removeItem(removeArrayItem);
-console.log(arrayCollection.getItems());
-
-removeArrayItem = arrayCollection.indexOf(function(element, index) {
-    if (element.match(/^str/)) {
-        return true;
-    }
-});
-arrayCollection.removeItem(removeArrayItem);
-console.log(arrayCollection.getItems());
-
-arrayCollection.addItems(["new1", "new2"]);
-console.log(arrayCollection.getItems());
-
-arrayCollection.addItem("psix222");
-console.log(arrayCollection.getItems());
-
-var psixElemIndex = arrayCollection.indexOf("psix222");
-console.log(arrayCollection.getItem(psixElemIndex));
-console.log(arrayCollection.getItems());
-
-arrayCollection.removeItems();
-console.log(arrayCollection.getItems());
-
-inst.setTypedArrayCollection(null);
-console.log(inst.getTypedArrayCollection());
-
-inst.setTypedArrayCollection(["psixNew1", "psixNew2"]);
-console.log(inst.getTypedArrayCollection());
-
-
-
-console.log('');
-console.log('============= arrayCollectionOfMap property ==============');
-
-var arrayCollectionOfMap = inst.getTypedArrayCollectionOfMap();
-console.log(arrayCollectionOfMap);
+//console.log('');
+//console.log('============= objectCollection property ==============');
+//
+//var objectCollection = inst.getTypedObjectCollection();
+//console.log(objectCollection);
+//
+//objectCollection.psix = '1111';
+//objectCollection.addItem("psix", 555);
+//console.log(objectCollection.getItems());
+//
+//objectCollection.removeItem("psix");
+//console.log(objectCollection.getItems());
+//
+//objectCollection.addItems({
+//    psix: 222,
+//    psix2: 111
+//});
+//console.log(objectCollection.getItems());
+//
+//objectCollection.addItem("psix", 777);
+//console.log(objectCollection.getItems());
+//
+//console.log(objectCollection.getItem("psix"));
+//console.log(objectCollection.getItems());
+//
+//objectCollection.removeItems();
+//console.log(objectCollection.getItems());
+//
+//inst.setTypedObjectCollection(null);
+//console.log(inst.getTypedObjectCollection());
+//
+//inst.setTypedObjectCollection({
+//    psix: 222,
+//    psix2: 111
+//});
+//console.log(inst.getTypedObjectCollection());
+//
+//
+//
+//console.log('');
+//console.log('============= arrayCollection property ==============');
+//
+//var arrayCollection = inst.getTypedArrayCollection();
+//console.log(arrayCollection);
+//
+//arrayCollection.psix = '1111';
+//arrayCollection.addItem("psix");
+//console.log(arrayCollection.getItems());
+//
+//var filteredItems = arrayCollection.filter(function(element, index) {
+//    if (element.match(/^str/)) {
+//        return true;
+//    }
+//});
+//console.log(filteredItems);
+//
+//var removeArrayItem = arrayCollection.indexOf('psix');
+//arrayCollection.removeItem(removeArrayItem);
+//console.log(arrayCollection.getItems());
+//
+//removeArrayItem = arrayCollection.indexOf(function(element, index) {
+//    if (element.match(/^str/)) {
+//        return true;
+//    }
+//});
+//arrayCollection.removeItem(removeArrayItem);
+//console.log(arrayCollection.getItems());
+//
+//arrayCollection.addItems(["new1", "new2"]);
+//console.log(arrayCollection.getItems());
+//
+//arrayCollection.addItem("psix222");
+//console.log(arrayCollection.getItems());
+//
+//var psixElemIndex = arrayCollection.indexOf("psix222");
+//console.log(arrayCollection.getItem(psixElemIndex));
+//console.log(arrayCollection.getItems());
+//
+//arrayCollection.removeItems();
+//console.log(arrayCollection.getItems());
+//
+//inst.setTypedArrayCollection(null);
+//console.log(inst.getTypedArrayCollection());
+//
+//inst.setTypedArrayCollection(["psixNew1", "psixNew2"]);
+//console.log(inst.getTypedArrayCollection());
+//
+//
+//
+//console.log('');
+//console.log('============= arrayCollectionOfMap property ==============');
+//
+//var arrayCollectionOfMap = inst.getTypedArrayCollectionOfMap();
+//console.log(arrayCollectionOfMap);
 
 
 

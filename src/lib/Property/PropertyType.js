@@ -114,8 +114,9 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         if (this.getContextProperty()) {
             propertyDefinition.setAccessors(false);
         }
-        propertyDefinition.processDefinition();
         propertyDefinition.validateDefinition();
+        propertyDefinition.processDefinition();
+        //propertyDefinition.validateDefinition();
     };
 
     /**
@@ -340,8 +341,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
             )
         ) {
             var message = 'Trying to set not valid context class ' +
-                'in property "' + this.getPropertyNameFull() + '". ' +
-                'It must be an instance of class "ClassType" or null. ';
+                'in property ' + this + '. It must be an instance of class "ClassType" or null. ';
 
             if (typeof contextClass == 'object') {
                 message += 'Object with type "' + contextClass.constructor.name + '" was received instead.';
@@ -372,12 +372,11 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 && contextProperty !== null
             ) || (
                 contextProperty
-                && !(contextProperty instanceof Subclass.PropertyManager.PropertyTypes.PropertyType)
+                && !(contextProperty instanceof Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface)
             )
         ) {
             var message = 'Trying to set not valid context property ' +
-                'for property "' + this.getPropertyName() + '". ' +
-                'It must be an instance of class "PropertyType" or null. ';
+                'for property ' + this + '. It must be an instance of class "PropertyType" or null. ';
 
             if (typeof contextProperty == 'object' && contextProperty.$_className) {
                 message += 'Instance of class "' + contextProperty.$_className + '" was received instead.';
@@ -407,9 +406,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     PropertyType.prototype.addWatcher = function(callback)
     {
         if (typeof callback != "function") {
-            throw new Error('Trying to add invalid watcher to property "' + this._property.getPropertyNameFull() + '" ' +
-                (this._property.getContextClass() ? (' in class "' + this._property.getContextClass().getClassName() + '"') : "") + ". " +
-                'It must be a function.');
+            throw new Error('Trying to add invalid watcher to property ' + this + '. It must be a function.');
         }
         if (!this.issetWatcher(callback)) {
             this._watchers.push(callback);
@@ -450,9 +447,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     PropertyType.prototype.invokeWatchers = function(context, newValue, oldValue)
     {
         if (typeof context != "object" || Array.isArray(context)) {
-            throw new Error('Trying to invoke watchers in invalid context in property "' + this._property.getPropertyNameFull() + '" ' +
-                (this._property.getContextClass() ? (' in class "' + this._property.getContextClass().getClassName() + '"') : "") + ". " +
-                'It must be an object.');
+            throw new Error('Trying to invoke watchers in invalid context in property ' + this + '. It must be an object.');
         }
         var watchers = this.getWatchers();
 
@@ -546,6 +541,11 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         }
         var propName = this.getPropertyName();
         context[propName] = value;
+    };
+
+    PropertyType.prototype.getDefaultValue = function()
+    {
+        return this.getPropertyDefinition().getValue();
     };
 
     /**
@@ -669,6 +669,27 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 value: defaultValue
             });
         }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    PropertyType.prototype.validate = function(value)
+    {
+        var propertyDefinition = this.getPropertyDefinition();
+        var isNullable = propertyDefinition.isNullable();
+
+        return isNullable && value === null;
+    };
+
+    PropertyType.prototype.toString = function()
+    {
+        var propertyName = this.getPropertyNameFull();
+        var contextClassName = this.getContextClass()
+            ? (' in class "' + this.getContextClass().getClassName() + '"')
+            : "";
+
+        return '"' + propertyName + '"' + contextClassName;
     };
 
 

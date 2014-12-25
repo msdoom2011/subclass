@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ */
 Subclass.PropertyManager.PropertyTypes.Number = (function()
 {
     /*************************************************/
@@ -29,6 +33,22 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
     NumberType.getPropertyTypeName = function()
     {
         return "number";
+    };
+
+    /**
+     * @inheritDoc
+     */
+    NumberType.isAllowedValue = function(value)
+    {
+        return typeof value == 'number';
+    };
+
+    /**
+     * @inheritDoc
+     */
+    NumberType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.NumberDefinition;
     };
 
     /**
@@ -90,70 +110,70 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
             throw new Error(message);
         }
     };
-
-    /**
-     * @inheritDoc
-     */
-    NumberType.prototype.getBasePropertyDefinition = function()
-    {
-        var baseDefinition = NumberType.$parent.prototype.getBasePropertyDefinition.call(this);
-
-        /**
-         * Specified max number value if it isn't null
-         * @type {(number|null)}
-         */
-        baseDefinition.maxValue = null;
-
-        /**
-         * Specifies min number value if it isn't null
-         * @type {(number|null)}
-         */
-        baseDefinition.minValue = null;
-
-        return baseDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    NumberType.prototype.validatePropertyDefinition = function()
-    {
-        var minValue = this.getMinValue();
-        var maxValue = this.getMaxValue();
-        var message = "";
-
-        if (minValue !== null && typeof minValue != 'number') {
-            message = 'The "minValue" attribute in definition of property ' +
-                '"' + this.getPropertyNameFull() + '" must be number or null' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-
-        } else if (maxValue !== null && typeof maxValue != 'number') {
-            message = 'The "maxLength" attribute in definition of property ' +
-                '"' + this.getPropertyNameFull() + '" must be number or null' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-        }
-        if (minValue !== null && maxValue !== null && minValue > maxValue) {
-            message = 'The "maxLength" attribute value must be more than "minLength" attribute value' +
-                ' in definition of property "' + this.getPropertyNameFull() + '" must be number or null' +
-                (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
-        }
-
-        if (message) {
-            if (typeof value == 'object' && pattern.$_className) {
-                message += 'Instance of class "' + pattern.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + pattern.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof pattern) + '" was received instead.';
-            }
-
-            throw new Error(message);
-        }
-
-        NumberType.$parent.prototype.validatePropertyDefinition.call(this);
-    };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //NumberType.prototype.getBasePropertyDefinition = function()
+    //{
+    //    var baseDefinition = NumberType.$parent.prototype.getBasePropertyDefinition.call(this);
+    //
+    //    /**
+    //     * Specified max number value if it isn't null
+    //     * @type {(number|null)}
+    //     */
+    //    baseDefinition.maxValue = null;
+    //
+    //    /**
+    //     * Specifies min number value if it isn't null
+    //     * @type {(number|null)}
+    //     */
+    //    baseDefinition.minValue = null;
+    //
+    //    return baseDefinition;
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //NumberType.prototype.validatePropertyDefinition = function()
+    //{
+    //    var minValue = this.getMinValue();
+    //    var maxValue = this.getMaxValue();
+    //    var message = "";
+    //
+    //    if (minValue !== null && typeof minValue != 'number') {
+    //        message = 'The "minValue" attribute in definition of property ' +
+    //            '"' + this.getPropertyNameFull() + '" must be number or null' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+    //
+    //    } else if (maxValue !== null && typeof maxValue != 'number') {
+    //        message = 'The "maxLength" attribute in definition of property ' +
+    //            '"' + this.getPropertyNameFull() + '" must be number or null' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+    //    }
+    //    if (minValue !== null && maxValue !== null && minValue > maxValue) {
+    //        message = 'The "maxLength" attribute value must be more than "minLength" attribute value' +
+    //            ' in definition of property "' + this.getPropertyNameFull() + '" must be number or null' +
+    //            (this.getContextClass() ? (' in class "' + this.getContextClass().getClassName() + '"') : "") + ". ";
+    //    }
+    //
+    //    if (message) {
+    //        if (typeof value == 'object' && pattern.$_className) {
+    //            message += 'Instance of class "' + pattern.$_className + '" was received instead.';
+    //
+    //        } else if (typeof value == 'object') {
+    //            message += 'Object with type "' + pattern.constructor.name + '" was received instead.';
+    //
+    //        } else {
+    //            message += 'Value with type "' + (typeof pattern) + '" was received instead.';
+    //        }
+    //
+    //        throw new Error(message);
+    //    }
+    //
+    //    NumberType.$parent.prototype.validatePropertyDefinition.call(this);
+    //};
 
 
     /*************************************************/

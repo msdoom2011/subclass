@@ -34,6 +34,22 @@ Subclass.PropertyManager.PropertyTypes.Object = (function()
     /**
      * @inheritDoc
      */
+    ObjectType.isAllowedValue = function(value)
+    {
+        return Subclass.Tools.isPlainObject(value);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ObjectType.prototype.getPropertyDefinitionClass = function()
+    {
+        return Subclass.PropertyManager.PropertyTypes.ObjectDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ObjectType.prototype.validate = function(value)
     {
         if (value !== null && (typeof value != 'object' || !Subclass.Tools.isPlainObject(value))) {

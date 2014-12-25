@@ -35,7 +35,7 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
     /**
      * @inheritDoc
      */
-    BooleanType.isAllowedValue = function(value)
+    MixedType.isAllowedValue = function(value)
     {
         return typeof value == 'boolean';
     };
@@ -43,7 +43,7 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
     /**
      * @inheritDoc
      */
-    BooleanType.prototype.getPropertyDefinitionClass = function()
+    MixedType.prototype.getPropertyDefinitionClass = function()
     {
         return Subclass.PropertyManager.PropertyTypes.BooleanDefinition;
     };

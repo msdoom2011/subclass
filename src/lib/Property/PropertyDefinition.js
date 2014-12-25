@@ -116,7 +116,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
     /**
      * Sets property watcher
      *
-     * @param watcher
+     * @param {(Function|null)} watcher
      */
     PropertyDefinition.prototype.setWatcher = function(watcher)
     {

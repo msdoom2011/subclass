@@ -51,25 +51,25 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
         return Subclass.PropertyManager.PropertyTypes.NumberDefinition;
     };
 
-    /**
-     * Returns minimum number value
-     *
-     * @returns {(number|null)}
-     */
-    NumberType.prototype.getMinValue = function()
-    {
-        return this.getPropertyDefinition().minValue;
-    };
-
-    /**
-     * Returns maximum number value
-     *
-     * @returns {(number|null)}
-     */
-    NumberType.prototype.getMaxValue = function()
-    {
-        return this.getPropertyDefinition().maxValue;
-    };
+    ///**
+    // * Returns minimum number value
+    // *
+    // * @returns {(number|null)}
+    // */
+    //NumberType.prototype.getMinValue = function()
+    //{
+    //    return this.getPropertyDefinition().minValue;
+    //};
+    //
+    ///**
+    // * Returns maximum number value
+    // *
+    // * @returns {(number|null)}
+    // */
+    //NumberType.prototype.getMaxValue = function()
+    //{
+    //    return this.getPropertyDefinition().maxValue;
+    //};
 
     /**
      * @inheritDoc

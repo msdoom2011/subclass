@@ -25,6 +25,61 @@ Subclass.PropertyManager.PropertyTypes.MapDefinition = (function()
     };
 
     /**
+     * @inheritDoc
+     */
+    MapDefinition.prototype.validateValue = function(value)
+    {
+        if (MapDefinition.$parent.prototype.validateValue.call(this, value)) {
+            return;
+        }
+        var property = this.getProperty();
+        var error = false;
+
+        if (
+            typeof value != 'object'
+            || !Subclass.Tools.isPlainObject(value)
+        ) {
+            error = true;
+        }
+
+        if (!error) {
+            for (var propName in value) {
+                if (!value.hasOwnProperty(propName)) {
+                    continue;
+                }
+                if (!property.hasChild(propName)) {
+                    var childrenProps = property.getChildren();
+
+                    throw new Error('Trying to set not registered property "' + propName + '" ' +
+                        'to not extendable map property ' + property + '. ' +
+                        'Allowed properties are: "' + Object.keys(childrenProps).join('", "') + '".');
+
+                } else {
+                    property
+                        .getChild(propName)
+                        .validateValue(value[propName])
+                    ;
+                }
+            }
+        }
+
+        if (error) {
+            var message = 'The value of the property ' + property + ' must be a plain object or null. ';
+
+            if (typeof value == 'object' && value.$_className) {
+                message += 'Instance of class "' + value.$_className + '" was received instead.';
+
+            } else if (typeof value == 'object') {
+                message += 'Object with type "' + value.constructor.name + '" was received instead.';
+
+            } else {
+                message += 'Value with type "' + (typeof value) + '" was received instead.';
+            }
+            throw new Error(message);
+        }
+    };
+
+    /**
      * Validates "schema" attribute value
      *
      * @param {*} schema

@@ -25,6 +25,37 @@ Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
     };
 
     /**
+     * @inheritDoc
+     */
+    EnumDefinition.prototype.validateValue = function(value)
+    {
+        if (EnumDefinition.$parent.prototype.validateValue.call(this, value)) {
+            return;
+        }
+
+        var allows = this.getAllows();
+
+        if (allows.indexOf(value) < 0) {
+            var message = 'The value of the property ' + this.getProperty() + ' is not valid ' +
+                'and must be one of the specified values [' + allows.join(", ") + ']. ';
+
+            if (value && typeof value == 'object' && value.$_className) {
+                message += 'Instance of class "' + value.$_className + '" was received instead.';
+
+            } else if (value && typeof value == 'object') {
+                message += 'Object with type "' + value.constructor.name + '" was received instead.';
+
+            } else if (value === null) {
+                message += 'null value was received instead.';
+
+            } else {
+                message += 'Value with type "' + (typeof value) + '" was received instead.';
+            }
+            throw new Error(message);
+        }
+    };
+
+    /**
      * Validates "allows" attribute value
      *
      * @param {*} allows

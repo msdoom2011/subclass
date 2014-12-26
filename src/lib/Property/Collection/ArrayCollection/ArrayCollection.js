@@ -23,7 +23,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
      */
     ArrayCollection.prototype.addItem = function(value)
     {
-        this.validate(value);
+        this.validateValue(value);
         this._items.push(value);
     };
 
@@ -55,7 +55,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection.Collection = (function()
             throw new Error('Trying to set array element with not valid index "' + index + '" ' +
                 'in property ' + this.getProperty() + '.');
         }
-        this.validate(value);
+        this.validateValue(value);
         this._items[index] = value;
     };
 

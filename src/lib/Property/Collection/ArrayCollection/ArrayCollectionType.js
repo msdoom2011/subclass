@@ -70,7 +70,7 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
         var $this = this;
 
         return function(value) {
-            $this.validate(value);
+            $this.validateValue(value);
             $this.setIsModified(true);
 
             if (value !== null) {
@@ -85,31 +85,6 @@ Subclass.PropertyManager.PropertyTypes.ArrayCollection = (function()
                 $this._collection.removeItems();
             }
         };
-    };
-
-    /**
-     * @inheritDoc
-     * @retruns {(string|null)}
-     */
-    ArrayCollectionType.prototype.validate = function(value)
-    {
-        if (ArrayCollectionType.$parent.prototype.validate.call(this, value)) {
-            return;
-        }
-        if (!value || typeof value != 'object' || !Array.isArray(value)) {
-            var message = 'The value of the property ' + this + ' must be an array or null. ';
-
-            if (typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
-        }
     };
 
 

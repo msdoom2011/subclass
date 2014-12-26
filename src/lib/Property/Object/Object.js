@@ -51,29 +51,6 @@ Subclass.PropertyManager.PropertyTypes.Object = (function()
         return Subclass.PropertyManager.PropertyTypes.ObjectDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    ObjectType.prototype.validate = function(value)
-    {
-        if (ObjectType.$parent.prototype.validate.call(this, value)) {
-            return;
-        }
-        if (value !== null && (typeof value != 'object' || !Subclass.Tools.isPlainObject(value))) {
-            var message = 'The value of the property ' + this + ' must be a plain object. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
-        }
-    };
 
     /*************************************************/
     /*        Registering new property type          */

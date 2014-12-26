@@ -59,36 +59,6 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
         return false;
     };
 
-    /**
-     * @inheritDoc
-     */
-    EnumType.prototype.validate = function(value)
-    {
-        if (EnumType.$parent.prototype.validate.call(this, value)) {
-            return;
-        }
-        var allows = this.getPropertyDefinition().getAllows();
-
-        if (allows.indexOf(value) < 0) {
-            var message = 'The value of the property ' + this + ' is not valid ' +
-                'and must be one of the specified values [' + allows.join(", ") + ']. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else if (value === null) {
-                message += 'null value was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
-        }
-    };
-
 
     /*************************************************/
     /*        Registering new property type          */

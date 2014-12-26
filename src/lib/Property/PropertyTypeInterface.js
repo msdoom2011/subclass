@@ -177,11 +177,13 @@ Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface = (function()
     PropertyTypeInterface.prototype.invokeWatchers = function(context, newValue, oldValue) {};
 
     /**
-     * Returns value of current property
+     * Validates property value. Throws error if value is invalid
      *
-     * @param {Object} context An object which current property belongs to.
+     * @param {*} value
+     * @returns {boolean}
+     * @throws {Error}
      */
-    PropertyTypeInterface.prototype.getValue = function(context) {};
+    PropertyTypeInterface.prototype.validateValue = function(value) {};
 
     /**
      * Sets property value
@@ -191,6 +193,20 @@ Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface = (function()
      * @returns {*}
      */
     PropertyTypeInterface.prototype.setValue = function(context, value) {};
+
+    /**
+     * Returns value of current property
+     *
+     * @param {Object} context An object which current property belongs to.
+     */
+    PropertyTypeInterface.prototype.getValue = function(context) {};
+
+    /**
+     * Returns property default value
+     *
+     * @returns {*}
+     */
+    PropertyTypeInterface.prototype.getDefaultValue = function() {};
 
     /**
      * Generates property getter function
@@ -219,15 +235,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface = (function()
      * @param {Object} context
      */
     PropertyTypeInterface.prototype.attachHashedProperty = function(context) {};
-
-    /**
-     * Validates property value. Throws error if value is invalid
-     *
-     * @param {*} value
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    PropertyTypeInterface.prototype.validate = function(value) {};
 
     /**
      * Checks if property contains empty value

@@ -12,9 +12,9 @@ var classManager = Subclass.create({
     }
 });
 
-classManager.initialize(function() {
-
-});
+//classManager.initialize(function() {
+//
+//});
 
 classManager.registerAbstractClass("AbstractClassBase", {
 

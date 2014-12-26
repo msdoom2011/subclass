@@ -158,7 +158,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
 
         return function(value) {
             value = $this.invokeWatchers(this, value, $this.getValue(this));
-            $this.validate(value);
+            $this.validateValue(value);
             $this.setIsModified(true);
 
             if (value !== null) {
@@ -209,58 +209,6 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
                 }
                 children[childPropName].attach(childrenContext);
             }
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    MapType.prototype.validate = function(value)
-    {
-        if (MapType.$parent.prototype.validate.call(this, value)) {
-            return;
-        }
-        var propertyDefinition = this.getPropertyDefinition();
-        var error = false;
-
-        if (
-            typeof value != 'object'
-            || !Subclass.Tools.isPlainObject(value)
-        ) {
-            error = true;
-        }
-
-        if (!error) {
-            for (var propName in value) {
-                if (!value.hasOwnProperty(propName)) {
-                    continue;
-                }
-                if (!this.hasChild(propName)) {
-                    var childrenProps = this.getChildren();
-
-                    throw new Error('Trying to set not registered property "' + propName + '" ' +
-                        'to not extendable map property ' + this + '. ' +
-                        'Allowed properties are: "' + Object.keys(childrenProps).join('", "') + '".');
-
-                } else {
-                    this.getChild(propName).validate(value[propName]);
-                }
-            }
-        }
-
-        if (error) {
-            var message = 'The value of the property ' + this + ' must be a plain object or null. ';
-
-            if (typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
         }
     };
 

@@ -17,6 +17,45 @@ Subclass.PropertyManager.PropertyTypes.ClassDefinition = (function()
     ClassDefinition.$parent = Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
 
     /**
+     * @inheritDoc
+     */
+    ClassDefinition.prototype.validateValue = function(value)
+    {
+        if (ClassDefinition.$parent.prototype.validateValue.call(this, value)) {
+            return;
+        }
+
+        var neededClassName = this.getClassName();
+
+        if (
+            !value
+            || typeof value != 'object'
+            || (
+                value
+                && typeof value == 'object'
+                && (
+                    !value.$_className
+                    || !value.isInstanceOf(neededClassName)
+                )
+            )
+        ) {
+            var message = 'The value of the property ' + this.getProperty() + ' must be ' +
+                'an instance of class "' + neededClassName + '" or null. ';
+
+            if (typeof value == 'object' && value.$_className) {
+                message += 'Instance of class "' + value.$_className + '" was received instead.';
+
+            } else if (typeof value == 'object') {
+                message += 'Object with type "' + value.constructor.name + '" was received instead.';
+
+            } else {
+                message += 'Value with type "' + (typeof value) + '" was received instead.';
+            }
+            throw new Error(message);
+        }
+    };
+
+    /**
      * Validates "className" attribute value
      *
      * @param {*} className

@@ -196,7 +196,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
         var $this = this;
 
         return function(value) {
-            $this.validate(value);
+            $this.validateValue(value);
             $this.setIsModified(true);
 
             if (value !== null) {

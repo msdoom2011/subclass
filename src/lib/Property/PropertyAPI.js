@@ -53,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyAPI = (function()
     PropertyAPI.prototype.isValueValid = function(value)
     {
         try {
-            this._property.validate(value);
+            this._property.validateValue(value);
             return true;
 
         } catch (e) {

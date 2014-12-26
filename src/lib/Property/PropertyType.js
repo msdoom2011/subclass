@@ -393,14 +393,9 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     /**
      * @inheritDoc
      */
-    PropertyType.prototype.getValue = function(context)
+    PropertyType.prototype.validateValue = function(value)
     {
-        if (this.getPropertyDefinition().isAccessors()) {
-            var getterName = Subclass.Tools.generateGetterName(this.getPropertyName());
-            return context[getterName]();
-        }
-        var propName = this.getPropertyName();
-        return context[propName];
+        return this.getPropertyDefinition().validateValue(value);
     };
 
     /**
@@ -420,6 +415,23 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         context[propName] = value;
     };
 
+    /**
+     * @inheritDoc
+     */
+    PropertyType.prototype.getValue = function(context)
+    {
+        if (this.getPropertyDefinition().isAccessors()) {
+            var getterName = Subclass.Tools.generateGetterName(this.getPropertyName());
+            return context[getterName]();
+        }
+        var propName = this.getPropertyName();
+        return context[propName];
+    };
+
+    /**
+     *
+     * @returns {*}
+     */
     PropertyType.prototype.getDefaultValue = function()
     {
         return this.getPropertyDefinition().getValue();
@@ -467,7 +479,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
 
         return function(value) {
             value = $this.invokeWatchers(this, value, $this.getValue(this));
-            $this.validate(value);
+            $this.validateValue(value);
             $this.setIsModified(true);
             this[hashedPropName] = value;
         };
@@ -545,17 +557,6 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 value: defaultValue
             });
         }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    PropertyType.prototype.validate = function(value)
-    {
-        var propertyDefinition = this.getPropertyDefinition();
-        var isNullable = propertyDefinition.isNullable();
-
-        return isNullable && value === null;
     };
 
     PropertyType.prototype.toString = function()

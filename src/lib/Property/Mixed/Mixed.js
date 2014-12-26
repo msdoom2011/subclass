@@ -77,52 +77,6 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
         ));
     };
 
-    /**
-     * @inheritDoc
-     */
-    MixedType.prototype.validate = function(value)
-    {
-        if (MixedType.$parent.prototype.validate.call(this, value)) {
-            return;
-        }
-        var propertyDefinition = this.getPropertyDefinition();
-        var allowedTypes = this.getAllowedTypes();
-        var error = true;
-
-        for (var i = 0; i < allowedTypes.length; i++) {
-            var allowedType = allowedTypes[i];
-
-            try {
-                allowedType.validate(value);
-                error = false;
-                break;
-
-            } catch (e) {
-                // Do nothing
-            }
-        }
-        if (error) {
-            var allowedTypeNames = propertyDefinition.getAllowsNames();
-
-            var message = 'The value of the property ' + this + ' is not valid ' +
-                'and must belongs to one of the specified types [' + allowedTypeNames.join(", ") + ']. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else if (value === null) {
-                message += 'null value was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
-        }
-    };
-
 
     /*************************************************/
     /*        Registering new property type          */

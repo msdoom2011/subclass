@@ -39,7 +39,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
                 'to property ' + this.getProperty() + '.');
             return;
         }
-        this.validate(value);
+        this.validateValue(value);
         this._items[key] = value;
     };
 
@@ -69,7 +69,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
      */
     Collection.prototype.setItem = function(key, value)
     {
-        this.validate(value);
+        this.validateValue(value);
         this._items[key] = value;
     };
 
@@ -236,9 +236,9 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
      *
      * @param {*} value
      */
-    Collection.prototype.validate = function(value)
+    Collection.prototype.validateValue = function(value)
     {
-        this.getProperty().getProto().validate(value);
+        this.getProperty().getProto().validateValue(value);
     };
 
     /**

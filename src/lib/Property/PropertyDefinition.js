@@ -99,9 +99,11 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.validateValue = function(value)
     {
-        //try {
-            this.getProperty().validate(value);
+        return this.isNullable() && value === null;
 
+        //try {
+        //    this.getProperty().validate(value);
+        //
         //} catch (e) {
         //    console.error("Error! Invalid default value!");
         //    throw e.stack;

@@ -61,30 +61,6 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
         return (isNullable && value === null) || (!isNullable && value.length === 0);
     };
 
-    /**
-     * @inheritDoc
-     */
-    ArrayType.prototype.validate = function(value)
-    {
-        if (ArrayType.$parent.prototype.validate.call(this, value)) {
-            return;
-        }
-
-        if (!ArrayType.isAllowedValue(value)) {
-            var message = 'The value of the property ' + this + ' must be an array. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
-        }
-    };
 
     /*************************************************/
     /*        Registering new property type          */

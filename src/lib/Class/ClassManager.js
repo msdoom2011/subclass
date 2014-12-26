@@ -347,7 +347,7 @@ Subclass.ClassManager = (function()
              */
             ClassManager.prototype["register" + classTypeName] = function (className, classDefinition)
             {
-                this.addClass(
+                return this.addClass(
                     classTypeConstructor.getClassTypeName(),
                     className,
                     classDefinition

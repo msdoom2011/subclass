@@ -20,12 +20,57 @@ Subclass.ClassManager.ClassTypes.Config.Builder = (function()
                 throw "error";
             }
             for (var i = 0; i < includesList.length; i++) {
-                if (typeof includesList[i] != "string") {
-                    throw "error";
-                }
+                this._validateInclude(includesList[i]);
             }
         } catch (e) {
             throw new Error('Invalid value of argument "includesList" in method "setIncludes" in "ConfigBuilder" class.');
+        }
+    };
+
+    /**
+     * Validates config include
+     *
+     * @param {*} include
+     * @private
+     */
+    ConfigBuilder.prototype._validateInclude = function(include)
+    {
+        if (
+            typeof include != "string"
+            && typeof include != "object"
+            && include.getClassTypeName
+            && include.getClassTypeName() !== "Config"
+        ) {
+            throw new Error('Specified invalid includes in "Config" class.');
+        }
+    };
+
+    /**
+     * Brings includes list to common state
+     *
+     * @param {Array} includesList
+     * @private
+     */
+    ConfigBuilder.prototype._normalizeIncludes = function(includesList)
+    {
+        for (var i = 0; i < includesList.length; i++) {
+            includesList[i] = this._normalizeInclude(includesList[i]);
+        }
+    };
+
+    /**
+     * Normalizes config include
+     *
+     * @param {(string|Config)} include
+     * @returns {string}
+     * @private
+     */
+    ConfigBuilder.prototype._normalizeInclude = function(include)
+    {
+        this._validateInclude(include);
+
+        if (typeof include != 'string') {
+            return include.getClassName();
         }
     };
 
@@ -38,6 +83,7 @@ Subclass.ClassManager.ClassTypes.Config.Builder = (function()
     ConfigBuilder.prototype.setIncludes = function(includesList)
     {
         this._validateIncludes(includesList);
+        this._normalizeIncludes(includesList);
         this._getClassDefinition().$_includes = includesList;
 
         return this;

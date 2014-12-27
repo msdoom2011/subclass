@@ -1,12 +1,11 @@
+/**
+ * @class
+ * @implements {Subclass.ClassManager.ClassTypes.ClassTypeInterface}
+ */
 Subclass.ClassManager.ClassTypes.ClassType = (function()
 {
     /**
-     * Constructor of base class type
-     *
-     * @param {ClassManager} classManager
-     * @param {string} className
-     * @param {object} classDefinition
-     * @constructor
+     * @inheritDoc
      */
     function ClassType(classManager, className, classDefinition)
     {
@@ -65,14 +64,12 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     /**
      * Can be parent class type
      *
-     * @type {ClassType}
+     * @type {(ClassTypeInterface|null)}
      */
-    ClassType.$parent = null;
+    ClassType.$parent = Subclass.ClassManager.ClassTypes.ClassTypeInterface;
 
     /**
-     * Returns name of class type
-     *
-     * @returns {string}
+     * @inheritDoc
      */
     ClassType.getClassTypeName = function ()
     {
@@ -80,7 +77,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns class builder constructor of current class type.
+     * @inheritDoc
      */
     ClassType.getClassBuilder = function()
     {
@@ -88,7 +85,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Initializes class on creation stage
+     * @inheritDoc
      */
     ClassType.prototype.initialize = function()
     {
@@ -96,9 +93,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns class manager instance
-     *
-     * @returns {ClassManager}
+     * @inheritDoc
      */
     ClassType.prototype.getClassManager = function ()
     {
@@ -106,9 +101,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns name of current class instance
-     *
-     * @returns {string}
+     * @inheritDoc
      */
     ClassType.prototype.getClassName = function ()
     {
@@ -116,9 +109,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Sets class definition
-     *
-     * @param {Object} classDefinition
+     * @inheritDoc
      */
     ClassType.prototype.setClassDefinition = function(classDefinition)
     {
@@ -131,9 +122,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns class definition object
-     *
-     * @returns {Object}
+     * @inheritDoc
      */
     ClassType.prototype.getClassDefinition = function ()
     {
@@ -141,9 +130,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Sets class parent
-     *
-     * @param {string} parentClassName
+     * @inheritDoc
      */
     ClassType.prototype.setClassParent = function (parentClassName)
     {
@@ -160,9 +147,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns parent class instance
-     *
-     * @return {(ClassType|null)}
+     * @inheritDoc
      */
     ClassType.prototype.getClassParent = function ()
     {
@@ -170,10 +155,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns all typed properties in current class instance
-     *
-     * @param {boolean} withInherited
-     * @returns {Object.<PropertyType>}
+     * @inheritDoc
      */
     ClassType.prototype.getClassProperties = function(withInherited)
     {
@@ -199,10 +181,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Adds new typed property to class
-     *
-     * @param {string} propertyName
-     * @param {Object} propertyDefinition
+     * @inheritDoc
      */
     ClassType.prototype.addClassProperty = function(propertyName, propertyDefinition)
     {
@@ -216,11 +195,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns property instance by its name
-     *
-     * @param {string} propertyName
-     * @returns {PropertyType}
-     * @throws {Error}
+     * @inheritDoc
      */
     ClassType.prototype.getClassProperty = function(propertyName)
     {
@@ -237,10 +212,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Checks if property with specified property name exists
-     *
-     * @param propertyName
-     * @returns {boolean}
+     * @inheritDoc
      */
     ClassType.prototype.issetClassProperty = function(propertyName)
     {
@@ -254,17 +226,25 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
         }
         return true;
     };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //ClassType.prototype.getStatic = function()
+    //{
+    //    return this.getClassDefinition().$_static || {};
+    //};
 
+    /**
+     * @inheritDoc
+     */
     ClassType.prototype.getStatic = function()
     {
-        return this.getClassDefinition().$_static || {};
+        return this.getClassDefinition().getStatic();
     };
 
     /**
-     * Returns constructor function for current class type
-     *
-     * @returns {function} Returns named function
-     * @throws {Error}
+     * @inheritDoc
      */
     ClassType.prototype.getClassConstructorEmpty = function ()
     {
@@ -272,9 +252,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Returns class constructor
-     *
-     * @returns {function}
+     * @inheritDoc
      */
     ClassType.prototype.getClassConstructor = function ()
     {
@@ -328,9 +306,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Creates and attaches class typed properties
-     *
-     * @param context
+     * @inheritDoc
      */
     ClassType.prototype.attachClassProperties = function(context)
     {
@@ -345,29 +321,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Checks if current class is instance of another class
-     *
-     * @param {string} className
-     * @return {boolean}
-     */
-    ClassType.prototype.isInstanceOf = function (className)
-    {
-        if (!className) {
-            throw new Error('Class name must be specified!');
-        }
-        if (this.getClassName() == className) {
-            return true;
-        }
-        if (this.getClassParent()) {
-            return this.getClassParent().isInstanceOf(className);
-        }
-        return false;
-    };
-
-    /**
-     * Creates class instance of current class type
-     *
-     * @returns {object} Class instance
+     * @inheritDoc
      */
     ClassType.prototype.createInstance = function ()
     {
@@ -398,256 +352,273 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     };
 
     /**
-     * Modifies class definition
-     *
-     * @returns {object}
+     * @inheritDoc
      */
-    ClassType.prototype.getBaseClassDefinition = function ()
+    ClassType.prototype.isInstanceOf = function (className)
     {
-        return {
-
-            /**
-             * @type {string} Class name
-             */
-            $_className: null,
-
-            /**
-             * @type {string} Class type
-             */
-            $_classType: null,
-
-            /**
-             * @type {ClassType} Class definition closure
-             */
-            $_class: null,
-
-            /**
-             * @type {(string[]|null)} Required classes
-             * @TODO needed for auto load classes in further implementation
-             */
-            $_requires: null,
-
-            /**
-             * @type {string} Parent class name
-             */
-            $_extends: null,
-
-            /**
-             * @type {Object} List of class typed properties
-             */
-            $_properties: {},
-
-            /**
-             * @type {Object} Static properties and methods for current class constructor
-             */
-            $_static: {},
-
-            /**
-             * Class constructor
-             *
-             * @param [arguments] Any class constructor arguments
-             */
-            $_constructor: function()
-            {
-                // Do something
-            },
-
-            /**
-             * Returns class manager instance
-             *
-             * @returns {ClassManager}
-             */
-            getClassManager: function()
-            {
-                return this.$_class.getClassManager();
-            },
-
-            /**
-             * Returns class name
-             *
-             * @returns {string}
-             */
-            getClassName: function()
-            {
-                return this.$_className;
-            },
-
-            getStatic: function()
-            {
-                return this.$_class.getStatic();
-            },
-
-            /**
-             * Checks if current class instance of passed class with specified name
-             *
-             * @param {string} className
-             * @returns {boolean}
-             */
-            isInstanceOf: function (className)
-            {
-                return this.$_class.isInstanceOf(className);
-            },
-
-            /**
-             * Returns parent class definition instance
-             *
-             * @returns {Object} Prototype of parent class.
-             */
-            getParent: function ()
-            {
-                if (!this.$_class.getClassParent()) {
-                    return null;
-                }
-                return this.$_class
-                    .getClassParent()
-                    .getClassConstructor()
-                    .prototype
-                ;
-            },
-
-            /**
-             * Returns copy of current class instance
-             *
-             * @returns {Object}
-             */
-            getCopy: function()
-            {
-                // @TODO needs further implementation
-            },
-
-            /**
-             * Validates type of parameter and setts default value if it's undefined
-             *
-             * @param {string} paramType
-             * @param {*} paramValue
-             * @param {*} [defaultValue]
-             * @returns {*}
-             */
-            param: function (paramType, paramValue, defaultValue)
-            {
-                if (typeof paramValue == 'undefined') {
-                    paramValue = defaultValue;
-                }
-                //if (typeof paramValue != paramType && paramValue !== null) {
-                //    throw new Error("Trying to set not valid value of type '" + (typeof paramValue) + "'. '" + paramType + "' is expected.");
-                //}
-
-                return paramValue;
-            },
-
-            /**
-             * Checks if property is typed
-             *
-             * @param {string} propertyName
-             * @returns {boolean}
-             */
-            issetProperty: function(propertyName)
-            {
-                return this.$_class.issetClassProperty(propertyName);
-            },
-
-            /**
-             * Returns property api object
-             *
-             * @param {string} propertyName
-             * @returns {Subclass.PropertyManager.PropertyTypes.PropertyAPI}
-             */
-            getProperty: function(propertyName)
-            {
-                return this.$_class.getClassProperty(propertyName).getAPI(this);
-            }
-        };
-    };
-
-    /**
-     * Validates class
-     */
-    ClassType.prototype.validateClassDefinition = function ()
-    {
-        var classDefinition = this.getClassDefinition();
-
-        for (var propName in classDefinition) {
-            if (!classDefinition.hasOwnProperty(propName)) {
-                continue;
-            }
-            if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
-                throw new Error('Trying to define property with not allowed name "' + propName + '" ' +
-                    'in class "' + this.getClassName() + '".');
-            }
+        if (!className) {
+            throw new Error('Class name must be specified!');
         }
-    };
-
-    /**
-     * Processes class definition. Getting info from classDefinition.
-     */
-    ClassType.prototype.processClassDefinition = function ()
-    {
-        var classDefinition = this.getClassDefinition();
-        var classProperties = classDefinition.$_properties;
-        var parentClassName = classDefinition.$_extends;
-
-        if (classProperties && typeof classProperties == 'object') {
-            for (var propName in classProperties) {
-                if (!classProperties.hasOwnProperty(propName)) {
-                    continue;
-                }
-                this.addClassProperty(
-                    propName,
-                    classProperties[propName]
-                );
-            }
+        if (this.getClassName() == className) {
+            return true;
         }
-        if (parentClassName && typeof parentClassName == 'string') {
-            this.setClassParent(parentClassName);
+        if (this.getClassParent()) {
+            return this.getClassParent().isInstanceOf(className);
         }
-
-        // Extending accessors
-
-        this.extendClassPropertyAccessors();
+        return false;
     };
-
-    /**
-    * Extends class constructor with specific methods.
-    *
-    * If getter or setter of any typed property was redefined in the class definition
-    * the new methods will generated. For setter it's gonna be "<setterOrGetterName>Default"
-    * where "<setterOrGetterName>" is name of redefined setter or getter name.
-    *
-    * These methods allows to interact with private properties through redefined getters and setters.
-    *
-    * @returns {Function}
-    */
-    ClassType.prototype.extendClassPropertyAccessors = function()
-    {
-        var classProperties = this.getClassProperties();
-        var classDefinition = this.getClassDefinition();
-
-        for (var propertyName in classProperties) {
-            if (!classProperties.hasOwnProperty(propertyName)) {
-                continue;
-            }
-            var property = classProperties[propertyName];
-
-            if (!property.getPropertyDefinition().isAccessors()) {
-                continue;
-            }
-            var accessors = {
-                Getter: Subclass.Tools.generateGetterName(propertyName),
-                Setter: Subclass.Tools.generateSetterName(propertyName)
-            };
-
-            for (var accessorType in accessors) {
-                if (!accessors.hasOwnProperty(accessorType)) {
-                    continue;
-                }
-                var accessorName = accessors[accessorType];
-
-                if (classDefinition[accessorName]) {
-                    classDefinition[accessorName + "Default"] = property['generate' + accessorType]();
-                }
-            }
-        }
-    };
+    //
+    ///**
+    // * Modifies class definition
+    // *
+    // * @returns {object}
+    // */
+    //ClassType.prototype.getBaseClassDefinition = function ()
+    //{
+    //    return {
+    //
+    //        /**
+    //         * @type {string} Class name
+    //         */
+    //        $_className: null,
+    //
+    //        /**
+    //         * @type {string} Class type
+    //         */
+    //        $_classType: null,
+    //
+    //        /**
+    //         * @type {ClassType} Class definition closure
+    //         */
+    //        $_class: null,
+    //
+    //        /**
+    //         * @type {(string[]|null)} Required classes
+    //         * @TODO needed for auto load classes in further implementation
+    //         */
+    //        $_requires: null,
+    //
+    //        /**
+    //         * @type {string} Parent class name
+    //         */
+    //        $_extends: null,
+    //
+    //        /**
+    //         * @type {Object} List of class typed properties
+    //         */
+    //        $_properties: {},
+    //
+    //        /**
+    //         * @type {Object} Static properties and methods for current class constructor
+    //         */
+    //        $_static: {},
+    //
+    //        /**
+    //         * Class constructor
+    //         *
+    //         * @param [arguments] Any class constructor arguments
+    //         */
+    //        $_constructor: function()
+    //        {
+    //            // Do something
+    //        },
+    //
+    //        /**
+    //         * Returns class manager instance
+    //         *
+    //         * @returns {ClassManager}
+    //         */
+    //        getClassManager: function()
+    //        {
+    //            return this.$_class.getClassManager();
+    //        },
+    //
+    //        /**
+    //         * Returns class name
+    //         *
+    //         * @returns {string}
+    //         */
+    //        getClassName: function()
+    //        {
+    //            return this.$_className;
+    //        },
+    //
+    //        getStatic: function()
+    //        {
+    //            return this.$_class.getStatic();
+    //        },
+    //
+    //        /**
+    //         * Checks if current class instance of passed class with specified name
+    //         *
+    //         * @param {string} className
+    //         * @returns {boolean}
+    //         */
+    //        isInstanceOf: function (className)
+    //        {
+    //            return this.$_class.isInstanceOf(className);
+    //        },
+    //
+    //        /**
+    //         * Returns parent class definition instance
+    //         *
+    //         * @returns {Object} Prototype of parent class.
+    //         */
+    //        getParent: function ()
+    //        {
+    //            if (!this.$_class.getClassParent()) {
+    //                return null;
+    //            }
+    //            return this.$_class
+    //                .getClassParent()
+    //                .getClassConstructor()
+    //                .prototype
+    //            ;
+    //        },
+    //
+    //        /**
+    //         * Returns copy of current class instance
+    //         *
+    //         * @returns {Object}
+    //         */
+    //        getCopy: function()
+    //        {
+    //            // @TODO needs further implementation
+    //        },
+    //
+    //        /**
+    //         * Validates type of parameter and setts default value if it's undefined
+    //         *
+    //         * @param {string} paramType
+    //         * @param {*} paramValue
+    //         * @param {*} [defaultValue]
+    //         * @returns {*}
+    //         */
+    //        param: function (paramType, paramValue, defaultValue)
+    //        {
+    //            if (typeof paramValue == 'undefined') {
+    //                paramValue = defaultValue;
+    //            }
+    //            //if (typeof paramValue != paramType && paramValue !== null) {
+    //            //    throw new Error("Trying to set not valid value of type '" + (typeof paramValue) + "'. '" + paramType + "' is expected.");
+    //            //}
+    //
+    //            return paramValue;
+    //        },
+    //
+    //        /**
+    //         * Checks if property is typed
+    //         *
+    //         * @param {string} propertyName
+    //         * @returns {boolean}
+    //         */
+    //        issetProperty: function(propertyName)
+    //        {
+    //            return this.$_class.issetClassProperty(propertyName);
+    //        },
+    //
+    //        /**
+    //         * Returns property api object
+    //         *
+    //         * @param {string} propertyName
+    //         * @returns {Subclass.PropertyManager.PropertyTypes.PropertyAPI}
+    //         */
+    //        getProperty: function(propertyName)
+    //        {
+    //            return this.$_class.getClassProperty(propertyName).getAPI(this);
+    //        }
+    //    };
+    //};
+    //
+    ///**
+    // * Validates class
+    // */
+    //ClassType.prototype.validateClassDefinition = function ()
+    //{
+    //    var classDefinition = this.getClassDefinition();
+    //
+    //    for (var propName in classDefinition) {
+    //        if (!classDefinition.hasOwnProperty(propName)) {
+    //            continue;
+    //        }
+    //        if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
+    //            throw new Error('Trying to define property with not allowed name "' + propName + '" ' +
+    //                'in class "' + this.getClassName() + '".');
+    //        }
+    //    }
+    //};
+    //
+    ///**
+    // * Processes class definition. Getting info from classDefinition.
+    // */
+    //ClassType.prototype.processClassDefinition = function ()
+    //{
+    //    var classDefinition = this.getClassDefinition();
+    //    var classProperties = classDefinition.$_properties;
+    //    var parentClassName = classDefinition.$_extends;
+    //
+    //    if (classProperties && typeof classProperties == 'object') {
+    //        for (var propName in classProperties) {
+    //            if (!classProperties.hasOwnProperty(propName)) {
+    //                continue;
+    //            }
+    //            this.addClassProperty(
+    //                propName,
+    //                classProperties[propName]
+    //            );
+    //        }
+    //    }
+    //    if (parentClassName && typeof parentClassName == 'string') {
+    //        this.setClassParent(parentClassName);
+    //    }
+    //
+    //    // Extending accessors
+    //
+    //    this.extendClassPropertyAccessors();
+    //};
+    //
+    ///**
+    //* Extends class constructor with specific methods.
+    //*
+    //* If getter or setter of any typed property was redefined in the class definition
+    //* the new methods will generated. For setter it's gonna be "<setterOrGetterName>Default"
+    //* where "<setterOrGetterName>" is name of redefined setter or getter name.
+    //*
+    //* These methods allows to interact with private properties through redefined getters and setters.
+    //*
+    //* @returns {Function}
+    //*/
+    //ClassType.prototype.extendClassPropertyAccessors = function()
+    //{
+    //    var classProperties = this.getClassProperties();
+    //    var classDefinition = this.getClassDefinition();
+    //
+    //    for (var propertyName in classProperties) {
+    //        if (!classProperties.hasOwnProperty(propertyName)) {
+    //            continue;
+    //        }
+    //        var property = classProperties[propertyName];
+    //
+    //        if (!property.getPropertyDefinition().isAccessors()) {
+    //            continue;
+    //        }
+    //        var accessors = {
+    //            Getter: Subclass.Tools.generateGetterName(propertyName),
+    //            Setter: Subclass.Tools.generateSetterName(propertyName)
+    //        };
+    //
+    //        for (var accessorType in accessors) {
+    //            if (!accessors.hasOwnProperty(accessorType)) {
+    //                continue;
+    //            }
+    //            var accessorName = accessors[accessorType];
+    //
+    //            if (classDefinition[accessorName]) {
+    //                classDefinition[accessorName + "Default"] = property['generate' + accessorType]();
+    //            }
+    //        }
+    //    }
+    //};
 
 
     /*************************************************/

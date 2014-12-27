@@ -38,7 +38,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     /**
      * @inheritDoc
      */
-    Config.getClassBuilder = function()
+    Config.getClassBuilderClass = function()
     {
         return Subclass.ClassManager.ClassTypes.Config.Builder;
     };

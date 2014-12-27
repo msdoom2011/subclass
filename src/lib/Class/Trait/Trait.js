@@ -29,7 +29,7 @@ Subclass.ClassManager.ClassTypes.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.getClassBuilder = function()
+    Trait.getClassBuilderClass = function()
     {
         return Subclass.ClassManager.ClassTypes.Trait.Builder;
     };

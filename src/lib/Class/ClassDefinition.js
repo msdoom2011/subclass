@@ -6,13 +6,15 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     function ClassDefinition (classInst, classDefinition)
     {
         if (!classInst || !(classInst instanceof Subclass.ClassManager.ClassTypes.ClassTypeInterface)) {
-            throw new Error('Invalid argument "classInst" in constructor ' +
+            throw new Error(
+                'Invalid argument "classInst" in constructor ' +
                 'of "Subclass.ClassManager.ClassTypes.ClassDefinition" class.' +
                 'It must be an instance of "Subclass.ClassManager.ClassTypes.ClassTypeInterface".'
             );
         }
         if (!classDefinition || typeof classDefinition != 'object') {
-            throw new Error('Invalid argument "classDefinition" in constructor ' +
+            throw new Error(
+                'Invalid argument "classDefinition" in constructor ' +
                 'of "Subclass.ClassManager.ClassTypes.ClassDefinition" class.' +
                 'It must be a plain object'
             );
@@ -61,21 +63,21 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
      */
     ClassDefinition.prototype.validateRequires = function(requires)
     {
-        try {
-            if (requires && typeof requires != 'object') {
-                throw 'error';
-            }
+        if (requires && typeof requires != 'object') {
+            this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
+        }
+        if (requires) {
             for (var alias in requires) {
                 if (!requires.hasOwnProperty(alias)) {
                     continue;
                 }
                 if (!alias[0].match(/[a-z$_]/i)) {
-                    throw 'error';
+                    throw new Error(
+                        'Invalid alias name for required class "' + requires[alias] + '" ' +
+                        'in class "' + this.getClass().getClassName() + '".'
+                    );
                 }
             }
-
-        } catch (e) {
-            this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
         }
     };
 
@@ -84,7 +86,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
      *
      * @param {Object.<string>} requires
      *
-     *      List of classes that current one requires.
+     *      List of the classes that current one requires.
      *
      *      Example: {
      *         classAlias1: "Namespace/Of/Class1",
@@ -95,17 +97,159 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     ClassDefinition.prototype.setRequires = function(requires)
     {
         this.validateRequires(requires);
-        this.getDefinition().$_requires = requires;
+        this.getDefinition().$_requires = requires || {};
     };
 
     /**
-     * Sets "$_requires" attribute value
+     * Return "$_requires" attribute value
      *
      * @returns {Object.<string>}
      */
     ClassDefinition.prototype.getRequires = function()
     {
         return this.getDefinition().$_requires;
+    };
+
+    /**
+     * Validates "$_extends" attribute value
+     *
+     * @param {*} parentClassName
+     * @throws {Error}
+     */
+    ClassDefinition.prototype.validateExtends = function(parentClassName)
+    {
+        if (parentClassName !== null && typeof parentClassName != 'string') {
+            this._throwInvalidAttribute('$_requires', 'a string or null.');
+        }
+    };
+
+    /**
+     * Sets "$_extends" attribute value
+     *
+     * @param {string} parentClassName  Name of parent class, i.e. "Namespace/Of/ParentClass"
+     */
+    ClassDefinition.prototype.setExtends = function(parentClassName)
+    {
+        this.validateExtends(parentClassName);
+        this.getDefinition().$_extends = parentClassName;
+
+        if (parentClassName) {
+            this.getClass().setClassParent(parentClassName);
+        }
+    };
+
+    /**
+     * Returns "$_extends" attribute value
+     *
+     * @returns {string}
+     */
+    ClassDefinition.prototype.getExtends = function()
+    {
+        return this.getDefinition().$_extends;
+    };
+
+    /**
+     * Validates "$_properties" attribute value
+     *
+     * @param {*} properties
+     * @throws {Error}
+     */
+    ClassDefinition.prototype.validateProperties = function(properties)
+    {
+        if (properties && typeof properties != 'object') {
+            this._throwInvalidAttribute('$_properties', 'a plain object with property definitions.');
+
+        } else if (properties) {
+            for (var propName in properties) {
+                if (!properties.hasOwnProperty(propName)) {
+                    continue;
+                }
+                if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
+                    throw Error(
+                        'Specified not allowed property name "' + propName + '" in attribute "$_properties"' +
+                        'in definition of class "' + this.getClass().getClassName() + '".'
+                    );
+                }
+                if (!properties[propName] || Subclass.Tools.isPlainObject(properties[propName])) {
+                    this._throwInvalidAttribute('$_properties', 'a plain object with not empty property definitions.');
+                }
+            }
+        }
+    };
+
+    /**
+     * Sets "$_properties" attribute value
+     *
+     * @param {Object.<Object>} properties
+     *
+     *      List of the property definitions
+     *
+     *      Example: {
+     *         propName1: { type: "string", value: "init value" },
+     *         propName2: { type: "boolean" },
+     *         ...
+     *      }
+     */
+    ClassDefinition.prototype.setProperties = function(properties)
+    {
+        this.validateProperties(properties);
+        this.getDefinition().$_properties = properties || {};
+
+        if (properties) {
+            for (var propName in properties) {
+                if (!properties.hasOwnProperty(propName)) {
+                    continue;
+                }
+                this.getClass().addClassProperty(
+                    propName,
+                    properties[propName]
+                );
+            }
+        }
+    };
+
+    /**
+     * Return "$_properties" attribute value
+     *
+     * @returns {Object.<Object>}
+     */
+    ClassDefinition.prototype.getProperties = function()
+    {
+        return this.getDefinition().$_properties;
+    };
+
+    /**
+     * Validates "$_static" attribute value
+     *
+     * @param {*} value
+     * @throws {Error}
+     */
+    ClassDefinition.prototype.validateStatic = function(value)
+    {
+        if (value !== null && Subclass.Tools.isPlainObject(value)) {
+            this._throwInvalidAttribute('$_static', 'an object or null.');
+        }
+    };
+
+    /**
+     * Sets "$_static" attribute value
+     *
+     * @param {Object} value Plain object with different properties and methods
+     */
+    ClassDefinition.prototype.setStatic = function(value)
+    {
+        this.validateStatic(value);
+        this.getDefinition().$_static = value || {};
+    };
+
+    /**
+     * Returns "$_static" attribute value
+     *
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.getStatic = function()
+    {
+        return this.getDefinition().$_static;
     };
 
     /**
@@ -136,7 +280,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
              * @type {(string[]|null)} Required classes
              * @TODO needed for auto load classes in further implementation
              */
-            $_requires: null,
+            $_requires: {},
 
             /**
              * @type {string} Parent class name
@@ -276,7 +420,8 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     };
 
     /**
-     * Validates class
+     * Validates class definition
+     *
      * @throws {Error}
      */
     ClassDefinition.prototype.validateDefinition = function ()
@@ -290,7 +435,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
                 throw new Error(
                     'Trying to define property with not allowed name "' + propName + '" ' +
-                    'in class "' + this.getClassName() + '".'
+                    'in class "' + this.getClass().getClassName() + '".'
                 );
             }
         }
@@ -301,28 +446,45 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
      */
     ClassDefinition.prototype.processDefinition = function ()
     {
-        var classDefinition = this.getDefinition();
-        var classProperties = classDefinition.$_properties;
-        var parentClassName = classDefinition.$_extends;
+        var definition = this.getDefinition();
+        this._definition = this.getBaseDefinition();
 
-        if (classProperties && typeof classProperties == 'object') {
-            for (var propName in classProperties) {
-                if (!classProperties.hasOwnProperty(propName)) {
-                    continue;
-                }
-                this.getClass().addClassProperty(
-                    propName,
-                    classProperties[propName]
-                );
+        for (var attrName in definition) {
+            if (
+                !definition.hasOwnProperty(attrName)
+                || !attrName.match(/^\$_/i)
+            ) {
+                continue;
             }
-        }
-        if (parentClassName && typeof parentClassName == 'string') {
-            this.getClass().setClassParent(parentClassName);
+            var setterMethod = "set" + attrName[0].toUpperCase() + attrName.substr(1);
+
+            if (this[setterMethod]) {
+                this[setterMethod](definition[attrName]);
+            }
         }
 
         // Extending accessors
 
         this.processClassPropertyAccessors();
+
+        //var classDefinition = this.getDefinition();
+        //var classProperties = classDefinition.$_properties;
+        //var parentClassName = classDefinition.$_extends;
+        //
+        //if (classProperties && typeof classProperties == 'object') {
+        //    for (var propName in classProperties) {
+        //        if (!classProperties.hasOwnProperty(propName)) {
+        //            continue;
+        //        }
+        //        this.getClass().addClassProperty(
+        //            propName,
+        //            classProperties[propName]
+        //        );
+        //    }
+        //}
+        //if (parentClassName && typeof parentClassName == 'string') {
+        //    this.getClass().setClassParent(parentClassName);
+        //}
     };
 
     /**

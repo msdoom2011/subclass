@@ -21,37 +21,37 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
 
         /**
          * @type {ClassManager}
-         * @private
+         * @protected
          */
         this._classManager = classManager;
 
         /**
          * @type {string}
-         * @private
+         * @protected
          */
         this._className = className;
 
         /**
-         * @type {Object}
-         * @private
+         * @type {Subclass.ClassManager.ClassTypes.ClassDefinition}
+         * @protected
          */
-        this._classDefinition = classDefinition;
+        this._classDefinition = this.createClassDefinition(classDefinition);
 
         /**
          * @type {(function|null)}
-         * @private
+         * @protected
          */
         this._classConstructor = null;
 
         /**
          * @type {(ClassType|null)}
-         * @private
+         * @protected
          */
         this._classParent = null;
 
         /**
          * @type {Object}
-         * @private
+         * @protected
          */
         this._classProperties = {};
 
@@ -79,7 +79,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.getClassBuilder = function()
+    ClassType.getClassBuilderClass = function()
     {
         throw new Error('Static method "getClassBuilder" must be implemented.');
     };
@@ -111,6 +111,67 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     /**
      * @inheritDoc
      */
+    ClassType.prototype.getClassDefinitionClass = function()
+    {
+        return Subclass.ClassManager.ClassTypes.ClassDefinition;
+    };
+
+    /**
+     * Creates and returns class definition instance.
+     *
+     * @param {Object} classDefinition
+     * @returns {Subclass.ClassManager.ClassTypes.ClassDefinition}
+     */
+    ClassType.prototype.createClassDefinition = function(classDefinition)
+    {
+        var construct = null;
+        var createInstance = true;
+
+        if (!arguments[1]) {
+            construct = this.getClassDefinitionClass();
+        } else {
+            construct = arguments[1];
+        }
+        if (arguments[2] === false) {
+            createInstance = false;
+        }
+
+        if (construct.$parent) {
+            var parentConstruct = this.createClassDefinition(
+                classDefinition,
+                construct.$parent,
+                false
+            );
+
+            var constructProto = Object.create(parentConstruct.prototype);
+
+            constructProto = Subclass.Tools.extend(
+                constructProto,
+                construct.prototype
+            );
+
+            construct.prototype = constructProto;
+            construct.prototype.constructor = construct;
+        }
+
+        if (createInstance) {
+            var inst = new construct(this, classDefinition);
+
+            if (!(inst instanceof Subclass.ClassManager.ClassTypes.ClassDefinition)) {
+                throw new Error(
+                    'Class definition class must be instance of ' +
+                    '"Subclass.ClassManager.ClassTypes.ClassDefinition" class.'
+                );
+            }
+            return inst;
+        }
+
+        return construct;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ClassType.prototype.setClassDefinition = function(classDefinition)
     {
         this.constructor.call(
@@ -124,7 +185,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassDefinition = function ()
+    ClassType.prototype.getClassDefinition = function()
     {
         return this._classDefinition;
     };
@@ -234,14 +295,14 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     //{
     //    return this.getClassDefinition().$_static || {};
     //};
-
-    /**
-     * @inheritDoc
-     */
-    ClassType.prototype.getStatic = function()
-    {
-        return this.getClassDefinition().getStatic();
-    };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //ClassType.prototype.getStatic = function()
+    //{
+    //    return this.getClassDefinition().getStatic();
+    //};
 
     /**
      * @inheritDoc
@@ -291,8 +352,11 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
         }
 
         this.attachClassProperties(classConstructor.prototype);
-        Subclass.Tools.extend(classConstructor.prototype, this.getClassDefinition());
 
+        Subclass.Tools.extend(
+            classConstructor.prototype,
+            this.getClassDefinition().getDefinition()
+        );
         Object.defineProperty(classConstructor.prototype, "constructor", {
             enumerable: false,
             value: classConstructor

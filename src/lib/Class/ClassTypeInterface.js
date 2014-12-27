@@ -21,7 +21,14 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
     /**
      * Returns class builder constructor of current class type.
      */
-    ClassTypeInterface.getClassBuilder = function() {};
+    ClassTypeInterface.getClassBuilderClass = function() {};
+
+    /**
+     * Returns class for creating class definition instance
+     *
+     * @returns {Function}
+     */
+    ClassTypeInterface.prototype.getClassDefinitionClass = function() {};
 
     /**
      * Initializes class on creation stage
@@ -52,7 +59,7 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
     /**
      * Returns class definition object
      *
-     * @returns {Object}
+     * @returns {Subclass.ClassManager.ClassTypes.ClassDefinition}
      */
     ClassTypeInterface.prototype.getClassDefinition = function() {};
 
@@ -102,13 +109,6 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
      * @returns {boolean}
      */
     ClassTypeInterface.prototype.issetClassProperty = function(propertyName) {};
-
-    /**
-     * Returns class static properties and methods
-     *
-     * @returns {Object}
-     */
-    ClassTypeInterface.prototype.getStatic = function() {};
 
     /**
      * Returns constructor function for current class type

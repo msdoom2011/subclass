@@ -29,7 +29,7 @@ Subclass.ClassManager.ClassTypes.Interface = (function()
     /**
      * @inheritDoc
      */
-    Interface.getClassBuilder = function()
+    Interface.getClassBuilderClass = function()
     {
         return Subclass.ClassManager.ClassTypes.Interface.Builder;
     };

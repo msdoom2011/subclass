@@ -31,7 +31,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         /**
          * A definition of current property
          *
-         * @type {PropertyDefinition}
+         * @type {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
          * @private
          */
         this._propertyDefinition = this.createPropertyDefinition(propertyDefinition);
@@ -158,8 +158,8 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     /**
      * Creates and returns property definition instance.
      *
-     * @param {Object} [propertyDefinition]
-     * @returns {PropertyDefinition}
+     * @param {Object} propertyDefinition
+     * @returns {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
      */
     PropertyType.prototype.createPropertyDefinition = function(propertyDefinition)
     {

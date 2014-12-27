@@ -32,7 +32,7 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
     /**
      * @inheritDoc
      */
-    AbstractClass.getClassBuilder = function()
+    AbstractClass.getClassBuilderClass = function()
     {
         return Subclass.ClassManager.ClassTypes.AbstractClass.Builder;
     };

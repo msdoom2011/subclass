@@ -37,6 +37,17 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
         return Subclass.ClassManager.ClassTypes.AbstractClass.Builder;
     };
 
+    /**
+     * @inheritDoc
+     */
+    AbstractClass.prototype.getClassDefinitionClass = function()
+    {
+        return Subclass.ClassManager.ClassTypes.AbstractClass.AbstractClassDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     AbstractClass.prototype.setClassParent = function (parentClassName)
     {
         Subclass.ClassManager.ClassTypes.ClassType.prototype.setClassParent.call(this, parentClassName);
@@ -64,39 +75,39 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
      */
     AbstractClass.prototype.createInstance = undefined;
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClass.prototype.getBaseClassDefinition = function ()
-    {
-        var classDefinition = AbstractClass.$parent.prototype.getBaseClassDefinition();
-        classDefinition.$_abstract = {};
-
-        delete classDefinition.getClassManager;
-        delete classDefinition.hasTrait;
-        delete classDefinition.isImplements;
-        delete classDefinition.getClassName;
-        delete classDefinition.isInstanceOf;
-        delete classDefinition.getParent;
-        delete classDefinition.getCopy;
-        delete classDefinition.param;
-
-        return classDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    AbstractClass.prototype.processClassDefinition = function ()
-    {
-        AbstractClass.$parent.prototype.processClassDefinition.call(this);
-
-        var classDefinition = this.getClassDefinition();
-
-        // Process abstract methods
-
-        this.addAbstractMethods(classDefinition.$_abstract);
-    };
+    ///**
+    // * @inheritDoc
+    // */
+    //AbstractClass.prototype.getBaseClassDefinition = function ()
+    //{
+    //    var classDefinition = AbstractClass.$parent.prototype.getBaseClassDefinition();
+    //    classDefinition.$_abstract = {};
+    //
+    //    delete classDefinition.getClassManager;
+    //    delete classDefinition.hasTrait;
+    //    delete classDefinition.isImplements;
+    //    delete classDefinition.getClassName;
+    //    delete classDefinition.isInstanceOf;
+    //    delete classDefinition.getParent;
+    //    delete classDefinition.getCopy;
+    //    delete classDefinition.param;
+    //
+    //    return classDefinition;
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //AbstractClass.prototype.processClassDefinition = function ()
+    //{
+    //    AbstractClass.$parent.prototype.processClassDefinition.call(this);
+    //
+    //    var classDefinition = this.getClassDefinition();
+    //
+    //    // Process abstract methods
+    //
+    //    this.addAbstractMethods(classDefinition.$_abstract);
+    //};
 
     /*************************************************/
     /*         Registering new class type            */

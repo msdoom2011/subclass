@@ -67,7 +67,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.prototype.getClassDefinitionClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.ClassType.ClassDefinition;
+        return Subclass.ClassManager.ClassTypes.Class.ClassDefinition;
     };
 
     /**
@@ -322,7 +322,8 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
         // Copying all properties and methods (with inherited) from trait to class definition
 
         for (propName in traitClassConstructor.prototype) {
-            if (['$_extends', '$_properties'].indexOf(propName) >= 0) {
+            //if (['$_extends', '$_properties'].indexOf(propName) >= 0) {
+            if (propName.match(/^\$_/i)) {
                 continue;
             }
             traitProps[propName] = traitClassConstructor.prototype[propName];

@@ -219,40 +219,6 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     };
 
     /**
-     * Validates "$_static" attribute value
-     *
-     * @param {*} value
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateStatic = function(value)
-    {
-        if (value !== null && Subclass.Tools.isPlainObject(value)) {
-            this._throwInvalidAttribute('$_static', 'an object or null.');
-        }
-    };
-
-    /**
-     * Sets "$_static" attribute value
-     *
-     * @param {Object} value Plain object with different properties and methods
-     */
-    ClassDefinition.prototype.setStatic = function(value)
-    {
-        this.validateStatic(value);
-        this.getDefinition().$_static = value || {};
-    };
-
-    /**
-     * Returns "$_static" attribute value
-     *
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getStatic = function()
-    {
-        return this.getDefinition().$_static;
-    };
-
-    /**
      * Modifies class definition
      *
      * @returns {object}
@@ -293,11 +259,6 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             $_properties: {},
 
             /**
-             * @type {Object} Static properties and methods for current class constructor
-             */
-            $_static: {},
-
-            /**
              * Class constructor
              *
              * @param [arguments] Any class constructor arguments
@@ -325,16 +286,6 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             getClassName: function()
             {
                 return this.$_className;
-            },
-
-            /**
-             * Returns all static methods and properties
-             *
-             * @returns {Object}
-             */
-            getStatic: function()
-            {
-                return this.$_class.getStatic();
             },
 
             /**

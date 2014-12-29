@@ -101,14 +101,6 @@ Subclass.ClassManager.ClassTypes.Config.ConfigDefinition = (function()
     {
         this.validateIncludes(includes);
         this.getDefinition().$_includes = includes || [];
-
-        //if (includes) {
-        //    var classInst = this.getClass();
-        //
-        //    for (var i = 0; i < includes.length; i++) {
-        //        classInst.addTrait(traits[i]);
-        //    }
-        //}
     };
 
     /**

@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.ClassManager.ClassTypes.ClassType}
+ */
 Subclass.ClassManager.ClassTypes.Trait = (function()
 {
     /*************************************************/
@@ -37,7 +41,7 @@ Subclass.ClassManager.ClassTypes.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.prototype.getClassDefinitionClass = function()
+    Trait.getClassDefinitionClass = function()
     {
         return Subclass.ClassManager.ClassTypes.Interface.InterfaceDefinition;
     };
@@ -90,57 +94,6 @@ Subclass.ClassManager.ClassTypes.Trait = (function()
      * @inheritDoc
      */
     Trait.prototype.createInstance = undefined;
-
-    ///**
-    // * @inheritDoc
-    // * @throws {Error}
-    // */
-    //Trait.prototype.getBaseClassDefinition = function ()
-    //{
-    //    return {
-    //
-    //        /**
-    //         * @type {string} Parent class name
-    //         */
-    //        $_extends: null
-    //    };
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // * @throws {Error}
-    // */
-    //Trait.prototype.validateClassDefinition = function ()
-    //{
-    //    Subclass.ClassManager.ClassTypes.ClassType.prototype.validateClassDefinition.call(this);
-    //
-    //    var classDefinition = this.getClassDefinition();
-    //
-    //    // Parsing traits
-    //
-    //    if (classDefinition.$_traits) {
-    //        throw new Error('Trait "' + this.getClassName() + '" can\'t contains another traits.' +
-    //            ' You can extend this one from another trait instead.');
-    //    }
-    //
-    //    // Parsing static properties and methods
-    //
-    //    if (classDefinition.$_static) {
-    //        throw new Error('You can\'t specify any static properties or methods in trait.');
-    //    }
-    //
-    //    // Parsing interfaces
-    //
-    //    if (classDefinition.$_implements) {
-    //        throw new Error('Trait "' + this.getClassName() + '" can\'t implements any interfaces.');
-    //    }
-    //
-    //    // Parsing abstract classes
-    //
-    //    if (classDefinition.$_abstract) {
-    //        throw new Error('Trait "' + this.getClassName() + '" can\'t define any abstract methods.');
-    //    }
-    //};
 
 
     /*************************************************/

@@ -28,7 +28,7 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
      *
      * @returns {Function}
      */
-    ClassTypeInterface.prototype.getClassDefinitionClass = function() {};
+    ClassTypeInterface.getClassDefinitionClass = function() {};
 
     /**
      * Initializes class on creation stage

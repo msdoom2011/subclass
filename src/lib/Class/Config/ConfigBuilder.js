@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+ */
 Subclass.ClassManager.ClassTypes.Config.Builder = (function()
 {
     function ConfigBuilder(classManager, classType, className)

@@ -128,6 +128,7 @@ Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
          * @type {Array}
          */
         basePropertyDefinition.allows = null;
+        basePropertyDefinition.nullable = false;
 
         return basePropertyDefinition;
     };

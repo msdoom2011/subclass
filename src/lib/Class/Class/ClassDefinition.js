@@ -22,7 +22,7 @@ Subclass.ClassManager.ClassTypes.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.validateStatic = function(value)
     {
-        if (value !== null && Subclass.Tools.isPlainObject(value)) {
+        if (value !== null && !Subclass.Tools.isPlainObject(value)) {
             this._throwInvalidAttribute('$_static', 'an object or null.');
         }
     };
@@ -68,7 +68,7 @@ Subclass.ClassManager.ClassTypes.Class.ClassDefinition = (function()
                 }
             }
         } catch (e) {
-            this._throwInvalidAttribute('$_traits', 'an array with string elements.');
+            this._throwInvalidAttribute('$_traits', 'an array with string elements');
         }
     };
 
@@ -232,28 +232,6 @@ Subclass.ClassManager.ClassTypes.Class.ClassDefinition = (function()
 
         return classDefinition;
     };
-
-    ///**
-    // * @inheritDoc
-    // */
-    //ClassDefinition.prototype.processDefinition = function ()
-    //{
-    //    var classDefinition = this.getDefinition();
-    //
-    //    // Parsing traits
-    //
-    //    for (var i = 0; i < classDefinition.$_traits.length; i++) {
-    //        this.addTrait(classDefinition.$_traits[i]);
-    //    }
-    //
-    //    // Parsing interfaces
-    //
-    //    for (i = 0; i < classDefinition.$_implements.length; i++) {
-    //        this.addInterface(classDefinition.$_implements[i]);
-    //    }
-    //
-    //    ClassDefinition.$parent.prototype.processClassDefinition.call(this);
-    //};
 
     return ClassDefinition;
 })();

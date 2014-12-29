@@ -27,6 +27,17 @@ Subclass.PropertyManager.PropertyTypes.BooleanDefinition = (function()
     /**
      * @inheritDoc
      */
+    BooleanDefinition.prototype.getBaseDefinition = function()
+    {
+        var basePropertyDefinition = BooleanDefinition.$parent.prototype.getBaseDefinition.call(this);
+            basePropertyDefinition.nullable = false;
+
+        return basePropertyDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     BooleanDefinition.prototype.validateValue = function(value)
     {
         if (BooleanDefinition.$parent.prototype.validateValue.call(this, value)) {

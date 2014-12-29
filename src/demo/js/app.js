@@ -342,28 +342,6 @@ classManager.registerConfig("ConfigBase", {
 
 });
 
-classManager.registerConfig("ConfigInclude", {
-
-    propNumber: {
-        type: "number",
-        value: 0
-    },
-
-    propIncluded: {
-        type: "boolean"
-    },
-
-    propMap: {
-        schema: {
-            propMapExtra: {
-                type: "string",
-                value: "fjdklfjsldfjlsjdfljsdkfl"
-            }
-        }
-    }
-
-});
-
 var class3Inst = classManager.alterClass("Class2")
 //            .setClassName("firstBuiltClass")
 //            .setClassParent('AbstractClass')
@@ -390,6 +368,28 @@ var class3Inst = classManager.alterClass("Class2")
 
 console.log(class3Inst);
 
+
+classManager.registerConfig("ConfigInclude", {
+
+    propNumber: {
+        type: "number",
+        value: 0
+    },
+
+    propIncluded: {
+        type: "boolean"
+    },
+
+    propMap: {
+        schema: {
+            propMapExtra: {
+                type: "string",
+                value: "fjdklfjsldfjlsjdfljsdkfl"
+            }
+        }
+    }
+
+});
 
 classManager.registerConfig("Config", {
 
@@ -792,3 +792,13 @@ console.log(classManager.getClass('Class2').getStatic().staticProp);
 console.log(inst.getInterfaceProperty());
 //        inst.setInterfaceProperty("psix");
 console.log(inst.getInterfaceProperty());
+
+
+
+console.log("");
+console.log("=========== Getting class inst copy =============");
+
+var instCopy = inst.getCopy();
+console.log(instCopy.getInterfaceProperty());
+//        inst.setInterfaceProperty("psix");
+console.log(instCopy.getInterfaceProperty());

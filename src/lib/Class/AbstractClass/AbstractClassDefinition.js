@@ -23,7 +23,7 @@ Subclass.ClassManager.ClassTypes.AbstractClass.AbstractClassDefinition = (functi
     AbstractClassDefinition.prototype.validateAbstract = function(value)
     {
         try {
-            if (value !== null && Subclass.Tools.isPlainObject(value)) {
+            if (value !== null && !Subclass.Tools.isPlainObject(value)) {
                 throw 'error';
             }
             if (value) {
@@ -90,20 +90,6 @@ Subclass.ClassManager.ClassTypes.AbstractClass.AbstractClassDefinition = (functi
 
         return classDefinition;
     };
-
-    ///**
-    // * @inheritDoc
-    // */
-    //AbstractClassDefinition.prototype.processClassDefinition = function ()
-    //{
-    //    AbstractClassDefinition.$parent.prototype.processClassDefinition.call(this);
-    //
-    //    var classDefinition = this.getClassDefinition();
-    //
-    //    // Process abstract methods
-    //
-    //    this.addAbstractMethods(classDefinition.$_abstract);
-    //};
 
     return AbstractClassDefinition;
 

@@ -249,11 +249,6 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             $_className: null,
 
             /**
-             * @type {string} Class type
-             */
-            $_classType: null,
-
-            /**
              * @type {ClassType} Class definition closure
              */
             $_class: null,
@@ -282,6 +277,16 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             $_constructor: function()
             {
                 // Do something
+            },
+
+            /**
+             * Returns type name of class
+             *
+             * @returns {*}
+             */
+            getClassType: function()
+            {
+                return this.constructor.name;
             },
 
             /**
@@ -339,7 +344,15 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
              */
             getCopy: function()
             {
-                // @TODO needs further implementation
+                var copyInst = new this.constructor();
+
+                for (var propName in this) {
+                    if (!this.hasOwnProperty(propName)) {
+                        continue;
+                    }
+                    copyInst[propName] = this[propName];
+                }
+                return copyInst;
             },
 
             /**
@@ -414,7 +427,6 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     ClassDefinition.prototype.processDefinition = function ()
     {
         var definition = this.getDefinition();
-        this._definition = this.getBaseDefinition();
 
         for (var attrName in definition) {
             if (
@@ -433,25 +445,6 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
         // Extending accessors
 
         this.processClassPropertyAccessors();
-
-        //var classDefinition = this.getDefinition();
-        //var classProperties = classDefinition.$_properties;
-        //var parentClassName = classDefinition.$_extends;
-        //
-        //if (classProperties && typeof classProperties == 'object') {
-        //    for (var propName in classProperties) {
-        //        if (!classProperties.hasOwnProperty(propName)) {
-        //            continue;
-        //        }
-        //        this.getClass().addClassProperty(
-        //            propName,
-        //            classProperties[propName]
-        //        );
-        //    }
-        //}
-        //if (parentClassName && typeof parentClassName == 'string') {
-        //    this.getClass().setClassParent(parentClassName);
-        //}
     };
 
     /**

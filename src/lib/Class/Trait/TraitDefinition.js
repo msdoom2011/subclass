@@ -77,42 +77,6 @@ Subclass.ClassManager.ClassTypes.Interface.TraitDefinition = (function()
         };
     };
 
-    ///**
-    // * @inheritDoc
-    // * @throws {Error}
-    // */
-    //TraitDefinition.prototype.validateDefinition = function ()
-    //{
-    //    Subclass.ClassManager.ClassTypes.ClassType.prototype.validateDefinition.call(this);
-    //
-    //    var classDefinition = this.getClassDefinition();
-    //
-    //    // Parsing traits
-    //
-    //    if (classDefinition.$_traits) {
-    //        throw new Error('Trait "' + this.getClassName() + '" can\'t contains another traits.' +
-    //        ' You can extend this one from another trait instead.');
-    //    }
-    //
-    //    // Parsing static properties and methods
-    //
-    //    if (classDefinition.$_static) {
-    //        throw new Error('You can\'t specify any static properties or methods in trait.');
-    //    }
-    //
-    //    // Parsing interfaces
-    //
-    //    if (classDefinition.$_implements) {
-    //        throw new Error('Trait "' + this.getClassName() + '" can\'t implements any interfaces.');
-    //    }
-    //
-    //    // Parsing abstract classes
-    //
-    //    if (classDefinition.$_abstract) {
-    //        throw new Error('Trait "' + this.getClassName() + '" can\'t define any abstract methods.');
-    //    }
-    //};
-
     return TraitDefinition;
 
 })();

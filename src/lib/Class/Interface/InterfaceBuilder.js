@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.ClassManager.ClassType.Builder}
+ */
 Subclass.ClassManager.ClassTypes.Interface.Builder = (function()
 {
     function InterfaceBuilder(classManager, classType, className)

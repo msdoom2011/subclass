@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.ClassManager.ClassTypes.ClassType}
+ */
 Subclass.ClassManager.ClassTypes.Config = (function()
 {
     /*************************************************/
@@ -46,7 +50,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     /**
      * @inheritDoc
      */
-    Config.prototype.getClassDefinitionClass = function()
+    Config.getClassDefinitionClass = function()
     {
         return Subclass.ClassManager.ClassTypes.Config.ConfigDefinition;
     };
@@ -84,50 +88,6 @@ Subclass.ClassManager.ClassTypes.Config = (function()
                 this[validateMethod](classDefinitionData[attrName]);
             }
         }
-
-        //var classDefinition = this.getClassDefinition();
-        //
-        //// Parsing includes
-        //
-        //if (classDefinition.$_includes && !Array.isArray(classDefinition.$_includes)) {
-        //    throw new Error(
-        //        'Invalid attribute "$_includes" in class definition "' + this.getClassName() + '". ' +
-        //        'It must be an array.'
-        //    );
-        //}
-        //
-        //// Parsing interfaces
-        //
-        //if (classDefinition.$_implements) {
-        //    throw new Error('Config "' + this.getClassName() + '" can\'t implements any interfaces.');
-        //}
-        //
-        //// Parsing abstract classes
-        //
-        //if (classDefinition.$_abstract) {
-        //    throw new Error('You can\'t specify abstract method by the property "$_abstract".');
-        //}
-        //
-        //// Parsing class properties
-        //
-        //if (classDefinition.$_properties) {
-        //    throw new Error('You can\'t specify any typed properties in config class.' +
-        //    ' All properties defined in class are typed by default.');
-        //}
-        //
-        //// Parsing static properties and methods
-        //
-        //if (classDefinition.$_static) {
-        //    throw new Error('You can\'t specify any static properties or methods in config class.');
-        //}
-        //
-        //// Parsing traits
-        //
-        //if (Subclass.ClassManager.issetClassType('Trait')) {
-        //    if (classDefinition.$_traits) {
-        //        throw new Error('Config "' + this.getClassName() + '" can\'t contains any traits.');
-        //    }
-        //}
     };
 
     /**
@@ -281,44 +241,6 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     {
         return function Config(){};
     };
-
-    ///**
-    // * @inheritDoc
-    // */
-    //Config.prototype.getBaseClassDefinition = function ()
-    //{
-    //    var classDefinition = Config.$parent.prototype.getBaseClassDefinition.call(this);
-    //
-    //    delete classDefinition.$_properties;
-    //    delete classDefinition.$_static;
-    //
-    //    /**
-    //     * @type {string[]}
-    //     */
-    //    classDefinition.$_includes = [];
-    //
-    //    /**
-    //     * Sets values
-    //     *
-    //     * @param {Object} values
-    //     */
-    //    classDefinition.setValues = function (values)
-    //    {
-    //        // @TODO
-    //    };
-    //
-    //    /**
-    //     * Returns default values
-    //     *
-    //     * @returns {Object}
-    //     */
-    //    classDefinition.getDefaults = function ()
-    //    {
-    //        // @TODO do something
-    //    };
-    //
-    //    return classDefinition;
-    //};
 
     /**
      * Returns all included config classes

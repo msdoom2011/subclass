@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @extends {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+ */
 Subclass.ClassManager.ClassTypes.Class.Builder = (function()
 {
     function ClassBuilder(classManager, classType, className)

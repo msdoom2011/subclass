@@ -258,7 +258,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 && contextClass !== null
             ) || (
                 contextClass
-                && !(contextClass instanceof Subclass.ClassManager.ClassTypes.ClassType)
+                && !(contextClass instanceof Subclass.ClassManager.ClassTypes.ClassTypeInterface)
             )
         ) {
             var message = 'Trying to set not valid context class ' +

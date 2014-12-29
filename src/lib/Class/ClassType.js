@@ -202,8 +202,10 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
             this._classParent = null;
 
         } else {
-            throw new Error('Argument parentClassName is not valid. It must be a name of parent class or null ' +
-                'in class "' + this.getClassName() + '".');
+            throw new Error(
+                'Argument parentClassName is not valid. It must be a name of parent class or null ' +
+                'in class "' + this.getClassName() + '".'
+            );
         }
     };
 
@@ -318,14 +320,16 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
     ClassType.prototype.getClassConstructor = function ()
     {
         if (!this._classConstructor) {
-            var baseClassDefinition = this.getBaseClassDefinition();
-            this._classDefinition = Subclass.Tools.extend(
-                baseClassDefinition,
-                this._classDefinition
-            );
+            var classDefinition = this.getClassDefinition();
+            var baseClassDefinition = classDefinition.getBaseDefinition();
 
-            this.validateClassDefinition();
-            this.processClassDefinition();
+            classDefinition.setDefinition(Subclass.Tools.extend(
+                baseClassDefinition,
+                classDefinition.getDefinition()
+            ));
+
+            classDefinition.validateDefinition();
+            classDefinition.processDefinition();
 
             this._classConstructor = this.createClassConstructor();
         }

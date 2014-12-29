@@ -21,8 +21,21 @@
       "class": {
         "dir": "Class",
         "files": [
+          "<%= config.lib.content.class.dir %>/ClassManager.js",
+          "<%= config.lib.content.class.dir %>/ClassTypeInterface.js",
+          "<%= config.lib.content.class.dir %>/ClassType.js",
+          "<%= config.lib.content.class.dir %>/ClassDefinition.js",
           "<%= config.lib.content.class.dir %>/*.js",
+          "<%= config.lib.content.class.dir %>/Class/Class.js",
           "<%= config.lib.content.class.dir %>/Class/**/*.js",
+          "<%= config.lib.content.class.dir %>/AbstractClass/AbstractClass.js",
+          "<%= config.lib.content.class.dir %>/AbstractClass/**/*.js",
+          "<%= config.lib.content.class.dir %>/Interface/Interface.js",
+          "<%= config.lib.content.class.dir %>/Interface/**/*.js",
+          "<%= config.lib.content.class.dir %>/Trait/Trait.js",
+          "<%= config.lib.content.class.dir %>/Trait/**/*.js",
+          "<%= config.lib.content.class.dir %>/Config/Config.js",
+          "<%= config.lib.content.class.dir %>/Config/**/*.js",
           "<%= config.lib.content.class.dir %>/**/*.js"
         ]
       },

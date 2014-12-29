@@ -6,6 +6,9 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     function ClassDefinition (classInst, classDefinition)
     {
         if (!classInst || !(classInst instanceof Subclass.ClassManager.ClassTypes.ClassTypeInterface)) {
+
+            console.log(classInst);
+
             throw new Error(
                 'Invalid argument "classInst" in constructor ' +
                 'of "Subclass.ClassManager.ClassTypes.ClassDefinition" class.' +
@@ -43,6 +46,19 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     ClassDefinition.prototype.getDefinition = function()
     {
         return this._definition;
+    };
+
+    /**
+     * Sets class definitino data
+     *
+     * @param definition
+     */
+    ClassDefinition.prototype.setDefinition = function(definition)
+    {
+        if (!definition || typeof definition != 'object') {
+            throw new Error('Invalid argument "definition" in method "setDefinition". It must be an object.');
+        }
+        this._definition = definition;
     };
 
     /**
@@ -157,7 +173,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
     ClassDefinition.prototype.validateProperties = function(properties)
     {
         if (properties && typeof properties != 'object') {
-            this._throwInvalidAttribute('$_properties', 'a plain object with property definitions.');
+            this._throwInvalidAttribute('$_properties', 'a plain object with property definitions');
 
         } else if (properties) {
             for (var propName in properties) {
@@ -170,8 +186,8 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
                         'in definition of class "' + this.getClass().getClassName() + '".'
                     );
                 }
-                if (!properties[propName] || Subclass.Tools.isPlainObject(properties[propName])) {
-                    this._throwInvalidAttribute('$_properties', 'a plain object with not empty property definitions.');
+                if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
+                    this._throwInvalidAttribute('$_properties', 'a plain object with not empty property definitions');
                 }
             }
         }
@@ -407,7 +423,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             ) {
                 continue;
             }
-            var setterMethod = "set" + attrName[0].toUpperCase() + attrName.substr(1);
+            var setterMethod = "set" + attrName.substr(2)[0].toUpperCase() + attrName.substr(3);
 
             if (this[setterMethod]) {
                 this[setterMethod](definition[attrName]);
@@ -490,7 +506,8 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
      */
     ClassDefinition.prototype._throwInvalidAttribute = function(attributeName, types)
     {
-        throw new Error('Invalid value of attribute "' + attributeName + '" ' +
+        throw new Error(
+            'Invalid value of attribute "' + attributeName + '" ' +
             'in definition of class ' + this.getClass().getClassName() + '. ' +
             'It must be ' + types + '.'
         );

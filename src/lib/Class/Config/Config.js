@@ -46,6 +46,14 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     /**
      * @inheritDoc
      */
+    Config.prototype.getClassDefinitionClass = function()
+    {
+        return Subclass.ClassManager.ClassTypes.Config.ConfigDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     Config.prototype.initialize = function()
     {
         Config.$parent.prototype.initialize.call(this);
@@ -61,46 +69,65 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     Config.prototype._validateClassDefinition = function()
     {
         var classDefinition = this.getClassDefinition();
+        var classDefinitionData = classDefinition.getDefinition();
 
-        // Parsing includes
+        for (var attrName in classDefinitionData) {
+            if (
+                !classDefinitionData.hasOwnProperty(attrName)
+                || !attrName.match(/^\$_/i)
+            ) {
+                continue;
+            }
+            var validateMethod = "validate" + attrName[0].toUpperCase() + attrName.substr(1);
 
-        if (classDefinition.$_includes && !Array.isArray(classDefinition.$_includes)) {
-            throw new Error('Invalid attribute "$_includes" in class definition "' + this.getClassName() + '". ' +
-            'It must be an array.');
-        }
-
-        // Parsing interfaces
-
-        if (classDefinition.$_implements) {
-            throw new Error('Config "' + this.getClassName() + '" can\'t implements any interfaces.');
-        }
-
-        // Parsing abstract classes
-
-        if (classDefinition.$_abstract) {
-            throw new Error('You can\'t specify abstract method by the property "$_abstract".');
-        }
-
-        // Parsing class properties
-
-        if (classDefinition.$_properties) {
-            throw new Error('You can\'t specify any typed properties in config class.' +
-            ' All properties defined in class are typed by default.');
-        }
-
-        // Parsing static properties and methods
-
-        if (classDefinition.$_static) {
-            throw new Error('You can\'t specify any static properties or methods in config class.');
-        }
-
-        // Parsing traits
-
-        if (Subclass.ClassManager.issetClassType('Trait')) {
-            if (classDefinition.$_traits) {
-                throw new Error('Config "' + this.getClassName() + '" can\'t contains any traits.');
+            if (this[validateMethod]) {
+                this[validateMethod](classDefinitionData[attrName]);
             }
         }
+
+        //var classDefinition = this.getClassDefinition();
+        //
+        //// Parsing includes
+        //
+        //if (classDefinition.$_includes && !Array.isArray(classDefinition.$_includes)) {
+        //    throw new Error(
+        //        'Invalid attribute "$_includes" in class definition "' + this.getClassName() + '". ' +
+        //        'It must be an array.'
+        //    );
+        //}
+        //
+        //// Parsing interfaces
+        //
+        //if (classDefinition.$_implements) {
+        //    throw new Error('Config "' + this.getClassName() + '" can\'t implements any interfaces.');
+        //}
+        //
+        //// Parsing abstract classes
+        //
+        //if (classDefinition.$_abstract) {
+        //    throw new Error('You can\'t specify abstract method by the property "$_abstract".');
+        //}
+        //
+        //// Parsing class properties
+        //
+        //if (classDefinition.$_properties) {
+        //    throw new Error('You can\'t specify any typed properties in config class.' +
+        //    ' All properties defined in class are typed by default.');
+        //}
+        //
+        //// Parsing static properties and methods
+        //
+        //if (classDefinition.$_static) {
+        //    throw new Error('You can\'t specify any static properties or methods in config class.');
+        //}
+        //
+        //// Parsing traits
+        //
+        //if (Subclass.ClassManager.issetClassType('Trait')) {
+        //    if (classDefinition.$_traits) {
+        //        throw new Error('Config "' + this.getClassName() + '" can\'t contains any traits.');
+        //    }
+        //}
     };
 
     /**
@@ -110,21 +137,24 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     Config.prototype._processClassDefinition = function()
     {
         var classDefinition = this.getClassDefinition();
-        var parentClassName = classDefinition.$_extends;
-        var includes = classDefinition.$_includes;
+        var classDefinitionDataDefault = classDefinition.getDefinition();
+        var parentClassName = classDefinition.getExtends();
+        var includes = classDefinition.getIncludes();
 
-        delete classDefinition.$_extends;
-        delete classDefinition.$_includes;
+        delete classDefinitionDataDefault.$_includes;
+        delete classDefinitionDataDefault.$_extends;
+        delete classDefinitionDataDefault.$_properties;
 
-        this._classDefinition = {
-            $_properties: classDefinition
-        };
+        classDefinition.setDefinition({});
+        var classDefinitionData = classDefinition.getDefinition();
+        classDefinitionData.$_properties = classDefinitionDataDefault;
+
         if (parentClassName && typeof parentClassName == 'string') {
-            this._classDefinition.$_extends = parentClassName;
+            classDefinitionData.$_extends = parentClassName;
             this.setClassParent(parentClassName);
         }
         if (includes && Array.isArray(includes)) {
-            this._classDefinition.$_includes = includes;
+            classDefinitionData.$_includes = includes;
         }
 
         // Processing includes
@@ -141,7 +171,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
 
         // Customising property definitions
 
-        var classProperties = this.getClassDefinition().$_properties;
+        var classProperties = classDefinitionData.$_properties;
 
         for (var propName in classProperties) {
             if (!classProperties.hasOwnProperty(propName)) {
@@ -157,19 +187,19 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     Config.prototype.normalizeClassProperties = function()
     {
         var classDefinition = this.getClassDefinition();
-        var classProperties = classDefinition.$_properties;
+        var classProperties = classDefinition.getProperties();
         var propName;
 
         if (this.getClassParent()) {
             var parentClass = this.getClassParent();
-            var parentClassProperties = parentClass.getClassDefinition().$_properties;
+            var parentClassProperties = parentClass.getClassDefinition().getProperties();
 
             this.extendClassProperties(classProperties, parentClassProperties);
         }
 
         for (var i = 0, includes = this.getIncludes(); i < includes.length; i++) {
             var includeClass = includes[i];
-            var includeClassProperties = includeClass.getClassDefinition().$_properties;
+            var includeClassProperties = includeClass.getClassDefinition().getProperties();
 
             this.extendClassProperties(classProperties, includeClassProperties);
 
@@ -252,43 +282,43 @@ Subclass.ClassManager.ClassTypes.Config = (function()
         return function Config(){};
     };
 
-    /**
-     * @inheritDoc
-     */
-    Config.prototype.getBaseClassDefinition = function ()
-    {
-        var classDefinition = Config.$parent.prototype.getBaseClassDefinition.call(this);
-
-        delete classDefinition.$_properties;
-        delete classDefinition.$_static;
-
-        /**
-         * @type {string[]}
-         */
-        classDefinition.$_includes = [];
-
-        /**
-         * Sets values
-         *
-         * @param {Object} values
-         */
-        classDefinition.setValues = function (values)
-        {
-            // @TODO
-        };
-
-        /**
-         * Returns default values
-         *
-         * @returns {Object}
-         */
-        classDefinition.getDefaults = function ()
-        {
-            // @TODO do something
-        };
-
-        return classDefinition;
-    };
+    ///**
+    // * @inheritDoc
+    // */
+    //Config.prototype.getBaseClassDefinition = function ()
+    //{
+    //    var classDefinition = Config.$parent.prototype.getBaseClassDefinition.call(this);
+    //
+    //    delete classDefinition.$_properties;
+    //    delete classDefinition.$_static;
+    //
+    //    /**
+    //     * @type {string[]}
+    //     */
+    //    classDefinition.$_includes = [];
+    //
+    //    /**
+    //     * Sets values
+    //     *
+    //     * @param {Object} values
+    //     */
+    //    classDefinition.setValues = function (values)
+    //    {
+    //        // @TODO
+    //    };
+    //
+    //    /**
+    //     * Returns default values
+    //     *
+    //     * @returns {Object}
+    //     */
+    //    classDefinition.getDefaults = function ()
+    //    {
+    //        // @TODO do something
+    //    };
+    //
+    //    return classDefinition;
+    //};
 
     /**
      * Returns all included config classes

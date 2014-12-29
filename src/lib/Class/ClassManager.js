@@ -238,9 +238,9 @@ Subclass.ClassManager = (function()
 
         if (!arguments[2]) {
             if (className && this.issetClass(className)) {
-                classBuilderConstructor = this.getClass(className).constructor.getClassBuilder();
+                classBuilderConstructor = this.getClass(className).constructor.getClassBuilderClass();
             } else {
-                classBuilderConstructor = Subclass.ClassManager.getClassType(classType).getClassBuilder();
+                classBuilderConstructor = Subclass.ClassManager.getClassType(classType).getClassBuilderClass();
             }
         } else {
             classBuilderConstructor = arguments[2];

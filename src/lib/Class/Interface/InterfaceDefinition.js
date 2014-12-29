@@ -2,17 +2,17 @@
  * @class
  * @extends {Subclass.ClassManager.ClassTypes.ClassDefinition}
  */
-Subclass.ClassManager.ClassTypes.AbstractClass.AbstractClassDefinition = (function()
+Subclass.ClassManager.ClassTypes.Interface.InterfaceDefinition = (function()
 {
     /**
      * @inheritDoc
      */
-    function AbstractClassDefinition(classInst, classDefinition)
+    function InterfaceDefinition(classInst, classDefinition)
     {
-        AbstractClassDefinition.$parent.call(this, classInst, classDefinition);
+        InterfaceDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    AbstractClassDefinition.$parent = Subclass.ClassManager.ClassTypes.ClassDefinition;
+    InterfaceDefinition.$parent = Subclass.ClassManager.ClassTypes.ClassDefinition;
 
     /**
      * Validates "$_abstract" attribute value
@@ -20,91 +20,122 @@ Subclass.ClassManager.ClassTypes.AbstractClass.AbstractClassDefinition = (functi
      * @param {*} value
      * @throws {Error}
      */
-    AbstractClassDefinition.prototype.validateAbstract = function(value)
+    InterfaceDefinition.prototype.validateAbstract = function(value)
     {
-        try {
-            if (value !== null && Subclass.Tools.isPlainObject(value)) {
-                throw 'error';
-            }
-            if (value) {
-                for (var methodName in value) {
-                    if (!value.hasOwnProperty(methodName)) {
-                        continue;
-                    }
-                    if (typeof value[methodName] != 'function') {
-                        throw 'error';
-                    }
-                }
-            }
-        } catch (e) {
-            this._throwInvalidAttribute('$_abstract', 'an object with methods or null.');
-        }
+        throw new Error(
+            'You can\'t specify abstract method by the property "$_abstract". ' +
+            'All methods specified in interface are abstract by default.'
+        );
     };
 
     /**
-     * Sets "$_abstract" attribute value
+     * Validate "$_implements" attribute value
      *
-     * @param {Object} value Plain object with different properties and methods
+     * @param {*} value
+     * @throws {Error}
      */
-    AbstractClassDefinition.prototype.setAbstract = function(value)
+    InterfaceDefinition.prototype.validateImplements = function(value)
     {
-        this.validateAbstract(value);
-        this.getDefinition().$_abstract = value || {};
-
-        if (value) {
-            this.getClass().addAbstractMethods(value);
-        }
+        throw new Error(
+            'Interface "' + this.getClass().getClassName() + '" can\'t implements any interfaces. ' +
+            'You can extend this one from another interface instead.'
+        );
     };
 
     /**
-     * Returns "$_abstract" attribute value
+     * Validate "$_static" attribute value
      *
-     * @returns {Object}
+     * @param {*} value
+     * @throws {Error}
      */
-    AbstractClassDefinition.prototype.getAbstract = function()
+    InterfaceDefinition.prototype.validateStatic = function(value)
     {
-        return this.getDefinition().$_abstract;
+        throw new Error('You can\'t specify any static properties or methods in interface.');
+    };
+
+    /**
+     * Validates "$_traits" attribute value
+     *
+     * @param {*} value
+     * @throws {Error}
+     */
+    InterfaceDefinition.prototype.validateTraits = function(value)
+    {
+        throw new Error('Interface "' + this.getClass().getClassName() + '" can\'t contains any traits.');
     };
 
     /**
      * @inheritDoc
      */
-    AbstractClassDefinition.prototype.getBaseDefinition = function ()
+    InterfaceDefinition.prototype.getBaseDefinition = function()
     {
-        var classDefinition = AbstractClassDefinition.$parent.prototype.getBaseDefinition();
+        return {
+            /**
+             * @type {string} Parent class name
+             */
+            $_extends: null,
 
-        /**
-         * Object that contains abstract methods
-         * @type {{}}
-         */
-        classDefinition.$_abstract = {};
-
-        delete classDefinition.getClassManager;
-        delete classDefinition.hasTrait;
-        delete classDefinition.isImplements;
-        delete classDefinition.getClassName;
-        delete classDefinition.getCopy;
-        delete classDefinition.param;
-        delete classDefinition.issetProperty;
-        delete classDefinition.getProperty;
-
-        return classDefinition;
+            /**
+             * @type {Object.<Object>} Typed property definitions
+             */
+            $_properties: {}
+        };
     };
 
     ///**
     // * @inheritDoc
+    // * @throws {Error}
     // */
-    //AbstractClassDefinition.prototype.processClassDefinition = function ()
+    //InterfaceDefinition.prototype.validateDefinition = function ()
     //{
-    //    AbstractClassDefinition.$parent.prototype.processClassDefinition.call(this);
+    //    Subclass.ClassManager.ClassTypes.ClassType.prototype.validateDefinition.call(this);
     //
     //    var classDefinition = this.getClassDefinition();
     //
-    //    // Process abstract methods
+    //    // Parsing class properties
     //
-    //    this.addAbstractMethods(classDefinition.$_abstract);
+    //    if (classDefinition.$_properties) {
+    //        for (var propName in classDefinition.$_properties) {
+    //            if (!classDefinition.$_properties.hasOwnProperty(propName)) {
+    //                continue;
+    //            }
+    //            var propertyDefinition = classDefinition.$_properties[propName];
+    //
+    //            if (!propertyDefinition.hasOwnProperty('writable') || propertyDefinition.writable) {
+    //                throw new Error('Every typed property in interface must be marked as not writable.');
+    //            }
+    //        }
+    //    }
+    //
+    //    // Parsing interfaces
+    //
+    //    if (classDefinition.$_implements) {
+    //        throw new Error('Interface "' + this.getClassName() + '" can\'t implements any interfaces.' +
+    //        ' You can extend this one from another interface instead.');
+    //    }
+    //
+    //    // Parsing abstract classes
+    //
+    //    if (classDefinition.$_abstract) {
+    //        throw new Error('You can\'t specify abstract method by the property "$_abstract".' +
+    //        ' All methods specified in interface are abstract by default.');
+    //    }
+    //
+    //    // Parsing static properties and methods
+    //
+    //    if (classDefinition.$_static) {
+    //        throw new Error('You can\'t specify any static properties or methods in interface.');
+    //    }
+    //
+    //    // Parsing traits
+    //
+    //    if (Subclass.ClassManager.issetClassType('Trait')) {
+    //        if (classDefinition.$_traits) {
+    //            throw new Error('Interface "' + this.getClassName() + '" can\'t contains any traits.');
+    //        }
+    //    }
     //};
 
-    return AbstractClassDefinition;
+    return InterfaceDefinition;
 
 })();

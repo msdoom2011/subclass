@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassType}
+ * @namespace
  */
-Subclass.ClassManager.ClassTypes.Interface = (function()
+Subclass.Class.Interface = {};
+
+/**
+ * @class
+ * @extends {Subclass.Class.ClassType}
+ */
+Subclass.Class.Interface.Interface = (function()
 {
     /*************************************************/
     /*       Describing class type "Interface"       */
@@ -20,7 +25,7 @@ Subclass.ClassManager.ClassTypes.Interface = (function()
         Interface.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Interface.$parent = Subclass.ClassManager.ClassTypes.ClassType;
+    Interface.$parent = Subclass.Class.ClassType;
 
     /**
      * @inheritDoc
@@ -35,7 +40,7 @@ Subclass.ClassManager.ClassTypes.Interface = (function()
      */
     Interface.getClassBuilderClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.Interface.Builder;
+        return Subclass.Class.Interface.InterfaceBuilder;
     };
 
     /**
@@ -43,7 +48,7 @@ Subclass.ClassManager.ClassTypes.Interface = (function()
      */
     Interface.getClassDefinitionClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.Interface.InterfaceDefinition;
+        return Subclass.Class.Interface.InterfaceDefinition;
     };
 
     /**
@@ -103,7 +108,7 @@ Subclass.ClassManager.ClassTypes.Interface = (function()
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(Interface);
+    Subclass.Class.ClassManager.registerClassType(Interface);
 
     return Interface;
 

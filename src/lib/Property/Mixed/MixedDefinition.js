@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+ * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
+Subclass.Property.Mixed.MixedDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -14,7 +14,7 @@ Subclass.PropertyManager.PropertyTypes.MixedDefinition = (function()
         MixedDefinition.$parent.call(this, property, propertyDefinition);
     }
 
-    MixedDefinition.$parent = Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+    MixedDefinition.$parent = Subclass.Property.PropertyDefinition;
 
     /**
      * @inheritDoc

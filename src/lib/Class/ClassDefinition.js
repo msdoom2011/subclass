@@ -1,24 +1,21 @@
 /**
  * @class
  */
-Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
+Subclass.Class.ClassDefinition = (function()
 {
     function ClassDefinition (classInst, classDefinition)
     {
-        if (!classInst || !(classInst instanceof Subclass.ClassManager.ClassTypes.ClassTypeInterface)) {
-
-            console.log(classInst);
-
+        if (!classInst || !(classInst instanceof Subclass.Class.ClassTypeInterface)) {
             throw new Error(
                 'Invalid argument "classInst" in constructor ' +
-                'of "Subclass.ClassManager.ClassTypes.ClassDefinition" class.' +
-                'It must be an instance of "Subclass.ClassManager.ClassTypes.ClassTypeInterface".'
+                'of "Subclass.Class.ClassDefinition" class.' +
+                'It must be an instance of "Subclass.Class.ClassTypeInterface".'
             );
         }
         if (!classDefinition || typeof classDefinition != 'object') {
             throw new Error(
                 'Invalid argument "classDefinition" in constructor ' +
-                'of "Subclass.ClassManager.ClassTypes.ClassDefinition" class.' +
+                'of "Subclass.Class.ClassDefinition" class.' +
                 'It must be a plain object'
             );
         }
@@ -180,7 +177,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
                 if (!properties.hasOwnProperty(propName)) {
                     continue;
                 }
-                if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
+                if (!Subclass.Class.ClassManager.isClassPropertyNameAllowed(propName)) {
                     throw Error(
                         'Specified not allowed property name "' + propName + '" in attribute "$_properties"' +
                         'in definition of class "' + this.getClass().getClassName() + '".'
@@ -390,7 +387,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
              * Returns property api object
              *
              * @param {string} propertyName
-             * @returns {Subclass.PropertyManager.PropertyTypes.PropertyAPI}
+             * @returns {Subclass.Property.PropertyAPI}
              */
             getProperty: function(propertyName)
             {
@@ -412,7 +409,7 @@ Subclass.ClassManager.ClassTypes.ClassDefinition = (function()
             if (!classDefinition.hasOwnProperty(propName)) {
                 continue;
             }
-            if (!Subclass.ClassManager.isClassPropertyNameAllowed(propName)) {
+            if (!Subclass.Class.ClassManager.isClassPropertyNameAllowed(propName)) {
                 throw new Error(
                     'Trying to define property with not allowed name "' + propName + '" ' +
                     'in class "' + this.getClass().getClassName() + '".'

@@ -1,7 +1,7 @@
 /**
  * @class
  */
-Subclass.PropertyManager.CustomTypesManager = (function()
+Subclass.Property.CustomTypesManager = (function()
 {
     /**
      * @param {PropertyManager} propertyManager

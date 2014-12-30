@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Map = (function()
+Subclass.Property.Map = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Map.Map = (function()
 {
     /*************************************************/
     /*        Describing property type "Map"         */
@@ -37,7 +42,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
         );
     }
 
-    MapType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    MapType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -60,7 +65,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
      */
     MapType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.MapDefinition;
+        return Subclass.Property.Map.MapDefinition;
     };
 
     /**
@@ -217,7 +222,7 @@ Subclass.PropertyManager.PropertyTypes.Map = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(MapType);
+    Subclass.Property.PropertyManager.registerPropertyType(MapType);
 
     return MapType;
 

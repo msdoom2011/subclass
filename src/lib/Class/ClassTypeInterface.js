@@ -1,10 +1,10 @@
 /**
  * @interface
  */
-Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
+Subclass.Class.ClassTypeInterface = (function()
 {
     /**
-     * @param {Subclass.ClassManager} classManager
+     * @param {Subclass.Class.ClassManager} classManager
      * @param {string} className
      * @param {Object} classDefinition
      * @constructor
@@ -59,7 +59,7 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
     /**
      * Returns class definition object
      *
-     * @returns {Subclass.ClassManager.ClassTypes.ClassDefinition}
+     * @returns {Subclass.Class.ClassDefinition}
      */
     ClassTypeInterface.prototype.getClassDefinition = function() {};
 
@@ -73,7 +73,7 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
     /**
      * Returns parent class instance
      *
-     * @return {(Subclass.ClassManager.ClassTypes.ClassTypeInterface|null)}
+     * @return {(Subclass.Class.ClassTypeInterface|null)}
      */
     ClassTypeInterface.prototype.getClassParent = function() {};
 
@@ -81,7 +81,7 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
      * Returns all typed properties in current class instance
      *
      * @param {boolean} withInherited
-     * @returns {Object.<Subclass.PropertyManager.PropertyTypeInterface>}
+     * @returns {Object.<Subclass.Property.PropertyTypeInterface>}
      */
     ClassTypeInterface.prototype.getClassProperties = function(withInherited) {};
 
@@ -97,7 +97,7 @@ Subclass.ClassManager.ClassTypes.ClassTypeInterface = (function()
      * Returns property instance by its name
      *
      * @param {string} propertyName
-     * @returns {Subclass.PropertyManager.PropertyTypeInterface}
+     * @returns {Subclass.Property.PropertyTypeInterface}
      * @throws {Error}
      */
     ClassTypeInterface.prototype.getClassProperty = function(propertyName) {};

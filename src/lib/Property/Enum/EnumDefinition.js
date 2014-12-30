@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+ * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
+Subclass.Property.Enum.EnumDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -14,7 +14,7 @@ Subclass.PropertyManager.PropertyTypes.EnumDefinition = (function()
         EnumDefinition.$parent.call(this, property, propertyDefinition);
     }
 
-    EnumDefinition.$parent = Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+    EnumDefinition.$parent = Subclass.Property.PropertyDefinition;
 
     /**
      * @inheritDoc

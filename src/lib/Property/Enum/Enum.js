@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Enum = (function()
+Subclass.Property.Enum = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Enum.Enum = (function()
 {
     /*************************************************/
     /*       Describing property type "Enum"         */
@@ -25,7 +30,7 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
         );
     }
 
-    EnumType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    EnumType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
      */
     EnumType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.EnumDefinition;
+        return Subclass.Property.Enum.EnumDefinition;
     };
 
     /**
@@ -64,7 +69,7 @@ Subclass.PropertyManager.PropertyTypes.Enum = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(EnumType);
+    Subclass.Property.PropertyManager.registerPropertyType(EnumType);
 
     return EnumType;
 

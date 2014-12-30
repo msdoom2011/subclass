@@ -1,8 +1,8 @@
 /**
  * @class
- * @implements {Subclass.ClassManager.ClassTypes.ClassTypeInterface}
+ * @implements {Subclass.Class.ClassTypeInterface}
  */
-Subclass.ClassManager.ClassTypes.ClassType = (function()
+Subclass.Class.ClassType = (function()
 {
     /**
      * @inheritDoc
@@ -32,7 +32,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
         this._className = className;
 
         /**
-         * @type {Subclass.ClassManager.ClassTypes.ClassDefinition}
+         * @type {Subclass.Class.ClassDefinition}
          * @protected
          */
         this._classDefinition = this.createClassDefinition(classDefinition);
@@ -66,7 +66,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
      *
      * @type {(ClassTypeInterface|null)}
      */
-    ClassType.$parent = Subclass.ClassManager.ClassTypes.ClassTypeInterface;
+    ClassType.$parent = Subclass.Class.ClassTypeInterface;
 
     /**
      * @inheritDoc
@@ -89,7 +89,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
      */
     ClassType.getClassDefinitionClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.ClassDefinition;
+        return Subclass.Class.ClassDefinition;
     };
 
     /**
@@ -120,7 +120,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
      * Creates and returns class definition instance.
      *
      * @param {Object} classDefinition
-     * @returns {Subclass.ClassManager.ClassTypes.ClassDefinition}
+     * @returns {Subclass.Class.ClassDefinition}
      */
     ClassType.prototype.createClassDefinition = function(classDefinition)
     {
@@ -157,10 +157,10 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
         if (createInstance) {
             var inst = new construct(this, classDefinition);
 
-            if (!(inst instanceof Subclass.ClassManager.ClassTypes.ClassDefinition)) {
+            if (!(inst instanceof Subclass.Class.ClassDefinition)) {
                 throw new Error(
                     'Class definition class must be instance of ' +
-                    '"Subclass.ClassManager.ClassTypes.ClassDefinition" class.'
+                    '"Subclass.Class.ClassDefinition" class.'
                 );
             }
             return inst;
@@ -426,7 +426,7 @@ Subclass.ClassManager.ClassTypes.ClassType = (function()
 
     // Adding not allowed class properties
 
-    Subclass.ClassManager.registerNotAllowedClassPropertyNames([
+    Subclass.Class.ClassManager.registerNotAllowedClassPropertyNames([
         "class",
         "parent",
         "classManager",

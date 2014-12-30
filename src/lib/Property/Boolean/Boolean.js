@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Boolean = (function()
+Subclass.Property.Boolean = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Boolean.Boolean = (function()
 {
     /*************************************************/
     /*      Describing property type "Boolean"       */
@@ -12,7 +17,6 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
      * @param {PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
-     * @alias Subclass.PropertyManager.PropertyTypes.Boolean
      * @constructor
      */
     function BooleanType(propertyManager, propertyName, propertyDefinition)
@@ -25,7 +29,7 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
         );
     }
 
-    BooleanType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    BooleanType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +52,7 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
      */
     BooleanType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.BooleanDefinition;
+        return Subclass.Property.Boolean.BooleanDefinition;
     };
 
 
@@ -56,7 +60,7 @@ Subclass.PropertyManager.PropertyTypes.Boolean = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(BooleanType);
+    Subclass.Property.PropertyManager.registerPropertyType(BooleanType);
 
     return BooleanType;
 

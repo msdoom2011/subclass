@@ -1,15 +1,15 @@
 /**
  * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+ * @extends {Subclass.Class.ClassTypeBuilder}
  */
-Subclass.ClassManager.ClassTypes.Config.Builder = (function()
+Subclass.Class.Config.ConfigBuilder = (function()
 {
     function ConfigBuilder(classManager, classType, className)
     {
         ConfigBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    ConfigBuilder.$parent = Subclass.ClassManager.ClassTypes.ClassType.Builder;
+    ConfigBuilder.$parent = Subclass.Class.ClassTypeBuilder;
 
     /**
      * Validates includes list argument
@@ -82,7 +82,7 @@ Subclass.ClassManager.ClassTypes.Config.Builder = (function()
      * Sets includes list
      *
      * @param {string[]} includesList
-     * @returns {Subclass.ClassManager.ClassTypes.Config.Builder}
+     * @returns {Subclass.Class.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.setIncludes = function(includesList)
     {
@@ -97,7 +97,7 @@ Subclass.ClassManager.ClassTypes.Config.Builder = (function()
      * Adds new includes
      *
      * @param {string[]} includesList
-     * @returns {Subclass.ClassManager.ClassTypes.Config.Builder}
+     * @returns {Subclass.Class.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.addIncludes = function(includesList)
     {

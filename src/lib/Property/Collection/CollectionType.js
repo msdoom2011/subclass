@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
+Subclass.Property.Collection = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Collection.CollectionType = (function()
 {
     /*************************************************/
     /*        Describing property type "Map"         */
@@ -49,7 +54,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
         this._proto = null;
     }
 
-    CollectionType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    CollectionType.$parent = Subclass.Property.PropertyType;
 
     /**
      * Tells is property value null
@@ -105,7 +110,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionType = (function()
      */
     CollectionType.prototype.getCollectionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.CollectionType.Collection;
+        return Subclass.Property.Collection.Collection;
     };
 
     /**

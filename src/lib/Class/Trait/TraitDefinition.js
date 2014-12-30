@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassDefinition}
+ * @extends {Subclass.Class.ClassDefinition}
  */
-Subclass.ClassManager.ClassTypes.Interface.TraitDefinition = (function()
+Subclass.Class.Trait.TraitDefinition = (function()
 {
     /**
      * @inheritDoc
@@ -12,7 +12,7 @@ Subclass.ClassManager.ClassTypes.Interface.TraitDefinition = (function()
         TraitDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    TraitDefinition.$parent = Subclass.ClassManager.ClassTypes.ClassDefinition;
+    TraitDefinition.$parent = Subclass.Class.ClassDefinition;
 
     /**
      * Validates "$_abstract" attribute value

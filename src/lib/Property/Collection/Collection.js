@@ -1,7 +1,7 @@
 /**
  * @class
  */
-Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
+Subclass.Property.Collection.Collection = (function()
 {
     /**
      * @param {CollectionType} property
@@ -35,8 +35,10 @@ Subclass.PropertyManager.PropertyTypes.CollectionType.Collection = (function()
     Collection.prototype.addItem = function(key, value)
     {
         if (this.issetItem(key)) {
-            console.warn('Trying to add already existent collection item with key "' + key + '" ' +
-                'to property ' + this.getProperty() + '.');
+            console.warn(
+                'Trying to add already existent collection item with key "' + key + '" ' +
+                'to property ' + this.getProperty() + '.'
+            );
             return;
         }
         this.validateValue(value);

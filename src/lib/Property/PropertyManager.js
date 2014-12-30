@@ -1,7 +1,9 @@
 /**
- * @class
+ * @namespace
  */
-Subclass.PropertyManager = (function()
+Subclass.Property = {};
+
+Subclass.Property.PropertyManager = (function()
 {
     /**
      * Property manager constructor
@@ -18,10 +20,10 @@ Subclass.PropertyManager = (function()
         this._hash = Math.round(Math.abs(new Date().getTime() * Math.random() / 100000));
 
         /**
-         * @type {Subclass.PropertyManager.CustomTypesManager}
+         * @type {Subclass.Property.CustomTypesManager}
          * @private
          */
-        this._customTypesManager = new Subclass.PropertyManager.CustomTypesManager(this);
+        this._customTypesManager = new Subclass.Property.CustomTypesManager(this);
 
         /**
          * @type {ClassManager}
@@ -43,7 +45,7 @@ Subclass.PropertyManager = (function()
     /**
      * Returns instance of custom types manager
      *
-     * @returns {Subclass.PropertyManager.CustomTypesManager}
+     * @returns {Subclass.Property.CustomTypesManager}
      */
     PropertyManager.prototype.getCustomTypesManager = function()
     {
@@ -86,7 +88,7 @@ Subclass.PropertyManager = (function()
             classConstructor = arguments[2];
 
         } else {
-            classConstructor = Subclass.PropertyManager.getPropertyType(propertyTypeName);
+            classConstructor = Subclass.Property.PropertyManager.getPropertyType(propertyTypeName);
         }
 
         if (classConstructor.$parent) {
@@ -132,7 +134,7 @@ Subclass.PropertyManager = (function()
             propertyDefinition.type = propertyTypeName;
         }
 
-        if (!Subclass.PropertyManager.issetPropertyType(propertyTypeName)) {
+        if (!Subclass.Property.PropertyManager.issetPropertyType(propertyTypeName)) {
             var propertyFullName = (contextProperty && contextProperty.getPropertyNameFull() + "." || '') + propertyName;
 
             throw new Error('Trying to create property "' + propertyFullName + '" of none existent type "' + propertyTypeName + '"' +
@@ -150,15 +152,15 @@ Subclass.PropertyManager = (function()
 
         // Checking if property name allowed
 
-        if (!contextProperty && !Subclass.ClassManager.isClassPropertyNameAllowed(propertyName)) {
+        if (!contextProperty && !Subclass.Class.ClassManager.isClassPropertyNameAllowed(propertyName)) {
             throw new Error('Trying to define property with not allowed name "' + propertyName + '"' +
                 (contextClass && ' in class "' + contextClass.getClassName() + '"' || "") +  ".");
         }
 
         inst.initialize();
 
-        if (!(inst instanceof Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface)) {
-            throw new Error('Property type factory must instance of "PropertyTypeInterface" class.');
+        if (!(inst instanceof Subclass.Property.PropertyTypeInterface)) {
+            throw new Error('Property type factory must instance of "Subclass.Property.PropertyTypeInterface" class.');
         }
         return inst;
     };

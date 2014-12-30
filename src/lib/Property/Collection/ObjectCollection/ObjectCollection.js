@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.CollectionType.Collection}
+ * @extends {Subclass.Property.Collection.Collection}
  */
-Subclass.PropertyManager.PropertyTypes.ObjectCollection.Collection = (function()
+Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
 {
     /**
      * @param {CollectionType} property
@@ -13,7 +13,7 @@ Subclass.PropertyManager.PropertyTypes.ObjectCollection.Collection = (function()
         ObjectCollection.$parent.call(this, property);
     }
 
-    ObjectCollection.$parent = Subclass.PropertyManager.PropertyTypes.CollectionType.Collection;
+    ObjectCollection.$parent = Subclass.Property.Collection.Collection;
 
     return ObjectCollection;
 

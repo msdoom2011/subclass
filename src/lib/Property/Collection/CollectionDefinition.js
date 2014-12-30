@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+ * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.PropertyManager.PropertyTypes.CollectionDefinition = (function()
+Subclass.Property.Collection.CollectionDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -14,7 +14,7 @@ Subclass.PropertyManager.PropertyTypes.CollectionDefinition = (function()
         CollectionDefinition.$parent.call(this, property, propertyDefinition);
     }
 
-    CollectionDefinition.$parent = Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+    CollectionDefinition.$parent = Subclass.Property.PropertyDefinition;
 
     /**
      * @inheritDoc

@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Object = (function()
+Subclass.Property.Object = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Object.Object = (function()
 {
     /*************************************************/
     /*      Describing property type "Object"        */
@@ -25,7 +30,7 @@ Subclass.PropertyManager.PropertyTypes.Object = (function()
         );
     }
 
-    ObjectType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    ObjectType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.Object = (function()
      */
     ObjectType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.ObjectDefinition;
+        return Subclass.Property.Object.ObjectDefinition;
     };
 
 
@@ -56,7 +61,7 @@ Subclass.PropertyManager.PropertyTypes.Object = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(ObjectType);
+    Subclass.Property.PropertyManager.registerPropertyType(ObjectType);
 
     return ObjectType;
 

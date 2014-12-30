@@ -1,7 +1,7 @@
 /**
  * @class
  */
-Subclass.PropertyManager.PropertyTypes.PropertyAPI = (function()
+Subclass.Property.PropertyAPI = (function()
 {
     /**
      * @param {PropertyType} property

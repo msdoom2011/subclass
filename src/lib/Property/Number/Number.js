@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Number = (function()
+Subclass.Property.Number = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Number.Number = (function()
 {
     /*************************************************/
     /*      Describing property type "Number"        */
@@ -25,7 +30,7 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
         );
     }
 
-    NumberType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    NumberType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
      */
     NumberType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.NumberDefinition;
+        return Subclass.Property.Number.NumberDefinition;
     };
 
 
@@ -56,7 +61,7 @@ Subclass.PropertyManager.PropertyTypes.Number = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(NumberType);
+    Subclass.Property.PropertyManager.registerPropertyType(NumberType);
 
     return NumberType;
 

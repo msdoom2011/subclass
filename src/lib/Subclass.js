@@ -10,7 +10,7 @@ window.Subclass = (function()
          */
         create: function(configs)
         {
-            return Subclass.ClassManager.create(configs);
+            return Subclass.Class.ClassManager.create(configs);
         }
     };
 })();

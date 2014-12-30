@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Array = (function()
+Subclass.Property.Array = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Array.Array = (function()
 {
     /*************************************************/
     /*       Describing property type "Array"        */
@@ -24,7 +29,7 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
         );
     }
 
-    ArrayType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    ArrayType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -47,7 +52,7 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
      */
     ArrayType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.ArrayDefinition;
+        return Subclass.Property.Array.ArrayDefinition;
     };
 
     /**
@@ -66,7 +71,7 @@ Subclass.PropertyManager.PropertyTypes.Array = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(ArrayType);
+    Subclass.Property.PropertyManager.registerPropertyType(ArrayType);
 
     return ArrayType;
 

@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassDefinition}
+ * @extends {Subclass.Class.ClassDefinition}
  */
-Subclass.ClassManager.ClassTypes.Class.ClassDefinition = (function()
+Subclass.Class.Class.ClassDefinition = (function()
 {
     /**
      * @inheritDoc
@@ -12,7 +12,7 @@ Subclass.ClassManager.ClassTypes.Class.ClassDefinition = (function()
         ClassDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    ClassDefinition.$parent = Subclass.ClassManager.ClassTypes.ClassDefinition;
+    ClassDefinition.$parent = Subclass.Class.ClassDefinition;
 
     /**
      * Validates "$_static" attribute value

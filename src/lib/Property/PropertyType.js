@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface}
+ * @extends {Subclass.Property.PropertyTypeInterface}
  */
-Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
+Subclass.Property.PropertyType = (function()
 {
     /**
      * @param {PropertyManager} propertyManager
@@ -31,7 +31,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         /**
          * A definition of current property
          *
-         * @type {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+         * @type {Subclass.Property.PropertyDefinition}
          * @private
          */
         this._propertyDefinition = this.createPropertyDefinition(propertyDefinition);
@@ -77,7 +77,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         this._isModified = false;
     }
 
-    PropertyType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface;
+    PropertyType.$parent = Subclass.Property.PropertyTypeInterface;
 
     /**
      * @inheritDoc
@@ -152,14 +152,14 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
      */
     PropertyType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+        return Subclass.Property.PropertyDefinition;
     };
 
     /**
      * Creates and returns property definition instance.
      *
      * @param {Object} propertyDefinition
-     * @returns {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+     * @returns {Subclass.Property.PropertyDefinition}
      */
     PropertyType.prototype.createPropertyDefinition = function(propertyDefinition)
     {
@@ -196,9 +196,9 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
         if (createInstance) {
             var inst = new construct(this, propertyDefinition);
 
-            if (!(inst instanceof Subclass.PropertyManager.PropertyTypes.PropertyDefinition)) {
+            if (!(inst instanceof Subclass.Property.PropertyDefinition)) {
                 throw new Error('Property definition class must be instance of ' +
-                    '"Subclass.PropertyManager.PropertyTypes.PropertyDefinition" class.');
+                    '"Subclass.Property.PropertyDefinition" class.');
             }
             return inst;
         }
@@ -220,7 +220,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
     PropertyType.prototype.getAPI = function(context)
     {
         if (!this._propertyAPI) {
-            var apiClass = Subclass.PropertyManager.PropertyTypes.PropertyAPI;
+            var apiClass = Subclass.Property.PropertyAPI;
             this._propertyAPI = new apiClass(this, context);
         }
         return this._propertyAPI;
@@ -258,7 +258,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 && contextClass !== null
             ) || (
                 contextClass
-                && !(contextClass instanceof Subclass.ClassManager.ClassTypes.ClassTypeInterface)
+                && !(contextClass instanceof Subclass.Class.ClassTypeInterface)
             )
         ) {
             var message = 'Trying to set not valid context class ' +
@@ -293,7 +293,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyType = (function()
                 && contextProperty !== null
             ) || (
                 contextProperty
-                && !(contextProperty instanceof Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface)
+                && !(contextProperty instanceof Subclass.Property.PropertyTypeInterface)
             )
         ) {
             var message = 'Trying to set not valid context property ' +

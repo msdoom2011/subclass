@@ -1,11 +1,16 @@
 /**
- * @class
- * @extends {Subclass.ClassManager.ClassTypes.Class}
+ * @namespace
  */
-Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
+Subclass.Class.AbstractClass = {};
+
+/**
+ * @class
+ * @extends {Subclass.Class.Class.Class}
+ */
+Subclass.Class.AbstractClass.AbstractClass = (function() {
 
     /*************************************************/
-    /*        Describing class type "Class"          */
+    /*     Describing class type "AbstractClass"     */
     /*************************************************/
 
     /**
@@ -21,9 +26,9 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
     }
 
     /**
-     * @type {Class}
+     * @type {Subclass.Class.Class.Class}
      */
-    AbstractClass.$parent = Subclass.ClassManager.ClassTypes.Class;
+    AbstractClass.$parent = Subclass.Class.Class.Class;
 
     /**
      * @inheritDoc
@@ -38,7 +43,7 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
      */
     AbstractClass.getClassBuilderClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.AbstractClass.Builder;
+        return Subclass.Class.AbstractClass.AbstractClassBuilder;
     };
 
     /**
@@ -46,7 +51,7 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
      */
     AbstractClass.getClassDefinitionClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.AbstractClass.AbstractClassDefinition;
+        return Subclass.Class.AbstractClass.AbstractClassDefinition;
     };
 
     /**
@@ -54,7 +59,7 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
      */
     AbstractClass.prototype.setClassParent = function (parentClassName)
     {
-        Subclass.ClassManager.ClassTypes.ClassType.prototype.setClassParent.call(this, parentClassName);
+        Subclass.Class.ClassType.prototype.setClassParent.call(this, parentClassName);
 
         if (
             this._classParent
@@ -84,7 +89,7 @@ Subclass.ClassManager.ClassTypes.AbstractClass = (function() {
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(AbstractClass);
+    Subclass.Class.ClassManager.registerClassType(AbstractClass);
 
     return AbstractClass;
 

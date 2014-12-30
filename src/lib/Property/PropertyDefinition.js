@@ -1,7 +1,7 @@
 /**
  * @class
  */
-Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
+Subclass.Property.PropertyDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -10,17 +10,17 @@ Subclass.PropertyManager.PropertyTypes.PropertyDefinition = (function()
      */
     function PropertyDefinition (property, propertyDefinition)
     {
-        if (!property || !(property instanceof Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface)) {
+        if (!property || !(property instanceof Subclass.Property.PropertyTypeInterface)) {
             throw new Error(
                 'Invalid argument "property" in constructor ' +
-                'of "Subclass.PropertyManager.PropertyTypes.PropertyDefinition" class.' +
-                'It must be an instance of class "Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface".'
+                'of "Subclass.Property.PropertyDefinition" class.' +
+                'It must be an instance of class "Subclass.Property.PropertyTypeInterface".'
             );
         }
         if (!propertyDefinition || typeof propertyDefinition != 'object') {
             throw new Error(
                 'Invalid argument "propertyDefinition" in constructor ' +
-                'of "Subclass.PropertyManager.PropertyTypes.PropertyDefinition" class.' +
+                'of "Subclass.Property.PropertyDefinition" class.' +
                 'It must be a plain object.'
             );
         }

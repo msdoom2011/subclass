@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassDefinition}
+ * @extends {Subclass.Class.ClassDefinition}
  */
-Subclass.ClassManager.ClassTypes.Config.ConfigDefinition = (function()
+Subclass.Class.Config.ConfigDefinition = (function()
 {
     /**
      * @inheritDoc
@@ -12,7 +12,7 @@ Subclass.ClassManager.ClassTypes.Config.ConfigDefinition = (function()
         ConfigDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    ConfigDefinition.$parent = Subclass.ClassManager.ClassTypes.ClassDefinition;
+    ConfigDefinition.$parent = Subclass.Class.ClassDefinition;
 
     /**
      * Validates "$_abstract" attribute value

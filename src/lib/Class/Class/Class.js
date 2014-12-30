@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassType}
+ * @namespace
  */
-Subclass.ClassManager.ClassTypes.Class = (function() {
+Subclass.Class.Class = {};
+
+/**
+ * @class
+ * @extends {Subclass.Class.ClassType}
+ */
+Subclass.Class.Class.Class = (function() {
 
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -44,7 +49,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
         this._traits = [];
     }
 
-    Class.$parent = Subclass.ClassManager.ClassTypes.ClassType;
+    Class.$parent = Subclass.Class.ClassType;
 
     /**
      * @inheritDoc
@@ -59,7 +64,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.getClassBuilderClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.Class.Builder;
+        return Subclass.Class.Class.ClassBuilder;
     };
 
     /**
@@ -67,7 +72,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.getClassDefinitionClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.Class.ClassDefinition;
+        return Subclass.Class.Class.ClassDefinition;
     };
 
     /**
@@ -80,7 +85,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
         if (
             this._classParent
             && this._classParent.constructor != Class
-            && this._classParent.constructor != Subclass.ClassManager.getClassType('AbstractClass')
+            && this._classParent.constructor != Subclass.Class.ClassManager.getClassType('AbstractClass')
         ) {
             throw new Error(
                 'Class "' + this.getClassName() + '" can be inherited ' +
@@ -128,10 +133,10 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
             }
         }
         if (
-            !Subclass.ClassManager.issetClassType('AbstractClass')
+            !Subclass.Class.ClassManager.issetClassType('AbstractClass')
             || (
-                Subclass.ClassManager.issetClassType('AbstractClass')
-                && this.constructor != Subclass.ClassManager.ClassTypes.AbstractClass
+                Subclass.Class.ClassManager.issetClassType('AbstractClass')
+                && this.constructor != Subclass.Class.AbstractClass.AbstractClass
             )
         ) {
             for (var abstractMethodName in abstractMethods) {
@@ -203,7 +208,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.prototype.getTraits = function ()
     {
-        if (!Subclass.ClassManager.issetClassType('Trait')) {
+        if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "getTraits".');
         }
         return this._traits;
@@ -219,7 +224,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
     {
         var classDefinition = this.getClassDefinition();
 
-        if (!Subclass.ClassManager.issetClassType('Trait')) {
+        if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "addTrait".');
         }
         if (!traitName) {
@@ -230,7 +235,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
         var traitClassProperties = traitClass.getClassProperties();
         var traitProps = {};
 
-        if (traitClass.constructor != Subclass.ClassManager.ClassTypes.Trait) {
+        if (traitClass.constructor != Subclass.Class.Trait.Trait) {
             throw new Error('Trying add to "$_traits" parameter new class "' + traitName + '" that is not trait.');
         }
 
@@ -268,7 +273,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.prototype.hasTrait = function (traitName)
     {
-        if (!Subclass.ClassManager.issetClassType('Trait')) {
+        if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "hasTrait".');
         }
         if (!traitName || typeof traitName != "string") {
@@ -299,7 +304,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.prototype.getInterfaces = function ()
     {
-        if (!Subclass.ClassManager.issetClassType('Interface')) {
+        if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
             throw new Error('Trying to call non existent method "getInterfaces".');
         }
         return this._interfaces;
@@ -313,7 +318,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.prototype.addInterface = function (interfaceName)
     {
-        if (!Subclass.ClassManager.issetClassType('Interface')) {
+        if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
             throw new Error('Trying to call non existent method "addInterface".');
         }
         if (!interfaceName) {
@@ -325,7 +330,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
         var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
 
-        if (interfaceClass.constructor != Subclass.ClassManager.ClassTypes.Interface) {
+        if (interfaceClass.constructor != Subclass.Class.Interface.Interface) {
             throw new Error('Trying add to "$_implements" parameter new class "' + interfaceName + '" that is not interface.');
         }
 
@@ -373,7 +378,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
      */
     Class.prototype.isImplements = function (interfaceName)
     {
-        if (!Subclass.ClassManager.issetClassType('Interface')) {
+        if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
             throw new Error('Trying to call non existent method "isImplements".');
         }
         if (!interfaceName) {
@@ -409,7 +414,7 @@ Subclass.ClassManager.ClassTypes.Class = (function() {
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(Class);
+    Subclass.Class.ClassManager.registerClassType(Class);
 
     return Class;
 

@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassType}
+ * @namespace
  */
-Subclass.ClassManager.ClassTypes.Config = (function()
+Subclass.Class.Config = {};
+
+/**
+ * @class
+ * @extends {Subclass.Class.ClassType}
+ */
+Subclass.Class.Config.Config = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -28,7 +33,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
         Config.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Config.$parent = Subclass.ClassManager.ClassTypes.ClassType;
+    Config.$parent = Subclass.Class.ClassType;
 
 
     /**
@@ -44,7 +49,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
      */
     Config.getClassBuilderClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.Config.Builder;
+        return Subclass.Class.Config.ConfigBuilder;
     };
 
     /**
@@ -52,7 +57,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
      */
     Config.getClassDefinitionClass = function()
     {
-        return Subclass.ClassManager.ClassTypes.Config.ConfigDefinition;
+        return Subclass.Class.Config.ConfigDefinition;
     };
 
     /**
@@ -305,7 +310,7 @@ Subclass.ClassManager.ClassTypes.Config = (function()
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(Config);
+    Subclass.Class.ClassManager.registerClassType(Config);
 
     return Config;
 

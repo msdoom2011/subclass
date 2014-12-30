@@ -1,4 +1,9 @@
-Subclass.ClassManager = (function()
+/**
+ * @namespace
+ */
+Subclass.Class = {};
+
+Subclass.Class.ClassManager = (function()
 {
     /**
      * Class manager constructor
@@ -22,12 +27,12 @@ Subclass.ClassManager = (function()
          * @type {PropertyManager}
          * @private
          */
-        this._propertyManager = Subclass.PropertyManager.create(this);
+        this._propertyManager = Subclass.Property.PropertyManager.create(this);
 
         /**
          * Collection of registered classes
          *
-         * @type {Object.<Subclass.ClassManager.ClassTypes.ClassType>}
+         * @type {Object.<Subclass.Class.ClassType>}
          * @private
          */
         this._classes = {};
@@ -148,7 +153,7 @@ Subclass.ClassManager = (function()
         if (createInstance) {
             var inst = new classConstructor(this, className, classDefinition);
 
-            if (!(inst instanceof Subclass.ClassManager.ClassTypes.ClassType)) {
+            if (!(inst instanceof Subclass.Class.ClassType)) {
                 throw new Error('Class type factory must be instance of "ClassType" class.');
             }
             return inst;
@@ -170,7 +175,7 @@ Subclass.ClassManager = (function()
         if (!classTypeName) {
             throw new Error('Trying to register class without specifying class type.');
         }
-        if (!Subclass.ClassManager.issetClassType(classTypeName)) {
+        if (!Subclass.Class.ClassManager.issetClassType(classTypeName)) {
             throw new Error('Trying to register class of unknown class type "' + classTypeName + '".');
         }
         if (!className || typeof className != 'string') {
@@ -182,7 +187,7 @@ Subclass.ClassManager = (function()
         if (this.issetClass(className)) {
             throw new Error('Trying to redefine already existed class "' + className + '".');
         }
-        var classTypeConstructor = Subclass.ClassManager.getClassType(classTypeName);
+        var classTypeConstructor = Subclass.Class.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
 
         if (!this._classes[classTypeName]) {
@@ -240,7 +245,7 @@ Subclass.ClassManager = (function()
             if (className && this.issetClass(className)) {
                 classBuilderConstructor = this.getClass(className).constructor.getClassBuilderClass();
             } else {
-                classBuilderConstructor = Subclass.ClassManager.getClassType(classType).getClassBuilderClass();
+                classBuilderConstructor = Subclass.Class.ClassManager.getClassType(classType).getClassBuilderClass();
             }
         } else {
             classBuilderConstructor = arguments[2];
@@ -271,8 +276,8 @@ Subclass.ClassManager = (function()
         if (createInstance) {
             var inst = new classBuilderConstructor(this, classType, className);
 
-            if (!(inst instanceof Subclass.ClassManager.ClassTypes.ClassType.Builder)) {
-                throw new Error('Class builder must be instance of "Subclass.ClassManager.ClassBuilder" class.');
+            if (!(inst instanceof Subclass.Class.ClassTypeBuilder)) {
+                throw new Error('Class builder must be instance of "Subclass.Class.ClassTypeBuilder" class.');
             }
             return inst;
         }
@@ -318,7 +323,7 @@ Subclass.ClassManager = (function()
         ClassTypes: {},
 
         /**
-         * Creates instance of Subclass.ClassManager
+         * Creates instance of Subclass.Class.ClassManager
          *
          * @param {Object} [configs]
          * @returns {ClassManager}

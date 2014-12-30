@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+ * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.PropertyManager.PropertyTypes.BooleanDefinition = (function()
+Subclass.Property.Boolean.BooleanDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -14,7 +14,7 @@ Subclass.PropertyManager.PropertyTypes.BooleanDefinition = (function()
         BooleanDefinition.$parent.call(this, property, propertyDefinition);
     }
 
-    BooleanDefinition.$parent = Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+    BooleanDefinition.$parent = Subclass.Property.PropertyDefinition;
 
     /**
      * @inheritDoc

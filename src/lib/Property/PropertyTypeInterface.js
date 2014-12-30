@@ -1,7 +1,7 @@
 /**
  * @interface
  */
-Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface = (function()
+Subclass.Property.PropertyTypeInterface = (function()
 {
     /**
      * @param {PropertyManager} propertyManager
@@ -80,7 +80,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface = (function()
     /**
      * Returns property definition instance
      *
-     * @returns {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+     * @returns {Subclass.Property.PropertyDefinition}
      */
     PropertyTypeInterface.prototype.getPropertyDefinition = function() {};
 
@@ -88,7 +88,7 @@ Subclass.PropertyManager.PropertyTypes.PropertyTypeInterface = (function()
      * Returns property api
      *
      * @param {Object} context
-     * @returns {Subclass.PropertyManager.PropertyTypes.PropertyAPI}
+     * @returns {Subclass.Property.PropertyAPI}
      */
     PropertyTypeInterface.prototype.getAPI = function(context) {};
 

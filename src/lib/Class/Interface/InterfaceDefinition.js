@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.ClassManager.ClassTypes.ClassDefinition}
+ * @extends {Subclass.Class.ClassDefinition}
  */
-Subclass.ClassManager.ClassTypes.Interface.InterfaceDefinition = (function()
+Subclass.Class.Interface.InterfaceDefinition = (function()
 {
     /**
      * @inheritDoc
@@ -12,7 +12,7 @@ Subclass.ClassManager.ClassTypes.Interface.InterfaceDefinition = (function()
         InterfaceDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    InterfaceDefinition.$parent = Subclass.ClassManager.ClassTypes.ClassDefinition;
+    InterfaceDefinition.$parent = Subclass.Class.ClassDefinition;
 
     /**
      * Validates "$_abstract" attribute value

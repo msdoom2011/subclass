@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyDefinition}
+ * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.PropertyManager.PropertyTypes.NumberDefinition = (function()
+Subclass.Property.Number.NumberDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -14,7 +14,7 @@ Subclass.PropertyManager.PropertyTypes.NumberDefinition = (function()
         NumberDefinition.$parent.call(this, property, propertyDefinition);
     }
 
-    NumberDefinition.$parent = Subclass.PropertyManager.PropertyTypes.PropertyDefinition;
+    NumberDefinition.$parent = Subclass.Property.PropertyDefinition;
 
     /**
      * @inheritDoc

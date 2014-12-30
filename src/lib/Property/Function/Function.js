@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Function = (function()
+Subclass.Property.Function = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Function.Function = (function()
 {
     /*************************************************/
     /*      Describing property type "Function"      */
@@ -25,7 +30,7 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
         );
     }
 
-    FunctionType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    FunctionType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
      */
     FunctionType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.FunctionDefinition;
+        return Subclass.Property.Function.FunctionDefinition;
     };
 
 
@@ -56,7 +61,7 @@ Subclass.PropertyManager.PropertyTypes.Function = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(FunctionType);
+    Subclass.Property.PropertyManager.registerPropertyType(FunctionType);
 
     return FunctionType;
 

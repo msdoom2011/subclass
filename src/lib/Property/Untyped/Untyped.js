@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Untyped = (function()
+Subclass.Property.Untyped = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Untyped.Untyped = (function()
 {
     /*************************************************/
     /*      Describing property type "Untyped"       */
@@ -25,7 +30,7 @@ Subclass.PropertyManager.PropertyTypes.Untyped = (function()
         );
     }
 
-    UntypedType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    UntypedType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.Untyped = (function()
      */
     UntypedType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.UntypedDefinition;
+        return Subclass.Property.Untyped.UntypedDefinition;
     };
 
 
@@ -56,7 +61,7 @@ Subclass.PropertyManager.PropertyTypes.Untyped = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(UntypedType);
+    Subclass.Property.PropertyManager.registerPropertyType(UntypedType);
 
     return UntypedType;
 

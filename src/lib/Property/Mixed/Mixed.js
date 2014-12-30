@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.Mixed = (function()
+Subclass.Property.Mixed = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.Mixed.Mixed = (function()
 {
     /*************************************************/
     /*       Describing property type "Mixed"        */
@@ -26,7 +31,7 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
         this._allowedTypes = [];
     }
 
-    MixedType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    MixedType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -49,7 +54,7 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
      */
     MixedType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.MixedDefinition;
+        return Subclass.Property.Mixed.MixedDefinition;
     };
 
     /**
@@ -82,7 +87,7 @@ Subclass.PropertyManager.PropertyTypes.Mixed = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(MixedType);
+    Subclass.Property.PropertyManager.registerPropertyType(MixedType);
 
     return MixedType;
 

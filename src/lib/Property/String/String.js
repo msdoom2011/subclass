@@ -1,8 +1,13 @@
 /**
- * @class
- * @extends {Subclass.PropertyManager.PropertyTypes.PropertyType}
+ * @namespace
  */
-Subclass.PropertyManager.PropertyTypes.String = (function()
+Subclass.Property.String = {};
+
+/**
+ * @class
+ * @extends {Subclass.Property.PropertyType}
+ */
+Subclass.Property.String.String = (function()
 {
     /*************************************************/
     /*      Describing property type "String"        */
@@ -25,7 +30,7 @@ Subclass.PropertyManager.PropertyTypes.String = (function()
         );
     }
 
-    StringType.$parent = Subclass.PropertyManager.PropertyTypes.PropertyType;
+    StringType.$parent = Subclass.Property.PropertyType;
 
     /**
      * @inheritDoc
@@ -48,7 +53,7 @@ Subclass.PropertyManager.PropertyTypes.String = (function()
      */
     StringType.prototype.getPropertyDefinitionClass = function()
     {
-        return Subclass.PropertyManager.PropertyTypes.StringDefinition;
+        return Subclass.Property.String.StringDefinition;
     };
 
 
@@ -56,7 +61,7 @@ Subclass.PropertyManager.PropertyTypes.String = (function()
     /*        Registering new property type          */
     /*************************************************/
 
-    Subclass.PropertyManager.registerPropertyType(StringType);
+    Subclass.Property.PropertyManager.registerPropertyType(StringType);
 
     return StringType;
 

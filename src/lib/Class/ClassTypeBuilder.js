@@ -1,7 +1,7 @@
 /**
  * @class
  */
-Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
+Subclass.Class.ClassTypeBuilder = (function()
 {
     function ClassTypeBuilder(classManager, classType, className)
     {
@@ -61,7 +61,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets class instance that will altered
      *
      * @param {string} className
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      * @private
      */
     ClassTypeBuilder.prototype._setClass = function(className)
@@ -82,7 +82,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets definition of class
      *
      * @param {Object} classDefinition
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      * @private
      */
     ClassTypeBuilder.prototype._setClassDefinition = function(classDefinition)
@@ -113,7 +113,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets class type
      *
      * @param {string} classType
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setClassType = function(classType)
     {
@@ -143,7 +143,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets name of class
      *
      * @param {string} className
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setClassName = function(className)
     {
@@ -169,7 +169,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets parent of class
      *
      * @param {string} parentClassName
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setClassParent = function(parentClassName)
     {
@@ -200,7 +200,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets typed properties of class
      *
      * @param {Object.<Object>} classProperties
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setClassProperties = function(classProperties)
     {
@@ -214,7 +214,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Adds new class properties
      *
      * @param {Object.<Object>} classProperties
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.addClassProperties = function(classProperties)
     {
@@ -245,7 +245,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Removes typed class property
      *
      * @param {string} propertyName
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.removeClassProperty = function(propertyName)
     {
@@ -262,7 +262,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets static properties and methods of class
      *
      * @param {Object} staticProperties
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setStatic = function(staticProperties)
     {
@@ -290,7 +290,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      *
      * @param {string} staticPropertyName
      * @param {*} staticPropertyValue
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
     {
@@ -307,7 +307,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Removes static property or method
      *
      * @param {string} staticPropertyName
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.removeStaticProperty = function(staticPropertyName)
     {
@@ -348,7 +348,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Adds new methods and properties to classBody
      *
      * @param {Object} classBody
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.addClassBody = function(classBody)
     {
@@ -364,7 +364,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets class not typed properties and methods
      *
      * @param {Object} classBody
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setClassBody = function(classBody)
     {
@@ -390,7 +390,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
      * Sets class constructor function
      *
      * @param {Function }constructorFunction
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.setClassConstructor = function(constructorFunction)
     {
@@ -412,7 +412,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
     /**
      * Removes class constructor
      *
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      */
     ClassTypeBuilder.prototype.removeClassConstructor = function()
     {
@@ -426,7 +426,7 @@ Subclass.ClassManager.ClassTypes.ClassType.Builder = (function()
     /**
      * Validates current class definition
      *
-     * @returns {Subclass.ClassManager.ClassTypes.ClassType.Builder}
+     * @returns {Subclass.Class.ClassTypeBuilder}
      * @private
      */
     ClassTypeBuilder.prototype._validateClass = function()

@@ -84,7 +84,6 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
         delete classDefinition.isImplements;
         delete classDefinition.getClassName;
         delete classDefinition.getCopy;
-        delete classDefinition.param;
         delete classDefinition.issetProperty;
         delete classDefinition.getProperty;
 

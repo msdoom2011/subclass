@@ -353,26 +353,6 @@ Subclass.Class.ClassDefinition = (function()
             },
 
             /**
-             * Validates type of parameter and setts default value if it's undefined
-             *
-             * @param {string} paramType
-             * @param {*} paramValue
-             * @param {*} [defaultValue]
-             * @returns {*}
-             */
-            param: function (paramType, paramValue, defaultValue)
-            {
-                if (typeof paramValue == 'undefined') {
-                    paramValue = defaultValue;
-                }
-                //if (typeof paramValue != paramType && paramValue !== null) {
-                //    throw new Error("Trying to set not valid value of type '" + (typeof paramValue) + "'. '" + paramType + "' is expected.");
-                //}
-
-                return paramValue;
-            },
-
-            /**
              * Checks if property is typed
              *
              * @param {string} propertyName

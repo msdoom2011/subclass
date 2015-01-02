@@ -42,6 +42,41 @@ Subclass.Tools = (function()
             return target;
         },
 
+        /**
+         * Copies all properties from source to target with recursion call.
+         *
+         * Every property in the source object or array will replace
+         * already existed property with the same name in the target object or array.
+         *
+         * @param {(Object|Array)} target
+         *
+         *      Target object which will extended by properties from source object
+         *
+         * @param {(Object|Array)} source
+         *
+         *      Source object which properties will added to target object
+         *
+         * @param {(Function|boolean)} mergeArrays
+         *
+         *      If was passed true it means that elements from source array properties
+         *      will be added to according array properties in target.
+         *
+         *      Else if it was passed false (by default) it means that array properties from source object will
+         *      replace array properties in target object.
+         *
+         *      If was passed a function it means that will added all element from array property in source to
+         *      according array property in target if specified function returns true.
+         *
+         *      Example: function (targetArrayPropertyElement, sourceArrayPropertyElement) {
+         *          return targetArrayPropertyElement.name != sourceArrayPropertyElement.name;
+         *      });
+         *
+         * @param {boolean} withInheritedProps
+         *
+         *      Default false. Specified if there is a need to copy inherited properties.
+         *
+         * @returns {*}
+         */
         extendDeep: function extendDeep (target, source, mergeArrays, withInheritedProps)
         {
             if (withInheritedProps !== true) {
@@ -65,6 +100,7 @@ Subclass.Tools = (function()
             }
 
             // Handle case when target is a string or something
+
             if (typeof target != "object" && typeof target != 'function') {
                 target = {};
             }
@@ -79,7 +115,23 @@ Subclass.Tools = (function()
                 return false;
             }
 
+            function isPlainObject(obj)
+            {
+                if (
+                    typeof obj != "object"
+                    || obj.nodeType
+                    || obj == window
+                ) {
+                    return false;
+                }
+                return !(
+                    obj.constructor
+                    && !obj.constructor.prototype.hasOwnProperty("isPrototypeOf")
+                );
+            }
+
             // Extend the base object
+
             for (var propName in source) {
                 var sourceItemIsArray;
 
@@ -88,15 +140,17 @@ Subclass.Tools = (function()
                 }
 
                 // Prevent never-ending loop
+
                 if (target === source[propName]) {
                     continue;
                 }
 
                 // Recourse if we're merging plain objects or arrays
+
                 if (
                     source[propName]
                     && (
-                        this.isPlainObject(source[propName])
+                        isPlainObject(source[propName])
                         || (
                             mergeArrays
                             && (sourceItemIsArray = Array.isArray(source[propName]))
@@ -125,13 +179,14 @@ Subclass.Tools = (function()
                         }
 
                     } else {
-                        clone = target[propName] && this.isPlainObject(target[propName])
+                        clone = target[propName] && isPlainObject(target[propName])
                             ? target[propName]
                             : {}
                         ;
                     }
 
                     // Never move original objects, clone them
+
                     target[propName] = extendDeep.call(
                         this,
                         clone,
@@ -141,15 +196,23 @@ Subclass.Tools = (function()
                     );
 
                     // Don't bring in undefined values
+
                 } else if (source[propName] !== undefined) {
                     target[propName] = source[propName];
                 }
             }
 
             // Return the modified object
+
             return target;
         },
 
+        /**
+         * Returns a copy of passed object or array
+         *
+         * @param {(Object|Array)} object
+         * @returns {*}
+         */
         copy: function (object)
         {
             var newObj;
@@ -157,7 +220,7 @@ Subclass.Tools = (function()
             if (
                 typeof object == 'object'
                 && (
-                    this.isPlainObject(object)
+                    object.constructor == Object
                     || Array.isArray(object)
                 )
             ) {
@@ -168,88 +231,6 @@ Subclass.Tools = (function()
                 newObj = object;
             }
             return newObj;
-        },
-
-        isPlainObject: function (obj)
-        {
-            if (
-                typeof obj != "object"
-                || obj.nodeType
-                || obj == window
-            ) {
-                return false;
-            }
-            return !(
-                obj.constructor
-                && !obj.constructor.prototype.hasOwnProperty("isPrototypeOf")
-            );
-        },
-
-        convertNumberToString: function(number)
-        {
-            var inputNumber = number;
-
-            if (typeof number == 'string') {
-                number = number.replace(/(^\s+)|(\s+$)/g, '');
-                number = number.replace(/(\d+)[\,\s]+(\d+)+/g, '$1$2');
-            }
-            if (
-                number === null
-                || number === undefined
-                || isNaN(parseFloat(number))
-                || number.toString().match(/.+\-.+/)
-            ) {
-                return inputNumber;
-            }
-            var parts = number.toString().split(".");
-            parts[0] = parts[0].replace(/\b(?=(\d{3})+(?!\d))/g, ",");
-
-            return parts.join(".");
-        },
-
-        convertStringToNumber: function(string)
-        {
-            if (typeof string == 'number') {
-                return string;
-            }
-            if (!string) {
-                return 0;
-            }
-            if (
-                string === null
-                || string === undefined
-                || isNaN(parseFloat(string))
-                || string.match(/.+\-.+/)
-            ) {
-                return false;
-            }
-            var temp = string
-                .replace(/[^0-9,\s]+$/, '')
-                .replace(/[\,\s]+/g, '')
-            ;
-            if (!isNaN(parseFloat(temp))) { // && !temp.match(/\.+\-\.+/)) {
-                return parseFloat(temp);
-            }
-            return false;
-        },
-
-        isNumeric: function(numericString)
-        {
-            var number = this.convertStringToNumber(numericString);
-            return number !== false;
-        },
-
-        getNumberSuffix: function(numericString)
-        {
-            if (typeof numericString == 'number' || !numericString) {
-                return "";
-            }
-            var result = numericString.match(/[^0-9]+$/);
-
-            if (result && result.length) {
-                return result[0];
-            }
-            return "";
         }
     };
 })();

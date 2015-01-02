@@ -97,7 +97,8 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.initialize = function()
     {
-        // Do something
+        var classDefinition = this.getClassDefinition();
+            classDefinition.setRequires(classDefinition.getRequires());
     };
 
     /**
@@ -382,6 +383,7 @@ Subclass.Class.ClassType = (function()
             args.push(arguments[i]);
         }
 
+        var classManager = this.getClassManager();
         var classConstructor = this.getClassConstructor();
         var classProperties = this.getClassProperties(true);
         var classInstance = new classConstructor();
@@ -395,6 +397,20 @@ Subclass.Class.ClassType = (function()
 
         Object.seal(classInstance);
 
+        if (classInstance.$_requires) {
+            if (Subclass.Tools.isPlainObject(classInstance.$_requires)) {
+                for (var alias in classInstance.$_requires) {
+                    if (!classInstance.$_requires.hasOwnProperty(alias)) {
+                        continue;
+                    }
+                    var setterName = Subclass.Tools.generateSetterName(alias);
+                    var requiredClassName = classInstance.$_requires[alias];
+                    var requiredClass = classManager.getClass(requiredClassName);
+
+                    classInstance[setterName](requiredClass);
+                }
+            }
+        }
         if (classInstance.$_constructor) {
             classInstance.$_constructor.apply(classInstance, args);
         }
@@ -426,7 +442,7 @@ Subclass.Class.ClassType = (function()
 
     // Adding not allowed class properties
 
-    Subclass.Class.ClassManager.registerNotAllowedClassPropertyNames([
+    Subclass.Property.PropertyManager.registerNotAllowedPropertyNames([
         "class",
         "parent",
         "classManager",

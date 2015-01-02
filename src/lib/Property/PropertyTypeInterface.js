@@ -31,6 +31,13 @@ Subclass.Property.PropertyTypeInterface = (function()
     PropertyTypeInterface.isAllowedValue = function(value) {};
 
     /**
+     * Parses passed property definition and returns required classes to load
+     *
+     * @param {Object} propertyDefinition
+     */
+    PropertyTypeInterface.parseRequires = function(propertyDefinition) {};
+
+    /**
      * Initializing property instance
      */
     PropertyTypeInterface.prototype.initialize = function() {};

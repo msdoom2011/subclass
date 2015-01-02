@@ -116,9 +116,17 @@ Subclass.Property.PropertyManager = (function()
      * Creates instance of specified type property
      *
      * @param {string} propertyName
+     *      A name of the property.
+     *
      * @param {Object} propertyDefinition
+     *      A plain object which describes property.
+     *
      * @param {ClassType} [contextClass]
+     *      A Subclass.Class.ClassType instance which creating property will belongs to.
+     *
      * @param {PropertyType} [contextProperty]
+     *      A Subclass.Property.PropertyType instance witch creating property will belongs to.
+     *
      * @returns {PropertyType}
      */
     PropertyManager.prototype.createProperty = function(propertyName, propertyDefinition, contextClass, contextProperty)
@@ -149,10 +157,9 @@ Subclass.Property.PropertyManager = (function()
         inst.setContextClass(contextClass || null);
         inst.setContextProperty(contextProperty || null);
 
-
         // Checking if property name allowed
 
-        if (!contextProperty && !Subclass.Class.ClassManager.isClassPropertyNameAllowed(propertyName)) {
+        if (!contextProperty && !Subclass.Property.PropertyManager.isPropertyNameAllowed(propertyName)) {
             throw new Error('Trying to define property with not allowed name "' + propertyName + '"' +
                 (contextClass && ' in class "' + contextClass.getClassName() + '"' || "") +  ".");
         }
@@ -169,15 +176,22 @@ Subclass.Property.PropertyManager = (function()
     //================================ PUBLIC API ==================================
 
     /**
-     * @type {Object.<function>}
+     * A collection of registered property types
      *
+     * @type {Object.<Function>}
      * @private
      */
     var _propertyTypes = {};
 
-    return {
+    /**
+     * A collection of non allowed property names
+     *
+     * @type {Array}
+     * @private
+     */
+    var _notAllowedClassPropertyNames = [];
 
-        PropertyTypes: {},
+    return {
 
         /**
          * Creates instance of PropertyManager
@@ -236,6 +250,61 @@ Subclass.Property.PropertyManager = (function()
         getPropertyTypes: function()
         {
             return Object.keys(_propertyTypes);
+        },
+
+        /**
+         * Registers new not allowed class property name
+         *
+         * @param {Array} propertyNames
+         */
+        registerNotAllowedPropertyNames: function(propertyNames)
+        {
+            try {
+                if (!Array.isArray(propertyNames)) {
+                    throw "error";
+                }
+                for (var i = 0; i < propertyNames.length; i++) {
+                    if (_notAllowedClassPropertyNames.indexOf(propertyNames[i]) < 0) {
+                        if (typeof propertyNames[i] != "string") {
+                            throw "error";
+                        }
+                        _notAllowedClassPropertyNames.push(propertyNames[i]);
+                    }
+                }
+            } catch (e) {
+                throw new Error('Property names argument is not valid! It must be an array of strings.');
+            }
+        },
+
+        /**
+         * Returns not allowed property names
+         *
+         * @returns {string[]}
+         */
+        getNotAllowedPropertyNames: function()
+        {
+            return _notAllowedClassPropertyNames;
+        },
+
+        /**
+         * Checks if specified class property name is allowed
+         *
+         * @param propertyName
+         * @returns {boolean}
+         */
+        isPropertyNameAllowed: function(propertyName)
+        {
+            if (propertyName.match(/[^\$a-z0-9_]/i)) {
+                return false;
+            }
+            for (var i = 0; i < _notAllowedClassPropertyNames.length; i++) {
+                var regExp = new RegExp("^_*" + _notAllowedClassPropertyNames[i] + "_*$", 'i');
+
+                if (regExp.test(propertyName)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 })();

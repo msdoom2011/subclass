@@ -15,6 +15,7 @@
         "dir": "Tools",
         "files": [
           "<%= config.lib.content.tools.dir %>/Tools.js",
+          "<%= config.lib.content.tools.dir %>/ConverterTools.js",
           "<%= config.lib.content.tools.dir %>/**/*.js"
         ]
       },
@@ -59,8 +60,8 @@
     "files": [
       "<%= config.lib.content.main %>",
       "<%= config.lib.content.tools.files %>",
-      "<%= config.lib.content.class.files %>",
-      "<%= config.lib.content.property.files %>"
+      "<%= config.lib.content.property.files %>",
+      "<%= config.lib.content.class.files %>"
     ],
     "files_release": {
       "normal": "<%= config.lib.dir.release %>/<%= config.name %>.js",

@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Property.PropertyTypeInterface}
+ * @implements {Subclass.Property.PropertyTypeInterface}
  */
 Subclass.Property.PropertyType = (function()
 {

@@ -65,15 +65,17 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype.initialize = function()
     {
-        Config.$parent.prototype.initialize.call(this);
-
         this._validateClassDefinition();
         this._processClassDefinition();
+
+        Config.$parent.prototype.initialize.call(this);
     };
 
     /**
-     * @inheritDoc
+     * Validating class definition
+     *
      * @throws {Error}
+     * @private
      */
     Config.prototype._validateClassDefinition = function()
     {
@@ -105,7 +107,9 @@ Subclass.Class.Config.Config = (function()
         var classDefinitionDataDefault = classDefinition.getDefinition();
         var parentClassName = classDefinition.getExtends();
         var includes = classDefinition.getIncludes();
+        var requires = classDefinition.getIncludes();
 
+        delete classDefinitionDataDefault.$_requires;
         delete classDefinitionDataDefault.$_includes;
         delete classDefinitionDataDefault.$_extends;
         delete classDefinitionDataDefault.$_properties;
@@ -120,6 +124,9 @@ Subclass.Class.Config.Config = (function()
         }
         if (includes && Array.isArray(includes)) {
             classDefinitionData.$_includes = includes;
+        }
+        if (requires) {
+            classDefinitionData.$_requires = requires;
         }
 
         // Processing includes
@@ -185,8 +192,10 @@ Subclass.Class.Config.Config = (function()
             var property = classProperties[propName];
 
             if (!property || !Subclass.Tools.isPlainObject(property)) {
-                throw new Error('Specified invalid property definition "' + propName + '" ' +
-                'in class "' + this.getClassName() + '".');
+                throw new Error(
+                    'Specified invalid property definition "' + propName + '" ' +
+                    'in class "' + this.getClassName() + '".'
+                );
             }
         }
     };

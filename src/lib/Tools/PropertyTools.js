@@ -1,11 +1,11 @@
-Subclass.Tools.Property = (function()
+Subclass.Tools.PropertyTools = (function()
 {
     Subclass.Tools.extend(Subclass.Tools, {
 
         /**
          * Returns name of class property getter function
          *
-         * @param {string} propertyName
+         * @param {string} propertyName A name of the class typed property
          * @returns {string}
          */
         generateGetterName: function (propertyName)
@@ -16,7 +16,7 @@ Subclass.Tools.Property = (function()
         /**
          * Returns name of class property setter function
          *
-         * @param {string} propertyName
+         * @param {string} propertyName A name of the class typed property
          * @returns {string}
          */
         generateSetterName: function (propertyName)

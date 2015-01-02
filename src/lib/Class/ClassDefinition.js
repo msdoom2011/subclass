@@ -80,15 +80,26 @@ Subclass.Class.ClassDefinition = (function()
             this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
         }
         if (requires) {
-            for (var alias in requires) {
-                if (!requires.hasOwnProperty(alias)) {
-                    continue;
+            if (Array.isArray(requires)) {
+                for (var i = 0; i < requires.length; i++) {
+                    if (typeof requires[i] != 'string') {
+                        this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
+                    }
                 }
-                if (!alias[0].match(/[a-z$_]/i)) {
-                    throw new Error(
-                        'Invalid alias name for required class "' + requires[alias] + '" ' +
-                        'in class "' + this.getClass().getClassName() + '".'
-                    );
+            } else {
+                for (var alias in requires) {
+                    if (!requires.hasOwnProperty(alias)) {
+                        continue;
+                    }
+                    if (!alias[0].match(/[a-z$_]/i)) {
+                        throw new Error(
+                            'Invalid alias name for required class "' + requires[alias] + '" ' +
+                            'in class "' + this.getClass().getClassName() + '".'
+                        );
+                    }
+                    if (typeof requires[alias] != 'string') {
+                        this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
+                    }
                 }
             }
         }
@@ -99,9 +110,21 @@ Subclass.Class.ClassDefinition = (function()
      *
      * @param {Object.<string>} requires
      *
-     *      List of the classes that current one requires.
+     *      List of the classes that current one requires. It can be specified in two ways:
      *
-     *      Example: {
+     *      1. As an array of class names:
+     *
+     *      Example:
+     *      [
+     *         "Namespace/Of/Class1",
+     *         "Namespace/Of/Class2",
+     *         ...
+     *      ]
+     *
+     *      2. As an object with pairs key/value where key is an class alias and value is a class name.
+     *
+     *      Example:
+     *      {
      *         classAlias1: "Namespace/Of/Class1",
      *         classAlias2: "Namespace/Of/Class2",
      *         ...
@@ -110,7 +133,27 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setRequires = function(requires)
     {
         this.validateRequires(requires);
-        this.getDefinition().$_requires = requires || {};
+        this.getDefinition().$_requires = requires || null;
+        //
+        //var classInst = this.getClass();
+        //var classManager = classInst.getClassManager();
+        //
+        //if (requires && Subclass.Tools.isPlainObject(requires)) {
+        //    for (var alias in requires) {
+        //        if (!requires.hasOwnProperty(alias)) {
+        //            continue;
+        //        }
+        //        classManager.addToLoadStack(requires[alias]);
+        //        classInst.addClassProperty(alias, {
+        //            type: "class",
+        //            className: requires[alias]
+        //        });
+        //    }
+        //} else if (requires && Array.isArray(requires)) {
+        //    for (var i = 0; i < requires.length; i++) {
+        //        classManager.addToLoadStack(requires[i]);
+        //    }
+        //}
     };
 
     /**
@@ -177,7 +220,7 @@ Subclass.Class.ClassDefinition = (function()
                 if (!properties.hasOwnProperty(propName)) {
                     continue;
                 }
-                if (!Subclass.Class.ClassManager.isClassPropertyNameAllowed(propName)) {
+                if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
                     throw Error(
                         'Specified not allowed property name "' + propName + '" in attribute "$_properties"' +
                         'in definition of class "' + this.getClass().getClassName() + '".'
@@ -251,10 +294,10 @@ Subclass.Class.ClassDefinition = (function()
             $_class: null,
 
             /**
-             * @type {(string[]|null)} Required classes
+             * @type {(string[]|Object.<string>|null)} Required classes
              * @TODO needed for auto load classes in further implementation
              */
-            $_requires: {},
+            $_requires: null,
 
             /**
              * @type {string} Parent class name
@@ -383,16 +426,17 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.validateDefinition = function ()
     {
-        var classDefinition = this.getDefinition();
+        var definition = this.getDefinition();
+        var classInst = this.getClass();
 
-        for (var propName in classDefinition) {
-            if (!classDefinition.hasOwnProperty(propName)) {
+        for (var propName in definition) {
+            if (!definition.hasOwnProperty(propName)) {
                 continue;
             }
-            if (!Subclass.Class.ClassManager.isClassPropertyNameAllowed(propName)) {
+            if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
                 throw new Error(
                     'Trying to define property with not allowed name "' + propName + '" ' +
-                    'in class "' + this.getClass().getClassName() + '".'
+                    'in class "' + classInst.getClassName() + '".'
                 );
             }
         }
@@ -409,6 +453,7 @@ Subclass.Class.ClassDefinition = (function()
             if (
                 !definition.hasOwnProperty(attrName)
                 || !attrName.match(/^\$_/i)
+                || attrName == '$_requires'
             ) {
                 continue;
             }
@@ -462,6 +507,79 @@ Subclass.Class.ClassDefinition = (function()
 
                 if (classDefinition[accessorName]) {
                     classDefinition[accessorName + "Default"] = property['generate' + accessorType]();
+                }
+            }
+        }
+    };
+
+    ClassDefinition.prototype.addToLoadStack = function()
+    {
+        var classInst = this.getClass();
+        var classManager = classInst.getClassManager();
+
+        var requires = this.getRequires();
+        var properties = this.getProperties();
+        var parentClass = this.getExtends();
+
+        // Performing $_requires attribute
+
+        if (requires && this.validateRequires(requires)) {
+            if (Subclass.Tools.isPlainObject(requires)) {
+                for (var alias in requires) {
+                    if (!requires.hasOwnProperty(alias)) {
+                        continue;
+                    }
+                    classManager.addToLoadStack(requires[alias]);
+                    classInst.addClassProperty(alias, {
+                        type: "class",
+                        className: requires[alias]
+                    });
+                }
+            } else if (Array.isArray(requires)) {
+                for (var i = 0; i < requires.length; i++) {
+                    classManager.addToLoadStack(requires[i]);
+                }
+            }
+        }
+
+        // Performing $_extends attribute
+
+        if (parentClass && this.validateExtends(parentClass)) {
+            classManager.addToLoadStack(parentClass);
+        }
+
+        // Performing $_traits (Needs to be defined in ClassDefinition)
+        // @TODO
+
+        // Performing $_implements (Needs to be defined in ClassDefinition)
+        // @TODO
+
+        // Performing $_includes (Needs to be defined in ConfigDefinition)
+        // @TODO
+
+        // Performing $_properties attribute
+
+        if (properties && this.validateProperties(properties)) {
+            for (var propName in properties) {
+                if (!properties.hasOwnProperty(propName)) {
+                    continue;
+                }
+                var propertyDefinition = properties[propName];
+
+                if (typeof propertyDefinition != 'object') {
+                    continue;
+                }
+                var propertyType = Subclass.Property.PropertyManager.getPropertyType(propertyDefinition.type);
+
+                if (!propertyType.parseRequires) {
+                    continue;
+                }
+                var requiredClasses = propertyType.parseRequires(propertyDefinition);
+
+                if (requiredClasses && requiredClasses.length) {
+                    for (i = 0; i < requiredClasses.length; i++) {
+                        classManager.addToLoadStack(requiredClasses[i]);
+                    }
                 }
             }
         }

@@ -62,6 +62,40 @@ Subclass.Property.Map.Map = (function()
 
     /**
      * @inheritDoc
+     * @throws {Error}
+     */
+    MapType.parseRequires = function(propertyDefinition)
+    {
+        if (!propertyDefinition.schema) {
+            return;
+        }
+        var requires = [];
+
+        for (var propName in propertyDefinition.schema) {
+            if (
+                !propertyDefinition.schema.hasOwnProperty(propName)
+                || typeof propertyDefinition.schema[propName] != 'object'
+                || !propertyDefinition.schema[propName].type
+            ) {
+                continue;
+            }
+            var propDef = propertyDefinition.schema[propName];
+            var propertyType = Subclass.Property.PropertyManager.getPropertyType(propDef.type);
+
+            if (!propertyType.parseRequires) {
+                continue;
+            }
+            var requiredClasses = propertyType.parseRequires(propertyDefinition);
+
+            if (requiredClasses && requiredClasses.length) {
+                requires = requires.concat(requiredClasses);
+            }
+        }
+        return requires;
+    };
+
+    /**
+     * @inheritDoc
      */
     MapType.prototype.getPropertyDefinitionClass = function()
     {

@@ -24,15 +24,31 @@ Subclass.Class.ClassManager = (function()
         /**
          * Property manager instance
          *
-         * @type {PropertyManager}
+         * @type {Subclass.Property.PropertyManager}
          * @private
          */
         this._propertyManager = Subclass.Property.PropertyManager.create(this);
 
         /**
+         * Root path of the project
+         *
+         * @type {(string|null)}
+         * @private
+         */
+        this._rootPath = null;
+
+        /**
+         * Stack of classes that are loading at the moment
+         *
+         * @type {Array}
+         * @private
+         */
+        this._loadStack = [];
+
+        /**
          * Collection of registered classes
          *
-         * @type {Object.<Subclass.Class.ClassType>}
+         * @type {Object.<Subclass.Class.ClassTypeInterface>}
          * @private
          */
         this._classes = {};
@@ -44,6 +60,14 @@ Subclass.Class.ClassManager = (function()
          * @private
          */
         this._initialized = false;
+
+        /**
+         * Callback which will be called when all application classes are already loaded
+         *
+         * @type {(Function|null)}
+         * @private
+         */
+        this._initCallback = null;
 
 
         // Performing configs
@@ -65,22 +89,70 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.initialize = function(callback)
     {
         if (this.isInitialized()) {
-            throw new Error('Current application is already initialized!');
+            throw new Error('Current instance is already initialized!');
         }
+        if (typeof callback != "function") {
+            throw new Error('Argument "callback" in method "initialize" in class "ClassManager" must be a function.');
+        }
+        this._initialized = true;
+        this._initCallback = callback;
 
-        //@TODO needs to implement
+        if (Object.keys(this._classes).length) {
+            this.callInitCallback();
+        }
     };
 
+    /**
+     * Invokes init callback
+     */
+    ClassManager.prototype.callInitCallback = function()
+    {
+        if (!this._initCallback) {
+            return;
+        }
+        if (this.isLoadStackEmpty()) {
+            this._initCallback();
+        }
+    };
+
+    /**
+     * Checks if current class manager instance was initialized
+     *
+     * @returns {boolean}
+     */
     ClassManager.prototype.isInitialized = function()
     {
         return this._initialized;
     };
 
+    /**
+     * Sets root path of the project which is needed for auto load classes functionality.
+     *
+     * @param {string} rootPath
+     */
     ClassManager.prototype.setRootPath = function(rootPath)
     {
-        //@TODO needs to implement
+        if (!rootPath || typeof rootPath != 'string') {
+            throw new Error('Trying to set invalid root path of the project. It must be a string.');
+        }
+        this._rootPath = rootPath;
     };
 
+    /**
+     * Returns root path of the project
+     *
+     * @returns {string|*}
+     */
+    ClassManager.prototype.getRootPath = function()
+    {
+        return this._rootPath;
+    };
+
+    /**
+     * Defines custom property types
+     *
+     * @param {Object.<Object>} propertyDefinitions
+     */
     ClassManager.prototype.definePropertyTypes = function(propertyDefinitions)
     {
         this.getPropertyManager().defineCustomPropertyTypes(propertyDefinitions);
@@ -89,7 +161,7 @@ Subclass.Class.ClassManager = (function()
     /**
      * Returns property manager instance
      *
-     * @returns {PropertyManager}
+     * @returns {Subclass.Property.PropertyManager}
      */
     ClassManager.prototype.getPropertyManager = function()
     {
@@ -97,7 +169,114 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Checks if current class was registered
+     * Adds specified class to load stack
+     *
+     * @param {string} className
+     */
+    ClassManager.prototype.addToLoadStack = function(className)
+    {
+        if (!this.isInLoadStack(className)) {
+            return;
+        }
+        this._loadStack.push(className);
+    };
+
+    /**
+     * Removes specified class from load stack
+     *
+     * @param {string} className
+     */
+    ClassManager.prototype.removeFromLoadStack = function(className)
+    {
+        var index = this._loadStack.indexOf(className);
+
+        if (index >= 0) {
+            this._loadStack.splice(index, 1);
+        }
+    };
+
+    /**
+     * Checks if specified class is in load stack
+     *
+     * @param {string} className
+     * @returns {boolean}
+     */
+    ClassManager.prototype.isInLoadStack = function(className)
+    {
+        return this._loadStack.indexOf(className) >= 0;
+    };
+
+    /**
+     * Checks if load stack is empty
+     *
+     * @returns {boolean}
+     * @private
+     */
+    ClassManager.prototype.isLoadStackEmpty = function()
+    {
+        return !this._loadStack.length;
+    };
+
+    /**
+     * Loads new class by its name
+     *
+     * @param className
+     */
+    ClassManager.prototype.loadClass = function(className)
+    {
+        if (this.isInLoadStack(className)) {
+            return;
+        }
+        var rootPath = this.getRootPath();
+        var classPath = rootPath + "/" + className + '.js';
+        var $this = this;
+
+        if (!rootPath) {
+            throw new Error('Root path of the project was not specified!');
+        }
+
+        var xmlhttp = new XMLHttpRequest();
+        var documentScripts = document.querySelectorAll('script');
+        var currentScript;
+
+        for (var i = 0; i < documentScripts.length; i++) {
+            if (documentScripts[i].src.indexOf('/Subclass.js') >= 0) {
+                currentScript = documentScripts[i];
+            }
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var script = document.createElement('script');
+                script.setAttribute("type", "text/javascript");
+                script.text = xmlhttp.responseText;
+
+                if (script.text) {
+                    if (currentScript) {
+                        currentScript.parentNode.insertBefore(
+                            script,
+                            currentScript.nextSibling
+                        );
+                        if ($this.issetClass(className)) {
+                            $this.removeFromLoadStack(className);
+                            $this.callInitCallback();
+
+                        } else {
+                            throw new Error('Loading class "' + className + '" failed.');
+                        }
+                    }
+                } else {
+                    throw new Error('Loading class "' + className + '" failed.');
+                }
+            } else {
+                throw new Error('Loading class "' + className + '" failed.');
+            }
+        };
+        xmlhttp.open("GET", classPath, true);
+        xmlhttp.send();
+    };
+
+    /**
+     * Checks if class with passed name was ever registered
      *
      * @param {string} className
      * @returns {boolean}
@@ -118,10 +297,16 @@ Subclass.Class.ClassManager = (function()
     /**
      * Creates class instance
      *
-     * @param {(ClassType|function)} classConstructor ClassType constructor
+     * @param {(ClassType|function)} classConstructor
+     *      Class constructor of specific class type
+     *
      * @param {string} className
-     * @param {object} classDefinition
-     * @returns {ClassType} class
+     *      A name of the future class
+     *
+     * @param {Object} classDefinition
+     *      A definition of the creating class
+     *
+     * @returns {Subclass.Class.ClassTypeInterface} class
      */
     ClassManager.prototype.createClass = function(classConstructor, className, classDefinition)
     {
@@ -163,12 +348,12 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Adds new class
+     * Adds a new class
      *
      * @param {string} classTypeName
      * @param {string} className
      * @param {object} classDefinition
-     * @returns {ClassType}
+     * @returns {Subclass.Class.ClassTypeInterface}
      */
     ClassManager.prototype.addClass = function(classTypeName, className, classDefinition)
     {
@@ -202,7 +387,7 @@ Subclass.Class.ClassManager = (function()
      * Returns class
      *
      * @param {string} className
-     * @returns {ClassType}
+     * @returns {Subclass.Class.ClassTypeInterface}
      */
     ClassManager.prototype.getClass = function(className)
     {
@@ -220,11 +405,23 @@ Subclass.Class.ClassManager = (function()
         }
     };
 
+    /**
+     * Builds new class of specified class type
+     *
+     * @param {string} classType Type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
+     * @returns {Subclass.Class.ClassTypeInterface}
+     */
     ClassManager.prototype.buildClass = function(classType)
     {
         return this.createClassBuilder(classType);
     };
 
+    /**
+     * Modifies existed class definition
+     *
+     * @param {string} className A name of the class
+     * @returns {Subclass.Class.ClassTypeInterface}
+     */
     ClassManager.prototype.alterClass = function(className)
     {
         return this.createClassBuilder(null, className);
@@ -286,19 +483,13 @@ Subclass.Class.ClassManager = (function()
     };
 
 
-    //============================== Subclass API ================================
+    //============================== Class Manager API ================================
 
     /**
      * @type {Object.<function>}
      * @private
      */
     var _classTypes = {};
-
-    /**
-     * @type {Array}
-     * @private
-     */
-    var _notAllowedClassPropertyNames = [];
 
     return {
         /**
@@ -393,56 +584,6 @@ Subclass.Class.ClassManager = (function()
         getClassTypes: function()
         {
             return Object.keys(_classTypes);
-        },
-
-        /**
-         * Registers new not allowed class property name
-         *
-         * @param {Array} propertyNames
-         */
-        registerNotAllowedClassPropertyNames: function(propertyNames)
-        {
-            try {
-                if (!Array.isArray(propertyNames)) {
-                    throw "error";
-                }
-                for (var i = 0; i < propertyNames.length; i++) {
-                    if (_notAllowedClassPropertyNames.indexOf(propertyNames[i]) < 0) {
-                        if (typeof propertyNames[i] != "string") {
-                            throw "error";
-                        }
-                        _notAllowedClassPropertyNames.push(propertyNames[i]);
-                    }
-                }
-            } catch (e) {
-                throw new Error('Property names argument is not valid! It must be an array of strings.');
-            }
-        },
-
-        getNotAllowedClassPropertyNames: function()
-        {
-            return _notAllowedClassPropertyNames;
-        },
-
-        /**
-         * Checks if specified class property name is allowed
-         *
-         * @param propertyName
-         * @returns {boolean}
-         */
-        isClassPropertyNameAllowed: function(propertyName)
-        {
-            //if (propertyName.match(/[^a-z0-9_]/i)) {
-            //    return false;
-            //}
-            for (var i = 0; i < _notAllowedClassPropertyNames.length; i++) {
-                var regExp = new RegExp("^_*" + _notAllowedClassPropertyNames[i] + "_*$", 'i');
-
-                if (regExp.test(propertyName)) {
-                    return false;
-                }
-            }
-            return true;
         }
     };
 })();

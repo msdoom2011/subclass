@@ -50,6 +50,18 @@ Subclass.Property.Class.Class = (function()
 
     /**
      * @inheritDoc
+     * @throws {Error}
+     */
+    ClassType.parseRequires = function(propertyManager, propertyDefinition)
+    {
+        if (!propertyDefinition.className) {
+            return;
+        }
+        return [propertyDefinition.className];
+    };
+
+    /**
+     * @inheritDoc
      */
     ClassType.prototype.getPropertyDefinitionClass = function()
     {

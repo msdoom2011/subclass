@@ -52,6 +52,28 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
 
     /**
      * @inheritDoc
+     * @throws {Error}
+     */
+    ArrayCollectionType.parseRequires = function(propertyDefinition)
+    {
+        if (
+            !propertyDefinition.proto
+            || typeof propertyDefinition.proto != 'object'
+            || !propertyDefinition.proto.type
+        ) {
+            return;
+        }
+        var propDef = propertyDefinition.proto;
+        var propertyType = Subclass.Property.PropertyManager.getPropertyType(propDef.type);
+
+        if (!propertyType.parseRequires) {
+            return;
+        }
+        return propertyType.parseRequires(propertyDefinition);
+    };
+
+    /**
+     * @inheritDoc
      */
     ArrayCollectionType.prototype.getPropertyDefinitionClass = function()
     {

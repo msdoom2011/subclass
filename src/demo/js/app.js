@@ -1,20 +1,11 @@
 var classManager = Subclass.create({
-    rootPath: "",
+    autoload: true,
+    rootPath: "/SubclassJS/build/demo",
     propertyTypes: {
-        percents: {
-            type: "string",
-            pattern: /^\d+%$/
-        },
-        bigNumber: {
-            type: "number",
-            minValue: 1000000
-        }
+        percents: { type: "string", pattern: /^\d+%$/ },
+        bigNumber: { type: "number", minValue: 1000000 }
     }
 });
-
-//classManager.initialize(function() {
-//
-//});
 
 classManager.registerAbstractClass("AbstractClassBase", {
 
@@ -92,14 +83,10 @@ classManager.registerInterface("InterfaceExtra", {
 
 classManager.registerTrait("TraitBase", {
     $_properties: {
-        typedBoolean: {
-            type: "boolean",
-            value: false
-        },
-        typedNumber: {
-            type: "number",
-            value: 111
-        }
+
+        typedBoolean: { type: "boolean", value: false },
+
+        typedNumber: { type: "number", value: 111 }
     },
     eat: function() {
         alert("eating!!!!!");
@@ -116,42 +103,23 @@ classManager.registerTrait("Trait", {
 //                    value: "my testing string changed!",
 //                    pattern: null
 //                },
-        typedObject: {
-            type: "object",
-            value: {}
-        },
-        typedArray: {
-            type: "array",
-            value: []
-        },
-        typedEnum: {
-            type: "enum",
-            value: 1,
-            allows: [1, 2, 3]
-        },
-        typedClass: {
-            type: "class",
-            className: "AbstractClass"
-        },
-        typedFunction: {
-            type: "function",
-            value: function() {
-                alert("!!!!");
-            }
-        },
-        typedUntyped: {
-            type: "untyped",
-            value: "psix"
-        },
-        typedMap: {
-            type: "map",
-            schema: {
-                varPsix: {
-                    type: "string",
-                    value: "yo!!!!"
-                }
-            }
-        }
+        typedObject: { type: "object", value: {} },
+
+        typedArray: { type: "array", value: [] },
+
+        typedEnum: { type: "enum", allows: [1, 2, 3], value: 1 },
+
+        typedClass: { type: "class", className: "AbstractClass" },
+
+        typedFunction: { type: "function", value: function() {
+            alert("!!!!");
+        }},
+
+        typedUntyped: { type: "untyped", value: "psix" },
+
+        typedMap: { type: "map", schema: {
+            varPsix: { type: "string", value: "yo!!!!" }
+        }}
     },
 
     sleep: function()
@@ -192,15 +160,13 @@ classManager.registerAbstractClass("Class2", {
 //                    type: "percents",
             value: "my testing string!"
         },
-        typedObjectCollection: {
-            type: "objectCollection",
-            proto: { type: "number" },
-            value: {
-                num1: 1,
-                num2: 1,
-                num3: 3
-            }
-        },
+
+        typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, value: {
+            num1: 1,
+            num2: 1,
+            num3: 3
+        }},
+
         typedArrayCollection: {
             type: "arrayCollection",
             proto: { type: "string" },
@@ -210,6 +176,7 @@ classManager.registerAbstractClass("Class2", {
                 "str3"
             ]
         },
+
         typedArrayCollectionOfMap: {
             type: "arrayCollection",
             proto: { type: "map", schema: {
@@ -381,6 +348,7 @@ classManager.registerConfig("ConfigInclude", {
     },
 
     propMap: {
+        type: "map",
         schema: {
             propMapExtra: {
                 type: "string",
@@ -454,351 +422,359 @@ classManager.registerConfig("Config", {
 
 });
 
-var abstractClass = classManager.getClass("AbstractClass");
-var class2 = classManager.getClass("Class2");
-var class3 = classManager.getClass("Class3");
-var config = classManager.getClass("Config");
 
-console.log('???????????????????????????');
+classManager.initialize(function() {
+    console.log('');
+    console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
-//        abstractClass.createInstance().go();
-//        class2.createInstance().go();
-//        class2.createInstance().stop();
+    //classManager.getClass('Psix').createInstance().psix();
 
-var inst = class3.createInstance(100, 777);
-var inst2 = class3.createInstance(2, 7);
-var configInst = config.createInstance();
+    var abstractClass = classManager.getClass("AbstractClass");
+    var class2 = classManager.getClass("Class2");
+    var class3 = classManager.getClass("Class3");
+    var config = classManager.getClass("Config");
 
-console.log(inst);
-console.log(inst2);
-console.log(configInst);
-//        inst.stop();
-//        inst.go();
-//        inst2.go();
-//        inst.eat();
-//        inst.sleep();
-//        inst.drink();
-//        inst.yo();
-//        inst.psix();
-//        inst.interfaceYo();
-//        inst.interfacePsix();
-//        inst.callTraitProperty();
+    console.log('???????????????????????????');
 
-console.log(inst.isInstanceOf('InterfaceBase'));
-console.log(inst.isInstanceOf('Interface'));
-console.log(inst.isInstanceOf('AbstractClassBase'));
-console.log(inst.isInstanceOf('AbstractClass'));
-console.log(inst.isInstanceOf('TraitBase'));
-console.log(inst.isInstanceOf('Trait'));
-console.log(inst.isInstanceOf('Class2'));
-console.log(inst.isInstanceOf('Class3'));
-console.log(inst.isInstanceOf('Class43'));
+    //        abstractClass.createInstance().go();
+    //        class2.createInstance().go();
+    //        class2.createInstance().stop();
+
+    var inst = class3.createInstance(100, 777);
+    var inst2 = class3.createInstance(2, 7);
+    var configInst = config.createInstance();
+
+    console.log(inst);
+    console.log(inst2);
+    console.log(configInst);
+    //        inst.stop();
+    //        inst.go();
+    //        inst2.go();
+    //        inst.eat();
+    //        inst.sleep();
+    //        inst.drink();
+    //        inst.yo();
+    //        inst.psix();
+    //        inst.interfaceYo();
+    //        inst.interfacePsix();
+    //        inst.callTraitProperty();
+
+    console.log(inst.isInstanceOf('InterfaceBase'));
+    console.log(inst.isInstanceOf('Interface'));
+    console.log(inst.isInstanceOf('AbstractClassBase'));
+    console.log(inst.isInstanceOf('AbstractClass'));
+    console.log(inst.isInstanceOf('TraitBase'));
+    console.log(inst.isInstanceOf('Trait'));
+    console.log(inst.isInstanceOf('Class2'));
+    console.log(inst.isInstanceOf('Class3'));
+    console.log(inst.isInstanceOf('Class43'));
 
 
 
-console.log('');
-console.log('============== String property ==============');
+    console.log('');
+    console.log('============== String property ==============');
 
-console.log(inst.getTypedString());
+    console.log(inst.getTypedString());
 
-inst.getProperty("typedString").addWatcher(function(newValue, oldValue) {
+    inst.getProperty("typedString").addWatcher(function(newValue, oldValue) {
 
-    console.log("~~~~~~", newValue, oldValue, "~~~~~~");
+        console.log("~~~~~~", newValue, oldValue, "~~~~~~");
 
-    return newValue;
+        return newValue;
+    });
+    inst.getProperty("typedString").addWatcher(function(newValue, oldValue) {
+
+        console.log("======", newValue, oldValue, "======");
+
+        return newValue;
+    });
+    inst.getProperty("typedString").removeWatchers();
+
+    console.log('-------');
+    console.log(inst.getProperty('typedString').isModified());
+    console.log('-------');
+
+    inst.setTypedString(null);
+
+    console.log('-------');
+    console.log(inst.getProperty('typedString').isModified());
+    console.log('-------');
+
+    inst.setTypedString("changed string value!!!");
+    console.log(inst.getTypedString());
+    inst.getProperty("typedString").setValue("another changed string value!!!");
+    console.log(inst.getProperty('typedString').getValue());
+
+
+
+    console.log('');
+    console.log('============= Boolean property ==============');
+
+    console.log(inst.getTypedBoolean());
+    //        inst.setTypedBoolean(null);
+    inst.setTypedBoolean(true);
+    console.log(inst.getTypedBoolean());
+
+
+
+    console.log('');
+    console.log('============= Number property ==============');
+
+    console.log(inst.getTypedNumber());
+    inst.setTypedNumber(null);
+    inst.setTypedNumber(777);
+    console.log(inst.getTypedNumber());
+
+
+
+    console.log('');
+    console.log('============= Object property ==============');
+
+    console.log(inst.getTypedObject());
+    inst.setTypedObject(null);
+    inst.setTypedObject({a: 777, b: 888, c: 999});
+    console.log(inst.getTypedObject());
+
+
+
+    console.log('');
+    console.log('============= Array property ==============');
+
+    console.log(inst.getTypedArray());
+    inst.setTypedArray(null);
+    inst.setTypedArray(['psix']);
+    console.log(inst.getTypedArray());
+
+
+
+    console.log('');
+    console.log('============= Enum property ==============');
+
+    console.log(inst.getTypedEnum());
+    //        inst.setTypedEnum(null);
+    inst.setTypedEnum(3);
+    console.log(inst.getTypedEnum());
+
+
+
+    console.log('');
+    console.log('============= Class property ==============');
+
+    console.log(inst.getTypedClass());
+    inst.setTypedClass(null);
+    inst.setTypedClass(inst2);
+    console.log(inst.getTypedClass());
+
+
+
+    console.log('');
+    console.log('============= Function property ==============');
+
+    console.log(inst.getTypedFunction());
+    inst.setTypedFunction(null);
+    inst.setTypedFunction(function() { alert(2); });
+    console.log(inst.getTypedFunction());
+
+
+
+    console.log('');
+    console.log('============= Untyped property ==============');
+
+    console.log(inst.getTypedUntyped());
+    inst.setTypedUntyped(null);
+    inst.setTypedUntyped(1111);
+    console.log(inst.getTypedUntyped());
+
+
+
+    console.log('');
+    console.log('============= Mixed property ==============');
+
+    console.log(inst.getTypedMixed());
+    inst.setTypedMixed(null);
+    console.log(inst.getTypedMixed());
+    inst.setTypedMixed("string with psix");
+    console.log(inst.getTypedMixed());
+    inst.setTypedMixed(111);
+    console.log(inst.getTypedMixed());
+    inst.setTypedMixed(true);
+    console.log(inst.getTypedMixed());
+
+
+
+    console.log('');
+    console.log('============= Map property ==============');
+
+    console.log('-------------------------');
+    console.log(inst.getProperty('typedMap').isModified());
+    console.log('-------------------------');
+
+    console.log(inst.getTypedMap());
+    console.log(inst.getTypedMap().propMapString);
+    console.log(inst.getTypedMap().propMapMap.propMapMapString);
+    //        inst.getTypedMap().propMapMap.propMapMapString = 111;
+    inst.getTypedMap().propMapMap.propMapMapString += " changed!!!!";
+    console.log(inst.getTypedMap().propMapMap.propMapMapString);
+    inst.setTypedMap(null);
+    console.log(inst.getTypedMap());
+
+    console.log('-------------------------');
+    inst.getProperty('typedMap').setModified();
+    console.log(inst.getProperty('typedMap').isModified());
+    console.log('-------------------------');
+
+    inst.setTypedMap({
+        propMapString: 'psix!!!!!!!!!!!!!!!!!!!!!!'
+    });
+    console.log(inst.getTypedMap());
+    inst.getTypedMap().propMapMap.propMapMapString = "psix!!!!";
+    console.log(inst.getTypedMap());
+
+
+    inst.setTypedMap({
+        propMapMap: {
+            propMapMapString: "another new value!!!!"
+        },
+        propMapString: "changed",
+        propMapNumber: 1111,
+        propMapObject: { a: "yes!!!" }
+    });
+
+    console.log(inst.getTypedMap());
+
+
+
+    console.log('');
+    console.log('============= objectCollection property ==============');
+
+    var objectCollection = inst.getTypedObjectCollection();
+    console.log(objectCollection);
+
+    objectCollection.psix = '1111';
+    objectCollection.addItem("psix", 555);
+    console.log(objectCollection.getItems());
+
+    objectCollection.removeItem("psix");
+    console.log(objectCollection.getItems());
+
+    objectCollection.addItems({
+        psix: 222,
+        psix2: 111
+    });
+    console.log(objectCollection.getItems());
+
+    objectCollection.addItem("psix", 777);
+    console.log(objectCollection.getItems());
+
+    console.log(objectCollection.getItem("psix"));
+    console.log(objectCollection.getItems());
+
+    objectCollection.removeItems();
+    console.log(objectCollection.getItems());
+
+    inst.setTypedObjectCollection(null);
+    console.log(inst.getTypedObjectCollection());
+
+    inst.setTypedObjectCollection({
+        psix: 222,
+        psix2: 111
+    });
+    console.log(inst.getTypedObjectCollection());
+
+
+
+    console.log('');
+    console.log('============= arrayCollection property ==============');
+
+    var arrayCollection = inst.getTypedArrayCollection();
+    console.log(arrayCollection);
+
+    arrayCollection.psix = '1111';
+    arrayCollection.addItem("psix");
+    console.log(arrayCollection.getItems());
+
+    var filteredItems = arrayCollection.filter(function(element, index) {
+        if (element.match(/^str/)) {
+            return true;
+        }
+    });
+    console.log(filteredItems);
+
+    var removeArrayItem = arrayCollection.indexOf('psix');
+    arrayCollection.removeItem(removeArrayItem);
+    console.log(arrayCollection.getItems());
+
+    removeArrayItem = arrayCollection.indexOf(function(element, index) {
+        if (element.match(/^str/)) {
+            return true;
+        }
+    });
+    arrayCollection.removeItem(removeArrayItem);
+    console.log(arrayCollection.getItems());
+
+    arrayCollection.addItems(["new1", "new2"]);
+    console.log(arrayCollection.getItems());
+
+    arrayCollection.addItem("psix222");
+    console.log(arrayCollection.getItems());
+
+    var psixElemIndex = arrayCollection.indexOf("psix222");
+    console.log(arrayCollection.getItem(psixElemIndex));
+    console.log(arrayCollection.getItems());
+
+    arrayCollection.removeItems();
+    console.log(arrayCollection.getItems());
+
+    inst.setTypedArrayCollection(null);
+    console.log(inst.getTypedArrayCollection());
+
+    inst.setTypedArrayCollection(["psixNew1", "psixNew2"]);
+    console.log(inst.getTypedArrayCollection());
+
+
+
+    console.log('');
+    console.log('============= arrayCollectionOfMap property ==============');
+
+    var arrayCollectionOfMap = inst.getTypedArrayCollectionOfMap();
+    console.log(arrayCollectionOfMap);
+
+
+
+    console.log("");
+    console.log("=========== Checked typed properties =============");
+
+    console.log(inst.issetProperty('typedMap'));
+
+
+
+    console.log("");
+    console.log("=========== Getting default values =============");
+
+    console.log(inst.getProperty('typedString').getDefaultValue());
+
+
+
+    console.log("");
+    console.log("=========== Getting static values =============");
+
+    console.log(inst2.getParent().getStatic().staticProp);
+    inst.getParent().getStatic().staticProp = "psix instead test";
+    console.log(inst2.getParent().getStatic().staticProp);
+    console.log(classManager.getClass('Class2').getStatic().staticProp);
+
+
+    console.log(inst.getInterfaceProperty());
+    //        inst.setInterfaceProperty("psix");
+    console.log(inst.getInterfaceProperty());
+
+
+
+    console.log("");
+    console.log("=========== Getting class inst copy =============");
+
+    var instCopy = inst.getCopy();
+    console.log(instCopy.getInterfaceProperty());
+    //        inst.setInterfaceProperty("psix");
+    console.log(instCopy.getInterfaceProperty());
 });
-inst.getProperty("typedString").addWatcher(function(newValue, oldValue) {
-
-    console.log("======", newValue, oldValue, "======");
-
-    return newValue;
-});
-inst.getProperty("typedString").removeWatchers();
-
-console.log('-------');
-console.log(inst.getProperty('typedString').isModified());
-console.log('-------');
-
-inst.setTypedString(null);
-
-console.log('-------');
-console.log(inst.getProperty('typedString').isModified());
-console.log('-------');
-
-inst.setTypedString("changed string value!!!");
-console.log(inst.getTypedString());
-inst.getProperty("typedString").setValue("another changed string value!!!");
-console.log(inst.getProperty('typedString').getValue());
-
-
-
-console.log('');
-console.log('============= Boolean property ==============');
-
-console.log(inst.getTypedBoolean());
-//        inst.setTypedBoolean(null);
-inst.setTypedBoolean(true);
-console.log(inst.getTypedBoolean());
-
-
-
-console.log('');
-console.log('============= Number property ==============');
-
-console.log(inst.getTypedNumber());
-inst.setTypedNumber(null);
-inst.setTypedNumber(777);
-console.log(inst.getTypedNumber());
-
-
-
-console.log('');
-console.log('============= Object property ==============');
-
-console.log(inst.getTypedObject());
-inst.setTypedObject(null);
-inst.setTypedObject({a: 777, b: 888, c: 999});
-console.log(inst.getTypedObject());
-
-
-
-console.log('');
-console.log('============= Array property ==============');
-
-console.log(inst.getTypedArray());
-inst.setTypedArray(null);
-inst.setTypedArray(['psix']);
-console.log(inst.getTypedArray());
-
-
-
-console.log('');
-console.log('============= Enum property ==============');
-
-console.log(inst.getTypedEnum());
-//        inst.setTypedEnum(null);
-inst.setTypedEnum(3);
-console.log(inst.getTypedEnum());
-
-
-
-console.log('');
-console.log('============= Class property ==============');
-
-console.log(inst.getTypedClass());
-inst.setTypedClass(null);
-inst.setTypedClass(inst2);
-console.log(inst.getTypedClass());
-
-
-
-console.log('');
-console.log('============= Function property ==============');
-
-console.log(inst.getTypedFunction());
-inst.setTypedFunction(null);
-inst.setTypedFunction(function() { alert(2); });
-console.log(inst.getTypedFunction());
-
-
-
-console.log('');
-console.log('============= Untyped property ==============');
-
-console.log(inst.getTypedUntyped());
-inst.setTypedUntyped(null);
-inst.setTypedUntyped(1111);
-console.log(inst.getTypedUntyped());
-
-
-
-console.log('');
-console.log('============= Mixed property ==============');
-
-console.log(inst.getTypedMixed());
-inst.setTypedMixed(null);
-console.log(inst.getTypedMixed());
-inst.setTypedMixed("string with psix");
-console.log(inst.getTypedMixed());
-inst.setTypedMixed(111);
-console.log(inst.getTypedMixed());
-inst.setTypedMixed(true);
-console.log(inst.getTypedMixed());
-
-
-
-console.log('');
-console.log('============= Map property ==============');
-
-console.log('-------------------------');
-console.log(inst.getProperty('typedMap').isModified());
-console.log('-------------------------');
-
-console.log(inst.getTypedMap());
-console.log(inst.getTypedMap().propMapString);
-console.log(inst.getTypedMap().propMapMap.propMapMapString);
-//        inst.getTypedMap().propMapMap.propMapMapString = 111;
-inst.getTypedMap().propMapMap.propMapMapString += " changed!!!!";
-console.log(inst.getTypedMap().propMapMap.propMapMapString);
-inst.setTypedMap(null);
-console.log(inst.getTypedMap());
-
-console.log('-------------------------');
-inst.getProperty('typedMap').setModified();
-console.log(inst.getProperty('typedMap').isModified());
-console.log('-------------------------');
-
-inst.setTypedMap({
-    propMapString: 'psix!!!!!!!!!!!!!!!!!!!!!!'
-});
-console.log(inst.getTypedMap());
-inst.getTypedMap().propMapMap.propMapMapString = "psix!!!!";
-console.log(inst.getTypedMap());
-
-
-inst.setTypedMap({
-    propMapMap: {
-        propMapMapString: "another new value!!!!"
-    },
-    propMapString: "changed",
-    propMapNumber: 1111,
-    propMapObject: { a: "yes!!!" }
-});
-
-console.log(inst.getTypedMap());
-
-
-
-console.log('');
-console.log('============= objectCollection property ==============');
-
-var objectCollection = inst.getTypedObjectCollection();
-console.log(objectCollection);
-
-objectCollection.psix = '1111';
-objectCollection.addItem("psix", 555);
-console.log(objectCollection.getItems());
-
-objectCollection.removeItem("psix");
-console.log(objectCollection.getItems());
-
-objectCollection.addItems({
-    psix: 222,
-    psix2: 111
-});
-console.log(objectCollection.getItems());
-
-objectCollection.addItem("psix", 777);
-console.log(objectCollection.getItems());
-
-console.log(objectCollection.getItem("psix"));
-console.log(objectCollection.getItems());
-
-objectCollection.removeItems();
-console.log(objectCollection.getItems());
-
-inst.setTypedObjectCollection(null);
-console.log(inst.getTypedObjectCollection());
-
-inst.setTypedObjectCollection({
-    psix: 222,
-    psix2: 111
-});
-console.log(inst.getTypedObjectCollection());
-
-
-
-console.log('');
-console.log('============= arrayCollection property ==============');
-
-var arrayCollection = inst.getTypedArrayCollection();
-console.log(arrayCollection);
-
-arrayCollection.psix = '1111';
-arrayCollection.addItem("psix");
-console.log(arrayCollection.getItems());
-
-var filteredItems = arrayCollection.filter(function(element, index) {
-    if (element.match(/^str/)) {
-        return true;
-    }
-});
-console.log(filteredItems);
-
-var removeArrayItem = arrayCollection.indexOf('psix');
-arrayCollection.removeItem(removeArrayItem);
-console.log(arrayCollection.getItems());
-
-removeArrayItem = arrayCollection.indexOf(function(element, index) {
-    if (element.match(/^str/)) {
-        return true;
-    }
-});
-arrayCollection.removeItem(removeArrayItem);
-console.log(arrayCollection.getItems());
-
-arrayCollection.addItems(["new1", "new2"]);
-console.log(arrayCollection.getItems());
-
-arrayCollection.addItem("psix222");
-console.log(arrayCollection.getItems());
-
-var psixElemIndex = arrayCollection.indexOf("psix222");
-console.log(arrayCollection.getItem(psixElemIndex));
-console.log(arrayCollection.getItems());
-
-arrayCollection.removeItems();
-console.log(arrayCollection.getItems());
-
-inst.setTypedArrayCollection(null);
-console.log(inst.getTypedArrayCollection());
-
-inst.setTypedArrayCollection(["psixNew1", "psixNew2"]);
-console.log(inst.getTypedArrayCollection());
-
-
-
-console.log('');
-console.log('============= arrayCollectionOfMap property ==============');
-
-var arrayCollectionOfMap = inst.getTypedArrayCollectionOfMap();
-console.log(arrayCollectionOfMap);
-
-
-
-console.log("");
-console.log("=========== Checked typed properties =============");
-
-console.log(inst.issetProperty('typedMap'));
-
-
-
-console.log("");
-console.log("=========== Getting default values =============");
-
-console.log(inst.getProperty('typedString').getDefaultValue());
-
-
-
-console.log("");
-console.log("=========== Getting static values =============");
-
-console.log(inst2.getParent().getStatic().staticProp);
-inst.getParent().getStatic().staticProp = "psix instead test";
-console.log(inst2.getParent().getStatic().staticProp);
-console.log(classManager.getClass('Class2').getStatic().staticProp);
-
-
-console.log(inst.getInterfaceProperty());
-//        inst.setInterfaceProperty("psix");
-console.log(inst.getInterfaceProperty());
-
-
-
-console.log("");
-console.log("=========== Getting class inst copy =============");
-
-var instCopy = inst.getCopy();
-console.log(instCopy.getInterfaceProperty());
-//        inst.setInterfaceProperty("psix");
-console.log(instCopy.getInterfaceProperty());

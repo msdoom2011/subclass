@@ -52,7 +52,7 @@ Subclass.Property.Class.Class = (function()
      * @inheritDoc
      * @throws {Error}
      */
-    ClassType.parseRequires = function(propertyManager, propertyDefinition)
+    ClassType.parseRelatives = function(propertyDefinition)
     {
         if (!propertyDefinition.className) {
             return;

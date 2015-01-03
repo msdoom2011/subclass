@@ -64,6 +64,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      * Validates "$_includes" attribute value
      *
      * @param {*} traits
+     * @returns {boolean}
      * @throws {Error}
      */
     ConfigDefinition.prototype.validateIncludes = function(includes)
@@ -82,6 +83,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
         } catch (e) {
             this._throwInvalidAttribute('$_includes', 'an array with string elements.');
         }
+        return true;
     };
 
     /**
@@ -153,6 +155,23 @@ Subclass.Class.Config.ConfigDefinition = (function()
         };
 
         return classDefinition;
+    };
+
+    ConfigDefinition.prototype.processRelatives = function()
+    {
+        ConfigDefinition.$parent.prototype.processRelatives.call(this);
+
+        var classInst = this.getClass();
+        var classManager = classInst.getClassManager();
+        var includes = this.getIncludes();
+
+        // Performing $_includes (Needs to be defined in ConfigDefinition)
+
+        if (includes && this.validateIncludes(includes)) {
+            for (var i = 0; i < includes.length; i++) {
+                classManager.addToLoadStack(includes[i]);
+            }
+        }
     };
 
     return ConfigDefinition;

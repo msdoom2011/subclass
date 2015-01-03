@@ -18,6 +18,7 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
      * Validates "$_abstract" attribute value
      *
      * @param {*} value
+     * @returns {boolean}
      * @throws {Error}
      */
     AbstractClassDefinition.prototype.validateAbstract = function(value)
@@ -39,6 +40,7 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
         } catch (e) {
             this._throwInvalidAttribute('$_abstract', 'an object with methods or null.');
         }
+        return true;
     };
 
     /**

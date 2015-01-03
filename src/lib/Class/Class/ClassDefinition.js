@@ -18,6 +18,7 @@ Subclass.Class.Class.ClassDefinition = (function()
      * Validates "$_static" attribute value
      *
      * @param {*} value
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateStatic = function(value)
@@ -25,6 +26,7 @@ Subclass.Class.Class.ClassDefinition = (function()
         if (value !== null && !Subclass.Tools.isPlainObject(value)) {
             this._throwInvalidAttribute('$_static', 'an object or null.');
         }
+        return true;
     };
 
     /**
@@ -52,6 +54,7 @@ Subclass.Class.Class.ClassDefinition = (function()
      * Validates "$_traits" attribute value
      *
      * @param {*} traits
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateTraits = function(traits)
@@ -70,6 +73,7 @@ Subclass.Class.Class.ClassDefinition = (function()
         } catch (e) {
             this._throwInvalidAttribute('$_traits', 'an array with string elements');
         }
+        return true;
     };
 
     /**
@@ -113,6 +117,7 @@ Subclass.Class.Class.ClassDefinition = (function()
      * Validates "$_implements" attribute value
      *
      * @param {*} interfaces
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateImplements = function(interfaces)
@@ -131,6 +136,7 @@ Subclass.Class.Class.ClassDefinition = (function()
         } catch (e) {
             this._throwInvalidAttribute('$_implements', 'an array with string elements.');
         }
+        return true;
     };
 
     /**
@@ -167,7 +173,7 @@ Subclass.Class.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getImplements = function()
     {
-        return this.getDefinition().$_traits;
+        return this.getDefinition().$_implements;
     };
 
     /**
@@ -231,6 +237,33 @@ Subclass.Class.Class.ClassDefinition = (function()
         };
 
         return classDefinition;
+    };
+
+    ClassDefinition.prototype.processRelatives = function()
+    {
+        ClassDefinition.$parent.prototype.processRelatives.call(this);
+
+        var classInst = this.getClass();
+        var classManager = classInst.getClassManager();
+
+        var interfaces = this.getImplements();
+        var traits = this.getTraits();
+
+        // Performing $_traits (Needs to be defined in ClassDefinition)
+
+        if (traits && this.validateTraits(traits)) {
+            for (var i = 0; i < traits.length; i++) {
+                classManager.addToLoadStack(traits[i]);
+            }
+        }
+
+        // Performing $_implements (Needs to be defined in ClassDefinition)
+
+        if (interfaces && this.validateImplements(interfaces)) {
+            for (i = 0; i < interfaces.length; i++) {
+                classManager.addToLoadStack(interfaces[i]);
+            }
+        }
     };
 
     return ClassDefinition;

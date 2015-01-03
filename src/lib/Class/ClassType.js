@@ -98,7 +98,7 @@ Subclass.Class.ClassType = (function()
     ClassType.prototype.initialize = function()
     {
         var classDefinition = this.getClassDefinition();
-            classDefinition.setRequires(classDefinition.getRequires());
+            classDefinition.processRelatives();
     };
 
     /**
@@ -352,6 +352,7 @@ Subclass.Class.ClassType = (function()
         });
 
         classConstructor.prototype.$_className = this.getClassName();
+        classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
         classConstructor.prototype.$_class = this;
 
         return classConstructor;

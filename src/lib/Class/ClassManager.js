@@ -10,6 +10,9 @@ Subclass.Class.ClassManager = (function()
      *
      * @param {Object} [configs] Allowed configs are:
      * {
+     *      "autoload": {boolean} Optional. True by default.
+     *          Enables class autoload or not
+     *
      *      "rootPath": {string} Required
      *          Path to root directory of the project,
      *
@@ -30,6 +33,14 @@ Subclass.Class.ClassManager = (function()
         this._propertyManager = Subclass.Property.PropertyManager.create(this);
 
         /**
+         * Checks whether autoload classes enabled
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._autoload = true;
+
+        /**
          * Root path of the project
          *
          * @type {(string|null)}
@@ -44,6 +55,14 @@ Subclass.Class.ClassManager = (function()
          * @private
          */
         this._loadStack = [];
+
+        /**
+         * Checks whether the loading process continues
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._loading = false;
 
         /**
          * Collection of registered classes
@@ -69,16 +88,27 @@ Subclass.Class.ClassManager = (function()
          */
         this._initCallback = null;
 
+        /**
+         * The timeout after which init callback will be called
+         *
+         * @type {(*|null)}
+         * @private
+         */
+        this._initCallbackCallTimeout = null;
+
 
         // Performing configs
 
         if (configs && !Subclass.Tools.isPlainObject(configs)) {
             throw new Error('Specified invalid configs. It must be an object.');
         }
-        if (configs.rootPath) {
+        if (configs.hasOwnProperty('autoload')) {
+            this.setAutoload(configs.autoload);
+        }
+        if (configs.hasOwnProperty('rootPath')) {
             this.setRootPath(configs.rootPath);
         }
-        if (configs.propertyTypes) {
+        if (configs.hasOwnProperty('propertyTypes')) {
             this.definePropertyTypes(configs.propertyTypes);
         }
     }
@@ -94,24 +124,10 @@ Subclass.Class.ClassManager = (function()
         if (typeof callback != "function") {
             throw new Error('Argument "callback" in method "initialize" in class "ClassManager" must be a function.');
         }
-        this._initialized = true;
         this._initCallback = callback;
 
         if (Object.keys(this._classes).length) {
             this.callInitCallback();
-        }
-    };
-
-    /**
-     * Invokes init callback
-     */
-    ClassManager.prototype.callInitCallback = function()
-    {
-        if (!this._initCallback) {
-            return;
-        }
-        if (this.isLoadStackEmpty()) {
-            this._initCallback();
         }
     };
 
@@ -123,6 +139,48 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.isInitialized = function()
     {
         return this._initialized;
+    };
+
+    /**
+     * Invokes init callback
+     */
+    ClassManager.prototype.callInitCallback = function()
+    {
+        if (!this._initCallback) {
+            return;
+        }
+        clearTimeout(this._initCallbackCallTimeout);
+        var $this = this;
+
+        this._initCallbackCallTimeout = setTimeout(function() {
+            if ($this.isLoadStackEmpty()) {
+                $this._initialized = true;
+                $this._initCallback();
+            }
+        }, 10);
+    };
+
+    /**
+     * Sets autoload option
+     *
+     * @param autoload
+     */
+    ClassManager.prototype.setAutoload = function(autoload)
+    {
+        if (typeof autoload != 'boolean') {
+            throw new Error('Specified not valid "autoload" option. It must be boolean.');
+        }
+        this._autoload = autoload;
+    };
+
+    /**
+     * Checks whether class autoload enabled or not
+     *
+     * @returns {boolean}
+     */
+    ClassManager.prototype.isAutoloadEnabled = function()
+    {
+        return this._autoload;
     };
 
     /**
@@ -169,16 +227,48 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
+     * Sets loading process start
+     */
+    ClassManager.prototype.startLoading = function()
+    {
+        this._loading = true;
+    };
+
+    /**
+     * Sets loading process complete
+     */
+    ClassManager.prototype.completeLoading = function()
+    {
+        this._loading = false;
+        this.callInitCallback();
+    };
+
+    /**
+     * Checks whether the loading process continues
+     *
+     * @returns {boolean}
+     */
+    ClassManager.prototype.isLoading = function()
+    {
+        return this._loading;
+    };
+
+    /**
      * Adds specified class to load stack
      *
      * @param {string} className
      */
     ClassManager.prototype.addToLoadStack = function(className)
     {
-        if (!this.isInLoadStack(className)) {
+        if (!this.isAutoloadEnabled() || this.isInLoadStack(className)) {
             return;
         }
-        this._loadStack.push(className);
+        var xmlhttp = this.loadClass(className);
+        this.startLoading();
+
+        if (xmlhttp) {
+            this._loadStack[className] = xmlhttp;
+        }
     };
 
     /**
@@ -188,11 +278,11 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.removeFromLoadStack = function(className)
     {
-        var index = this._loadStack.indexOf(className);
-
-        if (index >= 0) {
-            this._loadStack.splice(index, 1);
+        if (!this.isInLoadStack(className)) {
+            return;
         }
+        this._loadStack[className].abort();
+        delete this._loadStack[className];
     };
 
     /**
@@ -203,7 +293,7 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.isInLoadStack = function(className)
     {
-        return this._loadStack.indexOf(className) >= 0;
+        return !!this._loadStack[className];
     };
 
     /**
@@ -214,19 +304,27 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.isLoadStackEmpty = function()
     {
-        return !this._loadStack.length;
+        return !Object.keys(this._loadStack).length;
     };
 
     /**
      * Loads new class by its name
      *
      * @param className
+     * @returns {(XMLHttpRequest|null)}
+     * @throws {Error}
      */
     ClassManager.prototype.loadClass = function(className)
     {
-        if (this.isInLoadStack(className)) {
-            return;
+        if (this.issetClass(className)) {
+            return null;
         }
+        if (this.isInLoadStack(className)) {
+            return null;
+        }
+
+        clearTimeout(this._initCallbackCallTimeout);
+
         var rootPath = this.getRootPath();
         var classPath = rootPath + "/" + className + '.js';
         var $this = this;
@@ -240,7 +338,7 @@ Subclass.Class.ClassManager = (function()
         var currentScript;
 
         for (var i = 0; i < documentScripts.length; i++) {
-            if (documentScripts[i].src.indexOf('/Subclass.js') >= 0) {
+            if (documentScripts[i].src.match(/\/subclass(\.min)*\.js/i)) {
                 currentScript = documentScripts[i];
             }
         }
@@ -256,23 +354,21 @@ Subclass.Class.ClassManager = (function()
                             script,
                             currentScript.nextSibling
                         );
-                        if ($this.issetClass(className)) {
-                            $this.removeFromLoadStack(className);
-                            $this.callInitCallback();
-
-                        } else {
+                        if (!$this.issetClass(className)) {
                             throw new Error('Loading class "' + className + '" failed.');
                         }
                     }
                 } else {
                     throw new Error('Loading class "' + className + '" failed.');
                 }
-            } else {
+            } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
                 throw new Error('Loading class "' + className + '" failed.');
             }
         };
         xmlhttp.open("GET", classPath, true);
         xmlhttp.send();
+
+        return xmlhttp;
     };
 
     /**
@@ -372,6 +468,7 @@ Subclass.Class.ClassManager = (function()
         if (this.issetClass(className)) {
             throw new Error('Trying to redefine already existed class "' + className + '".');
         }
+
         var classTypeConstructor = Subclass.Class.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
 
@@ -379,6 +476,11 @@ Subclass.Class.ClassManager = (function()
             this._classes[classTypeName] = {};
         }
         this._classes[classTypeName][className] = classInstance;
+        this.removeFromLoadStack(className);
+
+        if (this.isLoadStackEmpty()) {
+            this.completeLoading();
+        }
 
         return classInstance;
     };

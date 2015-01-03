@@ -72,6 +72,7 @@ Subclass.Class.ClassDefinition = (function()
      * Validates "$_requires" attribute value
      *
      * @param {*} requires
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateRequires = function(requires)
@@ -103,6 +104,7 @@ Subclass.Class.ClassDefinition = (function()
                 }
             }
         }
+        return true;
     };
 
     /**
@@ -134,26 +136,19 @@ Subclass.Class.ClassDefinition = (function()
     {
         this.validateRequires(requires);
         this.getDefinition().$_requires = requires || null;
-        //
-        //var classInst = this.getClass();
-        //var classManager = classInst.getClassManager();
-        //
-        //if (requires && Subclass.Tools.isPlainObject(requires)) {
-        //    for (var alias in requires) {
-        //        if (!requires.hasOwnProperty(alias)) {
-        //            continue;
-        //        }
-        //        classManager.addToLoadStack(requires[alias]);
-        //        classInst.addClassProperty(alias, {
-        //            type: "class",
-        //            className: requires[alias]
-        //        });
-        //    }
-        //} else if (requires && Array.isArray(requires)) {
-        //    for (var i = 0; i < requires.length; i++) {
-        //        classManager.addToLoadStack(requires[i]);
-        //    }
-        //}
+        var classInst = this.getClass();
+
+        if (requires && Subclass.Tools.isPlainObject(requires)) {
+            for (var alias in requires) {
+                if (!requires.hasOwnProperty(alias)) {
+                    continue;
+                }
+                classInst.addClassProperty(alias, {
+                    type: "untyped",
+                    className: requires[alias]
+                });
+            }
+        }
     };
 
     /**
@@ -170,6 +165,7 @@ Subclass.Class.ClassDefinition = (function()
      * Validates "$_extends" attribute value
      *
      * @param {*} parentClassName
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateExtends = function(parentClassName)
@@ -177,6 +173,7 @@ Subclass.Class.ClassDefinition = (function()
         if (parentClassName !== null && typeof parentClassName != 'string') {
             this._throwInvalidAttribute('$_requires', 'a string or null.');
         }
+        return true;
     };
 
     /**
@@ -208,6 +205,7 @@ Subclass.Class.ClassDefinition = (function()
      * Validates "$_properties" attribute value
      *
      * @param {*} properties
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateProperties = function(properties)
@@ -222,15 +220,22 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
                     throw Error(
-                        'Specified not allowed property name "' + propName + '" in attribute "$_properties"' +
+                        'Specified not allowed typed property name "' + propName + '" in attribute "$_properties" ' +
                         'in definition of class "' + this.getClass().getClassName() + '".'
                     );
                 }
                 if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
                     this._throwInvalidAttribute('$_properties', 'a plain object with not empty property definitions');
                 }
+                if (!properties[propName].type) {
+                    throw new Error(
+                        'Trying to set not valid definition of typed property "' + propName + '" in attribute "$_properties" ' +
+                        'in definition of class "' + this.getClass().getClassName() + '". Required property "type" was missed.'
+                    );
+                }
             }
         }
+        return true;
     };
 
     /**
@@ -289,6 +294,11 @@ Subclass.Class.ClassDefinition = (function()
             $_className: null,
 
             /**
+             * @type {string} Class type
+             */
+            $_classType: null,
+
+            /**
              * @type {ClassType} Class definition closure
              */
             $_class: null,
@@ -320,16 +330,6 @@ Subclass.Class.ClassDefinition = (function()
             },
 
             /**
-             * Returns type name of class
-             *
-             * @returns {*}
-             */
-            getClassType: function()
-            {
-                return this.constructor.name;
-            },
-
-            /**
              * Returns class manager instance
              *
              * @returns {ClassManager}
@@ -347,6 +347,16 @@ Subclass.Class.ClassDefinition = (function()
             getClassName: function()
             {
                 return this.$_className;
+            },
+
+            /**
+             * Returns type name of class
+             *
+             * @returns {*}
+             */
+            getClassType: function()
+            {
+                return this.$_classType;
             },
 
             /**
@@ -422,6 +432,7 @@ Subclass.Class.ClassDefinition = (function()
     /**
      * Validates class definition
      *
+     * @returns {boolean}
      * @throws {Error}
      */
     ClassDefinition.prototype.validateDefinition = function ()
@@ -440,6 +451,7 @@ Subclass.Class.ClassDefinition = (function()
                 );
             }
         }
+        return true;
     };
 
     /**
@@ -453,7 +465,6 @@ Subclass.Class.ClassDefinition = (function()
             if (
                 !definition.hasOwnProperty(attrName)
                 || !attrName.match(/^\$_/i)
-                || attrName == '$_requires'
             ) {
                 continue;
             }
@@ -512,7 +523,7 @@ Subclass.Class.ClassDefinition = (function()
         }
     };
 
-    ClassDefinition.prototype.addToLoadStack = function()
+    ClassDefinition.prototype.processRelatives = function()
     {
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
@@ -526,14 +537,9 @@ Subclass.Class.ClassDefinition = (function()
         if (requires && this.validateRequires(requires)) {
             if (Subclass.Tools.isPlainObject(requires)) {
                 for (var alias in requires) {
-                    if (!requires.hasOwnProperty(alias)) {
-                        continue;
+                    if (requires.hasOwnProperty(alias)) {
+                        classManager.addToLoadStack(requires[alias]);
                     }
-                    classManager.addToLoadStack(requires[alias]);
-                    classInst.addClassProperty(alias, {
-                        type: "class",
-                        className: requires[alias]
-                    });
                 }
             } else if (Array.isArray(requires)) {
                 for (var i = 0; i < requires.length; i++) {
@@ -547,15 +553,6 @@ Subclass.Class.ClassDefinition = (function()
         if (parentClass && this.validateExtends(parentClass)) {
             classManager.addToLoadStack(parentClass);
         }
-
-        // Performing $_traits (Needs to be defined in ClassDefinition)
-        // @TODO
-
-        // Performing $_implements (Needs to be defined in ClassDefinition)
-        // @TODO
-
-        // Performing $_includes (Needs to be defined in ConfigDefinition)
-        // @TODO
 
         // Performing $_properties attribute
 
@@ -571,10 +568,10 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 var propertyType = Subclass.Property.PropertyManager.getPropertyType(propertyDefinition.type);
 
-                if (!propertyType.parseRequires) {
+                if (!propertyType.parseRelatives) {
                     continue;
                 }
-                var requiredClasses = propertyType.parseRequires(propertyDefinition);
+                var requiredClasses = propertyType.parseRelatives(propertyDefinition);
 
                 if (requiredClasses && requiredClasses.length) {
                     for (i = 0; i < requiredClasses.length; i++) {

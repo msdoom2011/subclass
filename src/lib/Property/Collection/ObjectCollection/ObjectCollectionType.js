@@ -54,7 +54,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
      * @inheritDoc
      * @throws {Error}
      */
-    ObjectCollectionType.parseRequires = function(propertyDefinition)
+    ObjectCollectionType.parseRelatives = function(propertyDefinition)
     {
         if (
             !propertyDefinition.proto
@@ -66,10 +66,10 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
         var propDef = propertyDefinition.proto;
         var propertyType = Subclass.Property.PropertyManager.getPropertyType(propDef.type);
 
-        if (!propertyType.parseRequires) {
+        if (!propertyType.parseRelatives) {
             return;
         }
-        return propertyType.parseRequires(propertyDefinition);
+        return propertyType.parseRelatives(propertyDefinition);
     };
 
     /**

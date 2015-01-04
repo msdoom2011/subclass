@@ -168,16 +168,16 @@ Subclass.Class.Class.Class = (function() {
      */
     Class.prototype.isInstanceOf = function (className)
     {
-        if (Class.$parent.prototype.isInstanceOf.call(this, className)) {
-            return true;
-        }
-        if (this.hasTrait && this.hasTrait(className)) {
-            return true;
-        }
-        if (this.isImplements && this.isImplements(className)) {
-            return true;
-        }
-        return false;
+        return ((
+                Class.$parent.prototype.isInstanceOf.call(this, className)
+            ) || (
+                this.hasTrait
+                && this.hasTrait(className)
+            ) || (
+                this.isImplements
+                && this.isImplements(className)
+            )
+        );
     };
 
     /**
@@ -402,7 +402,7 @@ Subclass.Class.Class.Class = (function() {
         if (this.getClassParent()) {
             var parent = this.getClassParent();
 
-            if (parent.hasTrait) {
+            if (parent.isImplements) {
                 return parent.isImplements(interfaceName);
             }
         }

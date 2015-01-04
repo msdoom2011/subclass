@@ -376,7 +376,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.createInstance = function ()
+    ClassType.prototype.createInstance = function()
     {
         var args = [];
 
@@ -389,6 +389,9 @@ Subclass.Class.ClassType = (function()
         var classProperties = this.getClassProperties(true);
         var classInstance = new classConstructor();
 
+
+        // Attaching hashed typed properties
+
         for (var propertyName in classProperties) {
             if (!classProperties.hasOwnProperty(propertyName)) {
                 continue;
@@ -397,6 +400,9 @@ Subclass.Class.ClassType = (function()
         }
 
         Object.seal(classInstance);
+
+
+        // Setting required classes to alias typed properties
 
         if (classInstance.$_requires) {
             if (Subclass.Tools.isPlainObject(classInstance.$_requires)) {

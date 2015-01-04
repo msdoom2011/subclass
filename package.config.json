@@ -23,6 +23,7 @@
         "dir": "Class",
         "files": [
           "<%= config.lib.content.class.dir %>/ClassManager.js",
+          "<%= config.lib.content.class.dir %>/ClassManagerAPI.js",
           "<%= config.lib.content.class.dir %>/ClassTypeInterface.js",
           "<%= config.lib.content.class.dir %>/ClassType.js",
           "<%= config.lib.content.class.dir %>/ClassDefinition.js",
@@ -55,13 +56,21 @@
           "<%= config.lib.content.property.dir %>/Collection/*Collection/*.js",
           "<%= config.lib.content.property.dir %>/**/*.js"
         ]
+      },
+      "service": {
+        "dir": "Service",
+        "files": [
+          "<%= config.lib.content.service.dir %>/ServiceManager.js",
+          "<%= config.lib.content.service.dir %>/**/*.js"
+        ]
       }
     },
     "files": [
       "<%= config.lib.content.main %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.property.files %>",
-      "<%= config.lib.content.class.files %>"
+      "<%= config.lib.content.class.files %>",
+      "<%= config.lib.content.service.files %>"
     ],
     "files_release": {
       "normal": "<%= config.lib.dir.release %>/<%= config.name %>.js",

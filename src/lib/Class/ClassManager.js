@@ -8,17 +8,24 @@ Subclass.Class.ClassManager = (function()
     /**
      * Class manager constructor
      *
-     * @param {Object} [configs] Allowed configs are:
-     * {
-     *      "autoload": {boolean} Optional. True by default.
-     *          Enables class autoload or not
+     * @param {Object} [configs]
      *
-     *      "rootPath": {string} Required
-     *          Path to root directory of the project,
+     *      Allowed configs are:
+     *      ------------------------------------------------------------------------------------------------------
      *
-     *      "propertyTypes": {Object.<Object>} Optional
-     *          Object, which keys will be type names (alias) and value will be its definitions.,
-     * }
+     *      autoload        {boolean}           optional    Enables class autoload or not. It's true by default
+     *
+     *      rootPath        {string}            optional    Path to root directory of the project. It's required
+     *                                                      if you planning to use autoload
+     *
+     *      propertyTypes   {Object.<Object>}   optional    Object, which keys will be type names (alias)
+     *                                                      and value will be its definitions
+     *
+     *      parameters      {Object}            optional    Object with parameters which can be used
+     *                                                      in service definitions or in any other places,
+     *                                                      i.e in classes. @TODO
+     *
+     *      services        {Object.<Object>}   optional    List of service definitions. @TODO
      *
      * @constructor
      */
@@ -31,6 +38,14 @@ Subclass.Class.ClassManager = (function()
          * @private
          */
         this._propertyManager = Subclass.Property.PropertyManager.create(this);
+
+        /**
+         * Service manager instance
+         *
+         * @type {Subclass.Service.ServiceManager}
+         * @private
+         */
+        this._serviceManager = new Subclass.Service.ServiceManager(this);
 
         /**
          * Checks whether autoload classes enabled
@@ -111,7 +126,54 @@ Subclass.Class.ClassManager = (function()
         if (configs.hasOwnProperty('propertyTypes')) {
             this.definePropertyTypes(configs.propertyTypes);
         }
+        if (configs.hasOwnProperty('parameters')) {
+            this.registerParameters(configs.parameters);
+        }
+        if (configs.hasOwnProperty('services')) {
+            this.registerServices(configs.services);
+        }
+
+
+        // Registering basic classes
+
+        for (var classTypeName in _classes) {
+            if (!_classes.hasOwnProperty(classTypeName)) {
+                continue;
+            }
+            for (var className in _classes[classTypeName]) {
+                if (!_classes[classTypeName].hasOwnProperty(className)) {
+                    continue;
+                }
+                var classDefinition = _classes[classTypeName][className];
+
+                this.addClass(
+                    classTypeName,
+                    className,
+                    classDefinition
+                );
+            }
+        }
     }
+
+    /**
+     * Returns property manager instance
+     *
+     * @returns {Subclass.Property.PropertyManager}
+     */
+    ClassManager.prototype.getPropertyManager = function()
+    {
+        return this._propertyManager;
+    };
+
+    /**
+     * Returns service manager instance
+     *
+     * @returns {Subclass.Service.ServiceManager}
+     */
+    ClassManager.prototype.getServiceManager = function()
+    {
+        return this._serviceManager;
+    };
 
     /**
      * Invokes passed callback when all classes was defined and loaded
@@ -214,16 +276,6 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.definePropertyTypes = function(propertyDefinitions)
     {
         this.getPropertyManager().defineCustomPropertyTypes(propertyDefinitions);
-    };
-
-    /**
-     * Returns property manager instance
-     *
-     * @returns {Subclass.Property.PropertyManager}
-     */
-    ClassManager.prototype.getPropertyManager = function()
-    {
-        return this._propertyManager;
     };
 
     /**
@@ -372,25 +424,6 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Checks if class with passed name was ever registered
-     *
-     * @param {string} className
-     * @returns {boolean}
-     */
-    ClassManager.prototype.issetClass = function(className)
-    {
-        for (var classTypeName in this._classes) {
-            if (!this._classes.hasOwnProperty(classTypeName)) {
-                continue;
-            }
-            if (!!this._classes[classTypeName][className]) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    /**
      * Creates class instance
      *
      * @param {(ClassType|function)} classConstructor
@@ -508,6 +541,25 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
+     * Checks if class with passed name was ever registered
+     *
+     * @param {string} className
+     * @returns {boolean}
+     */
+    ClassManager.prototype.issetClass = function(className)
+    {
+        for (var classTypeName in this._classes) {
+            if (!this._classes.hasOwnProperty(classTypeName)) {
+                continue;
+            }
+            if (!!this._classes[classTypeName][className]) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
      * Builds new class of specified class type
      *
      * @param {string} classType Type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
@@ -584,8 +636,49 @@ Subclass.Class.ClassManager = (function()
         return classBuilderConstructor;
     };
 
+    /**
+     * Register parameters
+     *
+     * @param {Object} parameters
+     */
+    ClassManager.prototype.registerParameters = function(parameters)
+    {
+        var serviceManager = this.getServiceManager();
+
+        for (var paramName in parameters) {
+            if (!parameters.hasOwnProperty(paramName)) {
+                continue;
+            }
+            serviceManager.registerParameter(paramName, parameters[paramName]);
+        }
+    };
+
+    /**
+     * Register services
+     *
+     * @param {Object.<Object>} services
+     */
+    ClassManager.prototype.registerServices = function(services)
+    {
+        var serviceManager = this.getServiceManager();
+
+        for (var serviceName in services) {
+            if (!services.hasOwnProperty(serviceName)) {
+                continue;
+            }
+            serviceManager.registerService(serviceName, services[serviceName]);
+        }
+    };
+
 
     //============================== Class Manager API ================================
+
+    /**
+     * Classes that will be added to class manager instance immediately after its creation
+     * @type {Object.<Object>}
+     * @private
+     */
+    var _classes = {};
 
     /**
      * @type {Object.<function>}
@@ -594,26 +687,6 @@ Subclass.Class.ClassManager = (function()
     var _classTypes = {};
 
     return {
-        /**
-         * Namespace for property types
-         *
-         * @type {(Object.<function>|null)}
-         */
-        PropertyManager: null,
-
-        /**
-         * Class manager tools class
-         *
-         * @type {(Function|null)}
-         */
-        ClassTools: null,
-
-        /**
-         * Namespace for class types
-         *
-         * @type {(Object|Object.<function>)}
-         */
-        ClassTypes: {},
 
         /**
          * Creates instance of Subclass.Class.ClassManager
@@ -624,6 +697,43 @@ Subclass.Class.ClassManager = (function()
         create: function(configs)
         {
             return new ClassManager(configs);
+        },
+
+        /**
+         * Registers new class
+         *
+         * @param {string} classTypeName
+         * @param {string} className
+         * @param {Object} classDefinition
+         */
+        registerClass: function(classTypeName, className, classDefinition)
+        {
+            if (this.issetClass(className)) {
+                throw new Error('Class "' + className + '" is already registered.');
+            }
+            if (!_classes[classTypeName]) {
+                _classes[classTypeName] = {};
+            }
+            _classes[classTypeName][className] = classDefinition;
+        },
+
+        /**
+         * Checks whether class with passed name was ever registered
+         *
+         * @param {string} className
+         * @returns {boolean}
+         */
+        issetClass: function(className)
+        {
+            for (var classTypeName in _classes) {
+                if (!_classes.hasOwnProperty(classTypeName)) {
+                    continue;
+                }
+                if (!!_classes[classTypeName][className]) {
+                    return true;
+                }
+            }
+            return false;
         },
 
         /**

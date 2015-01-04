@@ -397,8 +397,10 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype._throwMissedAttribute = function(attributeName)
     {
-        throw new Error('Missed required attribute "' + attributeName + '" ' +
-            'in definition of property ' + this.getProperty() + '.');
+        throw new Error(
+            'Missed required attribute "' + attributeName + '" ' +
+            'in definition of property ' + this.getProperty() + '.'
+        );
     };
 
     /**
@@ -410,9 +412,11 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype._throwInvalidAttribute = function(attributeName, types)
     {
-        throw new Error('Invalid value of attribute "' + attributeName + '" ' +
+        throw new Error(
+            'Invalid value of attribute "' + attributeName + '" ' +
             'in definition of property ' + this.getProperty() + '. ' +
-            'It must be ' + types + '.');
+            'It must be ' + types + '.'
+        );
     };
 
     return PropertyDefinition;

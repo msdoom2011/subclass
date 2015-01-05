@@ -9,18 +9,18 @@ Subclass.Service = {};
 Subclass.Service.ServiceManager = (function()
 {
     /**
-     * @param {ClassManager} classManager
+     * @param {Subclass.Module.Module} module
      * @constructor
      */
-    function ServiceManager(classManager)
+    function ServiceManager(module)
     {
         /**
-         * Instance of class manager
+         * Instance of module
          *
-         * @type {ClassManager}
+         * @type {Subclass.Module.Module}
          * @private
          */
-        this._classManager = classManager;
+        this._module = module;
 
         /**
          * Instance of service factory
@@ -48,13 +48,13 @@ Subclass.Service.ServiceManager = (function()
     }
 
     /**
-     * Returns class manager instance
+     * Returns module instance
      *
-     * @returns {ClassManager}
+     * @returns {Subclass.Module.Module}
      */
-    ServiceManager.prototype.getClassManager = function()
+    ServiceManager.prototype.getModule = function()
     {
-        return this._classManager;
+        return this._module;
     };
 
     /**
@@ -112,6 +112,9 @@ Subclass.Service.ServiceManager = (function()
     {
         var service = new Subclass.Service.Service(this, serviceName, serviceDefinition);
         this._services[serviceName] = service;
+
+        var classManager = this.getModule().getClassManager();
+            classManager.addToLoadStack(serviceDefinition.className);
 
         return service;
     };

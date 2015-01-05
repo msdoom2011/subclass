@@ -55,7 +55,7 @@ Subclass.Service.ServiceFactory = (function()
     ServiceFactory.prototype.createService = function(service)
     {
         var serviceManager = this.getServiceManager();
-        var classManager = serviceManager.getClassManager();
+        var classManager = serviceManager.getModule().getClassManager();
 
         // Creating class instance
 

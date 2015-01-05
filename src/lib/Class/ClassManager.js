@@ -3,65 +3,23 @@
  */
 Subclass.Class = {};
 
+/**
+ * @class
+ */
 Subclass.Class.ClassManager = (function()
 {
     /**
-     * Class manager constructor
-     *
-     * @param {Object} [configs]
-     *
-     *      Allowed configs are:
-     *      ------------------------------------------------------------------------------------------------------
-     *
-     *      autoload        {boolean}           optional    Enables class autoload or not. It's true by default
-     *
-     *      rootPath        {string}            optional    Path to root directory of the project. It's required
-     *                                                      if you planning to use autoload
-     *
-     *      propertyTypes   {Object.<Object>}   optional    Object, which keys will be type names (alias)
-     *                                                      and value will be its definitions
-     *
-     *      parameters      {Object}            optional    Object with parameters which can be used
-     *                                                      in service definitions or in any other places,
-     *                                                      i.e in classes. @TODO
-     *
-     *      services        {Object.<Object>}   optional    List of service definitions. @TODO
-     *
+     * @param {Subclass.Module.Module} module
      * @constructor
      */
-    function ClassManager(configs)
+    function ClassManager(module)
     {
         /**
-         * Property manager instance
+         * Instance of Subclass module
          *
-         * @type {Subclass.Property.PropertyManager}
-         * @private
+         * @type {Subclass.Module.Module}
          */
-        this._propertyManager = Subclass.Property.PropertyManager.create(this);
-
-        /**
-         * Service manager instance
-         *
-         * @type {Subclass.Service.ServiceManager}
-         * @private
-         */
-        this._serviceManager = new Subclass.Service.ServiceManager(this);
-
-        /**
-         * Checks whether autoload classes enabled
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._autoload = true;
-
-        /**
-         * Root path of the project
-         *
-         * @type {(string|null)}
-         * @private
-         */
-        this._rootPath = null;
+        this._module = module;
 
         /**
          * Stack of classes that are loading at the moment
@@ -88,51 +46,20 @@ Subclass.Class.ClassManager = (function()
         this._classes = {};
 
         /**
-         * Indicates that current instance of class manager was initialized
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._initialized = false;
-
-        /**
-         * Callback which will be called when all application classes are already loaded
+         * The timeout after which ready callback will be called
          *
          * @type {(Function|null)}
          * @private
          */
-        this._initCallback = null;
-
-        /**
-         * The timeout after which init callback will be called
-         *
-         * @type {(*|null)}
-         * @private
-         */
-        this._initCallbackCallTimeout = null;
+        this._loadingEndTimeout = null;
 
 
-        // Performing configs
+        // Initializing
 
-        if (configs && !Subclass.Tools.isPlainObject(configs)) {
-            throw new Error('Specified invalid configs. It must be an object.');
-        }
-        if (configs.hasOwnProperty('autoload')) {
-            this.setAutoload(configs.autoload);
-        }
-        if (configs.hasOwnProperty('rootPath')) {
-            this.setRootPath(configs.rootPath);
-        }
-        if (configs.hasOwnProperty('propertyTypes')) {
-            this.definePropertyTypes(configs.propertyTypes);
-        }
-        if (configs.hasOwnProperty('parameters')) {
-            this.registerParameters(configs.parameters);
-        }
-        if (configs.hasOwnProperty('services')) {
-            this.registerServices(configs.services);
-        }
-
+        this.getModule().getEventManager()
+            .registerEvent('onLoadingEnd', this)
+            .registerEvent('onRegisterClass', this)
+        ;
 
         // Registering basic classes
 
@@ -156,126 +83,13 @@ Subclass.Class.ClassManager = (function()
     }
 
     /**
-     * Returns property manager instance
+     * Returns module instance
      *
-     * @returns {Subclass.Property.PropertyManager}
+     * @returns {Subclass.Module.Module}
      */
-    ClassManager.prototype.getPropertyManager = function()
+    ClassManager.prototype.getModule = function()
     {
-        return this._propertyManager;
-    };
-
-    /**
-     * Returns service manager instance
-     *
-     * @returns {Subclass.Service.ServiceManager}
-     */
-    ClassManager.prototype.getServiceManager = function()
-    {
-        return this._serviceManager;
-    };
-
-    /**
-     * Invokes passed callback when all classes was defined and loaded
-     */
-    ClassManager.prototype.initialize = function(callback)
-    {
-        if (this.isInitialized()) {
-            throw new Error('Current instance is already initialized!');
-        }
-        if (typeof callback != "function") {
-            throw new Error('Argument "callback" in method "initialize" in class "ClassManager" must be a function.');
-        }
-        this._initCallback = callback;
-
-        if (Object.keys(this._classes).length) {
-            this.callInitCallback();
-        }
-    };
-
-    /**
-     * Checks if current class manager instance was initialized
-     *
-     * @returns {boolean}
-     */
-    ClassManager.prototype.isInitialized = function()
-    {
-        return this._initialized;
-    };
-
-    /**
-     * Invokes init callback
-     */
-    ClassManager.prototype.callInitCallback = function()
-    {
-        if (!this._initCallback) {
-            return;
-        }
-        clearTimeout(this._initCallbackCallTimeout);
-        var $this = this;
-
-        this._initCallbackCallTimeout = setTimeout(function() {
-            if ($this.isLoadStackEmpty()) {
-                $this._initialized = true;
-                $this._initCallback();
-            }
-        }, 10);
-    };
-
-    /**
-     * Sets autoload option
-     *
-     * @param autoload
-     */
-    ClassManager.prototype.setAutoload = function(autoload)
-    {
-        if (typeof autoload != 'boolean') {
-            throw new Error('Specified not valid "autoload" option. It must be boolean.');
-        }
-        this._autoload = autoload;
-    };
-
-    /**
-     * Checks whether class autoload enabled or not
-     *
-     * @returns {boolean}
-     */
-    ClassManager.prototype.isAutoloadEnabled = function()
-    {
-        return this._autoload;
-    };
-
-    /**
-     * Sets root path of the project which is needed for auto load classes functionality.
-     *
-     * @param {string} rootPath
-     */
-    ClassManager.prototype.setRootPath = function(rootPath)
-    {
-        if (!rootPath || typeof rootPath != 'string') {
-            throw new Error('Trying to set invalid root path of the project. It must be a string.');
-        }
-        this._rootPath = rootPath;
-    };
-
-    /**
-     * Returns root path of the project
-     *
-     * @returns {string|*}
-     */
-    ClassManager.prototype.getRootPath = function()
-    {
-        return this._rootPath;
-    };
-
-    /**
-     * Defines custom property types
-     *
-     * @param {Object.<Object>} propertyDefinitions
-     */
-    ClassManager.prototype.definePropertyTypes = function(propertyDefinitions)
-    {
-        this.getPropertyManager().defineCustomPropertyTypes(propertyDefinitions);
+        return this._module;
     };
 
     /**
@@ -291,8 +105,13 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.completeLoading = function()
     {
-        this._loading = false;
-        this.callInitCallback();
+        clearTimeout(this._loadingEndTimeout);
+        var $this = this;
+
+        this._loadingEndTimeout = setTimeout(function() {
+            $this.getModule().getEventManager().getEvent('onLoadingEnd').invoke();
+            $this._loading = false;
+        }, 10);
     };
 
     /**
@@ -312,7 +131,9 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.addToLoadStack = function(className)
     {
-        if (!this.isAutoloadEnabled() || this.isInLoadStack(className)) {
+        var moduleConfigs = this.getModule().getConfigs();
+
+        if (!moduleConfigs.isAutoloadEnabled() || this.isInLoadStack(className)) {
             return;
         }
         var xmlhttp = this.loadClass(className);
@@ -352,7 +173,6 @@ Subclass.Class.ClassManager = (function()
      * Checks if load stack is empty
      *
      * @returns {boolean}
-     * @private
      */
     ClassManager.prototype.isLoadStackEmpty = function()
     {
@@ -375,9 +195,10 @@ Subclass.Class.ClassManager = (function()
             return null;
         }
 
-        clearTimeout(this._initCallbackCallTimeout);
+        clearTimeout(this.getModule()._readyCallbackCallTimeout);
 
-        var rootPath = this.getRootPath();
+        var moduleConfigs = this.getModule().getConfigs();
+        var rootPath = moduleConfigs.getRootPath();
         var classPath = rootPath + "/" + className + '.js';
         var $this = this;
 
@@ -509,6 +330,8 @@ Subclass.Class.ClassManager = (function()
             this._classes[classTypeName] = {};
         }
         this._classes[classTypeName][className] = classInstance;
+
+        this.getModule().getEventManager().getEvent('onRegisterClass').invoke(classInstance);
         this.removeFromLoadStack(className);
 
         if (this.isLoadStackEmpty()) {
@@ -557,6 +380,16 @@ Subclass.Class.ClassManager = (function()
             }
         }
         return false;
+    };
+
+    /**
+     * Checks whether class manager contains any class
+     *
+     * @returns {boolean}
+     */
+    ClassManager.prototype.isEmpty = function()
+    {
+        return Subclass.Tools.isEmpty(this._classes);
     };
 
     /**
@@ -636,40 +469,6 @@ Subclass.Class.ClassManager = (function()
         return classBuilderConstructor;
     };
 
-    /**
-     * Register parameters
-     *
-     * @param {Object} parameters
-     */
-    ClassManager.prototype.registerParameters = function(parameters)
-    {
-        var serviceManager = this.getServiceManager();
-
-        for (var paramName in parameters) {
-            if (!parameters.hasOwnProperty(paramName)) {
-                continue;
-            }
-            serviceManager.registerParameter(paramName, parameters[paramName]);
-        }
-    };
-
-    /**
-     * Register services
-     *
-     * @param {Object.<Object>} services
-     */
-    ClassManager.prototype.registerServices = function(services)
-    {
-        var serviceManager = this.getServiceManager();
-
-        for (var serviceName in services) {
-            if (!services.hasOwnProperty(serviceName)) {
-                continue;
-            }
-            serviceManager.registerService(serviceName, services[serviceName]);
-        }
-    };
-
 
     //============================== Class Manager API ================================
 
@@ -691,12 +490,12 @@ Subclass.Class.ClassManager = (function()
         /**
          * Creates instance of Subclass.Class.ClassManager
          *
-         * @param {Object} [configs]
+         * @param {Subclass.Module.Module} module
          * @returns {ClassManager}
          */
-        create: function(configs)
+        create: function(module)
         {
-            return new ClassManager(configs);
+            return new ClassManager(module);
         },
 
         /**
@@ -753,9 +552,9 @@ Subclass.Class.ClassManager = (function()
              * @param {string} className
              * @param {Object} classDefinition
              */
-            ClassManager.prototype["register" + classTypeName] = function (className, classDefinition)
+            Subclass.Module.Module.prototype["register" + classTypeName] = function (className, classDefinition)
             {
-                return this.addClass(
+                return this.getClassManager().addClass(
                     classTypeConstructor.getClassTypeName(),
                     className,
                     classDefinition

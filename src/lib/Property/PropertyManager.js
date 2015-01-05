@@ -8,11 +8,17 @@ Subclass.Property.PropertyManager = (function()
     /**
      * Property manager constructor
      *
-     * @param {ClassManager} classManager Instance of class manager
+     * @param {Subclass.Module.Module} module - Instance of module
      * @constructor
      */
-    function PropertyManager(classManager)
+    function PropertyManager(module)
     {
+        /**
+         * @type {Subclass.Module.Module}
+         * @private
+         */
+        this._module = module;
+
         /**
          * @type {number}
          * @private
@@ -25,21 +31,22 @@ Subclass.Property.PropertyManager = (function()
          */
         this._customTypesManager = new Subclass.Property.CustomTypesManager(this);
 
-        /**
-         * @type {ClassManager}
-         * @private
-         */
-        this._classManager = classManager;
+
+        // Registering events
+
+        this.getModule().getEventManager()
+            .registerEvent('onCreateProperty', this)
+        ;
     }
 
     /**
-     * Returns class manager instance
+     * Returns subclass module instance
      *
-     * @returns {ClassManager}
+     * @returns {Subclass.Module.Module}
      */
-    PropertyManager.prototype.getClassManager = function()
+    PropertyManager.prototype.getModule = function()
     {
-        return this._classManager;
+        return this._module;
     };
 
     /**
@@ -57,7 +64,7 @@ Subclass.Property.PropertyManager = (function()
      *
      * @param {Object.<Object>} definitions
      */
-    PropertyManager.prototype.defineCustomPropertyTypes = function(definitions)
+    PropertyManager.prototype.defineCustomDataTypes = function(definitions)
     {
         this.getCustomTypesManager().addTypeDefinitions(definitions);
     };
@@ -169,6 +176,9 @@ Subclass.Property.PropertyManager = (function()
         if (!(inst instanceof Subclass.Property.PropertyTypeInterface)) {
             throw new Error('Property type factory must instance of "Subclass.Property.PropertyTypeInterface" class.');
         }
+
+        this.getModule().getEventManager().getEvent('onCreateProperty').invoke(inst);
+
         return inst;
     };
 
@@ -196,12 +206,12 @@ Subclass.Property.PropertyManager = (function()
         /**
          * Creates instance of PropertyManager
          *
-         * @param {ClassManager} classManager Instance of class manager
+         * @param {Subclass.Module.Module} module - Instance of class manager
          * @returns {PropertyManager}
          */
-        create: function(classManager)
+        create: function(module)
         {
-            return new PropertyManager(classManager);
+            return new PropertyManager(module);
         },
 
         /**

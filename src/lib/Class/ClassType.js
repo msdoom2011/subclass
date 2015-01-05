@@ -249,7 +249,7 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.addClassProperty = function(propertyName, propertyDefinition)
     {
-        var propertyManager = this.getClassManager().getPropertyManager();
+        var propertyManager = this.getClassManager().getModule().getPropertyManager();
 
         this._classProperties[propertyName] = propertyManager.createProperty(
             propertyName,

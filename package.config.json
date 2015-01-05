@@ -63,11 +63,27 @@
           "<%= config.lib.content.service.dir %>/ServiceManager.js",
           "<%= config.lib.content.service.dir %>/**/*.js"
         ]
+      },
+      "module": {
+        "dir": "Module",
+        "files": [
+          "<%= config.lib.content.module.dir %>/Module.js",
+          "<%= config.lib.content.module.dir %>/**/*.js"
+        ]
+      },
+      "event": {
+        "dir": "Event",
+        "files": [
+          "<%= config.lib.content.event.dir %>/EventManager.js",
+          "<%= config.lib.content.event.dir %>/**/*.js"
+        ]
       }
     },
     "files": [
       "<%= config.lib.content.main %>",
       "<%= config.lib.content.tools.files %>",
+      "<%= config.lib.content.module.files %>",
+      "<%= config.lib.content.event.files %>",
       "<%= config.lib.content.property.files %>",
       "<%= config.lib.content.class.files %>",
       "<%= config.lib.content.service.files %>"

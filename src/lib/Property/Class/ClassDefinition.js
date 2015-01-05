@@ -66,7 +66,7 @@ Subclass.Property.Class.ClassDefinition = (function()
             this._throwInvalidAttribute('className', 'a string');
         }
         var property = this.getProperty();
-        var classManager = property.getPropertyManager().getClassManager();
+        var classManager = property.getPropertyManager().getModule().getClassManager();
 
         if (!classManager.issetClass(className)) {
             throw new Error('Specified non existent class in "className" attribute ' +

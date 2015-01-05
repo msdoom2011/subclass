@@ -1,7 +1,7 @@
-var app = Subclass.create({
+var app = Subclass.createModule('app', {
     autoload: true,
     rootPath: "/SubclassJS/build/demo",
-    propertyTypes: {
+    dataTypes: {
         percents: { type: "string", pattern: /^\d+%$/ },
         bigNumber: { type: "number", minValue: 1000000 }
     },
@@ -333,7 +333,7 @@ app.registerConfig("ConfigBase", {
 
 });
 
-var class3Inst = app.alterClass("Class2")
+var class3Inst = app.getClassManager().alterClass("Class2")
 //            .setClassName("firstBuiltClass")
 //            .setClassParent('AbstractClass')
         .addInterfaces(["InterfaceExtra"])
@@ -525,7 +525,7 @@ app.registerClass("Bug2", {
 });
 
 
-app.initialize(function() {
+app.onReady(function() {
     console.log('');
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 

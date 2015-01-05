@@ -67,6 +67,14 @@ Subclass.Service.Service = (function()
         this._definition = serviceDefinition;
 
         /**
+         * Instance of service class
+         *
+         * @type {Object}
+         * @private
+         */
+        this._instance = null;
+
+        /**
          * Indicates whether current service is initialized
          *
          * @type {boolean}
@@ -119,6 +127,26 @@ Subclass.Service.Service = (function()
     Service.prototype.isInitialized = function()
     {
         return this._initialized;
+    };
+
+    /**
+     * Sets service class instance
+     *
+     * @param {Object} instance
+     */
+    Service.prototype.setInstance = function(instance)
+    {
+        this._instance = instance;
+    };
+
+    /**
+     * Returns service class instance
+     *
+     * @returns {Object|*}
+     */
+    Service.prototype.getInstance = function()
+    {
+        return this._instance;
     };
 
     /**
@@ -183,18 +211,32 @@ Subclass.Service.Service = (function()
             this._throwServiceInitialized();
         }
         this.validateArguments(args);
+        args = this.normalizeArguments(args);
         this.getDefinition().arguments = args;
+    };
+
+    /**
+     * Normalizes arguments
+     *
+     * @param args
+     */
+    Service.prototype.normalizeArguments = function(args)
+    {
         var serviceManager = this.getServiceManager();
+
+        if (!args) {
+            return [];
+        }
 
         for (var i = 0; i < args.length; i++) {
             var value = args[i];
 
-            if (value.match(/^@[a-z_0-9]$/i)) {
+            if (typeof value == 'string' && value.match(/^@[a-z_0-9]+$/i)) {
                 var serviceName = value.substr(1);
                 args[i] = serviceManager.getService(serviceName);
 
-            } else if (value.match(/%.+%/i)) {
-                var regex = /%([^%])%/i;
+            } else if (typeof value == 'string' && value.match(/%.+%/i)) {
+                var regex = /%([^%]+)%/i;
 
                 while (regex.test(value)) {
                     var parameterName = value.match(regex)[1];
@@ -205,6 +247,7 @@ Subclass.Service.Service = (function()
                 args[i] = value;
             }
         }
+        return args;
     };
 
     /**
@@ -214,7 +257,7 @@ Subclass.Service.Service = (function()
      */
     Service.prototype.getArguments = function()
     {
-        return this.getDefinition().arguments;
+        return this.getDefinition().arguments || [];
     };
 
     /**
@@ -253,6 +296,15 @@ Subclass.Service.Service = (function()
         }
         this.validateCalls(calls);
         this.getDefinition().calls = calls;
+
+        if (calls) {
+            for (var methodName in calls) {
+                if (!calls.hasOwnProperty(methodName)) {
+                    continue;
+                }
+                calls[methodName] = this.normalizeArguments(calls[methodName]);
+            }
+        }
     };
 
     /**
@@ -262,7 +314,7 @@ Subclass.Service.Service = (function()
      */
     Service.prototype.getCalls = function()
     {
-        return this.getDefinition().calls;
+        return this.getDefinition().calls || {};
     };
 
     /**
@@ -405,17 +457,17 @@ Subclass.Service.Service = (function()
 
         function validateArguments(arg)
         {
-            if (arg.match(/^@[a-z_0-9]$/i)) {
+            if (typeof arg == 'string' && arg.match(/^@[a-z_0-9]+$/i)) {
                 var serviceName = arg.substr(1);
 
                 if (serviceName == chain[0]) {
                     $this._throwRecursionInjection(serviceName);
                 }
-                if (chain.indexOf(serviceName)) {
+                if (chain.indexOf(serviceName) > 0) {
                     return;
                 }
                 var service = serviceManager.getServiceDefinition(serviceName);
-                    service.concat(service.validateDefinition(chain));
+                    chain.concat(service.validateDefinition(chain));
             }
         }
 
@@ -429,7 +481,9 @@ Subclass.Service.Service = (function()
 
         for (var methodName in calls) {
             if (calls.hasOwnProperty(methodName)) {
-                validateArguments(calls[methodName]);
+                for (i = 0; i < calls[methodName].length; i++) {
+                    validateArguments(calls[methodName][i]);
+                }
             }
         }
 

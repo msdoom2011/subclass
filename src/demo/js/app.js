@@ -1,20 +1,44 @@
-var classManager = Subclass.create({
+var app = Subclass.create({
     autoload: true,
     rootPath: "/SubclassJS/build/demo",
     propertyTypes: {
         percents: { type: "string", pattern: /^\d+%$/ },
         bigNumber: { type: "number", minValue: 1000000 }
+    },
+    parameters: {
+        mode: "dev"
+    },
+    services: {
+        logger: {
+            singleton: true,
+            className: "Logger",
+            arguments: ['%mode%'],
+            calls: {
+                setPsix: [
+                    '%mode% and yo!!!!',
+                    true
+                ]
+            }
+        },
+        bug1: {
+            className: "Bug1",
+            tags: ['logger']
+        },
+        bug2: {
+            className: "Bug2",
+            tags: ['logger']
+        }
     }
 });
 
-classManager.registerAbstractClass("AbstractClassBase", {
+app.registerAbstractClass("AbstractClassBase", {
 
     $_abstract: {
         yo: function() {}
     }
 });
 
-classManager.registerAbstractClass("AbstractClass", {
+app.registerAbstractClass("AbstractClass", {
 
     $_extends: "AbstractClassBase",
 
@@ -52,7 +76,7 @@ classManager.registerAbstractClass("AbstractClass", {
     }
 });
 
-classManager.registerInterface("InterfaceBase", {
+app.registerInterface("InterfaceBase", {
 
     $_properties: {
 
@@ -67,7 +91,7 @@ classManager.registerInterface("InterfaceBase", {
 
 });
 
-classManager.registerInterface("Interface", {
+app.registerInterface("Interface", {
 
     $_extends: "InterfaceBase",
 
@@ -75,13 +99,13 @@ classManager.registerInterface("Interface", {
 
 });
 
-classManager.registerInterface("InterfaceExtra", {
+app.registerInterface("InterfaceExtra", {
 
     extraAbstract: function() {}
 
 });
 
-classManager.registerTrait("TraitBase", {
+app.registerTrait("TraitBase", {
     $_properties: {
 
         typedBoolean: { type: "boolean", value: false },
@@ -93,7 +117,7 @@ classManager.registerTrait("TraitBase", {
     }
 });
 
-classManager.registerTrait("Trait", {
+app.registerTrait("Trait", {
 
     $_extends: "TraitBase",
 
@@ -133,7 +157,7 @@ classManager.registerTrait("Trait", {
     }
 });
 
-classManager.registerAbstractClass("Class2", {
+app.registerAbstractClass("Class2", {
 
     $_extends: "AbstractClass",
 
@@ -218,7 +242,7 @@ classManager.registerAbstractClass("Class2", {
     }
 });
 
-classManager.registerClass("Class3", {
+app.registerClass("Class3", {
 
     $_extends: "Class2",
 
@@ -300,7 +324,7 @@ classManager.registerClass("Class3", {
 
 // ====================== CONFIGS =======================
 
-classManager.registerConfig("ConfigBase", {
+app.registerConfig("ConfigBase", {
 
     propString: {
         type: "string",
@@ -309,7 +333,7 @@ classManager.registerConfig("ConfigBase", {
 
 });
 
-var class3Inst = classManager.alterClass("Class2")
+var class3Inst = app.alterClass("Class2")
 //            .setClassName("firstBuiltClass")
 //            .setClassParent('AbstractClass')
         .addInterfaces(["InterfaceExtra"])
@@ -336,7 +360,7 @@ var class3Inst = classManager.alterClass("Class2")
 console.log(class3Inst);
 
 
-classManager.registerConfig("ConfigInclude", {
+app.registerConfig("ConfigInclude", {
 
     propNumber: {
         type: "number",
@@ -359,7 +383,7 @@ classManager.registerConfig("ConfigInclude", {
 
 });
 
-classManager.registerConfig("Config", {
+app.registerConfig("Config", {
 
     $_extends: "ConfigBase",
 
@@ -422,17 +446,109 @@ classManager.registerConfig("Config", {
 
 });
 
+app.registerClass('Logger', {
 
-classManager.initialize(function() {
+    $_implements: ['Subclass/Service/TaggableInterface'],
+
+    $_constructor: function(mode)
+    {
+        console.log('constructor call:', mode);
+    },
+
+    _bugs: [],
+
+    setPsix: function(mode, psix)
+    {
+        console.log('method call:');
+        console.log('-', mode);
+        console.log('-', psix);
+    },
+
+    addBug: function(bug)
+    {
+        this._bugs.push(bug);
+    },
+
+    getBugs: function()
+    {
+        return this._bugs;
+    },
+
+    processTaggedServices: function(taggedServices)
+    {
+        for (var i = 0; i < taggedServices.length; i++) {
+            if (!taggedServices[i].isImplements('BugInterface')) {
+                continue;
+            }
+            this.addBug(taggedServices[i]);
+        }
+    }
+});
+
+app.registerInterface("BugInterface", {
+
+    getName: function() {},
+
+    getMessage: function() {}
+
+});
+
+app.registerClass("Bug1", {
+
+    $_implements: ["BugInterface"],
+
+    getName: function()
+    {
+        return "bug1";
+    },
+
+    getMessage: function()
+    {
+        return "Bug 1 happens.";
+    }
+});
+
+app.registerClass("Bug2", {
+
+    $_implements: ["BugInterface"],
+
+    getName: function()
+    {
+        return "bug2";
+    },
+
+    getMessage: function()
+    {
+        return "Bug 2 happens.";
+    }
+
+});
+
+
+app.initialize(function() {
     console.log('');
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
-    //classManager.getClass('Psix').createInstance().psix();
+    var logger = app.getServiceManager().getService('logger');
+    var loggerElse = app.getServiceManager().getService('logger');
 
-    var abstractClass = classManager.getClass("AbstractClass");
-    var class2 = classManager.getClass("Class2");
-    var class3 = classManager.getClass("Class3");
-    var config = classManager.getClass("Config");
+    console.log(loggerElse == logger);
+    console.log(logger.getBugs());
+
+    var bugs = logger.getBugs();
+
+    for (var i = 0; i < bugs.length; i++) {
+        console.log(bugs[i].getName());
+        console.log(bugs[i].getMessage());
+        console.log('-----------');
+    }
+
+    //app.getClass('Psix').createInstance().psix();
+
+    var abstractClass = app.getClass("AbstractClass");
+    var class2 = app.getClass("Class2");
+    var class3 = app.getClass("Class3");
+    var config = app.getClass("Config");
 
     console.log('???????????????????????????');
 
@@ -761,7 +877,7 @@ classManager.initialize(function() {
     console.log(inst2.getParent().getStatic().staticProp);
     inst.getParent().getStatic().staticProp = "psix instead test";
     console.log(inst2.getParent().getStatic().staticProp);
-    console.log(classManager.getClass('Class2').getStatic().staticProp);
+    console.log(app.getClass('Class2').getStatic().staticProp);
 
 
     console.log(inst.getInterfaceProperty());

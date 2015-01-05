@@ -18,6 +18,16 @@ Subclass.Service.ServiceFactory = (function()
     }
 
     /**
+     * Returns service manager instance
+     *
+     * @returns {Subclass.Service.ServiceManager}
+     */
+    ServiceFactory.prototype.getServiceManager = function()
+    {
+        return this._serviceManager;
+    };
+
+    /**
      * Returns service class instance
      *
      * @param {Subclass.Service.Service} service
@@ -26,13 +36,15 @@ Subclass.Service.ServiceFactory = (function()
     ServiceFactory.prototype.getService = function(service)
     {
         if (service.isInitialized() && service.isSingleton()) {
-            return service;
+            return service.getInstance();
         }
         if (!service.isInitialized()) {
             service.initialize();
         }
+        var serviceClassInst = this.createService(service);
+        service.setInstance(serviceClassInst);
 
-        return this.createService(service);
+        return serviceClassInst;
     };
 
     /**
@@ -66,8 +78,10 @@ Subclass.Service.ServiceFactory = (function()
         if (classInst.isImplements('Subclass/Service/TaggableInterface')) {
             var taggedServices = serviceManager.getServicesByTag(service.getName());
 
-            service.processTaggedServices(taggedServices);
+            classInst.processTaggedServices(taggedServices);
         }
+
+        return classInst;
     };
 
     return ServiceFactory;

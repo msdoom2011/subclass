@@ -110,7 +110,7 @@ Subclass.Service.ServiceManager = (function()
      */
     ServiceManager.prototype.registerService = function(serviceName, serviceDefinition)
     {
-        var service = new Subclass.Service.Service(serviceName, serviceDefinition);
+        var service = new Subclass.Service.Service(this, serviceName, serviceDefinition);
         this._services[serviceName] = service;
 
         return service;
@@ -188,7 +188,7 @@ Subclass.Service.ServiceManager = (function()
      */
     ServiceManager.prototype.getParameter = function(paramName)
     {
-        if (!this.issetProperty(paramName)) {
+        if (!this.issetParameter(paramName)) {
             throw new Error('Parameter with name "' + paramName + '" is not exists.');
         }
         return this._parameters[paramName];

@@ -5,7 +5,7 @@
 Subclass.Property.PropertyType = (function()
 {
     /**
-     * @param {PropertyManager} propertyManager
+     * @param {Subclass.Property.PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
      * @constructor
@@ -23,7 +23,7 @@ Subclass.Property.PropertyType = (function()
         /**
          * An instance of property manager
          *
-         * @type {PropertyManager}
+         * @type {Subclass.Property.PropertyManager}
          * @private
          */
         this._propertyManager = propertyManager;

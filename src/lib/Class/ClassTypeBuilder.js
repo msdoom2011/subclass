@@ -6,7 +6,7 @@ Subclass.Class.ClassTypeBuilder = (function()
     function ClassTypeBuilder(classManager, classType, className)
     {
         /**
-         * @type {ClassManager}
+         * @type {Subclass.Class.ClassManager}
          */
         this._classManager = classManager;
 
@@ -50,7 +50,7 @@ Subclass.Class.ClassTypeBuilder = (function()
     /**
      * Returns class manager instance
      *
-     * @returns {ClassManager}
+     * @returns {Subclass.Class.ClassManager}
      */
     ClassTypeBuilder.prototype.getClassManager = function()
     {

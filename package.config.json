@@ -64,6 +64,13 @@
           "<%= config.lib.content.service.dir %>/**/*.js"
         ]
       },
+      "parameter": {
+        "dir": "Parameter",
+        "files": [
+          "<%= config.lib.content.parameter.dir %>/ParameterManager.js",
+          "<%= config.lib.content.parameter.dir %>/**/*.js"
+        ]
+      },
       "module": {
         "dir": "Module",
         "files": [
@@ -86,7 +93,8 @@
       "<%= config.lib.content.event.files %>",
       "<%= config.lib.content.property.files %>",
       "<%= config.lib.content.class.files %>",
-      "<%= config.lib.content.service.files %>"
+      "<%= config.lib.content.service.files %>",
+      "<%= config.lib.content.parameter.files %>"
     ],
     "files_release": {
       "normal": "<%= config.lib.dir.release %>/<%= config.name %>.js",

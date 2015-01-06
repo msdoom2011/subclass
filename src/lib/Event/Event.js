@@ -169,7 +169,7 @@ Subclass.Event.Event = (function()
         var listenerArgs = [];
         var priorities = [];
 
-        for (var i = 1; i < arguments.length; i++) {
+        for (var i = 0; i < arguments.length; i++) {
             listenerArgs.push(arguments[i]);
         }
 

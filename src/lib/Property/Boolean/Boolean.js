@@ -14,7 +14,7 @@ Subclass.Property.Boolean.Boolean = (function()
     /*************************************************/
 
     /**
-     * @param {PropertyManager} propertyManager
+     * @param {Subclass.Property.PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
      * @constructor

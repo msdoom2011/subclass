@@ -60,17 +60,21 @@ Subclass.Service.ServiceFactory = (function()
         // Creating class instance
 
         var classDef = classManager.getClass(service.getClassName());
-        var classInst = classDef.createInstance.apply(classDef, service.getArguments());
+        var classArguments = service.normalizeArguments(service.getArguments());
+        var classInst = classDef.createInstance.apply(classDef, classArguments);
 
         // Processing calls
 
-        var calls = service.getCalls();
+        var calls = service.normalizeCalls(service.getCalls());
 
         for (var methodName in calls) {
             if (!calls.hasOwnProperty(methodName)) {
                 continue;
             }
-            classInst[methodName].apply(classInst, calls[methodName]);
+            classInst[methodName].apply(
+                classInst,
+                calls[methodName]
+            );
         }
 
         // Processing tags

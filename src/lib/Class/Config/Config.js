@@ -14,7 +14,7 @@ Subclass.Class.Config.Config = (function()
     /*************************************************/
 
     /**
-     * @param {ClassManager} classManager
+     * @param {Subclass.Class.ClassManager} classManager
      * @param {string} className
      * @param {Object} classDefinition
      * @extends {ClassType}

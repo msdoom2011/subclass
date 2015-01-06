@@ -4,13 +4,13 @@
 Subclass.Property.CustomTypesManager = (function()
 {
     /**
-     * @param {PropertyManager} propertyManager
+     * @param {Subclass.Property.PropertyManager} propertyManager
      * @constructor
      */
     function CustomTypesManager(propertyManager)
     {
         /**
-         * @type {PropertyManager}
+         * @type {Subclass.Property.PropertyManager}
          * @private
          */
         this._propertyManager = propertyManager;
@@ -31,7 +31,7 @@ Subclass.Property.CustomTypesManager = (function()
     /**
      * Returns property manager instance
      *
-     * @returns {PropertyManager}
+     * @returns {Subclass.Property.PropertyManager}
      */
     CustomTypesManager.prototype.getPropertyManager = function()
     {
@@ -69,19 +69,6 @@ Subclass.Property.CustomTypesManager = (function()
     };
 
     /**
-     * Sets custom types definitions
-     *
-     * @param {Object.<Object>} definitions
-     */
-    CustomTypesManager.prototype.setTypeDefinitions = function(definitions)
-    {
-        this.validateTypeDefinitions(definitions);
-
-        this._typeDefinitions = definitions;
-        this.initialize();
-    };
-
-    /**
      * Adds new type definitions
      *
      * @param {Object.<Object>} definitions
@@ -109,7 +96,7 @@ Subclass.Property.CustomTypesManager = (function()
      */
     CustomTypesManager.prototype.initialize = function()
     {
-        var typeDefinitions = this.getTypeDefinitions();
+        var typeDefinitions = this.getTypeDefinitions(false);
 
         for (var typeName in typeDefinitions) {
             if (!typeDefinitions.hasOwnProperty(typeName)) {
@@ -124,14 +111,51 @@ Subclass.Property.CustomTypesManager = (function()
         }
     };
 
+    ///**
+    // * Returns definitions of custom types
+    // *
+    // * @returns {Object.<Object>}
+    // */
+    //CustomTypesManager.prototype.getTypeDefinitions = function()
+    //{
+    //    return this._typeDefinitions;
+    //};
+
     /**
      * Returns definitions of custom types
      *
-     * @returns {Object.<Object>}
+     * @param {boolean} [privateDefinitions = false]
+     *      If passed true it returns type definitions only from current module
+     *      without type definitions from its dependencies
+     *
+     * @returns {Object}
      */
-    CustomTypesManager.prototype.getTypeDefinitions = function()
+    CustomTypesManager.prototype.getTypeDefinitions = function(privateDefinitions)
     {
-        return this._typeDefinitions;
+        var mainModule = this.getPropertyManager().getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var typeDefinitions = {};
+        var $this = this;
+
+        if (privateDefinitions !== true) {
+            privateDefinitions = false;
+        }
+        if (privateDefinitions) {
+            return this._typeDefinitions;
+        }
+
+        moduleManager.eachModule(function(module) {
+            if (module == mainModule) {
+                Subclass.Tools.extend(typeDefinitions, $this._typeDefinitions);
+                return;
+            }
+            var moduleCustomTypesManager = module.getPropertyManager().getCustomTypesManager();
+            var moduleDefinitions = moduleCustomTypesManager.getTypeDefinitions();
+
+            Subclass.Tools.extend(typeDefinitions, moduleDefinitions);
+        });
+
+        return typeDefinitions;
     };
 
     /**
@@ -146,7 +170,44 @@ Subclass.Property.CustomTypesManager = (function()
         if (!this.issetType(typeName)) {
             throw new Error('Trying to get non existent custom property type "' + typeName + '".');
         }
-        return this._typeDefinitions[typeName];
+        return this.getTypeDefinitions()[typeName];
+    };
+
+    /**
+     * Returns custom types
+     *
+     * @param {boolean} [privateTypes = false]
+     *      If passed true it returns data types only from current module
+     *      without data types from its dependencies
+     *
+     * @returns {Object}
+     */
+    CustomTypesManager.prototype.getTypes = function(privateTypes)
+    {
+        var mainModule = this.getPropertyManager().getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var dataTypes = {};
+        var $this = this;
+
+        if (privateTypes !== true) {
+            privateTypes = false;
+        }
+        if (privateTypes) {
+            return this._types;
+        }
+
+        moduleManager.eachModule(function(module) {
+            if (module == mainModule) {
+                Subclass.Tools.extend(dataTypes, $this._types);
+                return;
+            }
+            var moduleCustomTypesManager = module.getPropertyManager().getCustomTypesManager();
+            var moduleDataTypes = moduleCustomTypesManager.getTypes();
+
+            Subclass.Tools.extend(dataTypes, moduleDataTypes);
+        });
+
+        return dataTypes;
     };
 
     /**
@@ -160,7 +221,7 @@ Subclass.Property.CustomTypesManager = (function()
         if (!this.issetType(typeName)) {
             throw new Error('Trying to get non existent custom property type "' + typeName + '".');
         }
-        return this._types[typeName];
+        return this.getTypes()[typeName];
     };
 
     /**
@@ -171,7 +232,7 @@ Subclass.Property.CustomTypesManager = (function()
      */
     CustomTypesManager.prototype.issetType = function(typeName)
     {
-        return !!this._typeDefinitions[typeName];
+        return !!this.getTypeDefinitions()[typeName];
     };
 
     return CustomTypesManager;

@@ -14,7 +14,7 @@ Subclass.Property.Function.Function = (function()
     /*************************************************/
 
     /**
-     * @param {PropertyManager} propertyManager
+     * @param {Subclass.Property.PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
      * @extends {PropertyType}

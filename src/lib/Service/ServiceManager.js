@@ -70,11 +70,38 @@ Subclass.Service.ServiceManager = (function()
     /**
      * Returns all registered services
      *
+     * @param {boolean} [privateServices = false]
+     *      If passed true it returns services only from current module
+     *      without services from its dependencies.
+     *
      * @returns {Object.<Subclass.Service.Service>}
      */
-    ServiceManager.prototype.getServices = function()
+    ServiceManager.prototype.getServices = function(privateServices)
     {
-        return this._services;
+        var mainModule = this.getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var services = {};
+        var $this = this;
+
+        if (privateServices !== true) {
+            privateServices = false;
+        }
+        if (privateServices) {
+            return this._services;
+        }
+
+        moduleManager.eachModule(function(module) {
+            if (module == mainModule) {
+                Subclass.Tools.extend(services, $this._services);
+                return;
+            }
+            var moduleServiceManager = module.getServiceManager();
+            var moduleServices = moduleServiceManager.getServices();
+
+            Subclass.Tools.extend(services, moduleServices);
+        });
+
+        return services;
     };
 
     /**
@@ -130,7 +157,7 @@ Subclass.Service.ServiceManager = (function()
         if (!this.issetService(serviceName)) {
             throw new Error('Service with name "' + serviceName + '" is not exists.');
         }
-        return this.getServiceFactory().getService(this._services[serviceName]);
+        return this.getServiceFactory().getService(this.getServices()[serviceName]);
     };
 
     /**
@@ -144,68 +171,19 @@ Subclass.Service.ServiceManager = (function()
         if (!this.issetService(serviceName)) {
             throw new Error('Service with name "' + serviceName + '" is not exists.');
         }
-        return this._services[serviceName];
+        return this.getServices()[serviceName];
     };
 
     /**
      * Checks whether service with specified name was ever registered
      *
+     * @param {boolean} [privateServices]
      * @param {string} serviceName
      * @returns {boolean}
      */
-    ServiceManager.prototype.issetService = function(serviceName)
+    ServiceManager.prototype.issetService = function(serviceName, privateServices)
     {
-        return !!this._services[serviceName];
-    };
-
-    /**
-     * Registers new parameter
-     *
-     * @param {string} paramName
-     * @param {*} paramValue
-     */
-    ServiceManager.prototype.registerParameter = function(paramName, paramValue)
-    {
-        this._parameters[paramName] = paramValue;
-    };
-
-    /**
-     * Sets parameter value
-     *
-     * @param {string} paramName
-     * @param {*} paramValue
-     */
-    ServiceManager.prototype.setParameter = function(paramName, paramValue)
-    {
-        if (!this.issetProperty(paramName)) {
-            throw new Error('Parameter with name "' + paramName + '" is not exists.');
-        }
-        this._parameters[paramName] = paramValue;
-    };
-
-    /**
-     * Returns parameter value
-     *
-     * @param {string} paramName
-     * @return {*}
-     */
-    ServiceManager.prototype.getParameter = function(paramName)
-    {
-        if (!this.issetParameter(paramName)) {
-            throw new Error('Parameter with name "' + paramName + '" is not exists.');
-        }
-        return this._parameters[paramName];
-    };
-
-    /**
-     * Checks whether parameter with passed name is exists
-     *
-     * @param {string} paramName
-     * @returns {boolean}
-     */
-    ServiceManager.prototype.issetParameter = function(paramName)
-    {
-        return !!this._parameters[paramName];
+        return !!this.getServices(privateServices)[serviceName];
     };
 
     return ServiceManager;

@@ -14,7 +14,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
     /*************************************************/
 
     /**
-     * @param {PropertyManager} propertyManager
+     * @param {Subclass.Property.PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
      * @param {ClassType} contextClass

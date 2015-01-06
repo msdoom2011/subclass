@@ -4,7 +4,7 @@
 Subclass.Property.PropertyTypeInterface = (function()
 {
     /**
-     * @param {PropertyManager} propertyManager
+     * @param {Subclass.Property.PropertyManager} propertyManager
      * @param {string} propertyName
      * @param {Object} propertyDefinition
      * @constructor
@@ -45,7 +45,7 @@ Subclass.Property.PropertyTypeInterface = (function()
     /**
      * Returns property manager instance
      *
-     * @returns {PropertyManager}
+     * @returns {Subclass.Property.PropertyManager}
      */
     PropertyTypeInterface.prototype.getPropertyManager = function() {};
 

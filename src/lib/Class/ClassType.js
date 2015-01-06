@@ -20,7 +20,7 @@ Subclass.Class.ClassType = (function()
         }
 
         /**
-         * @type {ClassManager}
+         * @type {Subclass.Class.ClassManager}
          * @protected
          */
         this._classManager = classManager;

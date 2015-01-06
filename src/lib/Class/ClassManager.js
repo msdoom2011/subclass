@@ -52,26 +52,33 @@ Subclass.Class.ClassManager = (function()
          * @private
          */
         this._loadingEndTimeout = null;
+    }
 
+    ClassManager.prototype.initialize = function()
+    {
+        var module = this.getModule();
+        var $this = this;
 
-        // Initializing
-
-        this.getModule().getEventManager()
+        module.getEventManager()
             .registerEvent('onLoadingEnd', this)
-            .registerEvent('onRegisterClass', this)
         ;
 
         // Registering basic classes
 
-        for (var classTypeName in _classes) {
-            if (!_classes.hasOwnProperty(classTypeName)) {
+        var defaultClasses = ClassManager.getClasses();
+
+        for (var classTypeName in defaultClasses) {
+            if (!defaultClasses.hasOwnProperty(classTypeName)) {
                 continue;
             }
-            for (var className in _classes[classTypeName]) {
-                if (!_classes[classTypeName].hasOwnProperty(className)) {
+            for (var className in defaultClasses[classTypeName]) {
+                if (
+                    !defaultClasses[classTypeName].hasOwnProperty(className)
+                    || this.issetClass(className)
+                ) {
                     continue;
                 }
-                var classDefinition = _classes[classTypeName][className];
+                var classDefinition = defaultClasses[classTypeName][className];
 
                 this.addClass(
                     classTypeName,
@@ -80,7 +87,44 @@ Subclass.Class.ClassManager = (function()
                 );
             }
         }
-    }
+
+        // Adding event listeners
+
+        var eventManager = module.getEventManager();
+
+        eventManager.getEvent('onLoadingEnd').addListener(100, function() {
+            var mainModule = module;
+            var moduleManager = module.getModuleManager();
+            var classes = {};
+
+            moduleManager.eachModule(function(module) {
+                if (module == mainModule) {
+                    Subclass.Tools.extend(classes, $this._classes);
+                    return;
+                }
+                var moduleClassManager = module.getClassManager();
+                var moduleClasses = moduleClassManager.getClasses(false, false);
+
+                for (var className in moduleClasses) {
+                    if (
+                        !moduleClasses.hasOwnProperty(className)
+                        || ClassManager.issetClass(className)
+                    ) {
+                        continue;
+                    }
+                    if (classes[className]) {
+                        var classLocations = $this.getClassLocations(className);
+
+                        throw new Error(
+                            'Multiple class definition detected. Class "' + className + '" defined ' +
+                            'in modules: "' + classLocations.join('", "') + '".'
+                        );
+                    }
+                    classes[className] = 1;
+                }
+            });
+        });
+    };
 
     /**
      * Returns module instance
@@ -177,6 +221,79 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.isLoadStackEmpty = function()
     {
         return !Object.keys(this._loadStack).length;
+    };
+
+    /**
+     * Return all registered classes
+     *
+     * @param {boolean} [privateClasses = false]
+     *      If passed true it returns classes only from current module
+     *      without classes from its dependencies
+     *
+     * @param {boolean} [withParentClasses = true]
+     *
+     * @returns {Object.<Subclass.Class.ClassTypeInterface>}
+     */
+    ClassManager.prototype.getClasses = function(privateClasses, withParentClasses)
+    {
+        var mainModule = this.getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var classes = {};
+        var $this = this;
+
+        if (privateClasses !== true) {
+            privateClasses = false;
+        }
+        if (withParentClasses !== false) {
+            withParentClasses = true;
+        }
+        if (privateClasses && withParentClasses) {
+            if (mainModule.hasParent()) {
+                var parentModule = mainModule.getParent();
+                var parentClasses = parentModule.getClassManager().getClasses(true);
+
+                Subclass.Tools.extend(classes, parentClasses);
+            }
+            return Subclass.Tools.extend(classes, this._classes);
+
+        } else if (privateClasses) {
+            return this._classes;
+        }
+
+        moduleManager.eachModule(function(module) {
+            if (module == mainModule) {
+                Subclass.Tools.extend(classes, $this.getClasses(true, withParentClasses));
+                return;
+            }
+            var moduleClassManager = module.getClassManager();
+            var moduleClasses = moduleClassManager.getClasses(false, withParentClasses);
+
+            Subclass.Tools.extend(classes, moduleClasses);
+        });
+
+        return classes;
+    };
+
+    /**
+     * Returns module names where defined class with specified name
+     *
+     * @param {string} className
+     * @returns {string[]}
+     */
+    ClassManager.prototype.getClassLocations = function(className)
+    {
+        var moduleManager = this.getModule().getModuleManager();
+        var locations = [];
+
+        moduleManager.eachModule(function(module) {
+            var classManager = module.getClassManager();
+
+            if (classManager.issetClass(className)) {
+                locations.push(module.getName());
+            }
+        });
+
+        return locations;
     };
 
     /**
@@ -326,12 +443,7 @@ Subclass.Class.ClassManager = (function()
         var classTypeConstructor = Subclass.Class.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
 
-        if (!this._classes[classTypeName]) {
-            this._classes[classTypeName] = {};
-        }
-        this._classes[classTypeName][className] = classInstance;
-
-        this.getModule().getEventManager().getEvent('onRegisterClass').invoke(classInstance);
+        this._classes[className] = classInstance;
         this.removeFromLoadStack(className);
 
         if (this.isLoadStackEmpty()) {
@@ -352,15 +464,7 @@ Subclass.Class.ClassManager = (function()
         if (!this.issetClass(className)) {
             throw new Error('Trying to call to none existed class "' + className + '".');
         }
-
-        for (var classTypeName in this._classes) {
-            if (!this._classes.hasOwnProperty(classTypeName)) {
-                continue;
-            }
-            if (!!this._classes[classTypeName][className]) {
-                return this._classes[classTypeName][className];
-            }
-        }
+        return this.getClasses()[className];
     };
 
     /**
@@ -371,15 +475,7 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.issetClass = function(className)
     {
-        for (var classTypeName in this._classes) {
-            if (!this._classes.hasOwnProperty(classTypeName)) {
-                continue;
-            }
-            if (!!this._classes[classTypeName][className]) {
-                return true;
-            }
-        }
-        return false;
+        return !!this.getClasses()[className];
     };
 
     /**
@@ -477,125 +573,124 @@ Subclass.Class.ClassManager = (function()
      * @type {Object.<Object>}
      * @private
      */
-    var _classes = {};
+    ClassManager._classes = {};
 
     /**
      * @type {Object.<function>}
      * @private
      */
-    var _classTypes = {};
+    ClassManager._classTypes = {};
 
-    return {
+    /**
+     * Returns all registered default classes
+     *
+     * @returns {Object.<Object>}
+     */
+    ClassManager.getClasses = function()
+    {
+        return this._classes;
+    };
+
+    /**
+     * Registers new class
+     *
+     * @param {string} classTypeName
+     * @param {string} className
+     * @param {Object} classDefinition
+     */
+    ClassManager.registerClass = function(classTypeName, className, classDefinition)
+    {
+        if (this.issetClass(className)) {
+            throw new Error('Class "' + className + '" is already registered.');
+        }
+        if (!this._classes[classTypeName]) {
+            this._classes[classTypeName] = {};
+        }
+        this._classes[classTypeName][className] = classDefinition;
+    };
+
+    /**
+     * Checks whether class with passed name was ever registered
+     *
+     * @param {string} className
+     * @returns {boolean}
+     */
+    ClassManager.issetClass = function(className)
+    {
+        for (var classTypeName in this._classes) {
+            if (!this._classes.hasOwnProperty(classTypeName)) {
+                continue;
+            }
+            if (!!this._classes[classTypeName][className]) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
+     * Registers new type of classes
+     *
+     * @param {function} classTypeConstructor
+     */
+    ClassManager.registerClassType = function(classTypeConstructor)
+    {
+        var classTypeName = classTypeConstructor.getClassTypeName();
+
+        this._classTypes[classTypeName] = classTypeConstructor;
 
         /**
-         * Creates instance of Subclass.Class.ClassManager
+         * Registering new config
          *
-         * @param {Subclass.Module.Module} module
-         * @returns {ClassManager}
-         */
-        create: function(module)
-        {
-            return new ClassManager(module);
-        },
-
-        /**
-         * Registers new class
-         *
-         * @param {string} classTypeName
          * @param {string} className
          * @param {Object} classDefinition
          */
-        registerClass: function(classTypeName, className, classDefinition)
+        Subclass.Module.Module.prototype["register" + classTypeName] = function (className, classDefinition)
         {
-            if (this.issetClass(className)) {
-                throw new Error('Class "' + className + '" is already registered.');
-            }
-            if (!_classes[classTypeName]) {
-                _classes[classTypeName] = {};
-            }
-            _classes[classTypeName][className] = classDefinition;
-        },
-
-        /**
-         * Checks whether class with passed name was ever registered
-         *
-         * @param {string} className
-         * @returns {boolean}
-         */
-        issetClass: function(className)
-        {
-            for (var classTypeName in _classes) {
-                if (!_classes.hasOwnProperty(classTypeName)) {
-                    continue;
-                }
-                if (!!_classes[classTypeName][className]) {
-                    return true;
-                }
-            }
-            return false;
-        },
-
-        /**
-         * Registers new type of classes
-         *
-         * @param {function} classTypeConstructor
-         */
-        registerClassType: function(classTypeConstructor)
-        {
-            var classTypeName = classTypeConstructor.getClassTypeName();
-
-            _classTypes[classTypeName] = classTypeConstructor;
-
-            /**
-             * Registering new config
-             *
-             * @param {string} className
-             * @param {Object} classDefinition
-             */
-            Subclass.Module.Module.prototype["register" + classTypeName] = function (className, classDefinition)
-            {
-                return this.getClassManager().addClass(
-                    classTypeConstructor.getClassTypeName(),
-                    className,
-                    classDefinition
-                );
-            };
-        },
-
-        /**
-         * Returns class type constructor
-         *
-         * @param classTypeName
-         * @returns {Function}
-         */
-        getClassType: function(classTypeName)
-        {
-            if (!this.issetClassType(classTypeName)) {
-                throw new Error('Trying to get non existed class type factory "' + classTypeName + '".');
-            }
-            return _classTypes[classTypeName];
-        },
-
-        /**
-         * Checks if exists specified class type
-         *
-         * @param {string} classTypeName
-         * @returns {boolean}
-         */
-        issetClassType: function(classTypeName)
-        {
-            return !!_classTypes[classTypeName];
-        },
-
-        /**
-         * Return names of all registered class types
-         *
-         * @returns {Array}
-         */
-        getClassTypes: function()
-        {
-            return Object.keys(_classTypes);
-        }
+            return this.getClassManager().addClass(
+                classTypeConstructor.getClassTypeName(),
+                className,
+                classDefinition
+            );
+        };
     };
+
+    /**
+     * Returns class type constructor
+     *
+     * @param classTypeName
+     * @returns {Function}
+     */
+    ClassManager.getClassType = function(classTypeName)
+    {
+        if (!this.issetClassType(classTypeName)) {
+            throw new Error('Trying to get non existed class type factory "' + classTypeName + '".');
+        }
+        return this._classTypes[classTypeName];
+    };
+
+    /**
+     * Checks if exists specified class type
+     *
+     * @param {string} classTypeName
+     * @returns {boolean}
+     */
+    ClassManager.issetClassType = function(classTypeName)
+    {
+        return !!this._classTypes[classTypeName];
+    };
+
+    /**
+     * Return names of all registered class types
+     *
+     * @returns {Array}
+     */
+    ClassManager.getClassTypes = function()
+    {
+        return Object.keys(this._classTypes);
+    };
+
+    return ClassManager;
+
 })();
 

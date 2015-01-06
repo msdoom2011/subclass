@@ -211,7 +211,7 @@ Subclass.Service.Service = (function()
             this._throwServiceInitialized();
         }
         this.validateArguments(args);
-        args = this.normalizeArguments(args);
+        //args = this.normalizeArguments(args);
         this.getDefinition().arguments = args;
     };
 
@@ -223,10 +223,13 @@ Subclass.Service.Service = (function()
     Service.prototype.normalizeArguments = function(args)
     {
         var serviceManager = this.getServiceManager();
+        var parameterManager = serviceManager.getModule().getParameterManager();
 
         if (!args) {
             return [];
         }
+
+        args = Subclass.Tools.extend([], args);
 
         for (var i = 0; i < args.length; i++) {
             var value = args[i];
@@ -240,7 +243,7 @@ Subclass.Service.Service = (function()
 
                 while (regex.test(value)) {
                     var parameterName = value.match(regex)[1];
-                    var parameterValue = serviceManager.getParameter(parameterName);
+                    var parameterValue = parameterManager.getParameter(parameterName);
 
                     value = value.replace(regex, parameterValue);
                 }
@@ -297,6 +300,30 @@ Subclass.Service.Service = (function()
         this.validateCalls(calls);
         this.getDefinition().calls = calls;
 
+        //if (calls) {
+        //    for (var methodName in calls) {
+        //        if (!calls.hasOwnProperty(methodName)) {
+        //            continue;
+        //        }
+        //        calls[methodName] = this.normalizeArguments(calls[methodName]);
+        //    }
+        //}
+    };
+
+    /**
+     * Normalizes arguments for call methods
+     *
+     * @param {Object.<Array>} calls
+     * @returns {{}}
+     */
+    Service.prototype.normalizeCalls = function(calls)
+    {
+        if (!calls) {
+            return {};
+        }
+
+        calls = Subclass.Tools.extend({}, calls);
+
         if (calls) {
             for (var methodName in calls) {
                 if (!calls.hasOwnProperty(methodName)) {
@@ -305,6 +332,7 @@ Subclass.Service.Service = (function()
                 calls[methodName] = this.normalizeArguments(calls[methodName]);
             }
         }
+        return calls;
     };
 
     /**

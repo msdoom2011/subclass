@@ -3,7 +3,7 @@
  */
 Subclass.Module.ModuleConfig = (function()
 {
-    function ModuleConfig(module, moduleConfigs)
+    function ModuleConfig(module)
     {
         /**
          * Instance of subclass module
@@ -11,6 +11,14 @@ Subclass.Module.ModuleConfig = (function()
          * @type {Subclass.Module.Module}
          */
         this._module = module;
+
+        /**
+         * Indicates is the current module a plugin
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._plugin = false;
 
         /**
          * Checks whether autoload classes enabled
@@ -37,7 +45,7 @@ Subclass.Module.ModuleConfig = (function()
         this._readyCallback = null;
     }
 
-    ModuleConfig.prototype.initialize = function(moduleConfigs)
+    ModuleConfig.prototype.initialize = function (moduleConfigs)
     {
         // Performing configs
 
@@ -50,6 +58,7 @@ Subclass.Module.ModuleConfig = (function()
                     !moduleConfigs.hasOwnProperty(configName)
                     || configName == 'parameters'
                     || configName == 'services'
+                    || configName == 'plugin'
                 ) {
                     continue;
                 }
@@ -62,6 +71,9 @@ Subclass.Module.ModuleConfig = (function()
                     );
                 }
                 this[setterName](moduleConfigs[configName]);
+            }
+            if (moduleConfigs.hasOwnProperty('plugin')) {
+                this.setPlugin(moduleConfigs.plugin);
             }
             if (moduleConfigs.hasOwnProperty('parameters')) {
                 this.setParameters(moduleConfigs.parameters);
@@ -80,6 +92,32 @@ Subclass.Module.ModuleConfig = (function()
     ModuleConfig.prototype.getModule = function()
     {
         return this._module;
+    };
+
+    /**
+     * Sets is plugin state
+     *
+     * @param {boolean} isPlugin
+     */
+    ModuleConfig.prototype.setPlugin = function(isPlugin)
+    {
+        if (typeof isPlugin != 'boolean') {
+            throw new Error('Invalid value of "plugin" parameter. It must be a boolean value.');
+        }
+        if (isPlugin === true) {
+            this._autoload = false;
+        }
+        this._plugin = isPlugin;
+    };
+
+    /**
+     * Returns is plugin state
+     *
+     * @returns {boolean}
+     */
+    ModuleConfig.prototype.getPlugin = ModuleConfig.prototype.isPlugin = function()
+    {
+        return this._plugin;
     };
 
     /**
@@ -168,13 +206,13 @@ Subclass.Module.ModuleConfig = (function()
      */
     ModuleConfig.prototype.setParameters = function(parameters)
     {
-        var serviceManager = this.getModule().getServiceManager();
+        var parameterManager = this.getModule().getParameterManager();
 
         for (var paramName in parameters) {
             if (!parameters.hasOwnProperty(paramName)) {
                 continue;
             }
-            serviceManager.registerParameter(paramName, parameters[paramName]);
+            parameterManager.registerParameter(paramName, parameters[paramName]);
         }
     };
 

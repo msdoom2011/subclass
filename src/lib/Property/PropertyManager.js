@@ -14,29 +14,28 @@ Subclass.Property.PropertyManager = (function()
     function PropertyManager(module)
     {
         /**
+         * Instance of module
+         *
          * @type {Subclass.Module.Module}
          * @private
          */
         this._module = module;
 
         /**
+         * Random number that will be added to hashed property names
+         *
          * @type {number}
          * @private
          */
         this._hash = Math.round(Math.abs(new Date().getTime() * Math.random() / 100000));
 
         /**
+         * Custom data types manager
+         *
          * @type {Subclass.Property.CustomTypesManager}
          * @private
          */
         this._customTypesManager = new Subclass.Property.CustomTypesManager(this);
-
-
-        // Registering events
-
-        this.getModule().getEventManager()
-            .registerEvent('onCreateProperty', this)
-        ;
     }
 
     /**
@@ -177,8 +176,6 @@ Subclass.Property.PropertyManager = (function()
             throw new Error('Property type factory must instance of "Subclass.Property.PropertyTypeInterface" class.');
         }
 
-        this.getModule().getEventManager().getEvent('onCreateProperty').invoke(inst);
-
         return inst;
     };
 
@@ -191,7 +188,7 @@ Subclass.Property.PropertyManager = (function()
      * @type {Object.<Function>}
      * @private
      */
-    var _propertyTypes = {};
+    PropertyManager._propertyTypes = {};
 
     /**
      * A collection of non allowed property names
@@ -199,122 +196,111 @@ Subclass.Property.PropertyManager = (function()
      * @type {Array}
      * @private
      */
-    var _notAllowedClassPropertyNames = [];
+    PropertyManager._notAllowedPropertyNames = [];
 
-    return {
+    /**
+     * Registering new property type
+     *
+     * @param {Function} propertyTypeConstructor
+     */
+    PropertyManager.registerPropertyType = function(propertyTypeConstructor)
+    {
+        var propertyTypeName = propertyTypeConstructor.getPropertyTypeName();
 
-        /**
-         * Creates instance of PropertyManager
-         *
-         * @param {Subclass.Module.Module} module - Instance of class manager
-         * @returns {PropertyManager}
-         */
-        create: function(module)
-        {
-            return new PropertyManager(module);
-        },
+        this._propertyTypes[propertyTypeName] = propertyTypeConstructor;
+    };
 
-        /**
-         * Registering new property type
-         *
-         * @param {Function} propertyTypeConstructor
-         */
-        registerPropertyType: function(propertyTypeConstructor)
-        {
-            var propertyTypeName = propertyTypeConstructor.getPropertyTypeName();
+    /**
+     * Returns property type constructor
+     *
+     * @param {string} propertyTypeName
+     * @returns {Function}
+     */
+    PropertyManager.getPropertyType = function(propertyTypeName)
+    {
+        if (!this.issetPropertyType(propertyTypeName)) {
+            throw new Error('Trying to get non existed property type factory "' + propertyTypeName + '".');
+        }
 
-            _propertyTypes[propertyTypeName] = propertyTypeConstructor;
-        },
+        return this._propertyTypes[propertyTypeName];
+    };
 
-        /**
-         * Returns property type constructor
-         *
-         * @param {string} propertyTypeName
-         * @returns {Function}
-         */
-        getPropertyType: function(propertyTypeName)
-        {
-            if (!this.issetPropertyType(propertyTypeName)) {
-                throw new Error('Trying to get non existed property type factory "' + propertyTypeName + '".');
+    /**
+     * Checks if needed property type was ever registered
+     *
+     * @param {string} propertyTypeName
+     * @returns {boolean}
+     */
+    PropertyManager.issetPropertyType = function(propertyTypeName)
+    {
+        return !!this._propertyTypes[propertyTypeName];
+    };
+
+    /**
+     * Returns names of all registered property types
+     *
+     * @returns {string[]}
+     */
+    PropertyManager.getPropertyTypes = function()
+    {
+        return Object.keys(this._propertyTypes);
+    };
+
+    /**
+     * Registers new not allowed class property name
+     *
+     * @param {Array} propertyNames
+     */
+    PropertyManager.registerNotAllowedPropertyNames = function(propertyNames)
+    {
+        try {
+            if (!Array.isArray(propertyNames)) {
+                throw "error";
             }
-
-            return _propertyTypes[propertyTypeName];
-        },
-
-        /**
-         * Checks if needed property type was ever registered
-         *
-         * @param {string} propertyTypeName
-         * @returns {boolean}
-         */
-        issetPropertyType: function(propertyTypeName)
-        {
-            return !!_propertyTypes[propertyTypeName];
-        },
-
-        /**
-         * Returns names of all registered property types
-         *
-         * @returns {string[]}
-         */
-        getPropertyTypes: function()
-        {
-            return Object.keys(_propertyTypes);
-        },
-
-        /**
-         * Registers new not allowed class property name
-         *
-         * @param {Array} propertyNames
-         */
-        registerNotAllowedPropertyNames: function(propertyNames)
-        {
-            try {
-                if (!Array.isArray(propertyNames)) {
-                    throw "error";
-                }
-                for (var i = 0; i < propertyNames.length; i++) {
-                    if (_notAllowedClassPropertyNames.indexOf(propertyNames[i]) < 0) {
-                        if (typeof propertyNames[i] != "string") {
-                            throw "error";
-                        }
-                        _notAllowedClassPropertyNames.push(propertyNames[i]);
+            for (var i = 0; i < propertyNames.length; i++) {
+                if (this._notAllowedPropertyNames.indexOf(propertyNames[i]) < 0) {
+                    if (typeof propertyNames[i] != "string") {
+                        throw "error";
                     }
+                    this._notAllowedPropertyNames.push(propertyNames[i]);
                 }
-            } catch (e) {
-                throw new Error('Property names argument is not valid! It must be an array of strings.');
             }
-        },
+        } catch (e) {
+            throw new Error('Property names argument is not valid! It must be an array of strings.');
+        }
+    };
 
-        /**
-         * Returns not allowed property names
-         *
-         * @returns {string[]}
-         */
-        getNotAllowedPropertyNames: function()
-        {
-            return _notAllowedClassPropertyNames;
-        },
+    /**
+     * Returns not allowed property names
+     *
+     * @returns {string[]}
+     */
+    PropertyManager.getNotAllowedPropertyNames = function()
+    {
+        return this._notAllowedPropertyNames;
+    };
 
-        /**
-         * Checks if specified class property name is allowed
-         *
-         * @param propertyName
-         * @returns {boolean}
-         */
-        isPropertyNameAllowed: function(propertyName)
-        {
-            if (propertyName.match(/[^\$a-z0-9_]/i)) {
+    /**
+     * Checks if specified class property name is allowed
+     *
+     * @param propertyName
+     * @returns {boolean}
+     */
+    PropertyManager.isPropertyNameAllowed = function(propertyName)
+    {
+        if (propertyName.match(/[^\$a-z0-9_]/i)) {
+            return false;
+        }
+        for (var i = 0; i < this._notAllowedPropertyNames.length; i++) {
+            var regExp = new RegExp("^_*" + this._notAllowedPropertyNames[i] + "_*$", 'i');
+
+            if (regExp.test(propertyName)) {
                 return false;
             }
-            for (var i = 0; i < _notAllowedClassPropertyNames.length; i++) {
-                var regExp = new RegExp("^_*" + _notAllowedClassPropertyNames[i] + "_*$", 'i');
-
-                if (regExp.test(propertyName)) {
-                    return false;
-                }
-            }
-            return true;
         }
-    }
+        return true;
+    };
+
+    return PropertyManager;
+
 })();

@@ -17,10 +17,16 @@ Subclass.Module.Module = (function()
      *      Allowed configs are:
      *      ------------------------------------------------------------------------------------------------------
      *
+     *      plugin          {boolean}           optional    Tells that current module is a plugin and its onReady
+     *                                                      callback will be called only after this module will
+     *                                                      be included in main module. If plugin is true
+     *                                                      the autoload parameter automatically sets in false
+     *                                                      and can't be changed. Default false.
+     *
      *      autoload        {boolean}           optional    Enables class autoload or not. It's true by default
      *
      *      rootPath        {string}            optional    Path to root directory of the project. It's required
-     *                                                      if you planning to use autoload
+     *                                                      if autoload parameter value is true.
      *
      *      dataTypes       {Object.<Object>}   optional    Object, which keys will be type names (alias)
      *                                                      and value will be its definitions
@@ -38,7 +44,41 @@ Subclass.Module.Module = (function()
      */
     function Module(moduleName, moduleConfigs)
     {
+        var dependencies, configs;
         var $this = this;
+
+        if (Array.isArray(moduleConfigs)) {
+            dependencies = moduleConfigs;
+
+            if (arguments[2] && typeof arguments[2] == 'object') {
+                configs = arguments[2];
+            }
+
+        } else if (moduleConfigs) {
+            configs = moduleConfigs;
+        }
+        if (!configs) {
+            configs = {};
+        }
+        if (!dependencies) {
+            dependencies = [];
+        }
+
+        /**
+         * Name of the module
+         *
+         * @type {string}
+         * @private
+         */
+        this._name = moduleName;
+
+        /**
+         * Parent module (if current one is a plugin relative to parent module)
+         *
+         * @type {(Subclass.Module.Module|null)}
+         * @private
+         */
+        this._parent = null;
 
         /**
          * Event manager instance
@@ -49,12 +89,12 @@ Subclass.Module.Module = (function()
         this._eventManager = new Subclass.Event.EventManager(this);
 
         /**
-         * Class manager instance
+         * Collection of modules
          *
-         * @type {ClassManager}
+         * @type {Subclass.Module.ModuleManager}
          * @private
          */
-        this._classManager = Subclass.Class.ClassManager.create(this);
+        this._moduleManager = new Subclass.Module.ModuleManager(this, dependencies);
 
         /**
          * Property manager instance
@@ -62,7 +102,16 @@ Subclass.Module.Module = (function()
          * @type {Subclass.Property.PropertyManager}
          * @private
          */
-        this._propertyManager = Subclass.Property.PropertyManager.create(this);
+        this._propertyManager = new Subclass.Property.PropertyManager(this);
+
+        /**
+         * Class manager instance
+         *
+         * @type {Subclass.Class.ClassManager}
+         * @private
+         */
+        this._classManager = new Subclass.Class.ClassManager(this);
+        this._classManager.initialize();
 
         /**
          * Service manager instance
@@ -73,12 +122,12 @@ Subclass.Module.Module = (function()
         this._serviceManager = new Subclass.Service.ServiceManager(this);
 
         /**
-         * Collection of module dependencies
+         * Parameter manager instance
          *
-         * @type {Array.<Subclass.Module.Module>}
+         * @type {Subclass.Parameter.ParameterManager}
          * @private
          */
-        this._dependencies = [];
+        this._parameterManager = new Subclass.Parameter.ParameterManager(this);
 
         /**
          * Module configuration
@@ -86,7 +135,8 @@ Subclass.Module.Module = (function()
          * @type {Subclass.Module.ModuleConfig}
          * @private
          */
-        this._configs = {};
+        this._configs = new Subclass.Module.ModuleConfig(this);
+        this._configs.initialize(configs);
 
         /**
          * Tells that module is ready
@@ -97,36 +147,57 @@ Subclass.Module.Module = (function()
         this._ready = false;
 
 
-        // Initializing
-
-        if (Array.isArray(moduleConfigs)) {
-            this._dependencies = moduleConfigs;
-
-            if (arguments[2] && typeof arguments[2] == 'object') {
-                this._configs = arguments[2];
-            }
-
-        } else if (moduleConfigs) {
-            this._configs = moduleConfigs;
-        }
-
-        // Performing configs
-
-        this._configs = new Subclass.Module.ModuleConfig(this,this._configs);
-        this._configs.initialize(moduleConfigs);
-
-
-        // Performing dependencies
-        // @TODO
-
         // Adding event listeners
 
-        this.getEventManager().getEvent('onLoadingEnd')
-            .addListener(function() {
+        this.getEventManager().getEvent('onLoadingEnd').addListener(function() {
+            if (!$this.getConfigs().isPlugin()) {
                 $this.callReadyCallback();
-            })
-        ;
+            }
+        });
     }
+
+    /**
+     * Returns module name
+     *
+     * @returns {string}
+     */
+    Module.prototype.getName = function()
+    {
+        return this._name;
+    };
+
+    /**
+     * Sets parent module
+     *
+     * @param parentModule
+     */
+    Module.prototype.setParent = function(parentModule)
+    {
+        if (parentModule !== null && !(parentModule instanceof Subclass.Module.Module)) {
+            throw new Error('Invalid parent module. It must be instance of "Subclass.Module.Module".');
+        }
+        this._parent = parentModule;
+    };
+
+    /**
+     * Returns parent module
+     *
+     * @returns {(Subclass.Module.Module|null)}
+     */
+    Module.prototype.getParent = function()
+    {
+        return this._parent;
+    };
+
+    /**
+     * Checks whether current module belongs to another module
+     *
+     * @returns {boolean}
+     */
+    Module.prototype.hasParent = function()
+    {
+        return !!this._parent;
+    };
 
     /**
      * Returns module configs
@@ -149,9 +220,19 @@ Subclass.Module.Module = (function()
     };
 
     /**
+     * Returns module manager instance
+     *
+     * @returns {Subclass.Module.ModuleManager}
+     */
+    Module.prototype.getModuleManager = function()
+    {
+        return this._moduleManager;
+    };
+
+    /**
      * Returns class manager instance
      *
-     * @returns {ClassManager}
+     * @returns {Subclass.Class.ClassManager}
      */
     Module.prototype.getClassManager = function()
     {
@@ -176,6 +257,16 @@ Subclass.Module.Module = (function()
     Module.prototype.getServiceManager = function()
     {
         return this._serviceManager;
+    };
+
+    /**
+     * Returns parameter manager instance
+     *
+     * @returns {Subclass.Parameter.ParameterManager}
+     */
+    Module.prototype.getParameterManager = function()
+    {
+        return this._parameterManager;
     };
 
     /**

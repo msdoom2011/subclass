@@ -38,7 +38,7 @@ Subclass.Class.ClassTypeInterface = (function()
     /**
      * Returns class manager instance
      *
-     * @returns {ClassManager}
+     * @returns {Subclass.Class.ClassManager}
      */
     ClassTypeInterface.prototype.getClassManager = function() {};
 

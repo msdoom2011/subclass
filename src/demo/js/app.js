@@ -1,8 +1,77 @@
-var app = Subclass.createModule('app', {
+
+var appPlugin1 = Subclass.createModule('appPlugin1', {
+    plugin: true,
+    dataTypes: {
+        percents: { type: "string", pattern: /^\d+%$/ }
+    },
+    parameters: {
+        mode: "prod"
+    },
+    services: {
+        bug3: {
+            className: "Bug3",
+            tags: ['logger']
+        }
+    }
+});
+
+appPlugin1.registerClass("Bug3", {
+
+    $_implements: ["BugInterface"],
+
+    getName: function()
+    {
+        return "bug3";
+    },
+
+    getMessage: function()
+    {
+        return "Bug 3 happens.";
+    }
+});
+
+//var bug3 = appPlugin1.getClass('Bug3').createInstance();
+
+// ======================================================================
+
+var appPlugin2 = Subclass.createModule('appPlugin2', {
+    plugin: true,
+    dataTypes: {
+        //percents: { type: "string", pattern: /^[a]+%$/ }
+    },
+    parameters: {
+        mode: "yo!!!!"
+    },
+    services: {
+        bug2: {
+            className: "Bug2Changed",
+            tags: ['logger']
+        }
+    }
+});
+
+appPlugin2.registerClass("Bug2Changed", {
+
+    $_implements: ["BugInterface"],
+
+    getName: function()
+    {
+        return "bug2changed";
+    },
+
+    getMessage: function()
+    {
+        return "Bug 2 changed happens.";
+    }
+});
+
+// ======================================================================
+
+var app = Subclass.createModule('app', ['appPlugin1', 'appPlugin2'], {
     autoload: true,
     rootPath: "/SubclassJS/build/demo",
     dataTypes: {
-        percents: { type: "string", pattern: /^\d+%$/ },
+        percents: { type: "string", pattern: /^[a-z]+%$/ },
         bigNumber: { type: "number", minValue: 1000000 }
     },
     parameters: {
@@ -180,9 +249,10 @@ app.registerAbstractClass("Class2", {
 
     $_properties: {
         typedString: {
-            type: "string",
-//                    type: "percents",
-            value: "my testing string!"
+            //type: "string",
+            type: "percents",
+            //value: "my testing string!"
+            value: "100%"
         },
 
         typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, value: {
@@ -616,9 +686,9 @@ app.onReady(function() {
     console.log(inst.getProperty('typedString').isModified());
     console.log('-------');
 
-    inst.setTypedString("changed string value!!!");
+    inst.setTypedString("200%"); //"changed string value!!!");
     console.log(inst.getTypedString());
-    inst.getProperty("typedString").setValue("another changed string value!!!");
+    inst.getProperty("typedString").setValue("400%"); //"another changed string value!!!");
     console.log(inst.getProperty('typedString').getValue());
 
 

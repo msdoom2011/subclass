@@ -65,7 +65,7 @@ Subclass.Module.ModuleManager = (function()
         var modules = [];
 
         for (var i = 0; i < moduleNames.length; i++) {
-            var childModule = Subclass.getModule(moduleNames[i]);
+            var childModule = Subclass.getModule(moduleNames[i]).getModule();
                 childModule.setParent(mainModule);
 
             modules.push(childModule);

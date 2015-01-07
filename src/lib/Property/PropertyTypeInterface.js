@@ -50,7 +50,7 @@ Subclass.Property.PropertyTypeInterface = (function()
     PropertyTypeInterface.prototype.getPropertyManager = function() {};
 
     /**
-     * Returns name of the chain of properties which current property belongs to.
+     * Returns name of the chain of properties to which current property belongs to.
      *
      * @returns {string}
      */
@@ -121,14 +121,14 @@ Subclass.Property.PropertyTypeInterface = (function()
     PropertyTypeInterface.prototype.setContextClass = function(contextClass) {};
 
     /**
-     * Returns context class instance which current property belongs to
+     * Returns context class instance to which current property belongs to
      *
      * @returns {(ClassType|null)}
      */
     PropertyTypeInterface.prototype.getContextClass = function() {};
 
     /**
-     * Sets name of the chain of properties which current property belongs to.
+     * Sets name of the chain of properties to which current property belongs to.
      *
      * @param {(PropertyType|null)} contextProperty
      */
@@ -148,7 +148,7 @@ Subclass.Property.PropertyTypeInterface = (function()
      *      - newValue {*} New property value
      *      - oldValue {*} Old property value
      *
-     *      "this" variable inside callback function will link to the class instance which property belongs to
+     *      "this" variable inside callback function will link to the class instance to which property belongs to
      *      This callback function MUST return newValue value.
      *      So you can modify it if you need.
      */
@@ -204,7 +204,7 @@ Subclass.Property.PropertyTypeInterface = (function()
     /**
      * Returns value of current property
      *
-     * @param {Object} context An object which current property belongs to.
+     * @param {Object} context An object to which current property belongs to.
      */
     PropertyTypeInterface.prototype.getValue = function(context) {};
 

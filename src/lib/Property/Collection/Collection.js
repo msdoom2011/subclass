@@ -17,7 +17,7 @@ Subclass.Property.Collection.Collection = (function()
     }
 
     /**
-     * Returns collection property instance which current collection belongs to.
+     * Returns collection property instance to which current collection belongs to.
      *
      * @returns {CollectionType|*}
      */

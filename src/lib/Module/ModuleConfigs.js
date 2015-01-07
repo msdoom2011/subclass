@@ -1,9 +1,9 @@
 /**
  * @class
  */
-Subclass.Module.ModuleConfig = (function()
+Subclass.Module.ModuleConfigs = (function()
 {
-    function ModuleConfig(module)
+    function ModuleConfigs(module)
     {
         /**
          * Instance of subclass module
@@ -21,6 +21,14 @@ Subclass.Module.ModuleConfig = (function()
         this._plugin = false;
 
         /**
+         * Indicates that current module is a plugin and belongs to specified module
+         *
+         * @type {(string|null)}
+         * @private
+         */
+        this._pluginOf = null;
+
+        /**
          * Checks whether autoload classes enabled
          *
          * @type {boolean}
@@ -35,20 +43,13 @@ Subclass.Module.ModuleConfig = (function()
          * @private
          */
         this._rootPath = null;
-
-        /**
-         * Callback which will be called when all application classes are already loaded
-         *
-         * @type {(Function|null)}
-         * @private
-         */
-        this._readyCallback = null;
     }
 
-    ModuleConfig.prototype.initialize = function (moduleConfigs)
+    ModuleConfigs.prototype.setConfigs = function (moduleConfigs)
     {
-        // Performing configs
-
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         if (moduleConfigs && !Subclass.Tools.isPlainObject(moduleConfigs)) {
             throw new Error('Specified invalid configs. It must be an object.');
         }
@@ -59,6 +60,8 @@ Subclass.Module.ModuleConfig = (function()
                     || configName == 'parameters'
                     || configName == 'services'
                     || configName == 'plugin'
+                    || configName == 'pluginOf'
+                    || configName == 'onReady'
                 ) {
                     continue;
                 }
@@ -75,11 +78,17 @@ Subclass.Module.ModuleConfig = (function()
             if (moduleConfigs.hasOwnProperty('plugin')) {
                 this.setPlugin(moduleConfigs.plugin);
             }
+            if (moduleConfigs.hasOwnProperty('pluginOf')) {
+                this.setPluginOf(moduleConfigs.pluginOf);
+            }
             if (moduleConfigs.hasOwnProperty('parameters')) {
                 this.setParameters(moduleConfigs.parameters);
             }
             if (moduleConfigs.hasOwnProperty('services')) {
                 this.setServices(moduleConfigs.services);
+            }
+            if (moduleConfigs.hasOwnProperty('onReady')) {
+                this.setOnReady(moduleConfigs.onReady);
             }
         }
     };
@@ -89,18 +98,21 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @returns {Subclass.Module.Module}
      */
-    ModuleConfig.prototype.getModule = function()
+    ModuleConfigs.prototype.getModule = function()
     {
         return this._module;
     };
 
     /**
-     * Sets is plugin state
+     * Sets plugin state
      *
      * @param {boolean} isPlugin
      */
-    ModuleConfig.prototype.setPlugin = function(isPlugin)
+    ModuleConfigs.prototype.setPlugin = function(isPlugin)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         if (typeof isPlugin != 'boolean') {
             throw new Error('Invalid value of "plugin" parameter. It must be a boolean value.');
         }
@@ -115,18 +127,47 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @returns {boolean}
      */
-    ModuleConfig.prototype.getPlugin = ModuleConfig.prototype.isPlugin = function()
+    ModuleConfigs.prototype.getPlugin = ModuleConfigs.prototype.isPlugin = function()
     {
         return this._plugin;
     };
 
     /**
-     * Sets autoload option
+     * Sets "pluginOf" option
      *
-     * @param autoload
+     * @param parentModuleName
      */
-    ModuleConfig.prototype.setAutoload = function(autoload)
+    ModuleConfigs.prototype.setPluginOf = function(parentModuleName)
     {
+        if (parentModuleName !== null && typeof parentModuleName != 'string') {
+            throw new Error(
+                'Invalid module config parameter "pluginOf". ' +
+                'It must be a string (name of another module).'
+            );
+        }
+        this._pluginOf = parentModuleName;
+        this.setPlugin(true);
+    };
+
+    /**
+     * Returns "pluginOf" option value
+     * @returns {string|null}
+     */
+    ModuleConfigs.prototype.getPluginOf = function()
+    {
+        return this._pluginOf;
+    };
+
+    /**
+     * Sets "autoload" option
+     *
+     * @param {boolean} autoload
+     */
+    ModuleConfigs.prototype.setAutoload = function(autoload)
+    {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         if (typeof autoload != 'boolean') {
             throw new Error('Specified not valid "autoload" option. It must be boolean.');
         }
@@ -134,10 +175,11 @@ Subclass.Module.ModuleConfig = (function()
     };
 
     /**
-     * Alias of method "getAutoload"
-     * @type {Function}
+     * Returns "autoload" option value
+     *
+     * @returns {boolean}
      */
-    ModuleConfig.prototype.getAutoload = function()
+    ModuleConfigs.prototype.getAutoload = function()
     {
         return this._autoload;
     };
@@ -147,15 +189,18 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @returns {boolean}
      */
-    ModuleConfig.prototype.isAutoloadEnabled = ModuleConfig.prototype.getAutoload;
+    ModuleConfigs.prototype.isAutoloadEnabled = ModuleConfigs.prototype.getAutoload;
 
     /**
      * Sets root path of the project which is needed for auto load classes functionality.
      *
      * @param {string} rootPath
      */
-    ModuleConfig.prototype.setRootPath = function(rootPath)
+    ModuleConfigs.prototype.setRootPath = function(rootPath)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         if (!rootPath || typeof rootPath != 'string') {
             throw new Error('Trying to set invalid root path of the project. It must be a string.');
         }
@@ -167,7 +212,7 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @returns {string|*}
      */
-    ModuleConfig.prototype.getRootPath = function()
+    ModuleConfigs.prototype.getRootPath = function()
     {
         return this._rootPath;
     };
@@ -177,8 +222,11 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @param {Object.<Object>} propertyDefinitions
      */
-    ModuleConfig.prototype.setDataTypes = function(propertyDefinitions)
+    ModuleConfigs.prototype.setDataTypes = function(propertyDefinitions)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         this.getModule()
             .getPropertyManager()
             .defineCustomDataTypes(propertyDefinitions)
@@ -190,7 +238,7 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @returns {Object.<Object>}
      */
-    ModuleConfig.prototype.getDataTypes = function()
+    ModuleConfigs.prototype.getDataTypes = function()
     {
         return this.getModule()
             .getPropertyManager()
@@ -204,16 +252,41 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @param {Object} parameters
      */
-    ModuleConfig.prototype.setParameters = function(parameters)
+    ModuleConfigs.prototype.setParameters = function(parameters)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         var parameterManager = this.getModule().getParameterManager();
 
         for (var paramName in parameters) {
             if (!parameters.hasOwnProperty(paramName)) {
                 continue;
             }
-            parameterManager.registerParameter(paramName, parameters[paramName]);
+            parameterManager.registerParameter(
+                paramName,
+                parameters[paramName]
+            );
         }
+    };
+
+    /**
+     * Returns all registered parameters
+     *
+     * @returns {Object}
+     */
+    ModuleConfigs.prototype.getParameters = function()
+    {
+        var parameters = this.getModule().getParameterManager().getParameters();
+        var parameterDefinitions = {};
+
+        for (var i = 0; i < parameters.length; i++) {
+            var parameterValue = parameters[i].getValue();
+            var parameterName = parameters[i].getName();
+
+            parameterDefinitions[parameterName] = Subclass.Tools.copy(parameterValue);
+        }
+        return parameterDefinitions;
     };
 
     /**
@@ -221,16 +294,41 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @param {Object.<Object>} services
      */
-    ModuleConfig.prototype.setServices = function(services)
+    ModuleConfigs.prototype.setServices = function(services)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         var serviceManager = this.getModule().getServiceManager();
 
         for (var serviceName in services) {
             if (!services.hasOwnProperty(serviceName)) {
                 continue;
             }
-            serviceManager.registerService(serviceName, services[serviceName]);
+            serviceManager.registerService(
+                serviceName,
+                services[serviceName]
+            );
         }
+    };
+
+    /**
+     * Returns all registered services
+     *
+     * @returns {Object.<Object>}
+     */
+    ModuleConfigs.prototype.getServices = function()
+    {
+        var services = this.getModule().getServiceManager().getServices();
+        var serviceDefinitions = {};
+
+        for (var i = 0; i < services.length; i++) {
+            var serviceDefinition = services[i].getDefinition();
+            var serviceName = services[i].getName();
+
+            serviceDefinitions[serviceName] = Subclass.Tools.copy(serviceDefinition);
+        }
+        return serviceDefinitions;
     };
 
     /**
@@ -238,26 +336,25 @@ Subclass.Module.ModuleConfig = (function()
      *
      * @param {(Function|null)} callback
      */
-    ModuleConfig.prototype.setOnReady = function(callback)
+    ModuleConfigs.prototype.setOnReady = function(callback)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change configs in ready module.');
+        }
         if ((!callback && callback !== null) || typeof callback != "function") {
             throw new Error('On ready callback must be function or null.');
         }
         var module = this.getModule();
         var classManager = module.getClassManager();
+        var eventManager = module.getEventManager();
 
-        this._readyCallback = callback;
+        eventManager.getEvent('onReady').addListener(callback);
 
         if (!classManager.isEmpty() && !classManager.isLoading()) {
-            module.callReadyCallback();
+            module.triggerOnReady();
         }
     };
 
-    ModuleConfig.prototype.getOnReady = function()
-    {
-        return this._readyCallback;
-    };
-
-    return ModuleConfig;
+    return ModuleConfigs;
 
 })();

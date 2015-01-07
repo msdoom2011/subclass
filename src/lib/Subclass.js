@@ -6,7 +6,7 @@ window.Subclass = (function()
      * @type {{}}
      * @private
      */
-    var _modules = {};
+    var _modules = [];
 
     return {
 
@@ -20,38 +20,69 @@ window.Subclass = (function()
          */
         createModule: function(moduleName, moduleDependencies, moduleConfigs)
         {
-            return _modules[moduleName] = new Subclass.Module.Module(
+            if (Subclass.Tools.isPlainObject(moduleDependencies)) {
+                moduleConfigs = moduleDependencies;
+                moduleDependencies = [];
+            }
+            if (!moduleDependencies) {
+                moduleDependencies = [];
+            }
+            for (var i = 0; i < _modules.length; i++) {
+                var registeredModuleName = _modules[i].getName();
+                var pluginOf = _modules[i].getConfigManager().getPluginOf();
+
+                if (pluginOf == moduleName) {
+                    moduleDependencies.push(registeredModuleName);
+                }
+            }
+
+            moduleDependencies = Subclass.Tools.unique(moduleDependencies);
+
+            var module = new Subclass.Module.Module(
                 moduleName,
                 moduleDependencies,
                 moduleConfigs
             );
+            _modules.push(module);
+
+            return module.getAPI();
         },
 
         /**
-         * Returns subclass module
+         * Returns subclass module API instance
          *
          * @param {string} moduleName
+         * @returns {Subclass.Module.ModuleAPI}
          */
         getModule: function(moduleName)
         {
             if (!this.issetModule(moduleName)) {
                 throw new Error('Trying to get non existent module "' + moduleName + '".');
             }
-            return _modules[moduleName];
+            for (var i = 0; i < _modules.length; i++) {
+                if (_modules[i].getName() == moduleName) {
+                    return _modules[i].getAPI();
+                }
+            }
+            //return _modules[moduleName].getAPI();
         },
 
         /**
-         * Checks whether module with passed name exists
+         * Checks whether module with specified name exists
          *
          * @param {string} moduleName
+         * @returns {boolean}
          */
         issetModule: function(moduleName)
         {
-            return !!_modules[moduleName];
+            //return !!_modules[moduleName];
+
+            for (var i = 0; i < _modules.length; i++) {
+                if (_modules[i].getName() == moduleName) {
+                    return true;
+                }
+            }
+            return false;
         }
     };
 })();
-
-/**
- * @TODO добавить возможность подключать к одному модулю другие модули
- */

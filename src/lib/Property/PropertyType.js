@@ -45,7 +45,7 @@ Subclass.Property.PropertyType = (function()
         this._propertyAPI = null;
 
         /**
-         * An instance of class which current property belongs to
+         * An instance of class to which current property belongs to
          *
          * @type {(ClassType|null)}
          * @private
@@ -53,7 +53,7 @@ Subclass.Property.PropertyType = (function()
         this._contextClass = null;
 
         /**
-         * An instance of another property which current one belongs to
+         * An instance of another property to which current one belongs to
          *
          * @type {(PropertyType|null)}
          * @private

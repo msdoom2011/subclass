@@ -12,6 +12,7 @@ Subclass.Module.Module = (function()
      * Subclass module constructor
      *
      * @param {string} moduleName
+     * @param {string[]} [moduleDependencies]
      * @param {Object} [moduleConfigs]
      *
      *      Allowed configs are:
@@ -19,9 +20,13 @@ Subclass.Module.Module = (function()
      *
      *      plugin          {boolean}           optional    Tells that current module is a plugin and its onReady
      *                                                      callback will be called only after this module will
-     *                                                      be included in main module. If plugin is true
-     *                                                      the autoload parameter automatically sets in false
+     *                                                      be included in main module. If "plugin" is true
+     *                                                      the autoload option automatically sets in false
      *                                                      and can't be changed. Default false.
+     *
+     *      pluginOf        {string}            optional    Specifies parent module to which current one belongs to.
+     *                                                      If its sets in true the "plugin" option will atomatically
+     *                                                      sets in true.
      *
      *      autoload        {boolean}           optional    Enables class autoload or not. It's true by default
      *
@@ -42,26 +47,15 @@ Subclass.Module.Module = (function()
      *
      * @constructor
      */
-    function Module(moduleName, moduleConfigs)
+    function Module(moduleName, moduleDependencies, moduleConfigs)
     {
-        var dependencies, configs;
         var $this = this;
 
-        if (Array.isArray(moduleConfigs)) {
-            dependencies = moduleConfigs;
-
-            if (arguments[2] && typeof arguments[2] == 'object') {
-                configs = arguments[2];
-            }
-
-        } else if (moduleConfigs) {
-            configs = moduleConfigs;
+        if (!moduleConfigs) {
+            moduleConfigs = {};
         }
-        if (!configs) {
-            configs = {};
-        }
-        if (!dependencies) {
-            dependencies = [];
+        if (!moduleDependencies) {
+            moduleDependencies = [];
         }
 
         /**
@@ -81,6 +75,14 @@ Subclass.Module.Module = (function()
         this._parent = null;
 
         /**
+         * Module public api
+         *
+         * @type {Subclass.Module.ModuleAPI.ModuleAPI}
+         * @private
+         */
+        this._api = new Subclass.Module.ModuleAPI(this);
+
+        /**
          * Event manager instance
          *
          * @type {Subclass.Event.EventManager}
@@ -94,7 +96,7 @@ Subclass.Module.Module = (function()
          * @type {Subclass.Module.ModuleManager}
          * @private
          */
-        this._moduleManager = new Subclass.Module.ModuleManager(this, dependencies);
+        this._moduleManager = new Subclass.Module.ModuleManager(this, moduleDependencies);
 
         /**
          * Property manager instance
@@ -129,14 +131,18 @@ Subclass.Module.Module = (function()
          */
         this._parameterManager = new Subclass.Parameter.ParameterManager(this);
 
+        // Registering events
+
+        this.getEventManager().registerEvent('onReady');
+
         /**
          * Module configuration
          *
-         * @type {Subclass.Module.ModuleConfig}
+         * @type {Subclass.Module.ModuleConfigs}
          * @private
          */
-        this._configs = new Subclass.Module.ModuleConfig(this);
-        this._configs.initialize(configs);
+        this._configManager = new Subclass.Module.ModuleConfigs(this);
+        this.setConfigs(moduleConfigs);
 
         /**
          * Tells that module is ready
@@ -150,9 +156,7 @@ Subclass.Module.Module = (function()
         // Adding event listeners
 
         this.getEventManager().getEvent('onLoadingEnd').addListener(function() {
-            if (!$this.getConfigs().isPlugin()) {
-                $this.callReadyCallback();
-            }
+            $this.triggerOnReady();
         });
     }
 
@@ -200,13 +204,60 @@ Subclass.Module.Module = (function()
     };
 
     /**
+     * Returns the root parent module
+     *
+     * @returns {Subclass.Module.Module}
+     */
+    Module.prototype.getRoot = function()
+    {
+        var parent = this;
+
+        if (arguments[0] && arguments[0] instanceof Subclass.Module.Module) {
+            parent = arguments[0];
+        }
+        if (parent.hasParent()) {
+            parent = parent.getRoot(parent.getParent());
+        }
+        return parent
+    };
+
+    /**
+     * Checks whether current module is root module
+     *
+     * @returns {boolean}
+     */
+    Module.prototype.isRoot = function()
+    {
+        return !this.hasParent();
+    };
+
+    /**
+     * Returns public api
+     */
+    Module.prototype.getAPI = function()
+    {
+        return this._api;
+    };
+
+    /**
+     * Sets new module configs.
+     * New configs attributes will rewrite specified earlier ones.
+     *
+     * @param {Object} configs
+     */
+    Module.prototype.setConfigs = function(configs)
+    {
+        this.getConfigManager().setConfigs(configs);
+    };
+
+    /**
      * Returns module configs
      *
-     * @returns {Subclass.Module.ModuleConfig}
+     * @returns {Subclass.Module.ModuleConfigs}
      */
-    Module.prototype.getConfigs = function()
+    Module.prototype.getConfigManager = function()
     {
-        return this._configs;
+        return this._configManager;
     };
 
     /**
@@ -274,24 +325,29 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.onReady = function(callback)
     {
-        this.getConfigs().setOnReady(callback);
+        this.getConfigManager().setOnReady(callback);
     };
 
     /**
      * Invokes init callback
      */
-    Module.prototype.callReadyCallback = function()
+    Module.prototype.triggerOnReady = function()
     {
-        if (!this.getConfigs().getOnReady()) {
+        if (
+            this.getConfigManager().isPlugin()
+            && (
+                !this.hasParent()
+                || (
+                    this.hasParent()
+                    && !this.getRoot().isReady()
+                )
+            )
+        ) {
             return;
         }
         if (this.getClassManager().isLoadStackEmpty()) {
-            var onReadyCallback = this.getConfigs().getOnReady();
+            this.getEventManager().getEvent('onReady').trigger();
             this._ready = true;
-
-            if (onReadyCallback) {
-                onReadyCallback();
-            }
         }
     };
 
@@ -303,50 +359,6 @@ Subclass.Module.Module = (function()
     Module.prototype.isReady = function()
     {
         return this._ready;
-    };
-
-    /**
-     * Returns class definition
-     *
-     * @param {string} className
-     * @returns {Subclass.Class.ClassTypeInterface}
-     */
-    Module.prototype.getClass = function(className)
-    {
-        return this.getClassManager().getClass(className);
-    };
-
-    /**
-     * Checks whether class with specified name exists
-     *
-     * @param {string} className
-     * @returns {boolean}
-     */
-    Module.prototype.issetClass = function(className)
-    {
-        return this.getClassManager().issetClass(className);
-    };
-
-    /**
-     * Creates class builder for class of specified type
-     *
-     * @param {string} classType
-     * @returns {Subclass.Class.ClassTypeInterface}
-     */
-    Module.prototype.buildClass = function(classType)
-    {
-        return this.getClassManager().buildClass(classType);
-    };
-
-    /**
-     * Modifies existent class
-     *
-     * @param {string} className
-     * @returns {Subclass.Class.ClassTypeInterface}
-     */
-    Module.prototype.alterClass = function(className)
-    {
-        return this.getClassManager().alterClass(className);
     };
 
     return Module;

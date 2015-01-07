@@ -137,6 +137,18 @@ Subclass.Service.ServiceManager = (function()
      */
     ServiceManager.prototype.registerService = function(serviceName, serviceDefinition)
     {
+        if (!serviceName || typeof serviceName != 'string') {
+            throw new Error('Specified invalid name of the service. It must be a string.');
+        }
+        if (!serviceDefinition || !Subclass.Tools.isPlainObject(serviceDefinition)) {
+            throw new Error(
+                'Specified invalid definition of service "' + serviceName + '". ' +
+                'It must be a plain object.'
+            );
+        }
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t define new services when module is ready.');
+        }
         var service = new Subclass.Service.Service(this, serviceName, serviceDefinition);
         this._services[serviceName] = service;
 

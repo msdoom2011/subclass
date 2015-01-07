@@ -153,7 +153,7 @@ Subclass.Class.ClassManager = (function()
         var $this = this;
 
         this._loadingEndTimeout = setTimeout(function() {
-            $this.getModule().getEventManager().getEvent('onLoadingEnd').invoke();
+            $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
             $this._loading = false;
         }, 10);
     };
@@ -175,7 +175,7 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.addToLoadStack = function(className)
     {
-        var moduleConfigs = this.getModule().getConfigs();
+        var moduleConfigs = this.getModule().getConfigManager();
 
         if (!moduleConfigs.isAutoloadEnabled() || this.isInLoadStack(className)) {
             return;
@@ -314,7 +314,7 @@ Subclass.Class.ClassManager = (function()
 
         clearTimeout(this.getModule()._readyCallbackCallTimeout);
 
-        var moduleConfigs = this.getModule().getConfigs();
+        var moduleConfigs = this.getModule().getConfigManager();
         var rootPath = moduleConfigs.getRootPath();
         var classPath = rootPath + "/" + className + '.js';
         var $this = this;
@@ -645,9 +645,9 @@ Subclass.Class.ClassManager = (function()
          * @param {string} className
          * @param {Object} classDefinition
          */
-        Subclass.Module.Module.prototype["register" + classTypeName] = function (className, classDefinition)
+        Subclass.Module.ModuleAPI.prototype["register" + classTypeName] = function (className, classDefinition)
         {
-            return this.getClassManager().addClass(
+            return this.getModule().getClassManager().addClass(
                 classTypeConstructor.getClassTypeName(),
                 className,
                 classDefinition

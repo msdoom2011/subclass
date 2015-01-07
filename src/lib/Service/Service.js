@@ -211,7 +211,6 @@ Subclass.Service.Service = (function()
             this._throwServiceInitialized();
         }
         this.validateArguments(args);
-        //args = this.normalizeArguments(args);
         this.getDefinition().arguments = args;
     };
 
@@ -299,15 +298,6 @@ Subclass.Service.Service = (function()
         }
         this.validateCalls(calls);
         this.getDefinition().calls = calls;
-
-        //if (calls) {
-        //    for (var methodName in calls) {
-        //        if (!calls.hasOwnProperty(methodName)) {
-        //            continue;
-        //        }
-        //        calls[methodName] = this.normalizeArguments(calls[methodName]);
-        //    }
-        //}
     };
 
     /**

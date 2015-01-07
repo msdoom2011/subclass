@@ -124,7 +124,7 @@ Subclass.Property.PropertyAPI = (function()
      *      - newValue {*} New property value
      *      - oldValue {*} Old property value
      *
-     *      "this" variable inside callback function will link to the class instance which property belongs to
+     *      "this" variable inside callback function will link to the class instance to which property belongs to
      *      This callback function MUST return newValue value.
      *      So you can modify it if you need.
      */

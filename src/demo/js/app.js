@@ -1,6 +1,7 @@
 
 var appPlugin1 = Subclass.createModule('appPlugin1', {
-    plugin: true,
+    //plugin: true,
+    pluginOf: "app",
     dataTypes: {
         percents: { type: "string", pattern: /^\d+%$/ }
     },
@@ -13,6 +14,10 @@ var appPlugin1 = Subclass.createModule('appPlugin1', {
             tags: ['logger']
         }
     }
+});
+
+appPlugin1.onReady(function() {
+    alert('initializing plugin1');
 });
 
 appPlugin1.registerClass("Bug3", {
@@ -35,7 +40,8 @@ appPlugin1.registerClass("Bug3", {
 // ======================================================================
 
 var appPlugin2 = Subclass.createModule('appPlugin2', {
-    plugin: true,
+    //plugin: true,
+    pluginOf: "app",
     dataTypes: {
         //percents: { type: "string", pattern: /^[a]+%$/ }
     },
@@ -47,8 +53,26 @@ var appPlugin2 = Subclass.createModule('appPlugin2', {
             className: "Bug2Changed",
             tags: ['logger']
         }
+    },
+    onReady: function() {
+        alert('initializing plugin2');
     }
 });
+
+appPlugin2.onReady(function() {
+    alert('initializing plugin2 else');
+});
+
+appPlugin2.setConfigs({
+    parameters: {
+        mode: "fuck!!!!"
+    },
+    onReady: function() {
+        alert('initializing plugin2 else new!!!');
+    }
+});
+
+appPlugin1.getModule().getParameterManager().getParameter('mode');
 
 appPlugin2.registerClass("Bug2Changed", {
 
@@ -67,7 +91,7 @@ appPlugin2.registerClass("Bug2Changed", {
 
 // ======================================================================
 
-var app = Subclass.createModule('app', ['appPlugin1', 'appPlugin2'], {
+var app = Subclass.createModule('app', /*['appPlugin1', 'appPlugin2'],*/ {
     autoload: true,
     rootPath: "/SubclassJS/build/demo",
     dataTypes: {
@@ -596,11 +620,14 @@ app.registerClass("Bug2", {
 
 
 app.onReady(function() {
+
+    alert('initializing app');
+
     console.log('');
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
-    var logger = app.getServiceManager().getService('logger');
-    var loggerElse = app.getServiceManager().getService('logger');
+    var logger = app.getService('logger');
+    var loggerElse = app.getService('logger');
 
     console.log(loggerElse == logger);
     console.log(logger.getBugs());

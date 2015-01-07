@@ -83,6 +83,9 @@ Subclass.Parameter.ParameterManager = (function()
      */
     ParameterManager.prototype.registerParameter = function(paramName, paramValue)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t register new parameter when module is ready.');
+        }
         this._parameters[paramName] = new Subclass.Parameter.Parameter(paramName, paramValue);
     };
 
@@ -94,6 +97,9 @@ Subclass.Parameter.ParameterManager = (function()
      */
     ParameterManager.prototype.setParameter = function(paramName, paramValue)
     {
+        if (this.getModule().isReady()) {
+            throw new Error('Can\'t change parameter value when module is ready.');
+        }
         if (!this.issetProperty(paramName)) {
             throw new Error('Parameter with name "' + paramName + '" is not exists.');
         }

@@ -4,18 +4,30 @@
 Subclass.Event.Event = (function()
 {
     /**
+     * @param {Subclass.Event.EventManager} eventManager
      * @param {string} eventName
      * @param {Object} context
      * @constructor
      */
-    function Event(eventName, context)
+    function Event(eventManager, eventName, context)
     {
+        if (!eventManager || !(eventManager instanceof Subclass.Event.EventManager)) {
+            throw new Error('Invalid eventManager argumetn. It must be instance of "Subclass.Event.EventManager".');
+        }
         if (!eventName) {
             throw new Error('Missed required argument "name" in Subclass.Event.Event constructor.');
         }
         if (!context) {
             context = {};
         }
+
+        /**
+         * Event manager instance
+         *
+         * @type {Subclass.Event.EventManager}
+         */
+        this._eventManager = eventManager;
+
         /**
          * Name of the event
          *
@@ -39,6 +51,16 @@ Subclass.Event.Event = (function()
          */
         this._listeners = [];
     }
+
+    /**
+     * Returns event manager instance
+     *
+     * @returns {Subclass.Event.EventManager}
+     */
+    Event.prototype.getEventManager = function()
+    {
+        return this._eventManager;
+    };
 
     /**
      * Returns event name
@@ -69,9 +91,8 @@ Subclass.Event.Event = (function()
      */
     Event.prototype.addListener = function(priority, callback)
     {
-        var listeners = this.getListeners();
         var listener = new Subclass.Event.EventListener(priority, callback);
-        listeners.push(listener);
+        this._listeners.push(listener);
 
         return this;
     };
@@ -108,42 +129,62 @@ Subclass.Event.Event = (function()
      */
     Event.prototype.getListenerByCallback = function(callback)
     {
-        var listeners = this.getListeners();
+        var mainModule = this.getEventManager().getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var listener = null;
+        var $this = this;
 
-        for (var i = 0; i < listeners.length; i++) {
-            if (listeners[i].getCallback() == callback) {
-                return listeners[i];
+        moduleManager.eachModule(function(module) {
+            var moduleEventManager = module.getEventManager();
+            var moduleEvent = moduleEventManager.getEvent($this.getName());
+            var listeners = moduleEvent.getListeners(true);
+
+            for (var i = 0; i < listeners.length; i++) {
+                if (listeners[i].getCallback() == callback) {
+                    listener = listeners[i];
+                    return false;
+                }
             }
-        }
-        return null;
+        });
+
+        return listener;
     };
 
     /**
-     * Checks whether is set event listener with specified callback
+     * Returns all registered services
      *
-     * @param {Function} callback
-     * @returns {boolean}
+     * @param {boolean} [privateListeners = false]
+     *      If passed true it returns event listeners only from current module event
+     *      without listeners from its dependency module events with the same name.
+     *
+     * @returns {Object.<Function>}
      */
-    Event.prototype.issetListener = function(callback)
+    Event.prototype.getListeners = function(privateListeners)
     {
-        var listeners = this.getListeners();
+        var mainModule = this.getEventManager().getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var listeners = [];
+        var $this = this;
 
-        for (var i = 0; i < listeners.length; i++) {
-            if (listeners[i].getCallback() == callback) {
-                return true;
-            }
+        if (privateListeners !== true) {
+            privateListeners = false;
         }
-        return false;
-    };
+        if (privateListeners) {
+            return this._listeners;
+        }
 
-    /**
-     * Returns registered event listeners
-     *
-     * @returns {Array.<Subclass.Event.EventListener>}
-     */
-    Event.prototype.getListeners = function()
-    {
-        return this._listeners;
+        moduleManager.eachModule(function(module) {
+            if (module == mainModule) {
+                Subclass.Tools.extend(listeners, $this._listeners);
+                return;
+            }
+            var moduleEventManager = module.getEventManager();
+            var moduleEventListeners = moduleEventManager.getEvent($this.getName()).getListeners();
+
+            Subclass.Tools.extend(listeners, moduleEventListeners);
+        });
+
+        return Subclass.Tools.unique(listeners);
     };
 
     /**
@@ -153,7 +194,7 @@ Subclass.Event.Event = (function()
      */
     Event.prototype.hasListeners = function()
     {
-        return !!this._listeners.length;
+        return !!this.getListeners().length;
     };
 
     /**
@@ -162,18 +203,40 @@ Subclass.Event.Event = (function()
      * @param [arguments] - Any number of arguments
      * @returns {Subclass.Event.Event}
      */
-    Event.prototype.invoke = function()
+    Event.prototype.trigger = function()
+    {
+        var listeners = this.getListeners();
+
+        return this._processTrigger(listeners, arguments)
+    };
+
+    /**
+     * Invokes event listeners only from module to which event with specified name belongs to
+     *
+     * @param [arguments] - Any number of arguments
+     * @returns {Subclass.Event.Event}
+     */
+    Event.prototype.triggerPrivate = function()
+    {
+        var listeners = this.getListeners(true);
+
+        return this._processTrigger(listeners, arguments);
+    };
+
+    /**
+     * Processes event listeners
+     *
+     * @param {Array.<Subclass.Event.EventListener>} listeners
+     * @param {Array} listenerArgs
+     * @returns {Subclass.Event.Event}
+     * @private
+     */
+    Event.prototype._processTrigger = function(listeners, listenerArgs)
     {
         var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
-        var listeners = this.getListeners();
-        var listenerArgs = [];
         var priorities = [];
 
-        for (var i = 0; i < arguments.length; i++) {
-            listenerArgs.push(arguments[i]);
-        }
-
-        for (i = 0; i < listeners.length; i++) {
+        for (var i = 0; i < listeners.length; i++) {
             var listener = listeners[i];
 
             priorities.push(listener.getPriority());

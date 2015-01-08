@@ -1,11 +1,23 @@
 /**
  * @class
  * @implements {Subclass.Class.ClassTypeInterface}
+ * @description Abstract class of the each class type.
+ *      Each instance of current class is a class definition which will be used
+ *      for creating instances of its declaration.
  */
 Subclass.Class.ClassType = (function()
 {
     /**
-     * @inheritDoc
+     * @param {Subclass.Class.ClassManager} classManager
+     *      Instance of class manager which will hold all class definitions of current module
+     *
+     * @param {string} className
+     *      Name of the creating class
+     *
+     * @param {Object} classDefinition
+     *      Definition of the creating class
+     *
+     * @constructor
      */
     function ClassType(classManager, className, classDefinition)
     {
@@ -70,6 +82,7 @@ Subclass.Class.ClassType = (function()
 
     /**
      * @inheritDoc
+     * @abstract
      */
     ClassType.getClassTypeName = function ()
     {
@@ -78,6 +91,7 @@ Subclass.Class.ClassType = (function()
 
     /**
      * @inheritDoc
+     * @abstract
      */
     ClassType.getClassBuilderClass = function()
     {

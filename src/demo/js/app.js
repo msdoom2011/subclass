@@ -329,6 +329,10 @@ app.registerAbstractClass("Class2", {
         }
     },
 
+    _test: 0,
+
+    _psix: 0,
+
     stop: function() {
         alert('stop message');
     },
@@ -361,10 +365,6 @@ app.registerClass("Class3", {
             value: 0
         }
     },
-
-    _test: 0,
-
-    _psix: 0,
 
     stop: function() {
         alert('stop message!!!!!!!!!!!');

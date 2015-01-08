@@ -3,35 +3,44 @@
  */
 Subclass.Class.ClassTypeInterface = (function()
 {
-    /**
-     * @param {Subclass.Class.ClassManager} classManager
-     * @param {string} className
-     * @param {Object} classDefinition
-     * @constructor
-     */
-    function ClassTypeInterface (classManager, className, classDefinition) {}
+    function ClassTypeInterface () {}
 
     /**
      * Returns name of class type
+     *
+     * @example Example:
+     *      Subclass.Class.Trait.Trait.getClassTypeName(); // returns "Trait"
      *
      * @returns {string}
      */
     ClassTypeInterface.getClassTypeName = function() {};
 
     /**
-     * Returns class builder constructor of current class type.
+     * Returns class builder constructor for specific class of current class type.
+     *
+     * @example Example:
+     *      Subclass.Class.AbstractClass.AbstractClass.getClassBuilderClass();
+     *      // returns Subclass.Class.AbstractClass.AbstractClassBuilder class constructor
+     *
+     * @returns {Function}
      */
     ClassTypeInterface.getClassBuilderClass = function() {};
 
     /**
-     * Returns class for creating class definition instance
+     * Returns constructor for creating class definition instance
+     *
+     * @example Example:
+     *      Subclass.Class.Class.Class.getClassDefinitionClass();
+     *      // returns Subclass.Class.Class.ClassDefinition class constructor
      *
      * @returns {Function}
      */
     ClassTypeInterface.getClassDefinitionClass = function() {};
 
     /**
-     * Initializes class on creation stage
+     * Initializes class on creation stage.
+     * Current method invokes automatically right at the end of the class type constructor.
+     * It can contain different manipulations with class definition or other manipulations that is needed
      */
     ClassTypeInterface.prototype.initialize = function() {};
 
@@ -43,7 +52,7 @@ Subclass.Class.ClassTypeInterface = (function()
     ClassTypeInterface.prototype.getClassManager = function() {};
 
     /**
-     * Returns name of current class instance
+     * Returns name of the current class instance
      *
      * @returns {string}
      */

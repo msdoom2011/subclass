@@ -1,9 +1,14 @@
+/**
+ * @class
+ * @description The basic class for creating new application based on SubclassJS framework.
+ * @name Subclass
+ */
 window.Subclass = (function()
 {
     /**
      * Collection of registered modules
      *
-     * @type {{}}
+     * @type {Array.<Subclass.Module.Module>}
      * @private
      */
     var _modules = [];
@@ -14,9 +19,16 @@ window.Subclass = (function()
          * Creates new subclass module.
          *
          * @param {string} moduleName
-         * @param {string[]} [moduleDependencies]
-         * @param {Object} [moduleConfigs]
-         * @returns {Subclass.Module.Module}
+         *      A name of the future module
+         *
+         * @param {string[]} [moduleDependencies = []]
+         *      The names of the modules that you want to include into current module
+         *
+         * @param {Object} [moduleConfigs = {}]
+         *      A configuration of the creating module
+         *
+         * @returns {Subclass.Module.ModuleAPI}
+         * @static
          */
         createModule: function(moduleName, moduleDependencies, moduleConfigs)
         {
@@ -49,10 +61,13 @@ window.Subclass = (function()
         },
 
         /**
-         * Returns subclass module API instance
+         * Returns public API for the module with specified name
          *
          * @param {string} moduleName
+         *      A module name that you want to get
+         *
          * @returns {Subclass.Module.ModuleAPI}
+         * @static
          */
         getModule: function(moduleName)
         {
@@ -64,19 +79,19 @@ window.Subclass = (function()
                     return _modules[i].getAPI();
                 }
             }
-            //return _modules[moduleName].getAPI();
         },
 
         /**
          * Checks whether module with specified name exists
          *
          * @param {string} moduleName
+         *      A module name that you want to check whether it exists
+         *
          * @returns {boolean}
+         * @static
          */
         issetModule: function(moduleName)
         {
-            //return !!_modules[moduleName];
-
             for (var i = 0; i < _modules.length; i++) {
                 if (_modules[i].getName() == moduleName) {
                     return true;

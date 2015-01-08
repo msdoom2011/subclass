@@ -62,7 +62,7 @@ Subclass.Class.Class.Class = (function() {
     /**
      * @inheritDoc
      */
-    Class.getClassBuilderClass = function()
+    Class.getBuilderClass = function()
     {
         return Subclass.Class.Class.ClassBuilder;
     };
@@ -70,7 +70,7 @@ Subclass.Class.Class.Class = (function() {
     /**
      * @inheritDoc
      */
-    Class.getClassDefinitionClass = function()
+    Class.getDefinitionClass = function()
     {
         return Subclass.Class.Class.ClassDefinition;
     };
@@ -78,9 +78,9 @@ Subclass.Class.Class.Class = (function() {
     /**
      * @inheritDoc
      */
-    Class.prototype.setClassParent = function (parentClassName)
+    Class.prototype.setParent = function (parentClassName)
     {
-        Class.$parent.prototype.setClassParent.call(this, parentClassName);
+        Class.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
             this._classParent
@@ -88,7 +88,7 @@ Subclass.Class.Class.Class = (function() {
             && this._classParent.constructor != Subclass.Class.ClassManager.getClassType('AbstractClass')
         ) {
             throw new Error(
-                'Class "' + this.getClassName() + '" can be inherited ' +
+                'Class "' + this.getName() + '" can be inherited ' +
                 'only from an another class or an abstract class.'
             );
         }
@@ -101,13 +101,13 @@ Subclass.Class.Class.Class = (function() {
      */
     Class.prototype.getStatic = function()
     {
-        return this.getClassDefinition().getStatic();
+        return this.getDefinition().getStatic();
     };
 
     /**
      * @inheritDoc
      */
-    Class.prototype.getClassConstructorEmpty = function ()
+    Class.prototype.getConstructorEmpty = function ()
     {
         return function Class() {};
     };
@@ -116,14 +116,14 @@ Subclass.Class.Class.Class = (function() {
      * @inheritDoc
      * @throws {Error}
      */
-    Class.prototype.createClassConstructor = function ()
+    Class.prototype.createConstructor = function ()
     {
-        var classConstructor = Class.$parent.prototype.createClassConstructor.call(this);
+        var classConstructor = Class.$parent.prototype.createConstructor.call(this);
         var abstractMethods = this._abstractMethods = this.getAbstractMethods();
         var notImplementedMethods = [];
 
-        if (this.getClassParent()) {
-            var parent = this.getClassParent();
+        if (this.hasParent()) {
+            var parent = this.getParent();
 
             if (parent.getAbstractMethods) {
                 Subclass.Tools.extend(
@@ -152,7 +152,7 @@ Subclass.Class.Class.Class = (function() {
             }
 
             if (notImplementedMethods.length) {
-                throw new Error('Class "' + this.getClassName() + '" must be an abstract or implement abstract methods: ' +
+                throw new Error('Class "' + this.getName() + '" must be an abstract or implement abstract methods: ' +
                     '"' + notImplementedMethods.join('", "') + '".');
             }
         }
@@ -222,7 +222,7 @@ Subclass.Class.Class.Class = (function() {
      */
     Class.prototype.addTrait = function (traitName)
     {
-        var classDefinition = this.getClassDefinition();
+        var classDefinition = this.getDefinition();
 
         if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
             throw new Error('Trying to call non existent method "addTrait".');
@@ -231,8 +231,8 @@ Subclass.Class.Class.Class = (function() {
             throw new Error('Trait name must be specified.');
         }
         var traitClass = this.getClassManager().getClass(traitName);
-        var traitClassConstructor = traitClass.getClassConstructor();
-        var traitClassProperties = traitClass.getClassProperties();
+        var traitClassConstructor = traitClass.getConstructor();
+        var traitClassProperties = traitClass.getProperties();
         var traitProps = {};
 
         if (traitClass.constructor != Subclass.Class.Trait.Trait) {
@@ -244,7 +244,7 @@ Subclass.Class.Class.Class = (function() {
                 continue;
             }
             var property = traitClassProperties[propName];
-            this.addClassProperty(propName, property.getPropertyDefinition().getDefinition());
+            this.addProperty(propName, property.getPropertyDefinition().getDefinition());
         }
 
         // Copying all properties and methods (with inherited) from trait to class definition
@@ -286,8 +286,8 @@ Subclass.Class.Class.Class = (function() {
                 return true;
             }
         }
-        if (this.getClassParent()) {
-            var parent = this.getClassParent();
+        if (this.hasParent()) {
+            var parent = this.getParent();
 
             if (parent.hasTrait) {
                 return parent.hasTrait(traitName);
@@ -327,10 +327,10 @@ Subclass.Class.Class.Class = (function() {
         var interfaceClass = this.getClassManager().getClass(interfaceName);
 
         if (interfaceClass.constructor != Subclass.Class.Interface.Interface) {
-            throw new Error('Can\'t implement no interface "' + interfaceName + '" in class "' + this.getClassName() + '".');
+            throw new Error('Can\'t implement no interface "' + interfaceName + '" in class "' + this.getName() + '".');
         }
 
-        var interfaceClassConstructor = interfaceClass.getClassConstructor();
+        var interfaceClassConstructor = interfaceClass.getConstructor();
         var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
         var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
@@ -345,7 +345,7 @@ Subclass.Class.Class.Class = (function() {
             if (!interfaceClassProperties.hasOwnProperty(propName)) {
                 continue;
             }
-            this.addClassProperty(
+            this.addProperty(
                 propName,
                 interfaceClassProperties[propName]
             );
@@ -404,8 +404,8 @@ Subclass.Class.Class.Class = (function() {
                 }
             }
         }
-        if (this.getClassParent()) {
-            var parent = this.getClassParent();
+        if (this.hasParent()) {
+            var parent = this.getParent();
 
             if (parent.isImplements) {
                 return parent.isImplements(interfaceName);

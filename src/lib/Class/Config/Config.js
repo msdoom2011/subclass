@@ -47,7 +47,7 @@ Subclass.Class.Config.Config = (function()
     /**
      * @inheritDoc
      */
-    Config.getClassBuilderClass = function()
+    Config.getBuilderClass = function()
     {
         return Subclass.Class.Config.ConfigBuilder;
     };
@@ -55,7 +55,7 @@ Subclass.Class.Config.Config = (function()
     /**
      * @inheritDoc
      */
-    Config.getClassDefinitionClass = function()
+    Config.getDefinitionClass = function()
     {
         return Subclass.Class.Config.ConfigDefinition;
     };
@@ -79,7 +79,7 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype._validateClassDefinition = function()
     {
-        var classDefinition = this.getClassDefinition();
+        var classDefinition = this.getDefinition();
         var classDefinitionData = classDefinition.getDefinition();
 
         for (var attrName in classDefinitionData) {
@@ -103,7 +103,7 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype._processClassDefinition = function()
     {
-        var classDefinition = this.getClassDefinition();
+        var classDefinition = this.getDefinition();
         var classDefinitionDataDefault = classDefinition.getDefinition();
         var parentClassName = classDefinition.getExtends();
         var includes = classDefinition.getIncludes();
@@ -120,7 +120,7 @@ Subclass.Class.Config.Config = (function()
 
         if (parentClassName && typeof parentClassName == 'string') {
             classDefinitionData.$_extends = parentClassName;
-            this.setClassParent(parentClassName);
+            this.setParent(parentClassName);
         }
         if (includes && Array.isArray(includes)) {
             classDefinitionData.$_includes = includes;
@@ -158,20 +158,20 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype.normalizeClassProperties = function()
     {
-        var classDefinition = this.getClassDefinition();
+        var classDefinition = this.getDefinition();
         var classProperties = classDefinition.getProperties();
         var propName;
 
-        if (this.getClassParent()) {
-            var parentClass = this.getClassParent();
-            var parentClassProperties = parentClass.getClassDefinition().getProperties();
+        if (this.hasParent()) {
+            var parentClass = this.getParent();
+            var parentClassProperties = parentClass.getDefinition().getProperties();
 
             this.extendClassProperties(classProperties, parentClassProperties);
         }
 
         for (var i = 0, includes = this.getIncludes(); i < includes.length; i++) {
             var includeClass = includes[i];
-            var includeClassProperties = includeClass.getClassDefinition().getProperties();
+            var includeClassProperties = includeClass.getDefinition().getProperties();
 
             this.extendClassProperties(classProperties, includeClassProperties);
 
@@ -194,7 +194,7 @@ Subclass.Class.Config.Config = (function()
             if (!property || !Subclass.Tools.isPlainObject(property)) {
                 throw new Error(
                     'Specified invalid property definition "' + propName + '" ' +
-                    'in class "' + this.getClassName() + '".'
+                    'in class "' + this.getName() + '".'
                 );
             }
         }
@@ -236,24 +236,24 @@ Subclass.Class.Config.Config = (function()
     /**
      * @inheritDoc
      */
-    Config.prototype.setClassParent = function(parentClassName)
+    Config.prototype.setParent = function(parentClassName)
     {
-        Config.$parent.prototype.setClassParent.call(this, parentClassName);
+        Config.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
             this._classParent
             && this._classParent.constructor != Config
         ) {
-            throw new Error('Config "' + this.getClassName() + '" can be inherited only from an another config.');
+            throw new Error('Config "' + this.getName() + '" can be inherited only from an another config.');
         }
     };
 
     /**
      * @inheritDoc
      */
-    Config.prototype.getClassConstructorEmpty = function ()
+    Config.prototype.getConstructorEmpty = function ()
     {
-        return function Config(){};
+        return function Config() {};
     };
 
     /**
@@ -275,12 +275,12 @@ Subclass.Class.Config.Config = (function()
     {
         if (typeof className != "string") {
             throw new Error('Invalid argument "includeClassName" in method "addInclude" ' +
-            'in config class "' + this.getClassName() + '". ' +
+            'in config class "' + this.getName() + '". ' +
             'It must be name of existent config class.');
         }
         if (!this.getClassManager().issetClass(className)) {
             throw new Error('Trying to include non existent class "' + className + '" ' +
-            'to config class "' + this.getClassName() + '".');
+            'to config class "' + this.getName() + '".');
         }
         var classObj = this.getClassManager().getClass(className);
 
@@ -305,8 +305,8 @@ Subclass.Class.Config.Config = (function()
                 return true;
             }
         }
-        if (this.getClassParent()) {
-            var parent = this.getClassParent();
+        if (this.hasParent()) {
+            var parent = this.getParent();
 
             if (parent.isIncludes) {
                 return parent.isIncludes(className);

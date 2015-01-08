@@ -74,7 +74,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
         this._validateInclude(include);
 
         if (typeof include != 'string') {
-            return include.getClassName();
+            return include.getName();
         }
     };
 

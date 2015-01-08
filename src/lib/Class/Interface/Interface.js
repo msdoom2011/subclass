@@ -38,7 +38,7 @@ Subclass.Class.Interface.Interface = (function()
     /**
      * @inheritDoc
      */
-    Interface.getClassBuilderClass = function()
+    Interface.getBuilderClass = function()
     {
         return Subclass.Class.Interface.InterfaceBuilder;
     };
@@ -46,7 +46,7 @@ Subclass.Class.Interface.Interface = (function()
     /**
      * @inheritDoc
      */
-    Interface.getClassDefinitionClass = function()
+    Interface.getDefinitionClass = function()
     {
         return Subclass.Class.Interface.InterfaceDefinition;
     };
@@ -54,9 +54,9 @@ Subclass.Class.Interface.Interface = (function()
     /**
      * @inheritDoc
      */
-    Interface.prototype.setClassParent = function (parentClassName)
+    Interface.prototype.setParent = function (parentClassName)
     {
-        Interface.$parent.prototype.setClassParent.call(this, parentClassName);
+        Interface.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
             this._classParent
@@ -64,7 +64,7 @@ Subclass.Class.Interface.Interface = (function()
             && !(this._classParent instanceof Interface)
         ) {
             throw new Error(
-                'Interface "' + this.getClassName() + '" can be inherited ' +
+                'Interface "' + this.getName() + '" can be inherited ' +
                 'only from the another interface.'
             );
         }
@@ -72,11 +72,11 @@ Subclass.Class.Interface.Interface = (function()
 
     Interface.prototype.getClassDefinitionProperties = function()
     {
-        var classDefinition = this.getClassDefinition();
+        var classDefinition = this.getDefinition();
         var classProperties = {};
 
-        if (this.getClassParent()) {
-            classProperties = this.getClassParent().getClassDefinitionProperties();
+        if (this.hasParent()) {
+            classProperties = this.getParent().getClassDefinitionProperties();
         }
         return Subclass.Tools.extend(
             classProperties,
@@ -87,7 +87,7 @@ Subclass.Class.Interface.Interface = (function()
     /**
      * @inheritDoc
      */
-    Interface.prototype.getClassConstructorEmpty = function ()
+    Interface.prototype.getConstructorEmpty = function ()
     {
         return function Interface(){};
     };
@@ -95,7 +95,7 @@ Subclass.Class.Interface.Interface = (function()
     /**
      * @inheritDoc
      */
-    Interface.prototype.attachClassProperties = function() {};
+    Interface.prototype.attachProperties = function() {};
 
     /**
      * @inheritDoc

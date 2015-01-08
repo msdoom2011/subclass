@@ -67,9 +67,9 @@ Subclass.Class.ClassTypeBuilder = (function()
     ClassTypeBuilder.prototype._setClass = function(className)
     {
         var classInst = this.getClassManager().getClass(className);
-        var classDefinition = classInst.getClassDefinition().getDefinition();
+        var classDefinition = classInst.getDefinition().getDefinition();
 
-        this.setClassName(classInst.getClassName());
+        this.setClassName(classInst.getName());
         this.setClassType(classInst.constructor.getClassTypeName());
         this._class = classInst;
 
@@ -89,7 +89,7 @@ Subclass.Class.ClassTypeBuilder = (function()
     {
         if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
             throw new Error(
-                'Invalid argument "classDefinition" in method "setClassDefinition" in ClassTypeBuilder. ' +
+                'Invalid argument "classDefinition" in method "_setClassDefinition" in ClassTypeBuilder. ' +
                 'It must be a plain object.'
             );
         }
@@ -450,7 +450,7 @@ Subclass.Class.ClassTypeBuilder = (function()
         this._validateClass();
 
         if (this._class) {
-            this._class.setClassDefinition(this._getClassDefinition());
+            this._class.setDefinition(this._getClassDefinition());
             return this._class;
         }
         return this.getClassManager().addClass(

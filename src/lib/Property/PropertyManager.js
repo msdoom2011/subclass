@@ -152,7 +152,7 @@ Subclass.Property.PropertyManager = (function()
             var propertyFullName = (contextProperty && contextProperty.getPropertyNameFull() + "." || '') + propertyName;
 
             throw new Error('Trying to create property "' + propertyFullName + '" of none existent type "' + propertyTypeName + '"' +
-                (contextClass && ' in class "' + contextClass.getClassName() + '"') + '.');
+                (contextClass && ' in class "' + contextClass.getName() + '"') + '.');
         }
 
         var classConstructor = this.createPropertyConstructor(propertyName, propertyDefinition);
@@ -167,7 +167,7 @@ Subclass.Property.PropertyManager = (function()
 
         if (!contextProperty && !Subclass.Property.PropertyManager.isPropertyNameAllowed(propertyName)) {
             throw new Error('Trying to define property with not allowed name "' + propertyName + '"' +
-                (contextClass && ' in class "' + contextClass.getClassName() + '"' || "") +  ".");
+                (contextClass && ' in class "' + contextClass.getName() + '"' || "") +  ".");
         }
 
         inst.initialize();

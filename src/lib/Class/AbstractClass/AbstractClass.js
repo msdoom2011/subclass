@@ -41,7 +41,7 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
     /**
      * @inheritDoc
      */
-    AbstractClass.getClassBuilderClass = function()
+    AbstractClass.getBuilderClass = function()
     {
         return Subclass.Class.AbstractClass.AbstractClassBuilder;
     };
@@ -49,7 +49,7 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
     /**
      * @inheritDoc
      */
-    AbstractClass.getClassDefinitionClass = function()
+    AbstractClass.getDefinitionClass = function()
     {
         return Subclass.Class.AbstractClass.AbstractClassDefinition;
     };
@@ -57,23 +57,23 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
     /**
      * @inheritDoc
      */
-    AbstractClass.prototype.setClassParent = function (parentClassName)
+    AbstractClass.prototype.setParent = function (parentClassName)
     {
-        Subclass.Class.ClassType.prototype.setClassParent.call(this, parentClassName);
+        Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
 
         if (
             this._classParent
             && this._classParent.constructor != AbstractClass
             && !(this._classParent instanceof AbstractClass)
         ) {
-            throw new Error('Abstract class "' + this.getClassName() + '" can be inherited only from the another abstract class.');
+            throw new Error('Abstract class "' + this.getName() + '" can be inherited only from the another abstract class.');
         }
     };
 
     /**
      * @inheritDoc
      */
-    AbstractClass.prototype.getClassConstructorEmpty = function ()
+    AbstractClass.prototype.getConstructorEmpty = function ()
     {
         return function AbstractClass(){};
     };

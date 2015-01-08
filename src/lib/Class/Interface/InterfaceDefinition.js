@@ -37,7 +37,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
     InterfaceDefinition.prototype.validateImplements = function(value)
     {
         throw new Error(
-            'Interface "' + this.getClass().getClassName() + '" can\'t implements any interfaces. ' +
+            'Interface "' + this.getClass().getName() + '" can\'t implements any interfaces. ' +
             'You can extend this one from another interface instead.'
         );
     };
@@ -61,7 +61,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
      */
     InterfaceDefinition.prototype.validateTraits = function(value)
     {
-        throw new Error('Interface "' + this.getClass().getClassName() + '" can\'t contains any traits.');
+        throw new Error('Interface "' + this.getClass().getName() + '" can\'t contains any traits.');
     };
 
     /**

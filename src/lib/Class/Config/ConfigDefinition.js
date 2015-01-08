@@ -22,7 +22,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateAbstract = function(value)
     {
-        throw new Error('Config "' + this.getClass().getClassName() + '" can\'t contain any abstract methods.');
+        throw new Error('Config "' + this.getClass().getName() + '" can\'t contain any abstract methods.');
     };
 
     /**
@@ -33,7 +33,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateImplements = function(value)
     {
-        throw new Error('Config "' + this.getClass().getClassName() + '" can\'t implements any interfaces.');
+        throw new Error('Config "' + this.getClass().getName() + '" can\'t implements any interfaces.');
     };
 
     /**
@@ -44,7 +44,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateStatic = function(value)
     {
-        throw new Error('Config "' + this.getClass().getClassName() + '" can\'t contain any static properties and methods.');
+        throw new Error('Config "' + this.getClass().getName() + '" can\'t contain any static properties and methods.');
     };
 
     /**
@@ -56,7 +56,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
     ConfigDefinition.prototype.validateTraits = function(value)
     {
         throw new Error(
-            'Config "' + this.getClass().getClassName() + '" can\'t contain any traits.'
+            'Config "' + this.getClass().getName() + '" can\'t contain any traits.'
         );
     };
 

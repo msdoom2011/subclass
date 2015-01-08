@@ -47,7 +47,7 @@ Subclass.Class.ClassType = (function()
          * @type {Subclass.Class.ClassDefinition}
          * @protected
          */
-        this._classDefinition = this.createClassDefinition(classDefinition);
+        this._classDefinition = this.createDefinition(classDefinition);
 
         /**
          * @type {(function|null)}
@@ -93,7 +93,7 @@ Subclass.Class.ClassType = (function()
      * @inheritDoc
      * @abstract
      */
-    ClassType.getClassBuilderClass = function()
+    ClassType.getBuilderClass = function()
     {
         throw new Error('Static method "getClassBuilder" must be implemented.');
     };
@@ -101,7 +101,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.getClassDefinitionClass = function()
+    ClassType.getDefinitionClass = function()
     {
         return Subclass.Class.ClassDefinition;
     };
@@ -111,7 +111,7 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.initialize = function()
     {
-        var classDefinition = this.getClassDefinition();
+        var classDefinition = this.getDefinition();
             classDefinition.processRelatives();
     };
 
@@ -126,7 +126,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassName = function ()
+    ClassType.prototype.getName = function()
     {
         return this._className;
     };
@@ -137,13 +137,13 @@ Subclass.Class.ClassType = (function()
      * @param {Object} classDefinition
      * @returns {Subclass.Class.ClassDefinition}
      */
-    ClassType.prototype.createClassDefinition = function(classDefinition)
+    ClassType.prototype.createDefinition = function(classDefinition)
     {
         var construct = null;
         var createInstance = true;
 
         if (!arguments[1]) {
-            construct = this.constructor.getClassDefinitionClass();
+            construct = this.constructor.getDefinitionClass();
         } else {
             construct = arguments[1];
         }
@@ -152,7 +152,7 @@ Subclass.Class.ClassType = (function()
         }
 
         if (construct.$parent) {
-            var parentConstruct = this.createClassDefinition(
+            var parentConstruct = this.createDefinition(
                 classDefinition,
                 construct.$parent,
                 false
@@ -187,12 +187,12 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.setClassDefinition = function(classDefinition)
+    ClassType.prototype.setDefinition = function(classDefinition)
     {
         this.constructor.call(
             this,
             this.getClassManager(),
-            this.getClassName(),
+            this.getName(),
             classDefinition
         );
     };
@@ -200,7 +200,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassDefinition = function()
+    ClassType.prototype.getDefinition = function()
     {
         return this._classDefinition;
     };
@@ -208,7 +208,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.setClassParent = function (parentClassName)
+    ClassType.prototype.setParent = function (parentClassName)
     {
         if (typeof parentClassName == 'string') {
             this._classParent = this.getClassManager().getClass(parentClassName)
@@ -219,7 +219,7 @@ Subclass.Class.ClassType = (function()
         } else {
             throw new Error(
                 'Argument parentClassName is not valid. It must be a name of parent class or null ' +
-                'in class "' + this.getClassName() + '".'
+                'in class "' + this.getName() + '".'
             );
         }
     };
@@ -227,7 +227,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassParent = function ()
+    ClassType.prototype.getParent = function ()
     {
         return this._classParent;
     };
@@ -235,7 +235,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.hasClassParent = function()
+    ClassType.prototype.hasParent = function()
     {
         return !!this._classParent;
     };
@@ -243,7 +243,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassProperties = function(withInherited)
+    ClassType.prototype.getProperties = function(withInherited)
     {
         var properties = {};
 
@@ -251,9 +251,9 @@ Subclass.Class.ClassType = (function()
             withInherited = false;
         }
 
-        if (withInherited && this.getClassParent()) {
-            var parentClass = this.getClassParent();
-            var parentClassProperties = parentClass.getClassProperties(withInherited);
+        if (withInherited && this.hasParent()) {
+            var parentClass = this.getParent();
+            var parentClassProperties = parentClass.getProperties(withInherited);
 
             Subclass.Tools.extend(
                 properties,
@@ -269,7 +269,7 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.addClassProperty = function(propertyName, propertyDefinition)
+    ClassType.prototype.addProperty = function(propertyName, propertyDefinition)
     {
         var propertyManager = this.getClassManager().getModule().getPropertyManager();
 
@@ -283,29 +283,29 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassProperty = function(propertyName)
+    ClassType.prototype.getProperty = function(propertyName)
     {
-        var classProperties = this.getClassProperties();
+        var classProperties = this.getProperties();
 
-        if (!classProperties[propertyName] && this.getClassParent()) {
-            return this.getClassParent().getClassProperty(propertyName);
+        if (!classProperties[propertyName] && this.hasParent()) {
+            return this.getParent().getProperty(propertyName);
 
         } else if (!classProperties[propertyName]) {
             throw new Error('Trying to call to non existent property "' + propertyName + '" ' +
-                'in class "' + this.getClassName() + '".');
+                'in class "' + this.getName() + '".');
         }
-        return this.getClassProperties()[propertyName];
+        return this.getProperties()[propertyName];
     };
 
     /**
      * @inheritDoc
      */
-    ClassType.prototype.issetClassProperty = function(propertyName)
+    ClassType.prototype.issetProperty = function(propertyName)
     {
-        var classProperties = this.getClassProperties();
+        var classProperties = this.getProperties();
 
-        if (!classProperties[propertyName] && this.getClassParent()) {
-            return !!this.getClassParent().getClassProperty(propertyName);
+        if (!classProperties[propertyName] && this.hasParent()) {
+            return !!this.getParent().getProperty(propertyName);
 
         } else if (!classProperties[propertyName]) {
             return false;
@@ -316,18 +316,18 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassConstructorEmpty = function ()
+    ClassType.prototype.getConstructorEmpty = function ()
     {
-        throw new Error('Static method "getClassConstructor" must be implemented.');
+        throw new Error('Static method "getConstructor" must be implemented.');
     };
 
     /**
      * @inheritDoc
      */
-    ClassType.prototype.getClassConstructor = function ()
+    ClassType.prototype.getConstructor = function ()
     {
         if (!this._classConstructor) {
-            var classDefinition = this.getClassDefinition();
+            var classDefinition = this.getDefinition();
             var baseClassDefinition = classDefinition.getBaseDefinition();
 
             classDefinition.setDefinition(Subclass.Tools.extend(
@@ -338,7 +338,7 @@ Subclass.Class.ClassType = (function()
             classDefinition.validateDefinition();
             classDefinition.processDefinition();
 
-            this._classConstructor = this.createClassConstructor();
+            this._classConstructor = this.createConstructor();
         }
 
         return this._classConstructor;
@@ -349,33 +349,29 @@ Subclass.Class.ClassType = (function()
      *
      * @returns {function}
      */
-    ClassType.prototype.createClassConstructor = function ()
+    ClassType.prototype.createConstructor = function ()
     {
-        var classConstructor = this.getClassConstructorEmpty();
-        var parentClass = this.getClassParent();
+        var classConstructor = this.getConstructorEmpty();
+        var parentClass = this.getParent();
 
         if (parentClass) {
-            var parentClassConstructor = parentClass.getClassConstructor();
+            var parentClassConstructor = parentClass.getConstructor();
             var classConstructorProto = Object.create(parentClassConstructor.prototype);
 
             Subclass.Tools.extend(classConstructorProto, classConstructor.prototype);
             classConstructor.prototype = classConstructorProto;
         }
 
-        this.attachClassProperties(classConstructor.prototype);
+        this.attachProperties(classConstructor.prototype);
 
-        //Subclass.Tools.extend(
-        //    classConstructor.prototype,
-        //    this.getClassDefinition().getDefinition()
-        //);
-        Subclass.Tools.extend(classConstructor.prototype, this.getClassDefinition().getMethods());
-        Subclass.Tools.extend(classConstructor.prototype, this.getClassDefinition().getMetaData());
+        Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
+        Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
         Object.defineProperty(classConstructor.prototype, "constructor", {
             enumerable: false,
             value: classConstructor
         });
 
-        classConstructor.prototype.$_className = this.getClassName();
+        classConstructor.prototype.$_className = this.getName();
         classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
         classConstructor.prototype.$_class = this;
 
@@ -385,9 +381,9 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
-    ClassType.prototype.attachClassProperties = function(context)
+    ClassType.prototype.attachProperties = function(context)
     {
-        var classProperties = this.getClassProperties();
+        var classProperties = this.getProperties();
 
         for (var propName in classProperties) {
             if (!classProperties.hasOwnProperty(propName)) {
@@ -409,8 +405,8 @@ Subclass.Class.ClassType = (function()
         }
 
         var classManager = this.getClassManager();
-        var classConstructor = this.getClassConstructor();
-        var classProperties = this.getClassProperties(true);
+        var classConstructor = this.getConstructor();
+        var classProperties = this.getProperties(true);
         var classInstance = new classConstructor();
 
 
@@ -422,7 +418,7 @@ Subclass.Class.ClassType = (function()
             }
             classProperties[propertyName].attachHashedProperty(classInstance);
         }
-        var classNoMethods = this.getClassDefinition().getNoMethods(true);
+        var classNoMethods = this.getDefinition().getNoMethods(true);
 
         for (var propName in classNoMethods) {
             if (!classNoMethods.hasOwnProperty(propName)) {
@@ -465,11 +461,11 @@ Subclass.Class.ClassType = (function()
         if (!className) {
             throw new Error('Class name must be specified!');
         }
-        if (this.getClassName() == className) {
+        if (this.getName() == className) {
             return true;
         }
-        if (this.getClassParent()) {
-            return this.getClassParent().isInstanceOf(className);
+        if (this.hasParent()) {
+            return this.getParent().isInstanceOf(className);
         }
         return false;
     };

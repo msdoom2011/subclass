@@ -36,7 +36,7 @@ Subclass.Class.Trait.TraitDefinition = (function()
      */
     TraitDefinition.prototype.validateImplements = function(value)
     {
-        throw new Error('Trait "' + this.getClass().getClassName() + '" can\'t implements any interfaces.');
+        throw new Error('Trait "' + this.getClass().getName() + '" can\'t implements any interfaces.');
     };
 
     /**
@@ -59,7 +59,7 @@ Subclass.Class.Trait.TraitDefinition = (function()
     TraitDefinition.prototype.validateTraits = function(value)
     {
         throw new Error(
-            'Trait "' + this.getClassName() + '" can\'t contains another traits. ' +
+            'Trait "' + this.getName() + '" can\'t contains another traits. ' +
             'You can extend this one from another trait instead.'
         );
     };

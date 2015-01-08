@@ -19,23 +19,23 @@ Subclass.Class.ClassTypeInterface = (function()
      * Returns class builder constructor for specific class of current class type.
      *
      * @example Example:
-     *      Subclass.Class.AbstractClass.AbstractClass.getClassBuilderClass();
+     *      Subclass.Class.AbstractClass.AbstractClass.getBuilderClass();
      *      // returns Subclass.Class.AbstractClass.AbstractClassBuilder class constructor
      *
      * @returns {Function}
      */
-    ClassTypeInterface.getClassBuilderClass = function() {};
+    ClassTypeInterface.getBuilderClass = function() {};
 
     /**
      * Returns constructor for creating class definition instance
      *
      * @example Example:
-     *      Subclass.Class.Class.Class.getClassDefinitionClass();
+     *      Subclass.Class.Class.Class.getDefinitionClass();
      *      // returns Subclass.Class.Class.ClassDefinition class constructor
      *
      * @returns {Function}
      */
-    ClassTypeInterface.getClassDefinitionClass = function() {};
+    ClassTypeInterface.getDefinitionClass = function() {};
 
     /**
      * Initializes class on creation stage.
@@ -56,42 +56,42 @@ Subclass.Class.ClassTypeInterface = (function()
      *
      * @returns {string}
      */
-    ClassTypeInterface.prototype.getClassName = function() {};
+    ClassTypeInterface.prototype.getName = function() {};
 
     /**
      * Sets class definition
      *
      * @param {Object} classDefinition
      */
-    ClassTypeInterface.prototype.setClassDefinition = function(classDefinition) {};
+    ClassTypeInterface.prototype.setDefinition = function(classDefinition) {};
 
     /**
      * Returns class definition object
      *
      * @returns {Subclass.Class.ClassDefinition}
      */
-    ClassTypeInterface.prototype.getClassDefinition = function() {};
+    ClassTypeInterface.prototype.getDefinition = function() {};
 
     /**
      * Sets class parent
      *
      * @param {string} parentClassName
      */
-    ClassTypeInterface.prototype.setClassParent = function (parentClassName) {};
+    ClassTypeInterface.prototype.setParent = function (parentClassName) {};
 
     /**
      * Returns parent class instance
      *
      * @return {(Subclass.Class.ClassTypeInterface|null)}
      */
-    ClassTypeInterface.prototype.getClassParent = function() {};
+    ClassTypeInterface.prototype.getParent = function() {};
 
     /**
      * Checks whether current class extends another one
      *
      * @returns {boolean}
      */
-    ClassTypeInterface.prototype.hasClassParent = function() {};
+    ClassTypeInterface.prototype.hasParent = function() {};
 
     /**
      * Returns all typed properties in current class instance
@@ -99,7 +99,7 @@ Subclass.Class.ClassTypeInterface = (function()
      * @param {boolean} withInherited
      * @returns {Object.<Subclass.Property.PropertyTypeInterface>}
      */
-    ClassTypeInterface.prototype.getClassProperties = function(withInherited) {};
+    ClassTypeInterface.prototype.getProperties = function(withInherited) {};
 
     /**
      * Adds new typed property to class
@@ -107,7 +107,7 @@ Subclass.Class.ClassTypeInterface = (function()
      * @param {string} propertyName
      * @param {Object} propertyDefinition
      */
-    ClassTypeInterface.prototype.addClassProperty = function(propertyName, propertyDefinition) {};
+    ClassTypeInterface.prototype.addProperty = function(propertyName, propertyDefinition) {};
 
     /**
      * Returns property instance by its name
@@ -116,7 +116,7 @@ Subclass.Class.ClassTypeInterface = (function()
      * @returns {Subclass.Property.PropertyTypeInterface}
      * @throws {Error}
      */
-    ClassTypeInterface.prototype.getClassProperty = function(propertyName) {};
+    ClassTypeInterface.prototype.getProperty = function(propertyName) {};
 
     /**
      * Checks if property with specified property name exists
@@ -124,7 +124,7 @@ Subclass.Class.ClassTypeInterface = (function()
      * @param {string} propertyName
      * @returns {boolean}
      */
-    ClassTypeInterface.prototype.issetClassProperty = function(propertyName) {};
+    ClassTypeInterface.prototype.issetProperty = function(propertyName) {};
 
     /**
      * Returns constructor function for current class type
@@ -132,21 +132,21 @@ Subclass.Class.ClassTypeInterface = (function()
      * @returns {function} Returns named function
      * @throws {Error}
      */
-    ClassTypeInterface.prototype.getClassConstructorEmpty = function() {};
+    ClassTypeInterface.prototype.getConstructorEmpty = function() {};
 
     /**
      * Returns class constructor
      *
      * @returns {Function}
      */
-    ClassTypeInterface.prototype.getClassConstructor = function() {};
+    ClassTypeInterface.prototype.getConstructor = function() {};
 
     /**
      * Creates and attaches class typed properties
      *
      * @param {Object} context Class constructor prototype
      */
-    ClassTypeInterface.prototype.attachClassProperties = function(context) {};
+    ClassTypeInterface.prototype.attachProperties = function(context) {};
 
     /**
      * Creates class instance of current class type

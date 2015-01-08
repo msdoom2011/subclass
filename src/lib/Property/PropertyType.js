@@ -563,7 +563,7 @@ Subclass.Property.PropertyType = (function()
     {
         var propertyName = this.getPropertyNameFull();
         var contextClassName = this.getContextClass()
-            ? (' in class "' + this.getContextClass().getClassName() + '"')
+            ? (' in class "' + this.getContextClass().getName() + '"')
             : "";
 
         return '"' + propertyName + '"' + contextClassName;

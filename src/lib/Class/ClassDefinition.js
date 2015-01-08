@@ -95,7 +95,7 @@ Subclass.Class.ClassDefinition = (function()
                     if (!alias[0].match(/[a-z$_]/i)) {
                         throw new Error(
                             'Invalid alias name for required class "' + requires[alias] + '" ' +
-                            'in class "' + this.getClass().getClassName() + '".'
+                            'in class "' + this.getClass().getName() + '".'
                         );
                     }
                     if (typeof requires[alias] != 'string') {
@@ -143,7 +143,7 @@ Subclass.Class.ClassDefinition = (function()
                 if (!requires.hasOwnProperty(alias)) {
                     continue;
                 }
-                classInst.addClassProperty(alias, {
+                classInst.addProperty(alias, {
                     type: "untyped",
                     className: requires[alias]
                 });
@@ -187,7 +187,7 @@ Subclass.Class.ClassDefinition = (function()
         this.getDefinition().$_extends = parentClassName;
 
         if (parentClassName) {
-            this.getClass().setClassParent(parentClassName);
+            this.getClass().setParent(parentClassName);
         }
     };
 
@@ -221,7 +221,7 @@ Subclass.Class.ClassDefinition = (function()
                 if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
                     throw Error(
                         'Specified not allowed typed property name "' + propName + '" in attribute "$_properties" ' +
-                        'in definition of class "' + this.getClass().getClassName() + '".'
+                        'in definition of class "' + this.getClass().getName() + '".'
                     );
                 }
                 if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
@@ -230,7 +230,7 @@ Subclass.Class.ClassDefinition = (function()
                 if (!properties[propName].type) {
                     throw new Error(
                         'Trying to set not valid definition of typed property "' + propName + '" in attribute "$_properties" ' +
-                        'in definition of class "' + this.getClass().getClassName() + '". Required property "type" was missed.'
+                        'in definition of class "' + this.getClass().getName() + '". Required property "type" was missed.'
                     );
                 }
             }
@@ -261,7 +261,7 @@ Subclass.Class.ClassDefinition = (function()
                 if (!properties.hasOwnProperty(propName)) {
                     continue;
                 }
-                this.getClass().addClassProperty(
+                this.getClass().addProperty(
                     propName,
                     properties[propName]
                 );
@@ -342,9 +342,9 @@ Subclass.Class.ClassDefinition = (function()
         var classInst = this.getClass();
         var parts = {};
 
-        if (classInst.hasClassParent() && withInherited) {
-            var classParent = classInst.getClassParent();
-            var classParentDefinition = classParent.getClassDefinition();
+        if (classInst.hasParent() && withInherited) {
+            var classParent = classInst.getParent();
+            var classParentDefinition = classParent.getDefinition();
 
             parts = classParentDefinition._getDefinitionDataPart(
                 typeName,
@@ -486,12 +486,12 @@ Subclass.Class.ClassDefinition = (function()
              */
             getParent: function ()
             {
-                if (!this.$_class.getClassParent()) {
+                if (!this.$_class.getParent()) {
                     return null;
                 }
                 return this.$_class
-                    .getClassParent()
-                    .getClassConstructor()
+                    .getParent()
+                    .getConstructor()
                     .prototype
                 ;
             },
@@ -522,7 +522,7 @@ Subclass.Class.ClassDefinition = (function()
              */
             issetProperty: function(propertyName)
             {
-                return this.$_class.issetClassProperty(propertyName);
+                return this.$_class.issetProperty(propertyName);
             },
 
             /**
@@ -533,7 +533,7 @@ Subclass.Class.ClassDefinition = (function()
              */
             getProperty: function(propertyName)
             {
-                return this.$_class.getClassProperty(propertyName).getAPI(this);
+                return this.$_class.getProperty(propertyName).getAPI(this);
             }
         };
     };
@@ -556,7 +556,7 @@ Subclass.Class.ClassDefinition = (function()
             if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
                 throw new Error(
                     'Trying to define property with not allowed name "' + propName + '" ' +
-                    'in class "' + classInst.getClassName() + '".'
+                    'in class "' + classInst.getName() + '".'
                 );
             }
         }
@@ -602,7 +602,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.processClassPropertyAccessors = function()
     {
-        var classProperties = this.getClass().getClassProperties();
+        var classProperties = this.getClass().getProperties();
         var classDefinition = this.getDefinition();
 
         for (var propertyName in classProperties) {
@@ -713,7 +713,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         throw new Error(
             'Invalid value of attribute "' + attributeName + '" ' +
-            'in definition of class ' + this.getClass().getClassName() + '. ' +
+            'in definition of class ' + this.getClass().getName() + '. ' +
             'It must be ' + types + '.'
         );
     };

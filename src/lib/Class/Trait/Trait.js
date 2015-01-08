@@ -38,7 +38,7 @@ Subclass.Class.Trait.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.getClassBuilderClass = function()
+    Trait.getBuilderClass = function()
     {
         return Subclass.Class.Trait.TraitBuilder;
     };
@@ -46,7 +46,7 @@ Subclass.Class.Trait.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.getClassDefinitionClass = function()
+    Trait.getDefinitionClass = function()
     {
         return Subclass.Class.Interface.InterfaceDefinition;
     };
@@ -54,45 +54,48 @@ Subclass.Class.Trait.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.prototype.setClassParent = function (parentClassName)
+    Trait.prototype.setParent = function (parentClassName)
     {
-        Trait.$parent.prototype.setClassParent.call(this, parentClassName);
+        Trait.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
             this._classParent
             && this._classParent.constructor != Trait
             && !(this._classParent instanceof Trait)
         ) {
-            throw new Error('Trait "' + this.getClassName() + '" can be inherited only from the another trait.');
+            throw new Error('Trait "' + this.getName() + '" can be inherited only from the another trait.');
         }
     };
 
     /**
      * @inheritDoc
      */
-    Trait.prototype.getClassProperties = function()
+    Trait.prototype.getProperties = function()
     {
         var properties = {};
 
-        if (this.getClassParent()) {
-            var parentClass = this.getClassParent();
-            var parentProperties = parentClass.getClassProperties();
+        if (this.hasParent()) {
+            var parentClass = this.getParent();
+            var parentProperties = parentClass.getProperties();
             properties = Subclass.Tools.extend({}, parentProperties);
         }
-        return Subclass.Tools.extend(properties, this._classProperties);
+        return Subclass.Tools.extend(
+            properties,
+            this._classProperties
+        );
     };
 
     /**
      * @inheritDoc
      */
-    Trait.prototype.attachClassProperties = function() {};
+    Trait.prototype.attachProperties = function() {};
 
     /**
      * @inheritDoc
      */
-    Trait.prototype.getClassConstructorEmpty = function ()
+    Trait.prototype.getConstructorEmpty = function ()
     {
-        return function Trait(){};
+        return function Trait() {};
     };
 
     /**

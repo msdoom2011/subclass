@@ -221,6 +221,14 @@ Subclass.Class.ClassType = (function()
     /**
      * @inheritDoc
      */
+    ClassType.prototype.hasClassParent = function()
+    {
+        return !!this._classParent;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ClassType.prototype.getClassProperties = function(withInherited)
     {
         var properties = {};
@@ -342,10 +350,12 @@ Subclass.Class.ClassType = (function()
 
         this.attachClassProperties(classConstructor.prototype);
 
-        Subclass.Tools.extend(
-            classConstructor.prototype,
-            this.getClassDefinition().getDefinition()
-        );
+        //Subclass.Tools.extend(
+        //    classConstructor.prototype,
+        //    this.getClassDefinition().getDefinition()
+        //);
+        Subclass.Tools.extend(classConstructor.prototype, this.getClassDefinition().getMethods());
+        Subclass.Tools.extend(classConstructor.prototype, this.getClassDefinition().getMetaData());
         Object.defineProperty(classConstructor.prototype, "constructor", {
             enumerable: false,
             value: classConstructor
@@ -397,6 +407,14 @@ Subclass.Class.ClassType = (function()
                 continue;
             }
             classProperties[propertyName].attachHashedProperty(classInstance);
+        }
+        var classNoMethods = this.getClassDefinition().getNoMethods(true);
+
+        for (var propName in classNoMethods) {
+            if (!classNoMethods.hasOwnProperty(propName)) {
+                continue;
+            }
+            classInstance[propName] = Subclass.Tools.copy(classNoMethods[propName]);
         }
 
         Object.seal(classInstance);

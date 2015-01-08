@@ -280,6 +280,104 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
+     * Returns all properties which names started from symbols "$_"
+     *
+     * @param {boolean} [withInherited = false]
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.getMetaData = function(withInherited)
+    {
+        return this._getDefinitionDataPart('metaData', withInherited);
+    };
+
+    /**
+     * Returns all class methods (except methods which names started from symbols "$_")
+     *
+     * @param {boolean} [withInherited = false]
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.getMethods = function(withInherited)
+    {
+        return this._getDefinitionDataPart('methods', withInherited);
+    };
+
+    /**
+     * Returns all class properties (except typed properties from "$_properties"
+     * attribute and other properties which names started from symbols "$_") that are not methods
+     *
+     * @param {boolean} [withInherited = false]
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.getNoMethods = function(withInherited)
+    {
+        return this._getDefinitionDataPart('noMethods', withInherited);
+    };
+
+    /**
+     * Returns some grouped parts of class definition depending on specified typeName.
+     *
+     * @param {string} typeName
+     *      Can be one of the followed values: 'noMethods', 'methods' or 'metaData'
+     *
+     *      noMethods - Returns all class properties (except typed properties from "$_properties"
+     *      attribute and other properties which names started from symbols "$_") that are not methods
+     *
+     *      methods - Returns all class methods (except methods which names started from symbols "$_")
+     *
+     *      metaData - Returns all properties which names started from symbols "$_"
+     *
+     * @param {boolean} [withInherited = false]
+     * @returns {Object}
+     * @private
+     */
+    ClassDefinition.prototype._getDefinitionDataPart = function(typeName, withInherited)
+    {
+        if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
+            throw new Error('Trying to get not existent class definition part data "' + typeName + '".');
+        }
+        if (withInherited !== true) {
+            withInherited = false;
+        }
+        var definition = this.getDefinition();
+        var classInst = this.getClass();
+        var parts = {};
+
+        if (classInst.hasClassParent() && withInherited) {
+            var classParent = classInst.getClassParent();
+            var classParentDefinition = classParent.getClassDefinition();
+
+            parts = classParentDefinition._getDefinitionDataPart(
+                typeName,
+                withInherited
+            );
+        }
+
+        for (var propName in definition) {
+            if (
+                !definition.hasOwnProperty(propName)
+                || (
+                    (typeName == 'noMethods' && (
+                        typeof definition[propName] == 'function'
+                        || propName.match(/^\$_/i)
+
+                    )) || (typeName == 'methods' && (
+                        typeof definition[propName] != 'function'
+                        || propName.match(/^\$_/i)
+
+                    )) || (typeName == 'metaData' && (
+                        !propName.match(/^\$_/i)
+                    ))
+                )
+            ) {
+                continue;
+            }
+            parts[propName] = definition[propName];
+        }
+        return parts;
+    };
+
+
+    /**
      * Modifies class definition
      *
      * @returns {object}
@@ -289,33 +387,44 @@ Subclass.Class.ClassDefinition = (function()
         return {
 
             /**
-             * @type {string} Class name
+             * Class name
+             *
+             * @type {string}
              */
             $_className: null,
 
             /**
-             * @type {string} Class type
+             * Class type
+             *
+             * @type {string}
              */
             $_classType: null,
 
             /**
-             * @type {ClassType} Class definition closure
+             * Class definition closure
+             *
+             * @type {ClassType}
              */
             $_class: null,
 
             /**
-             * @type {(string[]|Object.<string>|null)} Required classes
-             * @TODO needed for auto load classes in further implementation
+             * Required classes
+             *
+             * @type {(string[]|Object.<string>|null)}
              */
             $_requires: null,
 
             /**
-             * @type {string} Parent class name
+             * Parent class name
+             *
+             * @type {string}
              */
             $_extends: null,
 
             /**
-             * @type {Object} List of class typed properties
+             * List of class typed properties
+             *
+             * @type {Object}
              */
             $_properties: {},
 

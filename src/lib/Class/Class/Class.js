@@ -325,6 +325,11 @@ Subclass.Class.Class.Class = (function() {
             throw new Error('Interface name must be specified.');
         }
         var interfaceClass = this.getClassManager().getClass(interfaceName);
+
+        if (interfaceClass.constructor != Subclass.Class.Interface.Interface) {
+            throw new Error('Can\'t implement no interface "' + interfaceName + '" in class "' + this.getClassName() + '".');
+        }
+
         var interfaceClassConstructor = interfaceClass.getClassConstructor();
         var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
         var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();

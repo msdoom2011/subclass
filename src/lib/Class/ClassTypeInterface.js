@@ -78,6 +78,13 @@ Subclass.Class.ClassTypeInterface = (function()
     ClassTypeInterface.prototype.getClassParent = function() {};
 
     /**
+     * Checks whether current class extends another one
+     *
+     * @returns {boolean}
+     */
+    ClassTypeInterface.prototype.hasClassParent = function() {};
+
+    /**
      * Returns all typed properties in current class instance
      *
      * @param {boolean} withInherited

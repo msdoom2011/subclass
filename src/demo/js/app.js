@@ -17,22 +17,19 @@ var appPlugin1 = Subclass.createModule('appPlugin1', {
 });
 
 appPlugin1.onReady(function() {
-    alert('initializing plugin1');
+    console.log('****************');
+    console.log('initializing plugin1');
+    console.log('****************');
 });
 
 appPlugin1.registerClass("Bug3", {
 
-    $_implements: ["BugInterface"],
+    $_extends: "BugAbstract",
 
-    getName: function()
-    {
-        return "bug3";
-    },
+    _name: "bug3",
 
-    getMessage: function()
-    {
-        return "Bug 3 happens.";
-    }
+    _message: "Bug 3 happens."
+
 });
 
 //var bug3 = appPlugin1.getClass('Bug3').createInstance();
@@ -55,12 +52,16 @@ var appPlugin2 = Subclass.createModule('appPlugin2', {
         }
     },
     onReady: function() {
-        alert('initializing plugin2');
+        console.log('****************');
+        console.log('initializing plugin2');
+        console.log('****************');
     }
 });
 
 appPlugin2.onReady(function() {
-    alert('initializing plugin2 else');
+    console.log('****************');
+    console.log('initializing plugin2 else');
+    console.log('****************');
 });
 
 appPlugin2.setConfigs({
@@ -68,7 +69,9 @@ appPlugin2.setConfigs({
         mode: "fuck!!!!"
     },
     onReady: function() {
-        alert('initializing plugin2 else new!!!');
+        console.log('****************');
+        console.log('initializing plugin2 else new!!!');
+        console.log('****************');
     }
 });
 
@@ -76,17 +79,12 @@ appPlugin1.getModule().getParameterManager().getParameter('mode');
 
 appPlugin2.registerClass("Bug2Changed", {
 
-    $_implements: ["BugInterface"],
+    $_extends: "BugAbstract",
 
-    getName: function()
-    {
-        return "bug2changed";
-    },
+    _name: "bug2changed",
 
-    getMessage: function()
-    {
-        return "Bug 2 changed happens.";
-    }
+    _message: "Bug 2 changed happens."
+
 });
 
 // ======================================================================
@@ -591,57 +589,71 @@ app.registerInterface("BugInterface", {
 
 });
 
-app.registerClass("Bug1", {
+app.registerAbstractClass("BugAbstract", {
 
     $_implements: ["BugInterface"],
 
     getName: function()
     {
-        return "bug1";
+        return this._name;
     },
 
     getMessage: function()
     {
-        return "Bug 1 happens.";
+        return this._message;
     }
+
+});
+
+app.registerClass("Bug1", {
+
+    $_extends: "BugAbstract",
+
+    _name: "bug1",
+
+    _message: "bug 1 happens"
 });
 
 app.registerClass("Bug2", {
 
-    $_implements: ["BugInterface"],
+    $_extends: "BugAbstract",
 
-    getName: function()
-    {
-        return "bug2";
-    },
+    _name: "bug2",
 
-    getMessage: function()
-    {
-        return "Bug 2 happens.";
-    }
+    _message: "Bug 2 happens."
 
 });
 
 
 app.onReady(function() {
 
-    alert('initializing app');
+    console.log('****************');
+    console.log('initializing app');
+    console.log('****************');
 
     console.log('');
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
     var logger = app.getService('logger');
-    var loggerElse = app.getService('logger');
+    var loggerElse = app.getService('logger', true);
 
     console.log(loggerElse == logger);
     console.log(logger.getBugs());
 
-    var bugs = logger.getBugs();
+    loggerElse.getBugs()[0]._name = 'yo!!!';
 
-    for (var i = 0; i < bugs.length; i++) {
-        console.log(bugs[i].getName());
-        console.log(bugs[i].getMessage());
-        console.log('-----------');
+    var loggers = [logger.getBugs(), loggerElse.getBugs()];
+
+    for (var j = 0; j < loggers.length; j++) {
+        var bugs = loggers[j];
+
+        console.log("~~ logger - " + (j + 1) + " ~~");
+
+        for (var i = 0; i < bugs.length; i++) {
+            console.log(bugs[i].getName());
+            console.log(bugs[i].getMessage());
+            console.log('-----------');
+        }
     }
 
     //app.getClass('Psix').createInstance().psix();

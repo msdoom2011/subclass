@@ -10,8 +10,8 @@ var appPlugin1 = Subclass.createModule('appPlugin1', {
     },
     services: {
         bug3: {
-            className: "Bug3",
-            tags: ['logger']
+            extends: 'bug',
+            className: "Bug3"
         }
     }
 });
@@ -50,8 +50,8 @@ var appPlugin2 = Subclass.createModule('appPlugin2', {
     },
     services: {
         bug2: {
-            className: "Bug2Changed",
-            tags: ['logger']
+            extends: 'bug',
+            className: "Bug2Changed"
         }
     },
     onReady: function() {
@@ -113,13 +113,17 @@ var app = Subclass.createModule('app', /*['appPlugin1', 'appPlugin2'],*/ {
                 ]
             }
         },
-        bug1: {
-            className: "Bug1",
+        bug: {
+            abstract: true,
             tags: ['logger']
         },
+        bug1: {
+            extends: "bug",
+            className: "Bug1"
+        },
         bug2: {
-            className: "Bug2",
-            tags: ['logger']
+            extends: "bug",
+            className: "Bug2"
         }
     }
 });

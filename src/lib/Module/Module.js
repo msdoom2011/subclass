@@ -90,6 +90,10 @@ Subclass.Module.Module = (function()
          */
         this._eventManager = new Subclass.Event.EventManager(this);
 
+        // Registering events
+
+        this.getEventManager().registerEvent('onReady');
+
         /**
          * Collection of modules
          *
@@ -130,10 +134,6 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._parameterManager = new Subclass.Parameter.ParameterManager(this);
-
-        // Registering events
-
-        this.getEventManager().registerEvent('onReady');
 
         /**
          * Module configuration

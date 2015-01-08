@@ -30,19 +30,22 @@ Subclass.Service.ServiceFactory = (function()
     /**
      * Returns service class instance
      *
-     * @param {Subclass.Service.Service} service
+     * @param {Subclass.Service.Service} serviceDefinition
      * @returns {Object}
      */
-    ServiceFactory.prototype.getService = function(service)
+    ServiceFactory.prototype.getService = function(serviceDefinition)
     {
-        if (service.isInitialized() && service.isSingleton()) {
-            return service.getInstance();
+        if (serviceDefinition.getAbstract()) {
+            serviceDefinition._throwAbstractService();
         }
-        if (!service.isInitialized()) {
-            service.initialize();
+        if (serviceDefinition.isInitialized() && serviceDefinition.isSingleton()) {
+            return serviceDefinition.getInstance();
         }
-        var serviceClassInst = this.createService(service);
-        service.setInstance(serviceClassInst);
+        if (!serviceDefinition.isInitialized()) {
+            serviceDefinition.initialize();
+        }
+        var serviceClassInst = this.createService(serviceDefinition);
+        serviceDefinition.setInstance(serviceClassInst);
 
         return serviceClassInst;
     };
@@ -50,22 +53,25 @@ Subclass.Service.ServiceFactory = (function()
     /**
      * Creates and returns service class instance
      *
-     * @param {Subclass.Service.Service} service
+     * @param {Subclass.Service.Service} serviceDefinition
      */
-    ServiceFactory.prototype.createService = function(service)
+    ServiceFactory.prototype.createService = function(serviceDefinition)
     {
+        if (serviceDefinition.getAbstract()) {
+            serviceDefinition._throwAbstractService();
+        }
         var serviceManager = this.getServiceManager();
         var classManager = serviceManager.getModule().getClassManager();
 
         // Creating class instance
 
-        var classDef = classManager.getClass(service.getClassName());
-        var classArguments = service.normalizeArguments(service.getArguments());
+        var classDef = classManager.getClass(serviceDefinition.getClassName());
+        var classArguments = serviceDefinition.normalizeArguments(serviceDefinition.getArguments());
         var classInst = classDef.createInstance.apply(classDef, classArguments);
 
         // Processing calls
 
-        var calls = service.normalizeCalls(service.getCalls());
+        var calls = serviceDefinition.normalizeCalls(serviceDefinition.getCalls());
 
         for (var methodName in calls) {
             if (!calls.hasOwnProperty(methodName)) {
@@ -80,7 +86,7 @@ Subclass.Service.ServiceFactory = (function()
         // Processing tags
 
         if (classInst.isImplements('Subclass/Service/TaggableInterface')) {
-            var taggedServices = serviceManager.getServicesByTag(service.getName());
+            var taggedServices = serviceManager.getServicesByTag(serviceDefinition.getName());
 
             classInst.processTaggedServices(taggedServices);
         }

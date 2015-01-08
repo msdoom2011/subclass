@@ -45,6 +45,39 @@ Subclass.Service.ServiceManager = (function()
          * @private
          */
         this._services = {};
+
+
+        // Initializing
+
+        var eventManager = this.getModule().getEventManager();
+        var $this = this;
+
+        eventManager.getEvent('onReady').addListener(70, function() {
+            if (!$this.getModule().isRoot()) {
+                return;
+            }
+            var serviceDefinitions = $this.getServices();
+
+            for (var serviceName in serviceDefinitions) {
+                if (!serviceDefinitions.hasOwnProperty(serviceName)) {
+                    continue;
+                }
+                var parentServiceName = serviceDefinitions[serviceName].getExtends();
+                var definition = serviceDefinitions[serviceName].getDefinition();
+
+                if (parentServiceName) {
+                    var parentServiceDefinition = $this.getServiceDefinition(parentServiceName);
+                    var parentDefinition = Subclass.Tools.copy(parentServiceDefinition.getDefinition());
+
+                    if (!definition.abstract) {
+                        definition.abstract = false;
+                    }
+
+                    definition = Subclass.Tools.extend(parentDefinition, definition);
+                    serviceDefinitions[serviceName].setDefinition(definition);
+                }
+            }
+        });
     }
 
     /**
@@ -80,7 +113,7 @@ Subclass.Service.ServiceManager = (function()
     {
         var mainModule = this.getModule();
         var moduleManager = mainModule.getModuleManager();
-        var services = {};
+        var serviceDefinitions = {};
         var $this = this;
 
         if (privateServices !== true) {
@@ -92,16 +125,16 @@ Subclass.Service.ServiceManager = (function()
 
         moduleManager.eachModule(function(module) {
             if (module == mainModule) {
-                Subclass.Tools.extend(services, $this._services);
+                Subclass.Tools.extend(serviceDefinitions, $this._services);
                 return;
             }
             var moduleServiceManager = module.getServiceManager();
             var moduleServices = moduleServiceManager.getServices();
 
-            Subclass.Tools.extend(services, moduleServices);
+            Subclass.Tools.extend(serviceDefinitions, moduleServices);
         });
 
-        return services;
+        return serviceDefinitions;
     };
 
     /**
@@ -112,16 +145,16 @@ Subclass.Service.ServiceManager = (function()
      */
     ServiceManager.prototype.getServicesByTag = function(tag)
     {
-        var services = this.getServices();
+        var serviceDefinitions = this.getServices();
         var taggedServices = [];
 
-        for (var serviceName in services) {
-            if (!services.hasOwnProperty(serviceName)) {
+        for (var serviceName in serviceDefinitions) {
+            if (!serviceDefinitions.hasOwnProperty(serviceName)) {
                 continue;
             }
-            var tags = services[serviceName].getTags();
+            var tags = serviceDefinitions[serviceName].getTags();
 
-            if (tags.indexOf(tag) >= 0) {
+            if (tags.indexOf(tag) >= 0 && !serviceDefinitions[serviceName].getAbstract()) {
                 taggedServices.push(this.getService(serviceName));
             }
         }
@@ -137,15 +170,6 @@ Subclass.Service.ServiceManager = (function()
      */
     ServiceManager.prototype.registerService = function(serviceName, serviceDefinition)
     {
-        if (!serviceName || typeof serviceName != 'string') {
-            throw new Error('Specified invalid name of the service. It must be a string.');
-        }
-        if (!serviceDefinition || !Subclass.Tools.isPlainObject(serviceDefinition)) {
-            throw new Error(
-                'Specified invalid definition of service "' + serviceName + '". ' +
-                'It must be a plain object.'
-            );
-        }
         if (this.getModule().isReady()) {
             throw new Error('Can\'t define new services when module is ready.');
         }
@@ -153,7 +177,10 @@ Subclass.Service.ServiceManager = (function()
         this._services[serviceName] = service;
 
         var classManager = this.getModule().getClassManager();
+
+        if (serviceDefinition.className) {
             classManager.addToLoadStack(serviceDefinition.className);
+        }
 
         return service;
     };

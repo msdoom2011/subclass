@@ -3,36 +3,45 @@ Subclass.Tools.PropertyTools = (function()
     Subclass.Tools.extend(Subclass.Tools, {
 
         /**
-         * Returns name of class property getter function
+         * Returns name of getter function for the class property with specified name
          *
-         * @param {string} propertyName A name of the class typed property
+         * @param {string} propertyName
+         *      A name of the class typed property defined in $_properties parameter
+         *
          * @returns {string}
          */
         generateGetterName: function (propertyName)
         {
-            return generateAccessorName("get", propertyName);
+            return _generateAccessorName("get", propertyName);
         },
 
         /**
-         * Returns name of class property setter function
+         * Returns name of setter function for the class property with specified name
          *
-         * @param {string} propertyName A name of the class typed property
+         * @param {string} propertyName
+         *      A name of the class typed property defined in $_properties parameter
+         *
          * @returns {string}
          */
         generateSetterName: function (propertyName)
         {
-            return generateAccessorName("set", propertyName);
+            return _generateAccessorName("set", propertyName);
         }
     });
 
     /**
      * Generates class property accessor function name
      *
-     * @param {string} accessorType Can be "get" or "set"
+     * @param {string} accessorType
+     *      Can be "get" or "set"
+     *
      * @param {string} propertyName
+     *      A name of the class typed property defined in $_properties parameter
+     *
      * @returns {string}
+     * @private
      */
-    function generateAccessorName(accessorType, propertyName)
+    function _generateAccessorName(accessorType, propertyName)
     {
         if (['get', 'set'].indexOf(accessorType) < 0) {
             throw new Error('Invalid accessor type! It can be only "get" or "set".');

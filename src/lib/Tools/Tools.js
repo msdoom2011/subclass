@@ -9,8 +9,15 @@ Subclass.Tools = (function()
          * already existed property with the same name in the target object or array.
          *
          * @param {(Object|Array)} target
+         *      An object which will receive properties from source object
+         *
          * @param {(Object|Array)} source
-         * @param {boolean} [withInheritedProps]
+         *      An object which properties will be transferred to the target object
+         *
+         * @param {boolean} [withInheritedProps = false]
+         *      A marker which indicates whether will be transferred
+         *      inherited (from prototype) properties from source to target object
+         *
          * @returns {(Object|Array)}
          */
         extend: function (target, source, withInheritedProps)
@@ -33,7 +40,7 @@ Subclass.Tools = (function()
                 }
             } else {
                 for (var propName in source) {
-                    if (!withInheritedProps && !source.hasOwnProperty(propName)) {
+                    if (!source.hasOwnProperty(propName) && !withInheritedProps) {
                         continue;
                     }
                     target[propName] = source[propName];
@@ -159,6 +166,8 @@ Subclass.Tools = (function()
                 ) {
                     var clone;
 
+                    // If copying array
+
                     if (sourceItemIsArray && mergeArrays) {
                         sourceItemIsArray = false;
                         clone = [];
@@ -177,6 +186,8 @@ Subclass.Tools = (function()
                             }
                             continue;
                         }
+
+                    // If copying non array
 
                     } else {
                         clone = target[propName] && isPlainObject(target[propName])
@@ -233,10 +244,19 @@ Subclass.Tools = (function()
             return newObj;
         },
 
+        /**
+         * Returns array with unique elements
+         *
+         * @param {Array} array
+         * @returns {Array}
+         */
         unique: function(array)
         {
             var uniqueArray = [];
 
+            if (!Array.isArray(array)) {
+                return array;
+            }
             for (var i = 0; i < array.length; i++) {
                 if (uniqueArray.indexOf(array[i]) < 0) {
                     uniqueArray.push(array[i]);

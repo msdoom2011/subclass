@@ -6,6 +6,7 @@ Subclass.Tools.ConverterTools = (function()
          * Converting number to formatted string with thousands separator (comma by default)
          *
          * @param {(number|string)} number
+         *      Input parameter
          * @param {string} thousandsSeparator
          * @returns {string}
          */

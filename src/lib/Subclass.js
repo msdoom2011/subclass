@@ -1,7 +1,7 @@
 /**
  * @class
- * @description The basic class for creating new application based on SubclassJS framework.
  * @name Subclass
+ * @description The basic class for creating new application based on SubclassJS framework.
  */
 window.Subclass = (function()
 {
@@ -39,6 +39,9 @@ window.Subclass = (function()
             if (!moduleDependencies) {
                 moduleDependencies = [];
             }
+
+            // If for registering module exists plugins
+
             for (var i = 0; i < _modules.length; i++) {
                 var registeredModuleName = _modules[i].getName();
                 var pluginOf = _modules[i].getConfigManager().getPluginOf();
@@ -49,6 +52,8 @@ window.Subclass = (function()
             }
 
             moduleDependencies = Subclass.Tools.unique(moduleDependencies);
+
+            // Creating instance of module
 
             var module = new Subclass.Module.Module(
                 moduleName,

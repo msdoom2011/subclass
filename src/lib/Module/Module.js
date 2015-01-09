@@ -1,51 +1,62 @@
-/**
- * @namespace
- */
+/** @namespace */
 Subclass.Module = {};
 
 /**
+ * Subclass module constructor
  * @class
+ * @property {string} _name Name of the module
+ * @constructor
+ *
+ * @param {string} moduleName
+ *      A name of creating module<br />
+ *
+ * @param {string[]} [moduleDependencies]
+ *      Array with names of another modules which are plugins for current one<br />
+ *
+ * @param {Object} [moduleConfigs]
+ * Module configuration object. Allowed configs are:
+ * <pre>-----------------------------------------------------------------------------------
+ *
+ * plugin         {boolean}     optional    Tells that current module is
+ *                                          a plugin and its onReady callback
+ *                                          will be called only after this
+ *                                          module will be included in main
+ *                                          module. If "plugin" is true the
+ *                                          "autoload" option automatically
+ *                                          sets in false and can't be changed.
+ *                                          Default false.
+ *
+ * pluginOf       {string}      optional    Specifies parent module to which
+ *                                          current one belongs to. If its sets
+ *                                          in true the "plugin" option will
+ *                                          atomatically sets in true.
+ *
+ * autoload       {boolean}     optional    Enables class autoload or not.
+ *                                          It's true by default
+ *
+ * rootPath       {string}      optional    Path to root directory of the
+ *                                          project. It's required if autoload
+ *                                          parameter value is true.
+ *
+ * dataTypes      {Object}      optional    Object, which keys will be type
+ *                                          names (alias) and value will
+ *                                          be its definitions.
+ *
+ * parameters     {Object}      optional    Object with parameters which can
+ *                                          be used in service definitions
+ *                                          or in any other places,
+ *                                          i.e in classes.
+ *
+ * services       {Object}      optional    List of service definitions.
+ *
+ * onReady        {Function}    optional    Callback that will be invoked when
+ *                                          all module classes will be loaded.
+ * </pre>
  */
 Subclass.Module.Module = (function()
 {
     /**
-     * Subclass module constructor
-     *
-     * @param {string} moduleName
-     * @param {string[]} [moduleDependencies]
-     * @param {Object} [moduleConfigs]
-     *
-     *      Allowed configs are:
-     *      ------------------------------------------------------------------------------------------------------
-     *
-     *      plugin          {boolean}           optional    Tells that current module is a plugin and its onReady
-     *                                                      callback will be called only after this module will
-     *                                                      be included in main module. If "plugin" is true
-     *                                                      the autoload option automatically sets in false
-     *                                                      and can't be changed. Default false.
-     *
-     *      pluginOf        {string}            optional    Specifies parent module to which current one belongs to.
-     *                                                      If its sets in true the "plugin" option will atomatically
-     *                                                      sets in true.
-     *
-     *      autoload        {boolean}           optional    Enables class autoload or not. It's true by default
-     *
-     *      rootPath        {string}            optional    Path to root directory of the project. It's required
-     *                                                      if autoload parameter value is true.
-     *
-     *      dataTypes       {Object.<Object>}   optional    Object, which keys will be type names (alias)
-     *                                                      and value will be its definitions
-     *
-     *      parameters      {Object}            optional    Object with parameters which can be used
-     *                                                      in service definitions or in any other places,
-     *                                                      i.e in classes.
-     *
-     *      services        {Object.<Object>}   optional    List of service definitions.
-     *
-     *      onReady         {Function}          optional    Callback that will be invoked when all module
-     *                                                      classes will be loaded
-     *
-     * @constructor
+     * @ignore
      */
     function Module(moduleName, moduleDependencies, moduleConfigs)
     {
@@ -164,6 +175,7 @@ Subclass.Module.Module = (function()
      * Returns module name
      *
      * @returns {string}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getName = function()
     {
@@ -174,6 +186,7 @@ Subclass.Module.Module = (function()
      * Sets parent module
      *
      * @param parentModule
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.setParent = function(parentModule)
     {
@@ -187,6 +200,7 @@ Subclass.Module.Module = (function()
      * Returns parent module
      *
      * @returns {(Subclass.Module.Module|null)}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getParent = function()
     {
@@ -197,6 +211,7 @@ Subclass.Module.Module = (function()
      * Checks whether current module belongs to another module
      *
      * @returns {boolean}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.hasParent = function()
     {
@@ -207,6 +222,7 @@ Subclass.Module.Module = (function()
      * Returns the root parent module
      *
      * @returns {Subclass.Module.Module}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getRoot = function()
     {
@@ -225,6 +241,7 @@ Subclass.Module.Module = (function()
      * Checks whether current module is root module
      *
      * @returns {boolean}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.isRoot = function()
     {
@@ -233,6 +250,8 @@ Subclass.Module.Module = (function()
 
     /**
      * Returns public api
+     *
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getAPI = function()
     {
@@ -244,6 +263,7 @@ Subclass.Module.Module = (function()
      * New configs attributes will rewrite specified earlier ones.
      *
      * @param {Object} configs
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.setConfigs = function(configs)
     {
@@ -254,6 +274,7 @@ Subclass.Module.Module = (function()
      * Returns module configs
      *
      * @returns {Subclass.Module.ModuleConfigs}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getConfigManager = function()
     {
@@ -264,6 +285,7 @@ Subclass.Module.Module = (function()
      * Returns event manager instance
      *
      * @returns {Subclass.Event.EventManager}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getEventManager = function()
     {
@@ -274,6 +296,7 @@ Subclass.Module.Module = (function()
      * Returns module manager instance
      *
      * @returns {Subclass.Module.ModuleManager}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getModuleManager = function()
     {
@@ -284,6 +307,7 @@ Subclass.Module.Module = (function()
      * Returns class manager instance
      *
      * @returns {Subclass.Class.ClassManager}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getClassManager = function()
     {
@@ -294,6 +318,7 @@ Subclass.Module.Module = (function()
      * Returns property manager instance
      *
      * @returns {Subclass.Property.PropertyManager}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getPropertyManager = function()
     {
@@ -304,6 +329,7 @@ Subclass.Module.Module = (function()
      * Returns service manager instance
      *
      * @returns {Subclass.Service.ServiceManager}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getServiceManager = function()
     {
@@ -314,6 +340,7 @@ Subclass.Module.Module = (function()
      * Returns parameter manager instance
      *
      * @returns {Subclass.Parameter.ParameterManager}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.getParameterManager = function()
     {
@@ -322,6 +349,8 @@ Subclass.Module.Module = (function()
 
     /**
      * Sets callback when all classes was defined and loaded
+     *
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.onReady = function(callback)
     {
@@ -330,6 +359,8 @@ Subclass.Module.Module = (function()
 
     /**
      * Invokes init callback
+     *
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.triggerOnReady = function()
     {
@@ -355,6 +386,7 @@ Subclass.Module.Module = (function()
      * Checks if current class manager instance was initialized
      *
      * @returns {boolean}
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.isReady = function()
     {

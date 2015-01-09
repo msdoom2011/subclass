@@ -3,7 +3,7 @@
  * @name Subclass
  * @description The basic class for creating new application based on SubclassJS framework.
  */
-window.Subclass = (function()
+var Subclass = (function()
 {
     /**
      * Collection of registered modules
@@ -28,6 +28,7 @@ window.Subclass = (function()
          *      A configuration of the creating module
          *
          * @returns {Subclass.Module.ModuleAPI}
+         * @memberOf Subclass
          * @static
          */
         createModule: function(moduleName, moduleDependencies, moduleConfigs)
@@ -72,6 +73,7 @@ window.Subclass = (function()
          *      A module name that you want to get
          *
          * @returns {Subclass.Module.ModuleAPI}
+         * @memberOf Subclass
          * @static
          */
         getModule: function(moduleName)
@@ -93,6 +95,7 @@ window.Subclass = (function()
          *      A module name that you want to check whether it exists
          *
          * @returns {boolean}
+         * @memberOf Subclass
          * @static
          */
         issetModule: function(moduleName)
@@ -106,3 +109,5 @@ window.Subclass = (function()
         }
     };
 })();
+
+window.Subclass = Subclass;

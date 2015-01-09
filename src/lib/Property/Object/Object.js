@@ -51,7 +51,7 @@ Subclass.Property.Object.Object = (function()
     /**
      * @inheritDoc
      */
-    ObjectType.prototype.getPropertyDefinitionClass = function()
+    ObjectType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Object.ObjectDefinition;
     };

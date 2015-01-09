@@ -52,7 +52,7 @@ Subclass.Property.Mixed.Mixed = (function()
     /**
      * @inheritDoc
      */
-    MixedType.prototype.getPropertyDefinitionClass = function()
+    MixedType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Mixed.MixedDefinition;
     };

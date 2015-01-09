@@ -149,7 +149,7 @@ Subclass.Property.PropertyManager = (function()
         }
 
         if (!Subclass.Property.PropertyManager.issetPropertyType(propertyTypeName)) {
-            var propertyFullName = (contextProperty && contextProperty.getPropertyNameFull() + "." || '') + propertyName;
+            var propertyFullName = (contextProperty && contextProperty.getNameFull() + "." || '') + propertyName;
 
             throw new Error('Trying to create property "' + propertyFullName + '" of none existent type "' + propertyTypeName + '"' +
                 (contextClass && ' in class "' + contextClass.getName() + '"') + '.');

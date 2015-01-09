@@ -111,16 +111,6 @@ Subclass.Property.CustomTypesManager = (function()
         }
     };
 
-    ///**
-    // * Returns definitions of custom types
-    // *
-    // * @returns {Object.<Object>}
-    // */
-    //CustomTypesManager.prototype.getTypeDefinitions = function()
-    //{
-    //    return this._typeDefinitions;
-    //};
-
     /**
      * Returns definitions of custom types
      *

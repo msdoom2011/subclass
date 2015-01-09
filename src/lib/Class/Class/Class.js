@@ -244,7 +244,7 @@ Subclass.Class.Class.Class = (function() {
                 continue;
             }
             var property = traitClassProperties[propName];
-            this.addProperty(propName, property.getPropertyDefinition().getDefinition());
+            this.addProperty(propName, property.getDefinition().getData());
         }
 
         // Copying all properties and methods (with inherited) from trait to class definition

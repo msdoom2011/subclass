@@ -84,7 +84,7 @@ Subclass.Property.Number.NumberDefinition = (function()
     NumberDefinition.prototype.setMaxValue = function(maxValue)
     {
         this.validateMaxValue(maxValue);
-        this.getDefinition().maxValue = maxValue;
+        this.getData().maxValue = maxValue;
         this.validateMinMaxValues();
     };
 
@@ -95,7 +95,7 @@ Subclass.Property.Number.NumberDefinition = (function()
      */
     NumberDefinition.prototype.getMaxValue = function()
     {
-        return this.getDefinition().maxValue;
+        return this.getData().maxValue;
     };
 
     /**
@@ -118,7 +118,7 @@ Subclass.Property.Number.NumberDefinition = (function()
     NumberDefinition.prototype.setMinValue = function(minValue)
     {
         this.validateMinValue(minValue);
-        this.getDefinition().minValue = minValue;
+        this.getData().minValue = minValue;
         this.validateMinMaxValues();
     };
 
@@ -129,7 +129,7 @@ Subclass.Property.Number.NumberDefinition = (function()
      */
     NumberDefinition.prototype.getMinValue = function()
     {
-        return this.getDefinition().minValue;
+        return this.getData().minValue;
     };
 
     /**
@@ -150,9 +150,9 @@ Subclass.Property.Number.NumberDefinition = (function()
     /**
      * @inheritDoc
      */
-    NumberDefinition.prototype.getBaseDefinition = function()
+    NumberDefinition.prototype.getBaseData = function()
     {
-        var baseDefinition = NumberDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var baseDefinition = NumberDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
          * Specified max number value if it isn't null
@@ -172,9 +172,9 @@ Subclass.Property.Number.NumberDefinition = (function()
     /**
      * @inheritDoc
      */
-    NumberDefinition.prototype.validateDefinition = function()
+    NumberDefinition.prototype.validateData = function()
     {
-        NumberDefinition.$parent.prototype.validateDefinition.call(this);
+        NumberDefinition.$parent.prototype.processData.call(this);
 
         this.validateMinMaxValues();
     };

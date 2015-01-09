@@ -34,7 +34,7 @@ Subclass.Property.PropertyDefinition = (function()
          * @type {Object}
          * @private
          */
-        this._definition = propertyDefinition;
+        this._data = propertyDefinition;
     }
 
     PropertyDefinition.$parent = null;
@@ -44,9 +44,9 @@ Subclass.Property.PropertyDefinition = (function()
      *
      * @returns {Object}
      */
-    PropertyDefinition.prototype.getDefinition = function()
+    PropertyDefinition.prototype.getData = function()
     {
-        return this._definition;
+        return this._data;
     };
 
     /**
@@ -89,7 +89,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.setType = function(type)
     {
         this.validateType(type);
-        this.getDefinition().type = type;
+        this.getData().type = type;
     };
 
     /**
@@ -99,7 +99,7 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.getType = function()
     {
-        return this.getDefinition().type;
+        return this.getData().type;
     };
 
     /**
@@ -126,7 +126,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.setValue = function(value)
     {
         this.validateValue(value);
-        this.getDefinition().value = value;
+        this.getData().value = value;
     };
 
     /**
@@ -136,7 +136,7 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.getValue = function()
     {
-        return this.getDefinition().value;
+        return this.getData().value;
     };
 
     /**
@@ -159,7 +159,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.setWatcher = function(watcher)
     {
         this.validateWatcher(watcher);
-        this.getDefinition().watcher = watcher;
+        this.getData().watcher = watcher;
     };
 
     /**
@@ -169,7 +169,7 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.getWatcher = function()
     {
-        return this.getDefinition().watcher;
+        return this.getData().watcher;
     };
 
     /**
@@ -192,7 +192,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.setAccessors = function(isAccessors)
     {
         this.validateAccessors(isAccessors);
-        this.getDefinition().accessors = isAccessors;
+        this.getData().accessors = isAccessors;
     };
 
     /**
@@ -202,7 +202,7 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.isAccessors = function()
     {
-        var isAccessors = this.getDefinition().accessors;
+        var isAccessors = this.getData().accessors;
 
         return isAccessors !== null ? isAccessors : true;
     };
@@ -227,7 +227,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.setWritable = function(isWritable)
     {
         this.validateWritable(isWritable);
-        this.getDefinition().writable = isWritable;
+        this.getData().writable = isWritable;
     };
 
     /**
@@ -237,7 +237,7 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.isWritable = function()
     {
-        var isWritable = this.getDefinition().writable;
+        var isWritable = this.getData().writable;
 
         return isWritable !== null ? isWritable : true;
     };
@@ -262,7 +262,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.setNullable = function(isNullable)
     {
         this.validateNullable(isNullable);
-        this.getDefinition().nullable = isNullable;
+        this.getData().nullable = isNullable;
     };
 
     /**
@@ -272,7 +272,7 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.isNullable = function()
     {
-        var isNullable = this.getDefinition().nullable;
+        var isNullable = this.getData().nullable;
 
         return isNullable !== null ? isNullable : true;
     };
@@ -292,7 +292,7 @@ Subclass.Property.PropertyDefinition = (function()
      *
      * @returns {object}
      */
-    PropertyDefinition.prototype.getBaseDefinition = function()
+    PropertyDefinition.prototype.getBaseData = function()
     {
         return {
             /**
@@ -345,10 +345,10 @@ Subclass.Property.PropertyDefinition = (function()
     /**
      * Validating property definition
      */
-    PropertyDefinition.prototype.validateDefinition = function()
+    PropertyDefinition.prototype.validateData = function()
     {
         var requiredAttributes = this.getRequiredAttributes();
-        var definition = this.getDefinition();
+        var definition = this.getData();
 
         for (var i = 0; i < requiredAttributes.length; i++) {
             var attrName = requiredAttributes[i];
@@ -362,12 +362,12 @@ Subclass.Property.PropertyDefinition = (function()
     /**
      * Processing property definition
      */
-    PropertyDefinition.prototype.processDefinition = function()
+    PropertyDefinition.prototype.processData = function()
     {
-        var definition = this.getDefinition();
+        var definition = this.getData();
         var emptyValue = !definition.hasOwnProperty('value');
 
-        this._definition = this.getBaseDefinition();
+        this._data = this.getBaseData();
 
         for (var attrName in definition) {
             if (!definition.hasOwnProperty(attrName) || attrName == 'value') {

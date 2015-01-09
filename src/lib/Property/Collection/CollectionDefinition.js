@@ -44,7 +44,7 @@ Subclass.Property.Collection.CollectionDefinition = (function()
     CollectionDefinition.prototype.setProto = function(proto)
     {
         this.validateProto(proto);
-        this.getDefinition().proto = proto;
+        this.getData().proto = proto;
     };
 
     /**
@@ -54,15 +54,15 @@ Subclass.Property.Collection.CollectionDefinition = (function()
      */
     CollectionDefinition.prototype.getProto = function()
     {
-        return this.getDefinition().proto;
+        return this.getData().proto;
     };
 
     /**
      * @inheritDoc
      */
-    CollectionDefinition.prototype.getBaseDefinition = function()
+    CollectionDefinition.prototype.getBaseData = function()
     {
-        var baseDefinition = CollectionDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var baseDefinition = CollectionDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
          * Property definition which every collection element must match.
@@ -86,9 +86,9 @@ Subclass.Property.Collection.CollectionDefinition = (function()
     /**
     * @inheritDoc
     */
-    CollectionDefinition.prototype.processDefinition = function()
+    CollectionDefinition.prototype.processData = function()
     {
-        CollectionDefinition.$parent.prototype.processDefinition.call(this);
+        CollectionDefinition.$parent.prototype.processData.call(this);
 
         this.getProperty().setProto(this.getProto());
     };

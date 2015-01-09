@@ -44,9 +44,9 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
     /**
      * @inheritDoc
      */
-    ArrayCollectionDefinition.prototype.processDefinition = function()
+    ArrayCollectionDefinition.prototype.processData = function()
     {
-        ArrayCollectionDefinition.$parent.prototype.processDefinition.call(this);
+        ArrayCollectionDefinition.$parent.prototype.processData.call(this);
 
         var defaultValue = this.getValue();
 

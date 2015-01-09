@@ -416,7 +416,7 @@ Subclass.Class.ClassType = (function()
             if (!classProperties.hasOwnProperty(propertyName)) {
                 continue;
             }
-            classProperties[propertyName].attachHashedProperty(classInstance);
+            classProperties[propertyName].attachHashed(classInstance);
         }
         var classNoMethods = this.getDefinition().getNoMethods(true);
 

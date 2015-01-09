@@ -51,7 +51,7 @@ Subclass.Property.String.String = (function()
     /**
      * @inheritDoc
      */
-    StringType.prototype.getPropertyDefinitionClass = function()
+    StringType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.String.StringDefinition;
     };

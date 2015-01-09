@@ -105,7 +105,7 @@ Subclass.Property.Map.MapDefinition = (function()
     MapDefinition.prototype.setSchema = function(schema)
     {
         this.validateSchema(schema);
-        this.getDefinition().schema = schema;
+        this.getData().schema = schema;
 
         var property = this.getProperty();
         var defaultValue = {};
@@ -121,7 +121,7 @@ Subclass.Property.Map.MapDefinition = (function()
 
             defaultValue[propName] = property
                 .getChild(propName)
-                .getPropertyDefinition()
+                .getDefinition()
                 .getValue()
             ;
         }
@@ -135,7 +135,7 @@ Subclass.Property.Map.MapDefinition = (function()
      */
     MapDefinition.prototype.getSchema = function()
     {
-        return this.getDefinition().schema;
+        return this.getData().schema;
     };
 
     /**
@@ -151,9 +151,9 @@ Subclass.Property.Map.MapDefinition = (function()
     /**
      * @inheritDoc
      */
-    MapDefinition.prototype.getBaseDefinition = function()
+    MapDefinition.prototype.getBaseData = function()
     {
-        var baseDefinition = MapDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var baseDefinition = MapDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
         * @inheritDoc
@@ -193,12 +193,12 @@ Subclass.Property.Map.MapDefinition = (function()
                     && property.getChild(propName).constructor.getPropertyTypeName() == "map"
                 ) {
                     property.getChild(propName)
-                        .getPropertyDefinition()
+                        .getDefinition()
                         ._setDefaultValues(defaultValue[propName])
                     ;
                 } else if (property.hasChild(propName)) {
                     property.getChild(propName)
-                        .getPropertyDefinition()
+                        .getDefinition()
                         .setValue(defaultValue[propName])
                     ;
                 }

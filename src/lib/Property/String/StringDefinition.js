@@ -89,7 +89,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.setPattern = function(pattern)
     {
         this.validatePattern(pattern);
-        this.getDefinition().pattern = pattern;
+        this.getData().pattern = pattern;
     };
 
     /**
@@ -99,7 +99,7 @@ Subclass.Property.String.StringDefinition = (function()
      */
     StringDefinition.prototype.getPattern = function()
     {
-        return this.getDefinition().pattern;
+        return this.getData().pattern;
     };
 
     /**
@@ -122,7 +122,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.setMaxLength = function(maxLength)
     {
         this.validateMaxLength(maxLength);
-        this.getDefinition().maxLength = maxLength;
+        this.getData().maxLength = maxLength;
         this.validateMinMaxLengths();
     };
 
@@ -133,7 +133,7 @@ Subclass.Property.String.StringDefinition = (function()
      */
     StringDefinition.prototype.getMaxLength = function()
     {
-        return this.getDefinition().maxLength;
+        return this.getData().maxLength;
     };
 
     /**
@@ -156,7 +156,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.setMinLength = function(minLength)
     {
         this.validateMinLength(minLength);
-        this.getDefinition().minLength = minLength;
+        this.getData().minLength = minLength;
         this.validateMinMaxLengths();
     };
 
@@ -167,7 +167,7 @@ Subclass.Property.String.StringDefinition = (function()
      */
     StringDefinition.prototype.getMinLength = function()
     {
-        return this.getDefinition().minLength;
+        return this.getData().minLength;
     };
 
     /**
@@ -188,9 +188,9 @@ Subclass.Property.String.StringDefinition = (function()
     /**
      * @inheritDoc
      */
-    StringDefinition.prototype.getBaseDefinition = function()
+    StringDefinition.prototype.getBaseData = function()
     {
-        var baseDefinition = StringDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var baseDefinition = StringDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
          * Regular expression that property value will match

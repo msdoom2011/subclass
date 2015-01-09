@@ -75,7 +75,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
     /**
      * @inheritDoc
      */
-    ObjectCollectionType.prototype.getPropertyDefinitionClass = function()
+    ObjectCollectionType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition;
     };

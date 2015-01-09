@@ -51,7 +51,7 @@ Subclass.Property.Enum.Enum = (function()
     /**
      * @inheritDoc
      */
-    EnumType.prototype.getPropertyDefinitionClass = function()
+    EnumType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Enum.EnumDefinition;
     };

@@ -50,7 +50,7 @@ Subclass.Property.Array.Array = (function()
     /**
      * @inheritDoc
      */
-    ArrayType.prototype.getPropertyDefinitionClass = function()
+    ArrayType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Array.ArrayDefinition;
     };
@@ -60,7 +60,7 @@ Subclass.Property.Array.Array = (function()
      */
     ArrayType.prototype.isEmpty = function(context)
     {
-        var isNullable = this.getPropertyDefinition().isNullable();
+        var isNullable = this.getDefinition().isNullable();
         var value = this.getValue(context);
 
         return (isNullable && value === null) || (!isNullable && value.length === 0);

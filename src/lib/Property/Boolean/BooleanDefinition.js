@@ -27,9 +27,9 @@ Subclass.Property.Boolean.BooleanDefinition = (function()
     /**
      * @inheritDoc
      */
-    BooleanDefinition.prototype.getBaseDefinition = function()
+    BooleanDefinition.prototype.getBaseData = function()
     {
-        var basePropertyDefinition = BooleanDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var basePropertyDefinition = BooleanDefinition.$parent.prototype.getBaseData.call(this);
             basePropertyDefinition.nullable = false;
 
         return basePropertyDefinition;

@@ -83,8 +83,6 @@ Subclass.Property.Collection.CollectionType = (function()
      */
     CollectionType.prototype.setProto = function(proto)
     {
-        var propertyDefinition = this.getPropertyDefinition();
-
         this._proto = this.getPropertyManager().createProperty(
             'collectionItem',
             proto,
@@ -181,7 +179,7 @@ Subclass.Property.Collection.CollectionType = (function()
      */
     CollectionType.prototype.generateGetter = function()
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function() {
@@ -197,7 +195,7 @@ Subclass.Property.Collection.CollectionType = (function()
      */
     CollectionType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function(value) {
@@ -226,9 +224,9 @@ Subclass.Property.Collection.CollectionType = (function()
     /**
      * @inheritDoc
      */
-    CollectionType.prototype.attachHashedProperty = function(context)
+    CollectionType.prototype.attachHashed = function(context)
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
         var defaultValue = this.getDefaultValue();
 
         if (defaultValue !== null) {

@@ -611,7 +611,7 @@ Subclass.Class.ClassDefinition = (function()
             }
             var property = classProperties[propertyName];
 
-            if (!property.getPropertyDefinition().isAccessors()) {
+            if (!property.getDefinition().isAccessors()) {
                 continue;
             }
             var accessors = {

@@ -75,7 +75,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
-    ArrayCollectionType.prototype.getPropertyDefinitionClass = function()
+    ArrayCollectionType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition;
     };
@@ -93,7 +93,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
      */
     ArrayCollectionType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function(value) {

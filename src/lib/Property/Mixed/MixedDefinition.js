@@ -102,7 +102,7 @@ Subclass.Property.Mixed.MixedDefinition = (function()
     MixedDefinition.prototype.setAllows = function(allows)
     {
         this.validateAllows(allows);
-        this.getDefinition().allows = allows;
+        this.getData().allows = allows;
     };
 
     /**
@@ -112,7 +112,7 @@ Subclass.Property.Mixed.MixedDefinition = (function()
      */
     MixedDefinition.prototype.getAllows = function()
     {
-        return this.getDefinition().allows;
+        return this.getData().allows;
     };
 
     /**
@@ -144,9 +144,9 @@ Subclass.Property.Mixed.MixedDefinition = (function()
     /**
      * @inheritDoc
      */
-    MixedDefinition.prototype.getBaseDefinition = function()
+    MixedDefinition.prototype.getBaseData = function()
     {
-        var basePropertyDefinition = MixedDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var basePropertyDefinition = MixedDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
          * Allows to specify allowed types of property value.
@@ -162,7 +162,7 @@ Subclass.Property.Mixed.MixedDefinition = (function()
     /**
      * @inheritDoc
      */
-    MixedDefinition.prototype.processDefinition = function()
+    MixedDefinition.prototype.processData = function()
     {
         var allows = this.getAllows();
 
@@ -174,7 +174,7 @@ Subclass.Property.Mixed.MixedDefinition = (function()
                 this.getProperty().addAllowedType(allows[i]);
             }
         }
-        MixedDefinition.$parent.prototype.processDefinition.call(this);
+        MixedDefinition.$parent.prototype.processData.call(this);
     };
 
     return MixedDefinition;

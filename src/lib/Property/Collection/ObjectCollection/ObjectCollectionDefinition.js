@@ -44,9 +44,9 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
     /**
      * @inheritDoc
      */
-    ObjectCollectionDefinition.prototype.processDefinition = function()
+    ObjectCollectionDefinition.prototype.processData = function()
     {
-        ObjectCollectionDefinition.$parent.prototype.processDefinition.call(this);
+        ObjectCollectionDefinition.$parent.prototype.processData.call(this);
 
         var defaultValue = this.getValue();
 

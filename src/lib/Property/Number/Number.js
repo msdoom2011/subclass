@@ -51,7 +51,7 @@ Subclass.Property.Number.Number = (function()
     /**
      * @inheritDoc
      */
-    NumberType.prototype.getPropertyDefinitionClass = function()
+    NumberType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Number.NumberDefinition;
     };

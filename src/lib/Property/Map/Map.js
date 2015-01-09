@@ -97,7 +97,7 @@ Subclass.Property.Map.Map = (function()
     /**
      * @inheritDoc
      */
-    MapType.prototype.getPropertyDefinitionClass = function()
+    MapType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Map.MapDefinition;
     };
@@ -176,7 +176,7 @@ Subclass.Property.Map.Map = (function()
     */
     MapType.prototype.generateGetter = function()
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function() {
@@ -192,7 +192,7 @@ Subclass.Property.Map.Map = (function()
      */
     MapType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function(value) {
@@ -218,9 +218,9 @@ Subclass.Property.Map.Map = (function()
     /**
      * @inheritDoc
      */
-    MapType.prototype.attachHashedProperty = function(context)
+    MapType.prototype.attachHashed = function(context)
     {
-        var hashedPropName = this.getPropertyNameHashed();
+        var hashedPropName = this.getNameHashed();
 
         context[hashedPropName] = {};
         this.attachChildren(context);
@@ -235,10 +235,10 @@ Subclass.Property.Map.Map = (function()
      */
     MapType.prototype.attachChildren = function(context)
     {
-        var propertyDefinition = this.getPropertyDefinition();
+        var propertyDefinition = this.getDefinition();
 
         if (propertyDefinition.isWritable()) {
-            var propertyNameHashed = this.getPropertyNameHashed();
+            var propertyNameHashed = this.getNameHashed();
             var childrenContext = context[propertyNameHashed];
             var children = this.getChildren();
 

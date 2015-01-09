@@ -51,7 +51,7 @@ Subclass.Property.Untyped.Untyped = (function()
     /**
      * @inheritDoc
      */
-    UntypedType.prototype.getPropertyDefinitionClass = function()
+    UntypedType.prototype.getDefinitionClass = function()
     {
         return Subclass.Property.Untyped.UntypedDefinition;
     };

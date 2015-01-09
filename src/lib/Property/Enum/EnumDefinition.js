@@ -91,7 +91,7 @@ Subclass.Property.Enum.EnumDefinition = (function()
     EnumDefinition.prototype.setAllows = function(allows)
     {
         this.validateAllows(allows);
-        this.getDefinition().allows = allows;
+        this.getData().allows = allows;
     };
 
     /**
@@ -101,7 +101,7 @@ Subclass.Property.Enum.EnumDefinition = (function()
      */
     EnumDefinition.prototype.getAllows = function()
     {
-        return this.getDefinition().allows;
+        return this.getData().allows;
     };
 
     /**
@@ -117,9 +117,9 @@ Subclass.Property.Enum.EnumDefinition = (function()
     /**
      * @inheritDoc
      */
-    EnumDefinition.prototype.getBaseDefinition = function()
+    EnumDefinition.prototype.getBaseData = function()
     {
-        var basePropertyDefinition = EnumDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var basePropertyDefinition = EnumDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
          * Allows to specify allowed property values.

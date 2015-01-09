@@ -82,7 +82,7 @@ Subclass.Property.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setClassName = function(className)
     {
         this.validateClassName(className);
-        this.getDefinition().className = className;
+        this.getData().className = className;
     };
 
     /**
@@ -92,7 +92,7 @@ Subclass.Property.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getClassName = function()
     {
-        return this.getDefinition().className;
+        return this.getData().className;
     };
 
     /**
@@ -108,9 +108,9 @@ Subclass.Property.Class.ClassDefinition = (function()
     /**
      * @inheritDoc
      */
-    ClassDefinition.prototype.getBaseDefinition = function()
+    ClassDefinition.prototype.getBaseData = function()
     {
-        var basePropertyDefinition = ClassDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var basePropertyDefinition = ClassDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
          * Allows to specify name of class which value must implement.

@@ -61,35 +61,35 @@ Subclass.Property.PropertyTypeInterface = (function()
      *
      * @returns {string}
      */
-    PropertyTypeInterface.prototype.getPropertyName = function() {};
+    PropertyTypeInterface.prototype.getName = function() {};
 
     /**
      * Returns property name with names of context property
      *
      * @returns {string}
      */
-    PropertyTypeInterface.prototype.getPropertyNameFull = function() {};
+    PropertyTypeInterface.prototype.getNameFull = function() {};
 
     /**
      * Returns property hashed name
      *
      * @returns {*}
      */
-    PropertyTypeInterface.prototype.getPropertyNameHashed = function() {};
+    PropertyTypeInterface.prototype.getNameHashed = function() {};
 
     /**
      * Returns property definition constructor
      *
      * @returns {Function}
      */
-    PropertyTypeInterface.prototype.getPropertyDefinitionClass = function() {};
+    PropertyTypeInterface.prototype.getDefinitionClass = function() {};
 
     /**
      * Returns property definition instance
      *
      * @returns {Subclass.Property.PropertyDefinition}
      */
-    PropertyTypeInterface.prototype.getPropertyDefinition = function() {};
+    PropertyTypeInterface.prototype.getDefinition = function() {};
 
     /**
      * Returns property api
@@ -241,7 +241,7 @@ Subclass.Property.PropertyTypeInterface = (function()
      *
      * @param {Object} context
      */
-    PropertyTypeInterface.prototype.attachHashedProperty = function(context) {};
+    PropertyTypeInterface.prototype.attachHashed = function(context) {};
 
     /**
      * Checks if property contains empty value

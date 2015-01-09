@@ -62,9 +62,9 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
         Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
 
         if (
-            this._classParent
-            && this._classParent.constructor != AbstractClass
-            && !(this._classParent instanceof AbstractClass)
+            this._parent
+            && this._parent.constructor != AbstractClass
+            && !(this._parent instanceof AbstractClass)
         ) {
             throw new Error('Abstract class "' + this.getName() + '" can be inherited only from the another abstract class.');
         }

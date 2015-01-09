@@ -51,7 +51,7 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
     AbstractClassDefinition.prototype.setAbstract = function(value)
     {
         this.validateAbstract(value);
-        this.getDefinition().$_abstract = value || {};
+        this.getData().$_abstract = value || {};
 
         if (value) {
             this.getClass().addAbstractMethods(value);
@@ -65,15 +65,15 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
      */
     AbstractClassDefinition.prototype.getAbstract = function()
     {
-        return this.getDefinition().$_abstract;
+        return this.getData().$_abstract;
     };
 
     /**
      * @inheritDoc
      */
-    AbstractClassDefinition.prototype.getBaseDefinition = function ()
+    AbstractClassDefinition.prototype.getBaseData = function ()
     {
-        var classDefinition = AbstractClassDefinition.$parent.prototype.getBaseDefinition();
+        var classDefinition = AbstractClassDefinition.$parent.prototype.getBaseData();
 
         /**
          * Object that contains abstract methods

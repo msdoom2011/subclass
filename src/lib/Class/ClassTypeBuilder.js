@@ -67,7 +67,7 @@ Subclass.Class.ClassTypeBuilder = (function()
     ClassTypeBuilder.prototype._setClass = function(className)
     {
         var classInst = this.getClassManager().getClass(className);
-        var classDefinition = classInst.getDefinition().getDefinition();
+        var classDefinition = classInst.getDefinition().getData();
 
         this.setClassName(classInst.getName());
         this.setClassType(classInst.constructor.getClassTypeName());

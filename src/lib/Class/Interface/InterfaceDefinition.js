@@ -67,7 +67,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
     /**
      * @inheritDoc
      */
-    InterfaceDefinition.prototype.getBaseDefinition = function()
+    InterfaceDefinition.prototype.getBaseData = function()
     {
         return {
             /**

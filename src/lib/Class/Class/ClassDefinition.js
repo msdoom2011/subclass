@@ -37,7 +37,7 @@ Subclass.Class.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setStatic = function(value)
     {
         this.validateStatic(value);
-        this.getDefinition().$_static = value || {};
+        this.getData().$_static = value || {};
     };
 
     /**
@@ -47,7 +47,7 @@ Subclass.Class.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getStatic = function()
     {
-        return this.getDefinition().$_static;
+        return this.getData().$_static;
     };
 
     /**
@@ -92,7 +92,7 @@ Subclass.Class.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setTraits = function(traits)
     {
         this.validateTraits(traits);
-        this.getDefinition().$_traits = traits || [];
+        this.getData().$_traits = traits || [];
 
         if (traits) {
             var classInst = this.getClass();
@@ -110,7 +110,7 @@ Subclass.Class.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getTraits = function()
     {
-        return this.getDefinition().$_traits;
+        return this.getData().$_traits;
     };
 
     /**
@@ -155,7 +155,7 @@ Subclass.Class.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setImplements = function(interfaces)
     {
         this.validateImplements(interfaces);
-        this.getDefinition().$_implements = interfaces || [];
+        this.getData().$_implements = interfaces || [];
 
         if (interfaces) {
             var classInst = this.getClass();
@@ -173,15 +173,15 @@ Subclass.Class.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getImplements = function()
     {
-        return this.getDefinition().$_implements;
+        return this.getData().$_implements;
     };
 
     /**
      * @inheritDoc
      */
-    ClassDefinition.prototype.getBaseDefinition = function ()
+    ClassDefinition.prototype.getBaseData = function ()
     {
-        var classDefinition = ClassDefinition.$parent.prototype.getBaseDefinition();
+        var classDefinition = ClassDefinition.$parent.prototype.getBaseData();
 
         /**
          * Static properties and methods for current class constructor

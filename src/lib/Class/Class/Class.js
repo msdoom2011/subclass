@@ -83,9 +83,9 @@ Subclass.Class.Class.Class = (function() {
         Class.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
-            this._classParent
-            && this._classParent.constructor != Class
-            && this._classParent.constructor != Subclass.Class.ClassManager.getClassType('AbstractClass')
+            this._parent
+            && this._parent.constructor != Class
+            && this._parent.constructor != Subclass.Class.ClassManager.getClassType('AbstractClass')
         ) {
             throw new Error(
                 'Class "' + this.getName() + '" can be inherited ' +
@@ -250,7 +250,6 @@ Subclass.Class.Class.Class = (function() {
         // Copying all properties and methods (with inherited) from trait to class definition
 
         for (propName in traitClassConstructor.prototype) {
-            //if (['$_extends', '$_properties'].indexOf(propName) >= 0) {
             if (propName.match(/^\$_/i)) {
                 continue;
             }
@@ -258,9 +257,9 @@ Subclass.Class.Class.Class = (function() {
         }
         this.getTraits().push(traitClass);
 
-        classDefinition.setDefinition(Subclass.Tools.extend(
+        classDefinition.setData(Subclass.Tools.extend(
             traitProps,
-            classDefinition.getDefinition()
+            classDefinition.getData()
         ));
     };
 

@@ -80,7 +80,7 @@ Subclass.Class.Config.Config = (function()
     Config.prototype._validateClassDefinition = function()
     {
         var classDefinition = this.getDefinition();
-        var classDefinitionData = classDefinition.getDefinition();
+        var classDefinitionData = classDefinition.getData();
 
         for (var attrName in classDefinitionData) {
             if (
@@ -104,7 +104,7 @@ Subclass.Class.Config.Config = (function()
     Config.prototype._processClassDefinition = function()
     {
         var classDefinition = this.getDefinition();
-        var classDefinitionDataDefault = classDefinition.getDefinition();
+        var classDefinitionDataDefault = classDefinition.getData();
         var parentClassName = classDefinition.getExtends();
         var includes = classDefinition.getIncludes();
         var requires = classDefinition.getIncludes();
@@ -114,8 +114,8 @@ Subclass.Class.Config.Config = (function()
         delete classDefinitionDataDefault.$_extends;
         delete classDefinitionDataDefault.$_properties;
 
-        classDefinition.setDefinition({});
-        var classDefinitionData = classDefinition.getDefinition();
+        classDefinition.setData({});
+        var classDefinitionData = classDefinition.getData();
         classDefinitionData.$_properties = classDefinitionDataDefault;
 
         if (parentClassName && typeof parentClassName == 'string') {
@@ -241,8 +241,8 @@ Subclass.Class.Config.Config = (function()
         Config.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
-            this._classParent
-            && this._classParent.constructor != Config
+            this._parent
+            && this._parent.constructor != Config
         ) {
             throw new Error('Config "' + this.getName() + '" can be inherited only from an another config.');
         }

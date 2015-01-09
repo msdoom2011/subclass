@@ -59,9 +59,9 @@ Subclass.Class.Trait.Trait = (function()
         Trait.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
-            this._classParent
-            && this._classParent.constructor != Trait
-            && !(this._classParent instanceof Trait)
+            this._parent
+            && this._parent.constructor != Trait
+            && !(this._parent instanceof Trait)
         ) {
             throw new Error('Trait "' + this.getName() + '" can be inherited only from the another trait.');
         }
@@ -81,7 +81,7 @@ Subclass.Class.Trait.Trait = (function()
         }
         return Subclass.Tools.extend(
             properties,
-            this._classProperties
+            this._properties
         );
     };
 

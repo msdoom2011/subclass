@@ -30,7 +30,7 @@ Subclass.Class.ClassDefinition = (function()
          * @type {Object}
          * @private
          */
-        this._definition = classDefinition;
+        this._data = classDefinition;
     }
 
     ClassDefinition.$parent = null;
@@ -40,22 +40,22 @@ Subclass.Class.ClassDefinition = (function()
      *
      * @returns {Object}
      */
-    ClassDefinition.prototype.getDefinition = function()
+    ClassDefinition.prototype.getData = function()
     {
-        return this._definition;
+        return this._data;
     };
 
     /**
-     * Sets class definitino data
+     * Sets class definition data
      *
-     * @param definition
+     * @param data
      */
-    ClassDefinition.prototype.setDefinition = function(definition)
+    ClassDefinition.prototype.setData = function(data)
     {
-        if (!definition || typeof definition != 'object') {
-            throw new Error('Invalid argument "definition" in method "setDefinition". It must be an object.');
+        if (!data || typeof data != 'object') {
+            throw new Error('Invalid argument "data" in method "setData". It must be an object.');
         }
-        this._definition = definition;
+        this._data = data;
     };
 
     /**
@@ -135,7 +135,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setRequires = function(requires)
     {
         this.validateRequires(requires);
-        this.getDefinition().$_requires = requires || null;
+        this.getData().$_requires = requires || null;
         var classInst = this.getClass();
 
         if (requires && Subclass.Tools.isPlainObject(requires)) {
@@ -158,7 +158,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getRequires = function()
     {
-        return this.getDefinition().$_requires;
+        return this.getData().$_requires;
     };
 
     /**
@@ -184,7 +184,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setExtends = function(parentClassName)
     {
         this.validateExtends(parentClassName);
-        this.getDefinition().$_extends = parentClassName;
+        this.getData().$_extends = parentClassName;
 
         if (parentClassName) {
             this.getClass().setParent(parentClassName);
@@ -198,7 +198,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getExtends = function()
     {
-        return this.getDefinition().$_extends;
+        return this.getData().$_extends;
     };
 
     /**
@@ -254,7 +254,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setProperties = function(properties)
     {
         this.validateProperties(properties);
-        this.getDefinition().$_properties = properties || {};
+        this.getData().$_properties = properties || {};
 
         if (properties) {
             for (var propName in properties) {
@@ -276,7 +276,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getProperties = function()
     {
-        return this.getDefinition().$_properties;
+        return this.getData().$_properties;
     };
 
     /**
@@ -287,7 +287,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getMetaData = function(withInherited)
     {
-        return this._getDefinitionDataPart('metaData', withInherited);
+        return this._getDataPart('metaData', withInherited);
     };
 
     /**
@@ -298,7 +298,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getMethods = function(withInherited)
     {
-        return this._getDefinitionDataPart('methods', withInherited);
+        return this._getDataPart('methods', withInherited);
     };
 
     /**
@@ -310,7 +310,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getNoMethods = function(withInherited)
     {
-        return this._getDefinitionDataPart('noMethods', withInherited);
+        return this._getDataPart('noMethods', withInherited);
     };
 
     /**
@@ -330,7 +330,7 @@ Subclass.Class.ClassDefinition = (function()
      * @returns {Object}
      * @private
      */
-    ClassDefinition.prototype._getDefinitionDataPart = function(typeName, withInherited)
+    ClassDefinition.prototype._getDataPart = function(typeName, withInherited)
     {
         if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
             throw new Error('Trying to get not existent class definition part data "' + typeName + '".');
@@ -338,7 +338,7 @@ Subclass.Class.ClassDefinition = (function()
         if (withInherited !== true) {
             withInherited = false;
         }
-        var definition = this.getDefinition();
+        var definition = this.getData();
         var classInst = this.getClass();
         var parts = {};
 
@@ -346,7 +346,7 @@ Subclass.Class.ClassDefinition = (function()
             var classParent = classInst.getParent();
             var classParentDefinition = classParent.getDefinition();
 
-            parts = classParentDefinition._getDefinitionDataPart(
+            parts = classParentDefinition._getDataPart(
                 typeName,
                 withInherited
             );
@@ -382,7 +382,7 @@ Subclass.Class.ClassDefinition = (function()
      *
      * @returns {object}
      */
-    ClassDefinition.prototype.getBaseDefinition = function()
+    ClassDefinition.prototype.getBaseData = function()
     {
         return {
 
@@ -544,9 +544,9 @@ Subclass.Class.ClassDefinition = (function()
      * @returns {boolean}
      * @throws {Error}
      */
-    ClassDefinition.prototype.validateDefinition = function ()
+    ClassDefinition.prototype.validateData = function ()
     {
-        var definition = this.getDefinition();
+        var definition = this.getData();
         var classInst = this.getClass();
 
         for (var propName in definition) {
@@ -566,9 +566,9 @@ Subclass.Class.ClassDefinition = (function()
     /**
      * Processes class definition. Getting info from classDefinition.
      */
-    ClassDefinition.prototype.processDefinition = function ()
+    ClassDefinition.prototype.processData = function ()
     {
-        var definition = this.getDefinition();
+        var definition = this.getData();
 
         for (var attrName in definition) {
             if (
@@ -586,7 +586,7 @@ Subclass.Class.ClassDefinition = (function()
 
         // Extending accessors
 
-        this.processClassPropertyAccessors();
+        this.processPropertyAccessors();
     };
 
     /**
@@ -600,10 +600,10 @@ Subclass.Class.ClassDefinition = (function()
      *
      * @returns {Function}
      */
-    ClassDefinition.prototype.processClassPropertyAccessors = function()
+    ClassDefinition.prototype.processPropertyAccessors = function()
     {
         var classProperties = this.getClass().getProperties();
-        var classDefinition = this.getDefinition();
+        var classDefinition = this.getData();
 
         for (var propertyName in classProperties) {
             if (!classProperties.hasOwnProperty(propertyName)) {

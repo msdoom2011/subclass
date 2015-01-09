@@ -102,7 +102,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
     ConfigDefinition.prototype.setIncludes = function(includes)
     {
         this.validateIncludes(includes);
-        this.getDefinition().$_includes = includes || [];
+        this.getData().$_includes = includes || [];
     };
 
     /**
@@ -112,15 +112,15 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.getIncludes = function()
     {
-        return this.getDefinition().$_includes;
+        return this.getData().$_includes;
     };
 
     /**
      * @inheritDoc
      */
-    ConfigDefinition.prototype.getBaseDefinition = function ()
+    ConfigDefinition.prototype.getBaseData = function ()
     {
-        var classDefinition = ConfigDefinition.$parent.prototype.getBaseDefinition.call(this);
+        var classDefinition = ConfigDefinition.$parent.prototype.getBaseData.call(this);
 
         delete classDefinition.$_properties;
         delete classDefinition.$_static;

@@ -59,9 +59,9 @@ Subclass.Class.Interface.Interface = (function()
         Interface.$parent.prototype.setParent.call(this, parentClassName);
 
         if (
-            this._classParent
-            && this._classParent.constructor != Interface
-            && !(this._classParent instanceof Interface)
+            this._parent
+            && this._parent.constructor != Interface
+            && !(this._parent instanceof Interface)
         ) {
             throw new Error(
                 'Interface "' + this.getName() + '" can be inherited ' +

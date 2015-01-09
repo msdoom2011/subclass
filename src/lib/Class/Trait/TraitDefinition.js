@@ -67,7 +67,7 @@ Subclass.Class.Trait.TraitDefinition = (function()
     /**
      * @inheritDoc
      */
-    TraitDefinition.prototype.getBaseDefinition = function()
+    TraitDefinition.prototype.getBaseData = function()
     {
         return {
             /**

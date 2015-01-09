@@ -50,7 +50,7 @@ Subclass.Property.Array.Array = (function()
     /**
      * @inheritDoc
      */
-    ArrayType.prototype.getDefinitionClass = function()
+    ArrayType.getDefinitionClass = function()
     {
         return Subclass.Property.Array.ArrayDefinition;
     };

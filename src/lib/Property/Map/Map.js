@@ -97,7 +97,7 @@ Subclass.Property.Map.Map = (function()
     /**
      * @inheritDoc
      */
-    MapType.prototype.getDefinitionClass = function()
+    MapType.getDefinitionClass = function()
     {
         return Subclass.Property.Map.MapDefinition;
     };

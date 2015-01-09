@@ -50,7 +50,7 @@ Subclass.Property.Boolean.Boolean = (function()
     /**
      * @inheritDoc
      */
-    BooleanType.prototype.getDefinitionClass = function()
+    BooleanType.getDefinitionClass = function()
     {
         return Subclass.Property.Boolean.BooleanDefinition;
     };

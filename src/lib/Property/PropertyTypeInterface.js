@@ -23,6 +23,13 @@ Subclass.Property.PropertyTypeInterface = (function()
     PropertyTypeInterface.getPropertyTypeName = function() {};
 
     /**
+     * Returns property definition constructor
+     *
+     * @returns {Function}
+     */
+    PropertyTypeInterface.getDefinitionClass = function() {};
+
+    /**
      * Checks if specified value can be allowed by current property type
      *
      * @static
@@ -76,13 +83,6 @@ Subclass.Property.PropertyTypeInterface = (function()
      * @returns {*}
      */
     PropertyTypeInterface.prototype.getNameHashed = function() {};
-
-    /**
-     * Returns property definition constructor
-     *
-     * @returns {Function}
-     */
-    PropertyTypeInterface.prototype.getDefinitionClass = function() {};
 
     /**
      * Returns property definition instance

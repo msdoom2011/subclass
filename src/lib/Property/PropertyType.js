@@ -82,6 +82,14 @@ Subclass.Property.PropertyType = (function()
     /**
      * @inheritDoc
      */
+    PropertyType.getDefinitionClass = function()
+    {
+        return Subclass.Property.PropertyDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
     PropertyType.prototype.initialize = function()
     {
         var propertyDefinition = this.getDefinition();
@@ -148,14 +156,6 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
-     */
-    PropertyType.prototype.getDefinitionClass = function()
-    {
-        return Subclass.Property.PropertyDefinition;
-    };
-
-    /**
      * Creates and returns property definition instance.
      *
      * @param {Object} propertyDefinition
@@ -167,7 +167,7 @@ Subclass.Property.PropertyType = (function()
         var createInstance = true;
 
         if (!arguments[1]) {
-            construct = this.getDefinitionClass();
+            construct = this.constructor.getDefinitionClass();
         } else {
             construct = arguments[1];
         }

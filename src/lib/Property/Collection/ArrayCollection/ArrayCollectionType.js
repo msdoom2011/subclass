@@ -75,7 +75,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
-    ArrayCollectionType.prototype.getDefinitionClass = function()
+    ArrayCollectionType.getDefinitionClass = function()
     {
         return Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition;
     };

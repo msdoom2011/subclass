@@ -32,7 +32,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
     AbstractClassBuilder.prototype.setAbstractMethods = function(abstractMethods)
     {
         this._validateAbstractMethods(abstractMethods);
-        this._getClassDefinition().$_abstract = abstractMethods;
+        this._getDefinition().$_abstract = abstractMethods;
 
         return this;
     };
@@ -47,11 +47,11 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
     {
         this._validateAbstractMethods(abstractMethods);
 
-        if (!this._getClassDefinition().$_abstract) {
-            this._getClassDefinition().$_abstract = {};
+        if (!this._getDefinition().$_abstract) {
+            this._getDefinition().$_abstract = {};
         }
         Subclass.Tools.extend(
-            this._getClassDefinition().$_abstract,
+            this._getDefinition().$_abstract,
             abstractMethods
         );
 
@@ -65,7 +65,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
      */
     AbstractClassBuilder.prototype.getAbstractMethods = function()
     {
-        return this._getClassDefinition().$_abstract || {};
+        return this._getDefinition().$_abstract || {};
     };
 
     /**

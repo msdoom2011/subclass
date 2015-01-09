@@ -42,7 +42,7 @@ Subclass.Class.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setTraits = function(traitsList)
     {
         this._validateTraits(traitsList);
-        this._getClassDefinition().$_traits = traitsList;
+        this._getDefinition().$_traits = traitsList;
 
         return this;
     };
@@ -57,10 +57,10 @@ Subclass.Class.Class.ClassBuilder = (function()
     {
         this._validateTraits(traitsList);
 
-        if (!this._getClassDefinition().$_traits) {
-            this._getClassDefinition().$_traits = [];
+        if (!this._getDefinition().$_traits) {
+            this._getDefinition().$_traits = [];
         }
-        this._getClassDefinition().$_traits = this._getClassDefinition().$_traits.concat(traitsList);
+        this._getDefinition().$_traits = this._getDefinition().$_traits.concat(traitsList);
 
         return this;
     };
@@ -72,7 +72,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getTraits = function()
     {
-        return this._getClassDefinition().$_traits || [];
+        return this._getDefinition().$_traits || [];
     };
 
     ClassBuilder.prototype._validateInterfaces = function(interfacesList)
@@ -100,7 +100,7 @@ Subclass.Class.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setInterfaces = function(interfacesList)
     {
         this._validateInterfaces(interfacesList);
-        this._getClassDefinition().$_implements = interfacesList;
+        this._getDefinition().$_implements = interfacesList;
 
         return this;
     };
@@ -115,10 +115,10 @@ Subclass.Class.Class.ClassBuilder = (function()
     {
         this._validateInterfaces(interfacesList);
 
-        if (!this._getClassDefinition().$_implements) {
-            this._getClassDefinition().$_implements = [];
+        if (!this._getDefinition().$_implements) {
+            this._getDefinition().$_implements = [];
         }
-        this._getClassDefinition().$_implements = this._getClassDefinition().$_implements.concat(interfacesList);
+        this._getDefinition().$_implements = this._getDefinition().$_implements.concat(interfacesList);
 
         return this;
     };
@@ -130,7 +130,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getInterfaces = function()
     {
-        return this._getClassDefinition().$_implements || [];
+        return this._getDefinition().$_implements || [];
     };
 
     return ClassBuilder;

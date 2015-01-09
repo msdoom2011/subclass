@@ -88,7 +88,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
     {
         this._validateIncludes(includesList);
         this._normalizeIncludes(includesList);
-        this._getClassDefinition().$_includes = includesList;
+        this._getDefinition().$_includes = includesList;
 
         return this;
     };
@@ -103,10 +103,10 @@ Subclass.Class.Config.ConfigBuilder = (function()
     {
         this._validateIncludes(includesList);
 
-        if (!this._getClassDefinition().$_includes) {
-            this._getClassDefinition().$_includes = [];
+        if (!this._getDefinition().$_includes) {
+            this._getDefinition().$_includes = [];
         }
-        this._getClassDefinition().$_includes = this._getClassDefinition().$_includes.concat(includesList);
+        this._getDefinition().$_includes = this._getDefinition().$_includes.concat(includesList);
 
         return this;
     };
@@ -118,16 +118,16 @@ Subclass.Class.Config.ConfigBuilder = (function()
      */
     ConfigBuilder.prototype.getIncludes = function()
     {
-        return this._getClassDefinition().$_includes || [];
+        return this._getDefinition().$_includes || [];
     };
 
-    ConfigBuilder.prototype.setClassProperties = undefined;
+    ConfigBuilder.prototype.setProperties = undefined;
 
-    ConfigBuilder.prototype.addClassProperties = undefined;
+    ConfigBuilder.prototype.addProperties = undefined;
 
-    ConfigBuilder.prototype.getClassProperties = undefined;
+    ConfigBuilder.prototype.getProperties = undefined;
 
-    ConfigBuilder.prototype.removeClassProperty = undefined;
+    ConfigBuilder.prototype.removeProperty = undefined;
 
     ConfigBuilder.prototype.setStatic = undefined;
 

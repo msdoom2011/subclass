@@ -20,19 +20,19 @@ Subclass.Class.ClassTypeBuilder = (function()
          * @type {string}
          * @private
          */
-        this._classType = classType;
+        this._type = classType;
 
         /**
          * @type {string}
          * @private
          */
-        this._className = null;
+        this._name = null;
 
         /**
          * @type {Object}
          * @private
          */
-        this._classDefinition = {};
+        this._definition = {};
 
 
         // Initializing
@@ -41,7 +41,7 @@ Subclass.Class.ClassTypeBuilder = (function()
             this._setClass(className);
 
         } else {
-            this._className = className;
+            this._name = className;
         }
     }
 
@@ -69,11 +69,11 @@ Subclass.Class.ClassTypeBuilder = (function()
         var classInst = this.getClassManager().getClass(className);
         var classDefinition = classInst.getDefinition().getData();
 
-        this.setClassName(classInst.getName());
-        this.setClassType(classInst.constructor.getClassTypeName());
+        this.setName(classInst.getName());
+        this.setType(classInst.constructor.getClassTypeName());
         this._class = classInst;
 
-        this._setClassDefinition(Subclass.Tools.copy(classDefinition));
+        this._setDefinition(Subclass.Tools.copy(classDefinition));
 
         return this;
     };
@@ -85,15 +85,15 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @returns {Subclass.Class.ClassTypeBuilder}
      * @private
      */
-    ClassTypeBuilder.prototype._setClassDefinition = function(classDefinition)
+    ClassTypeBuilder.prototype._setDefinition = function(classDefinition)
     {
         if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
             throw new Error(
-                'Invalid argument "classDefinition" in method "_setClassDefinition" in ClassTypeBuilder. ' +
+                'Invalid argument "classDefinition" in method "_setDefinition" in ClassTypeBuilder. ' +
                 'It must be a plain object.'
             );
         }
-        this._classDefinition = classDefinition;
+        this._definition = classDefinition;
 
         return this;
     };
@@ -104,9 +104,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @returns {Object}
      * @private
      */
-    ClassTypeBuilder.prototype._getClassDefinition = function()
+    ClassTypeBuilder.prototype._getDefinition = function()
     {
-        return this._classDefinition;
+        return this._definition;
     };
 
     /**
@@ -115,16 +115,16 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {string} classType
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.setClassType = function(classType)
+    ClassTypeBuilder.prototype.setType = function(classType)
     {
         if (typeof classType !== 'string') {
-            throw new Error('Invalid argument "classType" in method "setClassType" in ClassTypeBuilder. ' +
+            throw new Error('Invalid argument "classType" in method "setType" in ClassTypeBuilder. ' +
                 'It must be a string.');
         }
         if (this._class) {
             throw new Error('Can\'t redefine class type of already registered class.');
         }
-        this._classType = classType;
+        this._type = classType;
 
         return this;
     };
@@ -134,9 +134,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      *
      * @returns {string}
      */
-    ClassTypeBuilder.prototype.getClassType = function()
+    ClassTypeBuilder.prototype.getType = function()
     {
-        return this._classType;
+        return this._type;
     };
 
     /**
@@ -145,12 +145,12 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {string} className
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.setClassName = function(className)
+    ClassTypeBuilder.prototype.setName = function(className)
     {
         if (this._class) {
             throw new Error('Can\'t redefine class name of already registered class.');
         }
-        this._className = className;
+        this._name = className;
 
         return this;
     };
@@ -160,9 +160,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      *
      * @returns {string}
      */
-    ClassTypeBuilder.prototype.getClassName = function()
+    ClassTypeBuilder.prototype.getName = function()
     {
-        return this._className;
+        return this._name;
     };
 
     /**
@@ -171,9 +171,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {string} parentClassName
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.setClassParent = function(parentClassName)
+    ClassTypeBuilder.prototype.setParent = function(parentClassName)
     {
-        this._getClassDefinition().$_extends = parentClassName;
+        this._getDefinition().$_extends = parentClassName;
 
         return this;
     };
@@ -183,15 +183,21 @@ Subclass.Class.ClassTypeBuilder = (function()
      *
      * @returns {ClassType}
      */
-    ClassTypeBuilder.prototype.getClassParent = function()
+    ClassTypeBuilder.prototype.getParent = function()
     {
-        return this._getClassDefinition().$_extends || null;
+        return this._getDefinition().$_extends || null;
     };
 
-    ClassTypeBuilder.prototype._validateClassProperties = function(classProperties)
+    /**
+     * Validates class properties definition
+     *
+     * @param classProperties
+     * @private
+     */
+    ClassTypeBuilder.prototype._validateProperties = function(classProperties)
     {
         if (!classProperties || !Subclass.Tools.isPlainObject(classProperties)) {
-            throw new Error('Invalid argument "classProperties" in method "setClassProperties" in ClassTypeBuilder. ' +
+            throw new Error('Invalid argument "classProperties" in method "_validateProperties" in ClassTypeBuilder. ' +
             'It must be a plain object.');
         }
     };
@@ -202,10 +208,10 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {Object.<Object>} classProperties
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.setClassProperties = function(classProperties)
+    ClassTypeBuilder.prototype.setProperties = function(classProperties)
     {
-        this._validateClassProperties(classProperties);
-        this._getClassDefinition().$_properties = classProperties;
+        this._validateProperties(classProperties);
+        this._getDefinition().$_properties = classProperties;
 
         return this;
     };
@@ -216,15 +222,15 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {Object.<Object>} classProperties
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.addClassProperties = function(classProperties)
+    ClassTypeBuilder.prototype.addProperties = function(classProperties)
     {
-        this._validateClassProperties(classProperties);
+        this._validateProperties(classProperties);
 
-        if (!this._getClassDefinition().$_properties) {
-            this._getClassDefinition().$_properties = {};
+        if (!this._getDefinition().$_properties) {
+            this._getDefinition().$_properties = {};
         }
         Subclass.Tools.extend(
-            this._getClassDefinition().$_properties,
+            this._getDefinition().$_properties,
             classProperties
         );
 
@@ -236,9 +242,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      *
      * @returns {Object.<Object>}
      */
-    ClassTypeBuilder.prototype.getClassProperties = function()
+    ClassTypeBuilder.prototype.getProperties = function()
     {
-        return this._getClassDefinition().$_properties || {};
+        return this._getDefinition().$_properties || {};
     };
 
     /**
@@ -247,13 +253,13 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {string} propertyName
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.removeClassProperty = function(propertyName)
+    ClassTypeBuilder.prototype.removeProperty = function(propertyName)
     {
         if (typeof propertyName !== 'string') {
-            throw new Error('Invalid argument "propertyName" in method "removeClassProperty" in ClassTypeBuilder. ' +
+            throw new Error('Invalid argument "propertyName" in method "removeProperty" in ClassTypeBuilder. ' +
                 'It must be a string.');
         }
-        delete this._getClassDefinition().$_properties[propertyName];
+        delete this._getDefinition().$_properties[propertyName];
 
         return this;
     };
@@ -270,7 +276,7 @@ Subclass.Class.ClassTypeBuilder = (function()
             throw new Error('Invalid argument "staticProperties" in method "setStatic" in ClassTypeBuilder. ' +
                 'It must be a plain object.');
         }
-        this._getClassDefinition().$_static = staticProperties;
+        this._getDefinition().$_static = staticProperties;
 
         return this;
     };
@@ -282,7 +288,7 @@ Subclass.Class.ClassTypeBuilder = (function()
      */
     ClassTypeBuilder.prototype.getStatic = function()
     {
-        return this._getClassDefinition().$_static || {};
+        return this._getDefinition().$_static || {};
     };
 
     /**
@@ -298,7 +304,7 @@ Subclass.Class.ClassTypeBuilder = (function()
             throw new Error('Invalid argument "staticPropertyName" in method "setStaticProperty" in ClassTypeBuilder. ' +
                 'It must be a string.');
         }
-        this._getClassDefinition().$_static[staticPropertyName] = staticPropertyValue;
+        this._getDefinition().$_static[staticPropertyName] = staticPropertyValue;
 
         return this;
     };
@@ -315,7 +321,7 @@ Subclass.Class.ClassTypeBuilder = (function()
             throw new Error('Invalid argument "staticPropertyName" in method "removeStaticProperty" in ClassTypeBuilder. ' +
             'It must be a string.');
         }
-        delete this._getClassDefinition().$_static[staticPropertyName];
+        delete this._getDefinition().$_static[staticPropertyName];
 
         return this;
     };
@@ -327,10 +333,10 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @returns {*}
      * @private
      */
-    ClassTypeBuilder.prototype._prepareClassBody = function(classBody)
+    ClassTypeBuilder.prototype._prepareBody = function(classBody)
     {
         if (!classBody || typeof classBody != 'object') {
-            throw new Error('Invalid argument "classBody" in method "setClassBody" in ClassTypeBuilder. ' +
+            throw new Error('Invalid argument "classBody" in method "setBody" in ClassTypeBuilder. ' +
             'It must be a plain object.');
         }
         for (var propName in classBody) {
@@ -350,11 +356,11 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {Object} classBody
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.addClassBody = function(classBody)
+    ClassTypeBuilder.prototype.addToBody = function(classBody)
     {
-        classBody = this._prepareClassBody(classBody);
+        classBody = this._prepareBody(classBody);
 
-        var classDefinition = this._getClassDefinition();
+        var classDefinition = this._getDefinition();
         Subclass.Tools.extend(classDefinition, classBody);
 
         return this;
@@ -366,11 +372,11 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {Object} classBody
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.setClassBody = function(classBody)
+    ClassTypeBuilder.prototype.setBody = function(classBody)
     {
-        classBody = this._prepareClassBody(classBody);
+        classBody = this._prepareBody(classBody);
 
-        var classDefinition = this._getClassDefinition();
+        var classDefinition = this._getDefinition();
 
         for (var propName in classDefinition) {
             if (!classDefinition.hasOwnProperty(propName)) {
@@ -392,9 +398,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @param {Function }constructorFunction
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.setClassConstructor = function(constructorFunction)
+    ClassTypeBuilder.prototype.setConstructor = function(constructorFunction)
     {
-        this._getClassDefinition().$_constructor = constructorFunction;
+        this._getDefinition().$_constructor = constructorFunction;
 
         return this;
     };
@@ -404,9 +410,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      *
      * @returns {(Function|null)}
      */
-    ClassTypeBuilder.prototype.getClassConstructor = function()
+    ClassTypeBuilder.prototype.getConstructor = function()
     {
-        return this._getClassDefinition().$_constructor || null;
+        return this._getDefinition().$_constructor || null;
     };
 
     /**
@@ -414,9 +420,9 @@ Subclass.Class.ClassTypeBuilder = (function()
      *
      * @returns {Subclass.Class.ClassTypeBuilder}
      */
-    ClassTypeBuilder.prototype.removeClassConstructor = function()
+    ClassTypeBuilder.prototype.removeConstructor = function()
     {
-        var classDefinition = this._getClassDefinition();
+        var classDefinition = this._getDefinition();
 
         delete classDefinition.$_constructor;
 
@@ -431,10 +437,10 @@ Subclass.Class.ClassTypeBuilder = (function()
      */
     ClassTypeBuilder.prototype._validateClass = function()
     {
-        if (!this.getClassName()) {
+        if (!this.getName()) {
             throw new Error('Future class must be named.');
         }
-        if (!this.getClassType()) {
+        if (!this.getType()) {
             throw new Error('The type of the future class must be specified.');
         }
         return this;
@@ -450,13 +456,13 @@ Subclass.Class.ClassTypeBuilder = (function()
         this._validateClass();
 
         if (this._class) {
-            this._class.setDefinition(this._getClassDefinition());
+            this._class.setDefinition(this._getDefinition());
             return this._class;
         }
         return this.getClassManager().addClass(
-            this.getClassType(),
-            this.getClassName(),
-            this._getClassDefinition()
+            this.getType(),
+            this.getName(),
+            this._getDefinition()
         );
     };
 

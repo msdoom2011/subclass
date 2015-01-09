@@ -436,7 +436,7 @@ var class3Inst = app.getClassManager().alterClass("Class2")
         .addAbstractMethods({
             newAbstractMethod: function() {}
         })
-        .addClassBody({
+        .addToBody({
 
             psix: function()
             {

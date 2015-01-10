@@ -18,6 +18,7 @@ var appPlugin1 = Subclass.createModule('appPlugin1', {
 
 appPlugin1.onReady(function() {
     console.log('****************');
+    alert('initializing plugin1');
     console.log('initializing plugin1');
     console.log('****************');
 });
@@ -60,6 +61,7 @@ var appPlugin2 = Subclass.createModule('appPlugin2', {
 
 appPlugin2.onReady(function() {
     console.log('****************');
+    alert('initializing plugin2 else');
     console.log('initializing plugin2 else');
     console.log('****************');
 });
@@ -70,6 +72,7 @@ appPlugin2.setConfigs({
     },
     onReady: function() {
         console.log('****************');
+        alert('initializing plugin2 else new!!!');
         console.log('initializing plugin2 else new!!!');
         console.log('****************');
     }
@@ -628,6 +631,7 @@ app.registerClass("Bug2", {
 app.onReady(function() {
 
     console.log('****************');
+    alert('initializing app');
     console.log('initializing app');
     console.log('****************');
 

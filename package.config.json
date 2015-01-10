@@ -3,6 +3,7 @@
   "src_dir": "src",
   "build_dir": "build",
   "release_dir": "release",
+  "doc_dir": "doc",
   "lib": {
     "dir": {
       "src": "<%= config.src_dir %>/lib",

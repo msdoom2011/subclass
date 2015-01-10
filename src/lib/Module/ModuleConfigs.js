@@ -106,11 +106,7 @@ Subclass.Module.ModuleConfigs = (function()
             for (var configName in moduleConfigs) {
                 if (
                     !moduleConfigs.hasOwnProperty(configName)
-                    || configName == 'parameters'
-                    || configName == 'services'
-                    || configName == 'plugin'
-                    || configName == 'pluginOf'
-                    || configName == 'onReady'
+                    || ['parameters', 'services', 'plugin', 'pluginOf', 'onReady'].indexOf(configName) >= 0
                 ) {
                     continue;
                 }
@@ -155,10 +151,19 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Sets a specific state would be current module a plug-in or not
+     * Sets a specific state would be current module a plug-in or not.
+     *
+     * If module is marked as a plug-in then the configuration parameter "autoload"
+     * will forcibly set to false and modules registered onReady callback functions
+     * will be invoked only when the root module becomes ready.
      *
      * @method setPlugin
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @throws {Error}
+     *      Throws error if:<br />
+     *      - trying to change value after the module became ready<br />
+     *      - was specified not boolean value
+     *
      * @param {boolean} isPlugin
      *      Should be current module a plugin or not
      */
@@ -177,22 +182,36 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Reports whether the current module a plug-in of another module or not
+     * Reports whether the current module is a plug-in of another module or not
      *
      * @method getPlugin
      * @memberOf Subclass.Module.ModuleConfigs.prototype
      * @returns {boolean}
      */
-    ModuleConfigs.prototype.getPlugin = ModuleConfigs.prototype.isPlugin = function()
+    ModuleConfigs.prototype.getPlugin = function()
     {
         return this._plugin;
     };
 
     /**
-     * Marks current module that it should be a plug-in of the module with specified name
+     * @method isPlugin
+     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @alias Subclass.Module.ModuleConfigs#getPlugin
+     */
+    ModuleConfigs.prototype.isPlugin = ModuleConfigs.prototype.getPlugin;
+
+    /**
+     * Marks current module that it should be a plug-in of the module with specified name.
+     *
+     * If was specified name of parent module then the module configuration parameter
+     * "plugin" will forcibly set to true.
      *
      * @method setPluginOf
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
+     * @throws {Error}
+     *      Throws error if specified argument is not string or null
+     *
      * @param {string} parentModuleName
      *      A name of the parent module
      */
@@ -209,7 +228,7 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Returns name of the parent module if current one is a plug-in of the parent module
+     * Returns name of the parent module if current one is a plug-in of the specified module
      *
      * @method getPluginOf
      * @memberOf Subclass.Module.ModuleConfigs.prototype
@@ -225,6 +244,12 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method setAutoload
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
+     * @throws {Error}
+     *      Throws error if:<br />
+     *      - trying to change value after the module became ready<br />
+     *      - specified not boolean argument value
+     *
      * @param {boolean} autoload
      *      Should be used class autoload or not
      */
@@ -453,10 +478,11 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (
             triggerable
+            && !module.isReady()
             && !classManager.isEmpty()
             && !classManager.isLoading()
         ) {
-            module.triggerOnReady();
+            module.setReady();
         }
     };
 

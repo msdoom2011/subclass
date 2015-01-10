@@ -4,4 +4,4 @@ node_modules/**/*
 build/**/*
 release/**/*
 vendors/**/*
-jsdoc-toolkit/**/*
+doc/api/**/*

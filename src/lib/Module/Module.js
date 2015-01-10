@@ -167,8 +167,7 @@ Subclass.Module.Module = (function()
         // Adding event listeners
 
         this.getEventManager().getEvent('onLoadingEnd').addListener(function() {
-            $this.triggerOnReady();
-            $this._ready = true;
+            $this.setReady();
         });
     }
 
@@ -410,6 +409,18 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.triggerOnReady = function()
     {
+        this.getEventManager().getEvent('onReady').trigger();
+    };
+
+    /**
+     * Brings module to ready state and invokes registered onReady callback functions.
+     * It can be invoked only once otherwise nothing will happen
+     *
+     * @method setReady
+     * @memberOf Subclass.Module.Module.prototype
+     */
+    Module.prototype.setReady = function()
+    {
         if (
             this.getConfigManager().isPlugin()
             && (
@@ -423,7 +434,8 @@ Subclass.Module.Module = (function()
             return;
         }
         if (this.getClassManager().isLoadStackEmpty()) {
-            this.getEventManager().getEvent('onReady').trigger();
+            this.triggerOnReady();
+            this._ready = true;
         }
     };
 

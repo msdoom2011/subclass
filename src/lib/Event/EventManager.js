@@ -5,12 +5,21 @@ Subclass.Event = {};
 
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * Instance of current class allows to manipulate events:<br />
+ * - register new events;<br />
+ * - receive events;<br />
+ * - check whether is interesting event exists.
+ *
+ * @param {Subclass.Module.Module} module
+ *      A module instance
  */
 Subclass.Event.EventManager = (function()
 {
     /**
-     * @param {Subclass.Module.Module} module
-     * @constructor
+     * @alias Subclass.Event.EventManager
      */
     function EventManager(module)
     {
@@ -18,6 +27,7 @@ Subclass.Event.EventManager = (function()
          * An instance of subclass module
          *
          * @type {Subclass.Module.Module}
+         * @private
          */
         this._module = module;
 
@@ -31,8 +41,11 @@ Subclass.Event.EventManager = (function()
     }
 
     /**
-     * Return module instance
+     * Returns module instance (the module to which current instance
+     * of event manager belongs)
      *
+     * @method getModule
+     * @memberOf Subclass.Event.EventManager.prototype
      * @returns {Subclass.Module.Module}
      */
     EventManager.prototype.getModule = function()
@@ -43,9 +56,12 @@ Subclass.Event.EventManager = (function()
     /**
      * Returns all registered services
      *
-     * @param {boolean} [privateEvents = false]
+     * @method getEvents
+     * @memberOf Subclass.Event.EventManager.prototype
+     *
+     * @param {boolean} [privateEvents=false]
      *      If passed true it returns events only from current module
-     *      without events from its dependencies.
+     *      without events from it dependency (plug-in) modules .
      *
      * @returns {Object.<Subclass.Event.Event>}
      */
@@ -78,10 +94,25 @@ Subclass.Event.EventManager = (function()
     };
 
     /**
-     * Registers new event with specified name
+     * Registers new event with specified name.<br />
+     * It's required step for further using every event.<br /><br />
+     *
+     * Creates instance of {@link Subclass.Event.Event}
+     *
+     * @method registerEvent
+     * @memberOf Subclass.Event.EventManager.prototype
+     *
+     * @throws {Error}
+     *      Throws if trying to register event with already existent event
      *
      * @param {string} eventName
-     * @param {Object} context
+     *      A name of creating event
+     *
+     * @param {Object} [context]
+     *      An any object which link on it will be held
+     *      in "this" variable inside every registered
+     *      listener of current event.
+     *
      * @returns {Subclass.Event.EventManager}
      */
     EventManager.prototype.registerEvent = function(eventName, context)
@@ -95,9 +126,17 @@ Subclass.Event.EventManager = (function()
     };
 
     /**
-     * Returns event instance
+     * Returns registered event instance.
+     *
+     * @method getEvent
+     * @memberOf Subclass.Event.EventManager.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to get event that was not registered
      *
      * @param {string} eventName
+     *      The name of event you want to get
+     *
      * @returns {Subclass.Event.Event}
      */
     EventManager.prototype.getEvent = function(eventName)
@@ -109,10 +148,18 @@ Subclass.Event.EventManager = (function()
     };
 
     /**
-     * Checks whether event with specified name exists
+     * Checks whether event with specified name was registered
+     *
+     * @method issetEvent
+     * @memberOf Subclass.Event.EventManager.prototype
      *
      * @param {string} eventName
-     * @param {boolean} privateEvents
+     *      The name of interesting event
+     *
+     * @param {boolean} [privateEvents]
+     *      Checks whether is event with specified name was registered
+     *      specificly in this module without checking in plug-in modules.
+     *
      * @returns {boolean}
      */
     EventManager.prototype.issetEvent = function(eventName, privateEvents)

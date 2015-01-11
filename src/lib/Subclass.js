@@ -20,7 +20,9 @@ window.Subclass = (function()
     return {
 
         /**
-         * Creates new subclass module.
+         * Creates new subclass module.<br /><br />
+         *
+         * Creates instance of {@link Subclass.Module.Module}
          *
          * @param {string} moduleName
          *      A name of the future module

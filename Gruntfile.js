@@ -101,10 +101,10 @@ module.exports = function(grunt) {
             doc: {
                 src: [
                     '<%= config.lib.dir.src %>/Subclass.js',
-                    '<%= config.lib.dir.src %>/Module/Module.js',
-                    '<%= config.lib.dir.src %>/Module/ModuleAPI.js',
-                    '<%= config.lib.dir.src %>/Module/ModuleConfigs.js',
-                    '<%= config.lib.dir.src %>/Module/ModuleManager.js'
+                    '<%= config.lib.dir.src %>/Module/**/*.js',
+                    '<%= config.lib.dir.src %>/Event/EventManager.js',
+                    '<%= config.lib.dir.src %>/Event/EventListener.js',
+                    '<%= config.lib.dir.src %>/Event/Event.js'
                 ],
                 dest: '<%= config.doc_dir %>/'
             }

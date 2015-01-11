@@ -7,7 +7,7 @@
  * services, parameters, services, events and module configuration.
  *
  * @param {Subclass.Module.Module} module
- *      An instance of module that provides public api
+ *      An instance of module that will provide public API
  */
 Subclass.Module.ModuleAPI = (function()
 {

@@ -17,6 +17,9 @@ Subclass.Module = {};
  * class manager, property manager, parameter manager, service manager
  * and make all manipulations whatever you need.
  *
+ * @throws {Error}
+ *      Throws if was missed or is not a string the module name
+ *
  * @param {string} moduleName
  *      A name of creating module
  *
@@ -71,6 +74,9 @@ Subclass.Module.Module = (function()
     {
         var $this = this;
 
+        if (!moduleName || typeof moduleName != 'string') {
+            throw new Error('The module name was not specified.');
+        }
         if (!moduleConfigs) {
             moduleConfigs = {};
         }

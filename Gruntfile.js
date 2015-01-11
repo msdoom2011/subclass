@@ -103,7 +103,8 @@ module.exports = function(grunt) {
                     '<%= config.lib.dir.src %>/Subclass.js',
                     '<%= config.lib.dir.src %>/Module/Module.js',
                     '<%= config.lib.dir.src %>/Module/ModuleAPI.js',
-                    '<%= config.lib.dir.src %>/Module/ModuleConfigs.js'
+                    '<%= config.lib.dir.src %>/Module/ModuleConfigs.js',
+                    '<%= config.lib.dir.src %>/Module/ModuleManager.js'
                 ],
                 dest: '<%= config.doc_dir %>/'
             }

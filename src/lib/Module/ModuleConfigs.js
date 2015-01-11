@@ -1,6 +1,15 @@
 /**
  * @class
  * @constructor
+ * @description
+ *
+ * The class which holds and manages module configuration.
+ * It can validate, set and get configuration parameters.<br><br>
+ *
+ * To see the list of available configuration parameters
+ * look at description of {@link Subclass.Module.Module}
+ * class constructor parameters.
+ *
  * @param {Subclass.Module.Module} module
  *      The module instance
  */
@@ -61,15 +70,16 @@ Subclass.Module.ModuleConfigs = (function()
      * @memberOf Subclass.Module.ModuleConfigs.prototype
      *
      * @throws {Error}
-     *      Throws error when:<br />
-     *      - if module is ready;<br />
-     *      - specified argument is not a plain object;<br />
-     *      - in configuration object specified non agreed parameter.
+     *     Throws error when:<br />
+     *     - if module is ready;<br />
+     *     - specified argument is not a plain object;<br />
+     *     - in configuration object specified non agreed parameter.
      *
      * @param {Object} moduleConfigs
-     *      Object with module configuration parameters
+     *     Object with module configuration parameters
      *
      * @example
+     * ...
      *
      * var moduleInst = new Subclass.createModule('myApp', {
      *     autoload: false,
@@ -83,9 +93,12 @@ Subclass.Module.ModuleConfigs = (function()
      *         }
      *     }
      * });
-     * ...
      *
-     * moduleInst.getConfigManager().setConfigs({ // or easily use moduleInst.setConfigs({...});
+     * ...
+     * var moduleConfigs = moduleInst.getConfigManager();
+     * var parameterManager = moduleInst.getParameterManager();
+     *
+     * moduleConfigs.setConfigs({ // or easily use moduleInst.setConfigs({...});
      *     autoload: true,                        // will replace old value
      *     rootPath: "path/to/project/root/dir",  // adds new parameter
      *     parameters: {
@@ -93,6 +106,11 @@ Subclass.Module.ModuleConfigs = (function()
      *         name: "some name"                  // adds new parameter to "parameters"
      *     }
      * });
+     *
+     * moduleConfigs.isAutoload();                // Returns true
+     * moduleConfigs.getRootPath();               // Return "path/to/project/root/dir"
+     * parameterManager.issetParameter('name');   // Returns true
+     * ...
      */
     ModuleConfigs.prototype.setConfigs = function (moduleConfigs)
     {
@@ -291,15 +309,28 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method setRootPath
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
+     * @throws {Error}
+     *      Throws error if:<br />
+     *      - trying to change value after the module became ready<br />
+     *      - specified not string argument value
+     *
      * @param {string} rootPath
      *      A path to the project root directory
+     *
+     * @example
+     *
+     * ...
+     * var moduleConfigs = moduleInst.getConfigManager();
+     *     moduleConfigs.setRootPath("path/to/the/directory/root");
+     * ...
      */
     ModuleConfigs.prototype.setRootPath = function(rootPath)
     {
         if (this.getModule().isReady()) {
             throw new Error('Can\'t change configs in ready module.');
         }
-        if (!rootPath || typeof rootPath != 'string') {
+        if (typeof rootPath != 'string') {
             throw new Error('Trying to set invalid root path of the project. It must be a string.');
         }
         this._rootPath = rootPath;
@@ -318,11 +349,54 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Defines custom data types relying on existent property types.
+     * Defines custom data types relying on existent property types
+     * registered in Subclass.Property.PropertyManager.
      *
      * @method setDataTypes
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to change value after the module became ready
+     *
      * @param {Object.<Object>} propertyDefinitions
+     *      A plain object with property definitions. Each property
+     *      in turn also is a plain object. To learn more look at
+     *      {@link Subclass.Property.PropertyManager#createProperty}
+     *
+     * @example
+     * ...
+     *
+     * var moduleConfigs = moduleInst.getConfigManager();
+     *
+     * // Setting data types
+     * moduleConfigs.setDataTypes({
+     *     percents: {               // name of data type
+     *         type: "string",       // type of property
+     *         pattern: /^[0-9]+%$/, // RegExp instance object
+     *         value: "0%"           // default property value
+     *     },
+     *     ...
+     * });
+     * ...
+     *
+     * // Registering TestClass
+     * moduleInst.registerClass("Name/Of/TestClass", {
+     *     ...
+     *     $_properties: {
+     *         percentsProp: { type: "percents" }
+     *         ...
+     *     },
+     *     ...
+     * });
+     *
+     * // Creating TestClass instance
+     * var testClass = moduleInst.getClass("Name/Of/TestClass");
+     * var testClassInst = testClass.createInstance();
+     *
+     * // Trying to set percentsProp property value
+     * testClass.setPercentsProp("10%"); // normal set
+     * testClass.setPercentsProp("10");  // throws error
+     * ...
      */
     ModuleConfigs.prototype.setDataTypes = function(propertyDefinitions)
     {
@@ -336,7 +410,7 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Returns defined custom data types
+     * Returns defined custom data types in the form in which they were set
      *
      * @method getDataTypes
      * @memberOf Subclass.Module.ModuleConfigs.prototype
@@ -352,11 +426,36 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Register parameters
+     * Registers new parameters or redefines already existent with the same name.
      *
      * @method setParameters
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to change value after the module became ready
+     *
      * @param {Object} parameters
+     *      A plain object with properties which hold
+     *      properties whatever you need
+     *
+     * @example
+     * ...
+     *
+     * var moduleConfigs = moduleInst.getConfigManager();
+     *
+     * // setting new parameters
+     * moduleConfigs.setParameters({
+     *      param1: "string value",
+     *      param2: 1000,
+     *      param3: { a: 10, b: "str" },
+     *      ...
+     * });
+     * ...
+     *
+     * moduleInst.getParameter("param1"); // returns "string value"
+     * moduleInst.getParameter("param2"); // returns 1000
+     * moduleInst.getParameter("param3"); // returns { a: 10, b: "str" }
+     * ...
      */
     ModuleConfigs.prototype.setParameters = function(parameters)
     {
@@ -377,7 +476,7 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Returns all registered parameters
+     * Returns all registered parameters in the form in which they were set
      *
      * @method getParameters
      * @memberOf Subclass.Module.ModuleConfigs.prototype
@@ -398,11 +497,72 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Register services
+     * Registers new services and redefines already existent ones with the same name.
      *
      * @method setServices
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to change value after the module became ready
+     *
      * @param {Object.<Object>} services
+     *      A plain object which consists of pairs key/value. The keys
+     *      are the service names and values are the service definitions.
+     *      To see more info about service definition look at
+     *      {@link Subclass.Service.Service} class constructor
+     *
+     * @example
+     *
+     * var moduleInst = Subclass.createModule("app", {
+     *      parameters: {
+     *          mode: "dev"
+     *      },
+     *      ...
+     * });
+     * ...
+     *
+     * var moduleConfigs = moduleInst.getConfigManager();
+     *
+     * // Registering services
+     * moduleConfigs.setServices({
+     *      logger: {
+     *          className: "Name/Of/LoggerService", // name of service class
+     *          arguments: [ "%mode%" ],            // arguments for service class constructor
+     *          calls: {                            // methods that will be called right away after service was created
+     *              setParams: [                    // method name
+     *                  "param 1 value",            // method argument 1
+     *                  "param 2 value"             // method argument 2
+     *              ],
+     *          }
+     *      }
+     * });
+     * ...
+     *
+     * // Creating service class
+     * moduleInst.registerClass("Name/Of/LoggerService", {
+     *      _mode: null,
+     *      _param1: null,
+     *      _param2: null,
+     *
+     *      $_constructor: function(mode)
+     *      {
+     *          this._mode = mode;
+     *      },
+     *
+     *      setParams: function(param1, param2)
+     *      {
+     *          this._param1 = param1;
+     *          this._param2 = param2;
+     *      }
+     * });
+     * ...
+     *
+     * var logger = moduleInst.getService('logger');
+     *
+     * var mode = logger._mode;     // "dev"
+     * var param1 = logger._param1; // "param 1 value"
+     * var param2 = logger._param2; // "param 2 value"
+     * ...
      */
     ModuleConfigs.prototype.setServices = function(services)
     {
@@ -423,7 +583,7 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Returns all registered services
+     * Returns all registered services in the form as they were defined
      *
      * @method getServices
      * @memberOf Subclass.Module.ModuleConfigs.prototype
@@ -444,19 +604,36 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Sets callback when all classes was defined and loaded
+     * Sets callback function which will invoked when all classes of the module
+     * will be loaded (if configuration parameter "autoload" was set in true) and registered.<br><br>
+     *
+     * It is the same as "onReady" parameter in module configuration. If it was defined
+     * in module configuration too the new callback function will be added to the onReady
+     * callbacks storage and will be invoked after other callback functions
+     * which were registered earlier.<br><br>
+     *
+     * If "autoload" configuration parameter was set in false and there were no classes
+     * registered in module at the moment and onReady callback function was not set earlier,
+     * the call of current method invokes specified callback immediately.
      *
      * @method setOnReady
      * @memberOf Subclass.Module.ModuleConfigs.prototype
-     * @param {(Function|null)} callback
+     *
+     * @throws {Error}
+     *      Throws error if:<br />
+     *      - trying to change value after the module became ready<br />
+     *      - specified not function argument value
+     *
+     * @param {Function} callback
+     *      Callback function which will do some initializing manipulations
      */
     ModuleConfigs.prototype.setOnReady = function(callback)
     {
         if (this.getModule().isReady()) {
             throw new Error('Can\'t change configs in ready module.');
         }
-        if ((!callback && callback !== null) || typeof callback != "function") {
-            throw new Error('On ready callback must be function or null.');
+        if (typeof callback != "function") {
+            throw new Error('On ready callback must be function.');
         }
         var module = this.getModule();
         var classManager = module.getClassManager();

@@ -4,9 +4,18 @@
 Subclass.Module = {};
 
 /**
- * Subclass module constructor
  * @class
  * @constructor
+ * @description
+ *
+ * The class which allows to create Subclass module.
+ * It's a structural unit that allows to split the project on multiple parts.
+ * The main goal of current class is to provide extensibility of the project
+ * by plug-ins (other modules which were marked as plug-ins).<br /><br />
+ *
+ * Using this class you can get access to module configuration, event manager,
+ * class manager, property manager, parameter manager, service manager
+ * and make all manipulations whatever you need.
  *
  * @param {string} moduleName
  *      A name of creating module
@@ -184,12 +193,13 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Sets parent module.
+     * Sets parent module.<br />
      * Allows to specify that the current module is a plugin relative to the parent module
      *
      * @method setParent
      * @memberOf Subclass.Module.Module.prototype
      * @throws {Error} Throws error if was specified not valid argument
+     *
      * @param {(Subclass.Module.Module|null)} parentModule
      *      The parent module instance
      */
@@ -227,7 +237,7 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Returns the root parent module.
+     * Returns the root parent module.<br /><br />
      *
      * If module is a plugin it holds a link to the parent module.
      * If parent in turn has a parent and so on, the module which is on the top
@@ -251,8 +261,8 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Checks whether current module is root module, i.e. has a parent module.
-     * It's an alias of the method Module#hasParent
+     * Checks whether current module is root module, i.e. has a parent module.<br />
+     * Alias of method {@link Subclass.Module.Module#hasParent}
      *
      * @method isRoot
      * @memberOf Subclass.Module.Module.prototype
@@ -379,22 +389,10 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Sets callback function which will invoked when all classes of the module
-     * will be loaded (if configuration parameter "autoload" was set in true) and registered.
-     *
-     * It is the same as "onReady" parameter in module configuration. If it was defined
-     * in module configuration too the new callback function will be added to the onReady
-     * callbacks storage and will be invoked after other callback functions
-     * which were registered earlier.
-     *
-     * If "autoload" configuration parameter was set in false and there were no classes
-     * registered in module at the moment and onReady callback function was not set earlier,
-     * the call of current method invokes specified callback immediately.
+     * The same as the {@link Subclass.Module.ModuleConfigs#setOnReady}
      *
      * @method onReady
      * @memberOf Subclass.Module.Module.prototype
-     * @param {Function} callback
-     *      Callback function which will do some initializing manipulations
      */
     Module.prototype.onReady = function(callback)
     {
@@ -402,7 +400,11 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Invokes registered onReady callback functions forcibly
+     * Invokes registered onReady callback functions forcibly.<br /><br />
+     *
+     * If current module contains plug-ins then will be invoked onReady callbacks
+     * from current module first and then will be invoked onReady callbacks
+     * from plug-ins in order as they were added to the current module.
      *
      * @method triggerOnReady
      * @memberOf Subclass.Module.Module.prototype
@@ -414,7 +416,7 @@ Subclass.Module.Module = (function()
 
     /**
      * Brings module to ready state and invokes registered onReady callback functions.
-     * It can be invoked only once otherwise nothing will happen
+     * It can be invoked only once otherwise nothing will happen.
      *
      * @method setReady
      * @memberOf Subclass.Module.Module.prototype

@@ -1,6 +1,11 @@
 /**
  * @class
  * @constructor
+ * @description
+ *
+ * This class contains all needed API to manipulation with classes,
+ * services, parameters, services, events and module configuration.
+ *
  * @param {Subclass.Module.Module} module
  *      An instance of module that provides public api
  */

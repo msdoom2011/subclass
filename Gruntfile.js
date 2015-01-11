@@ -102,9 +102,8 @@ module.exports = function(grunt) {
                 src: [
                     '<%= config.lib.dir.src %>/Subclass.js',
                     '<%= config.lib.dir.src %>/Module/**/*.js',
-                    '<%= config.lib.dir.src %>/Event/EventManager.js',
-                    '<%= config.lib.dir.src %>/Event/EventListener.js',
-                    '<%= config.lib.dir.src %>/Event/Event.js'
+                    '<%= config.lib.dir.src %>/Event/**/*.js',
+                    '<%= config.lib.dir.src %>/Parameter/**/*.js'
                 ],
                 dest: '<%= config.doc_dir %>/'
             }

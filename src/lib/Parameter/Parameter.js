@@ -1,19 +1,36 @@
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * Instance of current class holds information about parameter:
+ * its name and value.
+ *
+ * @throws {Error}
+ *      Throws error if parameter name was missed or is not a string
+ *
+ * @param {string} parameterName
+ *      The name of the creating parameter
+ *
+ * @param {*} parameterValue
+ *      The value of the creating parameter
  */
 Subclass.Parameter.Parameter = (function()
 {
     /**
-     * @param parameterName
-     * @param parameterValue
-     * @constructor
+     * @alias Subclass.Parameter.Parameter
      */
     function Parameter(parameterName, parameterValue)
     {
+        if (!parameterName || typeof parameterName != 'string') {
+            throw new Error('Invalid or missed parameter name.');
+        }
+
         /**
          * Parameter name
          *
          * @type {string}
+         * @private
          */
         this._name = parameterName;
 
@@ -21,6 +38,7 @@ Subclass.Parameter.Parameter = (function()
          * Parameter value
          *
          * @type {*}
+         * @private
          */
         this._value = parameterValue;
     }
@@ -28,6 +46,8 @@ Subclass.Parameter.Parameter = (function()
     /**
      * Returns parameter name
      *
+     * @method getName
+     * @memberOf Subclass.Parameter.Parameter.prototype
      * @returns {string}
      */
     Parameter.prototype.getName = function()
@@ -38,6 +58,8 @@ Subclass.Parameter.Parameter = (function()
     /**
      * Returns parameter value
      *
+     * @method getValue
+     * @memberOf Subclass.Parameter.Parameter.prototype
      * @returns {*}
      */
     Parameter.prototype.getValue = function()
@@ -48,11 +70,15 @@ Subclass.Parameter.Parameter = (function()
     /**
      * Sets parameter value
      *
+     * @method setValue
+     * @memberOf Subclass.Parameter.Parameter.prototype
+     *
      * @param {*} value
+     *      The new parameter value
      */
     Parameter.prototype.setValue = function(value)
     {
-        this._parameter = value;
+        this._value = value;
     };
 
     return Parameter;

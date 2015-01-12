@@ -420,18 +420,6 @@ app.registerClass("Class3", {
     }
 });
 
-
-// ====================== CONFIGS =======================
-
-app.registerConfig("ConfigBase", {
-
-    propString: {
-        type: "string",
-        value: "psix"
-    }
-
-});
-
 var class3Inst = app.getClassManager().alterClass("Class2")
 //            .setClassName("firstBuiltClass")
 //            .setClassParent('AbstractClass')
@@ -457,6 +445,54 @@ var class3Inst = app.getClassManager().alterClass("Class2")
     ;
 
 console.log(class3Inst);
+
+
+// ====================== CONFIGS =======================
+
+app.registerConfig("ConfigBase", {
+
+    propString: {
+        type: "string",
+        value: "psix"
+    },
+
+    propMap: {
+        type: "map",
+        schema: {
+
+            propMapString: {
+                type: "string",
+                value: "string value 1"
+            },
+
+            propMapNumber: {
+                type: "number",
+                value: 10
+            },
+
+            propMapObject: {
+                type: "object",
+                value: { key1: "value1" }
+            }
+
+            // ... any property definitions
+        },
+        value: null
+    },
+
+    propObjectCollection: {
+        type: "objectCollection",
+        proto: {
+            type: "map",
+            schema: {
+                key1: { type: "string" },
+                key2: { type: "string" },
+                key3: { type: "string" }
+            }
+        }
+    }
+
+});
 
 
 app.registerConfig("ConfigInclude", {
@@ -520,28 +556,30 @@ app.registerConfig("Config", {
         value: "value1"                          // If not specified, it will be the first allowed value.
     },
 
+
+
+
+
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!НЕ ПЕРЕОПРЕДЕЛЯЕТСЯ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
     propMap: {
-        type: "map",
-        schema: {
+        propMapString: "Redefined string!",
+        propMapNumber: 999,
+        propMapObject: { key1: "value redefined!" }
+    },
 
-            propMapString: {
-                type: "string",
-                value: "string value 1"
-            },
-
-            propMapNumber: {
-                type: "number",
-                value: 10
-            },
-
-            propMapObject: {
-                type: "object",
-                value: { key1: "value1" }
-            }
-
-            // ... any property definitions
-        },
-        value: null
+    propObjectCollection: {
+        item1: {
+            key1: "key 1 value",
+            key2: "key 2 value",
+            key3: "key 3 value"
+        }
     }
 
 });

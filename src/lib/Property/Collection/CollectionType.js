@@ -77,18 +77,19 @@ Subclass.Property.Collection.CollectionType = (function()
     };
 
     /**
-     * Sets prototype of collection items
-     *
-     * @param {object} proto
-     */
+    * Sets prototype of collection items
+    *
+    * @param {Subclass.Property.PropertyTypeInterface} proto
+    */
     CollectionType.prototype.setProto = function(proto)
     {
-        this._proto = this.getPropertyManager().createProperty(
-            'collectionItem',
-            proto,
-            this.getContextClass(),
-            this
-        );
+        this._proto = proto;
+        //this._proto = this.getPropertyManager().createProperty(
+        //    'collectionItem',
+        //    proto,
+        //    this.getContextClass(),
+        //    this
+        //);
     };
 
     /**

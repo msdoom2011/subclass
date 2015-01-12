@@ -45,6 +45,16 @@ Subclass.Property.Collection.CollectionDefinition = (function()
     {
         this.validateProto(proto);
         this.getData().proto = proto;
+
+        var property = this.getProperty();
+        var propertyManager = property.getPropertyManager();
+
+        property.setProto(propertyManager.createProperty(
+            'collectionItem',
+            proto,
+            property.getContextClass(),
+            property
+        ));
     };
 
     /**
@@ -90,7 +100,7 @@ Subclass.Property.Collection.CollectionDefinition = (function()
     {
         CollectionDefinition.$parent.prototype.processData.call(this);
 
-        this.getProperty().setProto(this.getProto());
+        //this.getProperty().setProto(this.getProto());
     };
 
     return CollectionDefinition;

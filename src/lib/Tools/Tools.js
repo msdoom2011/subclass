@@ -63,7 +63,7 @@ Subclass.Tools = (function()
          *
          *      Source object which properties will added to target object
          *
-         * @param {(Function|boolean)} mergeArrays
+         * @param {(Function|boolean)} [mergeArrays=false]
          *
          *      If was passed true it means that elements from source array properties
          *      will be added to according array properties in target.
@@ -78,7 +78,7 @@ Subclass.Tools = (function()
          *          return targetArrayPropertyElement.name != sourceArrayPropertyElement.name;
          *      });
          *
-         * @param {boolean} withInheritedProps
+         * @param {boolean} [withInheritedProps=false]
          *
          *      Default false. Specified if there is a need to copy inherited properties.
          *

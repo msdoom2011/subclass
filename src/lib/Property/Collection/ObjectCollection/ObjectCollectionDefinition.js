@@ -49,10 +49,26 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
         ObjectCollectionDefinition.$parent.prototype.processData.call(this);
 
         var defaultValue = this.getValue();
+        var proto = this.getProto();
+
+        // Adding "extends" parameter to property "schema"
+        // parameter if proto type is "map"
+
+        if (proto.type == 'map') {
+            if (!proto.schema) {
+                proto.schema = {};
+            }
+            if (!proto.schema.extends) {
+                proto.schema.extends = {
+                    type: "string",
+                    value: null,
+                    nullable: true
+                };
+            }
+        }
 
         if (defaultValue !== null) {
             var collection = this.getProperty().getCollection();
-            var proto = this.getProto();
 
             this.getProperty().setIsNull(false);
 
@@ -65,9 +81,11 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
                 }
                 collection.addItem(
                     propName,
-                    defaultValue[propName]
+                    defaultValue[propName],
+                    false
                 );
             }
+            collection.normalizeItems();
         }
     };
 

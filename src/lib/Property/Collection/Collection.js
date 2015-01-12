@@ -31,8 +31,9 @@ Subclass.Property.Collection.Collection = (function()
      *
      * @param {(string|number)} key
      * @param {*} value
+     * @param {boolean} [normalize=true]
      */
-    Collection.prototype.addItem = function(key, value)
+    Collection.prototype.addItem = function(key, value, normalize)
     {
         if (this.issetItem(key)) {
             console.warn(
@@ -41,8 +42,15 @@ Subclass.Property.Collection.Collection = (function()
             );
             return;
         }
+        if (normalize !== false) {
+            normalize = true;
+        }
         this.validateValue(value);
         this._items[key] = value;
+
+        if (normalize) {
+            this.normalizeItem(key);
+        }
     };
 
     /**
@@ -59,8 +67,9 @@ Subclass.Property.Collection.Collection = (function()
             if (!items.hasOwnProperty(key)) {
                 continue;
             }
-            this.addItem(key, items[key]);
+            this.addItem(key, items[key], false);
         }
+        this.normalizeItems();
     };
 
     /**
@@ -68,11 +77,19 @@ Subclass.Property.Collection.Collection = (function()
      *
      * @param {(string|number)} key
      * @param {*} value
+     * @param {boolean} [normalize=true]
      */
-    Collection.prototype.setItem = function(key, value)
+    Collection.prototype.setItem = function(key, value, normalize)
     {
+        if (normalize !== false) {
+            normalize = true;
+        }
         this.validateValue(value);
         this._items[key] = value;
+
+        if (normalize) {
+            this.normalizeItem(key);
+        }
     };
 
     /**
@@ -89,8 +106,9 @@ Subclass.Property.Collection.Collection = (function()
             if (!items.hasOwnProperty(key)) {
                 continue;
             }
-            this.setItem(key, items[key]);
+            this.setItem(key, items[key], false);
         }
+        this.normalizeItems();
     };
 
     /**
@@ -221,6 +239,27 @@ Subclass.Property.Collection.Collection = (function()
         });
 
         return items;
+    };
+
+    /**
+     * Normalizes collection elements
+     */
+    Collection.prototype.normalizeItems = function()
+    {
+        // Do something
+    };
+
+    /**
+     * Normalizes specified collection item
+     *
+     * @param itemName
+     * @returns {*}
+     */
+    Collection.prototype.normalizeItem = function(itemName)
+    {
+        // Do something
+
+        return this.getItem(itemName);
     };
 
     /**

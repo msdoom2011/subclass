@@ -251,6 +251,30 @@ Subclass.Property.Map.Map = (function()
         }
     };
 
+    /**
+     * Returns default values for all properties in schema
+     *
+     * @returns {Object}
+     */
+    MapType.prototype.getSchemaDefaultValue = function()
+    {
+        var schemaValues = {};
+        var children = this.getChildren();
+
+        for (var propName in children) {
+            if (!children.hasOwnProperty(propName)) {
+                continue;
+            }
+            if (children[propName].getSchemaDefaultValue) {
+                schemaValues[propName] = children[propName].getSchemaDefaultValue();
+
+            } else {
+                schemaValues[propName] = children[propName].getDefaultValue();
+            }
+        }
+        return schemaValues;
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

@@ -141,7 +141,16 @@ Subclass.Class.Config.ConfigDefinition = (function()
          */
         classDefinition.setValues = function (values)
         {
-            // @TODO
+            if (!values || !Subclass.Tools.isPlainObject(values)) {
+                throw new Error(
+                    'Trying to set not valid values object in class "' + this.getClassName() + '".'
+                );
+            }
+            for (var propName in values) {
+                if (values.hasOwnProperty(propName)) {
+                    this[propName] = values[propName];
+                }
+            }
         };
 
         /**
@@ -151,7 +160,40 @@ Subclass.Class.Config.ConfigDefinition = (function()
          */
         classDefinition.getDefaults = function ()
         {
-            // @TODO do something
+            var defaults = {};
+            var properties = this.$_class.getProperties();
+
+            for (var propName in properties) {
+                if (properties.hasOwnProperty(propName)) {
+                    defaults[propName] = properties[propName].getDefaultValue();
+                }
+            }
+            return defaults;
+        };
+
+        /**
+         * Returns default values in full set (if defined "map" type property
+         * will be returned defaults values from schema).
+         *
+         * @returns {{}}
+         */
+        classDefinition.getSchemaDefaults = function()
+        {
+            var defaults = {};
+            var properties = this.$_class.getProperties();
+
+            for (var propName in properties) {
+                if (!properties.hasOwnProperty(propName)) {
+                    continue;
+                }
+                if (properties[propName].getSchemaDefaultValue) {
+                    defaults[propName] = properties[propName].getSchemaDefaultValue();
+
+                } else {
+                    defaults[propName] = properties[propName].getDefaultValue();
+                }
+            }
+            return defaults;
         };
 
         return classDefinition;

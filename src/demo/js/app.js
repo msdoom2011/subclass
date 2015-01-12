@@ -697,6 +697,16 @@ app.onReady(function() {
     console.log(inst.isInstanceOf('Class3'));
     console.log(inst.isInstanceOf('Class43'));
 
+    console.log('');
+    console.log('============= Config Class ===============');
+
+    configInst.setValues({
+        propString: "YO!!!!!!!! SHIT!!!!!!",
+        propNumber: 10
+    });
+    console.log(configInst);
+    console.log(configInst.getDefaults());
+    console.log(configInst.getSchemaDefaults());
 
 
     console.log('');

@@ -540,7 +540,8 @@ app.registerConfig("Config", {
             }
 
             // ... any property definitions
-        }
+        },
+        value: null
     }
 
 });
@@ -705,6 +706,7 @@ app.onReady(function() {
         propNumber: 10
     });
     console.log(configInst);
+    console.log(configInst.getValues());
     console.log(configInst.getDefaults());
     console.log(configInst.getSchemaDefaults());
 

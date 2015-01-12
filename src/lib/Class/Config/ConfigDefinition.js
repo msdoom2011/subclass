@@ -139,7 +139,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
          *
          * @param {Object} values
          */
-        classDefinition.setValues = function (values)
+        classDefinition.setValues = function(values)
         {
             if (!values || !Subclass.Tools.isPlainObject(values)) {
                 throw new Error(
@@ -151,6 +151,24 @@ Subclass.Class.Config.ConfigDefinition = (function()
                     this[propName] = values[propName];
                 }
             }
+        };
+
+        /**
+         * Returns object with all config properties with current values
+         *
+         * @returns {{}}
+         */
+        classDefinition.getValues = function()
+        {
+            var values = {};
+            var properties = this.$_class.getProperties();
+
+            for (var propName in properties) {
+                if (properties.hasOwnProperty(propName)) {
+                    values[propName] = properties[propName].getValue(this);
+                }
+            }
+            return values;
         };
 
         /**

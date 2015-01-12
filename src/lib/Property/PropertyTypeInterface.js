@@ -237,6 +237,13 @@ Subclass.Property.PropertyTypeInterface = (function()
     PropertyTypeInterface.prototype.attach = function(context) {};
 
     /**
+     * Attaches property accessor functions
+     *
+     * @param {Object} context
+     */
+    PropertyTypeInterface.prototype.attachAccessors = function(context) {};
+
+    /**
      * Attaches property that will hold property value in class instance
      *
      * @param {Object} context

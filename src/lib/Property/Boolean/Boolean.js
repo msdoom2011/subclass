@@ -55,6 +55,20 @@ Subclass.Property.Boolean.Boolean = (function()
         return Subclass.Property.Boolean.BooleanDefinition;
     };
 
+    /**
+     * @inheritDoc
+     */
+    BooleanType.prototype.attachAccessors = function(context)
+    {
+        BooleanType.$parent.prototype.attachAccessors.call(this, context);
+
+        var propertyName = this.getName();
+        var getterName = Subclass.Tools.generateGetterName(propertyName);
+        var checkerName = Subclass.Tools.generateCheckerName(propertyName);
+
+        context[checkerName] = context[getterName];
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

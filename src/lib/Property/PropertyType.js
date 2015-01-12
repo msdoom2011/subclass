@@ -496,15 +496,7 @@ Subclass.Property.PropertyType = (function()
         var propName = this.getName();
 
         if (this.getDefinition().isAccessors()) {
-            var getterName = Subclass.Tools.generateGetterName(propName);
-
-            context[getterName] = this.generateGetter();
-
-            if (this.getDefinition().isWritable()) {
-                var setterName = Subclass.Tools.generateSetterName(propName);
-
-                context[setterName] = this.generateSetter();
-            }
+            this.attachAccessors(context);
 
         } else if (this.getDefinition().isWritable()) {
             Object.defineProperty(context, propName, {
@@ -524,6 +516,23 @@ Subclass.Property.PropertyType = (function()
         }
         if (Subclass.Tools.isPlainObject(context)) {
             this.attachHashed(context);
+        }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    PropertyType.prototype.attachAccessors = function(context)
+    {
+        var propName = this.getName();
+        var getterName = Subclass.Tools.generateGetterName(propName);
+
+        context[getterName] = this.generateGetter();
+
+        if (this.getDefinition().isWritable()) {
+            var setterName = Subclass.Tools.generateSetterName(propName);
+
+            context[setterName] = this.generateSetter();
         }
     };
 

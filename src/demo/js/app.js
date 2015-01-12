@@ -18,7 +18,7 @@ var appPlugin1 = Subclass.createModule('appPlugin1', {
 
 appPlugin1.onReady(function() {
     console.log('****************');
-    alert('initializing plugin1');
+    //alert('initializing plugin1');
     console.log('initializing plugin1');
     console.log('****************');
 });
@@ -61,7 +61,7 @@ var appPlugin2 = Subclass.createModule('appPlugin2', {
 
 appPlugin2.onReady(function() {
     console.log('****************');
-    alert('initializing plugin2 else');
+    //alert('initializing plugin2 else');
     console.log('initializing plugin2 else');
     console.log('****************');
 });
@@ -72,7 +72,7 @@ appPlugin2.setConfigs({
     },
     onReady: function() {
         console.log('****************');
-        alert('initializing plugin2 else new!!!');
+        //alert('initializing plugin2 else new!!!');
         console.log('initializing plugin2 else new!!!');
         console.log('****************');
     }
@@ -180,7 +180,7 @@ app.registerInterface("InterfaceBase", {
 
         interfaceProperty: {
             type: "string",
-            value: "It's interface property!!!!",
+            default: "It's interface property!!!!",
             writable: false
         }
     },
@@ -206,7 +206,7 @@ app.registerInterface("InterfaceExtra", {
 app.registerTrait("TraitBase", {
     $_properties: {
 
-        typedBoolean: { type: "boolean", value: false },
+        typedBoolean: { type: "boolean" },
 
         typedNumber: { type: "number", value: 111 }
     },
@@ -225,9 +225,9 @@ app.registerTrait("Trait", {
 //                    value: "my testing string changed!",
 //                    pattern: null
 //                },
-        typedObject: { type: "object", value: {} },
+        typedObject: { type: "object", default: { psix: true } },
 
-        typedArray: { type: "array", value: [] },
+        typedArray: { type: "array", default: [] },
 
         typedEnum: { type: "enum", allows: [1, 2, 3], value: 1 },
 
@@ -240,7 +240,7 @@ app.registerTrait("Trait", {
         typedUntyped: { type: "untyped", value: "psix" },
 
         typedMap: { type: "map", schema: {
-            varPsix: { type: "string", value: "yo!!!!" }
+            varPsix: { type: "string", default: "yo!!!!" }
         }}
     },
 
@@ -281,7 +281,7 @@ app.registerAbstractClass("Class2", {
             //type: "string",
             type: "percents",
             //value: "my testing string!"
-            value: "100%"
+            default: "100%"
         },
 
         typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, value: {
@@ -313,14 +313,13 @@ app.registerAbstractClass("Class2", {
                 propBoolean: true
             }]
         },
-        typedMap: { type: "map", schema:
-            {
+        typedMap: { type: "map", schema: {
                 propMapMap: { type: "map", schema: {
-                    propMapMapString: { type: "string", value: "" } }
+                    propMapMapString: { type: "string", default: "" } }
                 },
-                propMapString: { type: "string", value: "string value 1" },
-                propMapNumber: { type: "number", value: 10 },
-                propMapObject: { type: "object", value: { key1: "value1" } }
+                propMapString: { type: "string", default: "string value 1" },
+                propMapNumber: { type: "number", default: 10 },
+                propMapObject: { type: "object", default: { key1: "value1" } }
             },
 //          value: null
             value: {
@@ -462,17 +461,17 @@ app.registerConfig("ConfigBase", {
 
             propMapString: {
                 type: "string",
-                value: "string value 1"
+                default: "string value 1"
             },
 
             propMapNumber: {
                 type: "number",
-                value: 10
+                default: 10
             },
 
             propMapObject: {
                 type: "object",
-                value: { key1: "value1" }
+                default: { key1: "value1" }
             }
 
             // ... any property definitions
@@ -509,13 +508,26 @@ app.registerConfig("ConfigInclude", {
     propMap: {
         type: "map",
         schema: {
-            propMapExtra: {
-                type: "string",
-                value: "fjdklfjsldfjlsjdfljsdkfl"
-            }
+            propMapExtra: { type: "string", default: "fjdklfjsldfjlsjdfljsdkfl" }
         }
-    }
+    },
 
+    propObject: {
+        type: "object",
+        value: { test: true}
+    }
+});
+
+app.registerConfig("ConfigDecorator", {
+
+    propFromDecorator: {
+        type: "string",
+        value: "property from decorator"
+    },
+
+    propDecoratorExtra: {
+        type: "boolean"
+    }
 });
 
 app.registerConfig("Config", {
@@ -524,6 +536,10 @@ app.registerConfig("Config", {
 
     $_includes: [
         "ConfigInclude"
+    ],
+
+    $_decorators: [
+        "ConfigDecorator"
     ],
 
     propString: "TEST!!!!!",
@@ -535,38 +551,22 @@ app.registerConfig("Config", {
         value: false
     },
 
-    propArray: {
-        type: "array",
-        value: []
+    propFromDecorator: {
+        type: "string",
+        value: "property from config"
     },
 
-    propObject: {
-        type: "object",
-        value: {}
-    },
+    propArray: { type: "array", value: [] },
 
-    propFunction: {
-        type: "function",
-        value: function() {}
-    },
+    propObject: { type: "object", value: { test: "NO!!!!!!" } },
+
+    propFunction: { type: "function", value: function() {} },
 
     propEnum: {
         type: "enum",
         allows: ["value1", "value2", "value3"],  // Allowed types: string|number|boolean
         value: "value1"                          // If not specified, it will be the first allowed value.
     },
-
-
-
-
-
-
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!НЕ ПЕРЕОПРЕДЕЛЯЕТСЯ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
 
     propMap: {
         propMapString: "Redefined string!",
@@ -673,7 +673,7 @@ app.registerClass("Bug2", {
 app.onReady(function() {
 
     console.log('****************');
-    alert('initializing app');
+    //alert('initializing app');
     console.log('initializing app');
     console.log('****************');
 

@@ -48,7 +48,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
     {
         ObjectCollectionDefinition.$parent.prototype.processData.call(this);
 
-        var defaultValue = this.getValue();
+        var defaultValue = this.getDefault();
         var proto = this.getProto();
 
         // Adding "extends" parameter to property "schema"

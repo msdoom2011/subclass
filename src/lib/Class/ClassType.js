@@ -408,6 +408,7 @@ Subclass.Class.ClassType = (function()
         var classConstructor = this.getConstructor();
         var classProperties = this.getProperties(true);
         var classInstance = new classConstructor();
+        var setterName;
 
 
         // Attaching hashed typed properties
@@ -417,7 +418,29 @@ Subclass.Class.ClassType = (function()
                 continue;
             }
             classProperties[propertyName].attachHashed(classInstance);
+
+            // Getting init value
+
+            var property = classProperties[propertyName];
+            var propertyDefinition = property.getDefinition();
+            var initValue = propertyDefinition.getValue();
+
+            // Setting init value
+
+            if (initValue !== undefined) {
+                if (propertyDefinition.isAccessors()) {
+                    setterName = Subclass.Tools.generateSetterName(propertyName);
+                    classInstance[setterName](initValue);
+
+                } else {
+                    classInstance[propertyName] = initValue;
+                }
+                property.setIsModified(false);
+            }
         }
+
+        // Adding no methods to class instance
+
         var classNoMethods = this.getDefinition().getNoMethods(true);
 
         for (var propName in classNoMethods) {
@@ -438,7 +461,7 @@ Subclass.Class.ClassType = (function()
                     if (!classInstance.$_requires.hasOwnProperty(alias)) {
                         continue;
                     }
-                    var setterName = Subclass.Tools.generateSetterName(alias);
+                    setterName = Subclass.Tools.generateSetterName(alias);
                     var requiredClassName = classInstance.$_requires[alias];
                     var requiredClass = classManager.getClass(requiredClassName);
 
@@ -446,6 +469,7 @@ Subclass.Class.ClassType = (function()
                 }
             }
         }
+
         if (classInstance.$_constructor) {
             classInstance.$_constructor.apply(classInstance, args);
         }

@@ -27,7 +27,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
                 this._validateInclude(includesList[i]);
             }
         } catch (e) {
-            throw new Error('Invalid value of argument "includesList" in method "setIncludes" in "ConfigBuilder" class.');
+            throw new Error('Invalid value of argument "includesList" in "ConfigBuilder" class.');
         }
     };
 
@@ -119,6 +119,116 @@ Subclass.Class.Config.ConfigBuilder = (function()
     ConfigBuilder.prototype.getIncludes = function()
     {
         return this._getDefinition().$_includes || [];
+    };
+
+    /**
+     * Validates decorators list argument
+     *
+     * @param {*} decoratorsList
+     * @private
+     */
+    ConfigBuilder.prototype._validateDecorators = function(decoratorsList)
+    {
+        try {
+            if (!Array.isArray(decoratorsList)) {
+                throw "error";
+            }
+            for (var i = 0; i < decoratorsList.length; i++) {
+                this._validateDecorator(decoratorsList[i]);
+            }
+        } catch (e) {
+            throw new Error('Invalid value of argument "decoratorsList" in "ConfigBuilder" class.');
+        }
+    };
+
+    /**
+     * Validates config decorator
+     *
+     * @param {*} decorator
+     * @private
+     */
+    ConfigBuilder.prototype._validateDecorator = function(decorator)
+    {
+        if (
+            typeof decorator != "string"
+            && typeof decorator != "object"
+            && decorator.getClassTypeName
+            && decorator.getClassTypeName() !== "Config"
+        ) {
+            throw new Error('Specified invalid decorator in "Config" class.');
+        }
+    };
+
+    /**
+     * Brings decorators list to common state
+     *
+     * @param {Array} decoratorsList
+     * @private
+     */
+    ConfigBuilder.prototype._normalizeDecorators = function(decoratorsList)
+    {
+        for (var i = 0; i < decoratorsList.length; i++) {
+            decoratorsList[i] = this._normalizeDecorator(decoratorsList[i]);
+        }
+    };
+
+    /**
+     * Normalizes config decorator
+     *
+     * @param {(string|Config)} decorator
+     * @returns {string}
+     * @private
+     */
+    ConfigBuilder.prototype._normalizeDecorator = function(decorator)
+    {
+        this._validateDecorator(decorator);
+
+        if (typeof decorator != 'string') {
+            return decorator.getName();
+        }
+    };
+
+    /**
+     * Sets decorators list
+     *
+     * @param {string[]} decoratorsList
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    ConfigBuilder.prototype.setDecorators = function(decoratorsList)
+    {
+        this._validateDecorators(decoratorsList);
+        this._normalizeDecorators(decoratorsList);
+        this._getDefinition().$_decorators = decoratorsList;
+
+        return this;
+    };
+
+    /**
+     * Adds new decorators
+     *
+     * @param {string[]} decoratorsList
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    ConfigBuilder.prototype.addDecorators = function(decoratorsList)
+    {
+        this._validateDecorators(decoratorsList);
+
+        if (!this._getDefinition().$_decorators) {
+            this._getDefinition().$_decorators = [];
+        }
+        this._getDefinition().$_decorators = this._getDefinition().$_decorators.concat(decoratorsList);
+
+        return this;
+    };
+
+    /**
+     * Returns decorators list
+     *
+     * @returns {string[]}
+     */
+    ConfigBuilder.prototype.getDecorators = function()
+    {
+        return this._getDefinition().$_decorators || [];
     };
 
     ConfigBuilder.prototype.setProperties = undefined;

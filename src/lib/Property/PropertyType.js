@@ -434,7 +434,7 @@ Subclass.Property.PropertyType = (function()
      */
     PropertyType.prototype.getDefaultValue = function()
     {
-        return this.getDefinition().getValue();
+        return this.getDefinition().getDefault();
     };
 
     /**

@@ -110,18 +110,10 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateValue = function(value)
     {
         return this.isNullable() && value === null;
-
-        //try {
-        //    this.getProperty().validate(value);
-        //
-        //} catch (e) {
-        //    console.error("Error! Invalid default value!");
-        //    throw e.stack;
-        //}
     };
 
     /**
-     * Sets property default value
+     * Sets property value
      */
     PropertyDefinition.prototype.setValue = function(value)
     {
@@ -130,13 +122,39 @@ Subclass.Property.PropertyDefinition = (function()
     };
 
     /**
-     * Returns property default value
+     * Returns property value
      *
      * @returns {*}
      */
     PropertyDefinition.prototype.getValue = function()
     {
         return this.getData().value;
+    };
+
+    /**
+     * Validates "default" attribute value
+     *
+     * @alias Subclass.Property.PropertyDefinition#validateValue
+     */
+    PropertyDefinition.prototype.validateDefault = PropertyDefinition.prototype.validateValue;
+
+    /**
+     * Sets property default value
+     */
+    PropertyDefinition.prototype.setDefault = function(value)
+    {
+        this.validateDefault(value);
+        this.getData().default = value;
+    };
+
+    /**
+     * Returns property default value
+     *
+     * @returns {*}
+     */
+    PropertyDefinition.prototype.getDefault = function()
+    {
+        return this.getData().default;
     };
 
     /**
@@ -235,12 +253,17 @@ Subclass.Property.PropertyDefinition = (function()
      *
      * @returns {boolean}
      */
-    PropertyDefinition.prototype.isWritable = function()
+    PropertyDefinition.prototype.getWritable = function()
     {
         var isWritable = this.getData().writable;
 
         return isWritable !== null ? isWritable : true;
     };
+
+    /**
+     * @alias Subclass.Property.PropertyDefinition
+     */
+    PropertyDefinition.prototype.isWritable = PropertyDefinition.prototype.getWritable;
 
     /**
      * Validates "nullable" attribute value
@@ -307,7 +330,14 @@ Subclass.Property.PropertyDefinition = (function()
              *
              * Default value of property
              */
-            value: null,
+            default: null,
+
+            /**
+             * @type {(*|undefined)}
+             *
+             * Value of property
+             */
+            value: undefined,
 
             /**
              * @type {boolean}
@@ -357,6 +387,13 @@ Subclass.Property.PropertyDefinition = (function()
                 this._throwMissedAttribute(attrName);
             }
         }
+        if (this.getWritable() === false && this.getValue() !== undefined) {
+            console.warn(
+                'Specified "value" attribute for definition of not writable ' +
+                'property ' + this.getProperty() + '.\n The value in "value" attribute ' +
+                'was ignored.\n The value from "default" attribute was applied instead.'
+            );
+        }
     };
 
     /**
@@ -364,15 +401,20 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.processData = function()
     {
-        var definition = this.getData();
-        var emptyValue = !definition.hasOwnProperty('value');
+        var definition = Subclass.Tools.copy(this.getData());
+        var emptyValue = !definition.hasOwnProperty('default');
 
         this._data = this.getBaseData();
 
         for (var attrName in definition) {
-            if (!definition.hasOwnProperty(attrName) || attrName == 'value') {
+            if (
+                !definition.hasOwnProperty(attrName)
+                || attrName == 'default'
+                || attrName == 'value'
+            ) {
                 continue;
             }
+
             var setterMethod = "set" + attrName[0].toUpperCase() + attrName.substr(1);
 
             if (this[setterMethod]) {
@@ -380,10 +422,18 @@ Subclass.Property.PropertyDefinition = (function()
             }
         }
 
+        // Setting default value
+
         if (emptyValue) {
-            this.setValue(this.getEmptyValue());
+            this.setDefault(this.getEmptyValue());
 
         } else {
+            this.setDefault(definition.default);
+        }
+
+        // Setting value
+
+        if (definition.hasOwnProperty('value')) {
             this.setValue(definition.value);
         }
     };

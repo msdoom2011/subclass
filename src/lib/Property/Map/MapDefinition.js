@@ -122,7 +122,7 @@ Subclass.Property.Map.MapDefinition = (function()
             defaultValue[propName] = property
                 .getChild(propName)
                 .getDefinition()
-                .getValue()
+                .getDefault()
             ;
         }
         this._setDefaultValues(defaultValue);
@@ -159,7 +159,7 @@ Subclass.Property.Map.MapDefinition = (function()
         * @inheritDoc
         * @type {{}}
         */
-        baseDefinition.value = {};
+        baseDefinition.default = {};
 
         /**
          * Defines available properties in value
@@ -168,6 +168,32 @@ Subclass.Property.Map.MapDefinition = (function()
         baseDefinition.schema = null;
 
         return baseDefinition;
+    };
+
+    /**
+     * Validating property definition
+     */
+    MapDefinition.prototype.validateData = function()
+    {
+        MapDefinition.$parent.prototype.validateData.call(this);
+
+        var schema = this.getSchema();
+
+        if (schema && Subclass.Tools.isPlainObject(schema)) {
+            for (var propName in schema) {
+                if (
+                    !schema.hasOwnProperty(propName)
+                    || !schema[propName].hasOwnProperty('value')
+                ) {
+                    continue;
+                }
+                console.warn(
+                    'Specified "value" attribute for definition of ' +
+                    'property ' + this.getProperty() + ' was ignored.\n ' +
+                    'The value from "default" attribute was applied instead.'
+                );
+            }
+        }
     };
 
     /**
@@ -199,7 +225,7 @@ Subclass.Property.Map.MapDefinition = (function()
                 } else if (property.hasChild(propName)) {
                     property.getChild(propName)
                         .getDefinition()
-                        .setValue(defaultValue[propName])
+                        .setDefault(defaultValue[propName])
                     ;
                 }
             }

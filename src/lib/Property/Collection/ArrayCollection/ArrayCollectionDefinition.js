@@ -48,7 +48,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
     {
         ArrayCollectionDefinition.$parent.prototype.processData.call(this);
 
-        var defaultValue = this.getValue();
+        var defaultValue = this.getDefault();
 
         if (defaultValue !== null) {
             var collection = this.getProperty().getCollection();

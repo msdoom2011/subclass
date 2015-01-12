@@ -63,7 +63,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
     /**
      * Validates "$_includes" attribute value
      *
-     * @param {*} traits
+     * @param {*} includes
      * @returns {boolean}
      * @throws {Error}
      */
@@ -91,7 +91,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      *
      * @param {string[]} includes
      *
-     *      List of the classes which properties and method current one will contain.
+     *      List of the classes which properties current one will contain.
      *
      *      Example: [
      *         "Namespace/Of/Config1",
@@ -116,6 +116,61 @@ Subclass.Class.Config.ConfigDefinition = (function()
     };
 
     /**
+     * Validates "$_decorators" attribute value
+     *
+     * @param {*} decorators
+     * @returns {boolean}
+     * @throws {Error}
+     */
+    ConfigDefinition.prototype.validateDecorators = function(decorators)
+    {
+        try {
+            if (decorators && !Array.isArray(decorators)) {
+                throw 'error';
+            }
+            if (decorators) {
+                for (var i = 0; i < decorators.length; i++) {
+                    if (typeof decorators[i] != 'string') {
+                        throw 'error';
+                    }
+                }
+            }
+        } catch (e) {
+            this._throwInvalidAttribute('$_decorators', 'an array with string elements.');
+        }
+        return true;
+    };
+
+    /**
+     * Sets "$_decorators" attribute value
+     *
+     * @param {string[]} decorators
+     *
+     *      List of the classes which properties overlaps properties from current one class
+     *
+     *      Example: [
+     *         "Namespace/Of/Config1",
+     *         "Namespace/Of/Config2",
+     *         ...
+     *      ]
+     */
+    ConfigDefinition.prototype.setDecorators = function(decorators)
+    {
+        this.validateDecorators(decorators);
+        this.getData().$_decorators = decorators || [];
+    };
+
+    /**
+     * Return "$_decorators" attribute value
+     *
+     * @returns {string[]}
+     */
+    ConfigDefinition.prototype.getDecorators = function()
+    {
+        return this.getData().$_decorators;
+    };
+
+    /**
      * @inheritDoc
      */
     ConfigDefinition.prototype.getBaseData = function ()
@@ -133,6 +188,11 @@ Subclass.Class.Config.ConfigDefinition = (function()
          * @type {string[]}
          */
         classDefinition.$_includes = [];
+
+        /**
+         * @type {string[]}
+         */
+        classDefinition.$_decorators = [];
 
         /**
          * Sets values
@@ -224,12 +284,21 @@ Subclass.Class.Config.ConfigDefinition = (function()
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
         var includes = this.getIncludes();
+        var decorators = this.getDecorators();
 
         // Performing $_includes (Needs to be defined in ConfigDefinition)
 
         if (includes && this.validateIncludes(includes)) {
             for (var i = 0; i < includes.length; i++) {
                 classManager.addToLoadStack(includes[i]);
+            }
+        }
+
+        // Performing $_decorators (Needs to be defined in ConfigDefinition)
+
+        if (decorators && this.validateDecorators(decorators)) {
+            for (i = 0; i < decorators.length; i++) {
+                classManager.addToLoadStack(decorators[i]);
             }
         }
     };

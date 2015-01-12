@@ -152,10 +152,10 @@ Subclass.Service.ServiceManager = (function()
             if (!serviceDefinitions.hasOwnProperty(serviceName)) {
                 continue;
             }
-            var tags = serviceDefinitions[serviceName].getTags();
+            var taggedService = serviceDefinitions[serviceName];
+            var tags = taggedService.getTags();
 
-            if (tags.indexOf(tag) >= 0 && !serviceDefinitions[serviceName].getAbstract()) {
-                var taggedService = this.getService(serviceName);
+            if (tags.indexOf(tag) >= 0 && !taggedService.getAbstract()) {
                 taggedServices.push(taggedService);
             }
         }

@@ -167,6 +167,16 @@ Subclass.Service.Service = (function()
     };
 
     /**
+     * Creates and returns instance of service class
+     *
+     * @returns {Object}
+     */
+    Service.prototype.createInstance = function()
+    {
+        return this.getServiceManager().getService(this.getName());
+    };
+
+    /**
      * Sets service class instance
      *
      * @param {Object} instance

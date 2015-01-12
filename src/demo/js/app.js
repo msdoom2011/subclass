@@ -576,10 +576,13 @@ app.registerClass('Logger', {
     processTaggedServices: function(taggedServices)
     {
         for (var i = 0; i < taggedServices.length; i++) {
-            if (!taggedServices[i].isImplements('BugInterface')) {
+            var serviceClass = app.getClass(taggedServices[i].getClassName());
+
+            if (!serviceClass.isImplements('BugInterface')) {
                 continue;
             }
-            this.addBug(taggedServices[i]);
+
+            this.addBug(serviceClass.createInstance());
         }
     }
 });

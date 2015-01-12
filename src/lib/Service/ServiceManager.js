@@ -141,10 +141,9 @@ Subclass.Service.ServiceManager = (function()
      * Returns all services tagged by passed tag
      *
      * @param {string} tag
-     * @param {boolean} [newInstance]
      * @returns {Object[]}
      */
-    ServiceManager.prototype.getServicesByTag = function(tag, newInstance)
+    ServiceManager.prototype.getServicesByTag = function(tag)
     {
         var serviceDefinitions = this.getServices();
         var taggedServices = [];
@@ -156,7 +155,7 @@ Subclass.Service.ServiceManager = (function()
             var tags = serviceDefinitions[serviceName].getTags();
 
             if (tags.indexOf(tag) >= 0 && !serviceDefinitions[serviceName].getAbstract()) {
-                var taggedService = this.getService(serviceName, newInstance);
+                var taggedService = this.getService(serviceName);
                 taggedServices.push(taggedService);
             }
         }
@@ -191,18 +190,14 @@ Subclass.Service.ServiceManager = (function()
      * Returns service class instance
      *
      * @param {string} serviceName
-     * @param {boolean} [newInstance]
      * @returns {Object}
      */
-    ServiceManager.prototype.getService = function(serviceName, newInstance)
+    ServiceManager.prototype.getService = function(serviceName)
     {
         if (!this.issetService(serviceName)) {
             throw new Error('Service with name "' + serviceName + '" is not exists.');
         }
-        return this.getServiceFactory().getService(
-            this.getServices()[serviceName],
-            newInstance
-        );
+        return this.getServiceFactory().getService(this.getServices()[serviceName]);
     };
 
     /**

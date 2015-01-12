@@ -644,20 +644,12 @@ app.onReady(function() {
     console.log(loggerElse == logger);
     console.log(logger.getBugs());
 
-    loggerElse.getBugs()[0]._name = 'yo!!!';
+    var bugs = logger.getBugs();
 
-    var loggers = [logger.getBugs(), loggerElse.getBugs()];
-
-    for (var j = 0; j < loggers.length; j++) {
-        var bugs = loggers[j];
-
-        console.log("~~ logger - " + (j + 1) + " ~~");
-
-        for (var i = 0; i < bugs.length; i++) {
-            console.log(bugs[i].getName());
-            console.log(bugs[i].getMessage());
-            console.log('-----------');
-        }
+    for (var i = 0; i < bugs.length; i++) {
+        console.log(bugs[i].getName());
+        console.log(bugs[i].getMessage());
+        console.log('-----------');
     }
 
     //app.getClass('Psix').createInstance().psix();

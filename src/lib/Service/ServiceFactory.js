@@ -31,23 +31,18 @@ Subclass.Service.ServiceFactory = (function()
      * Returns service class instance
      *
      * @param {Subclass.Service.Service} serviceDefinition
-     * @param {boolean} [newInstance = false]
      * @returns {Object}
      */
-    ServiceFactory.prototype.getService = function(serviceDefinition, newInstance)
+    ServiceFactory.prototype.getService = function(serviceDefinition)
     {
         var firstCreation = false;
 
-        if (newInstance !== true) {
-            newInstance = false;
-        }
         if (serviceDefinition.getAbstract()) {
             serviceDefinition._throwAbstractService();
         }
         if (
             serviceDefinition.isInitialized()
             && serviceDefinition.isSingleton()
-            && !newInstance
         ) {
             return serviceDefinition.getInstance();
         }
@@ -55,7 +50,7 @@ Subclass.Service.ServiceFactory = (function()
             serviceDefinition.initialize();
             firstCreation = true;
         }
-        var serviceClassInst = this.createService(serviceDefinition, newInstance);
+        var serviceClassInst = this.createService(serviceDefinition);
 
         if (firstCreation) {
             serviceDefinition.setInstance(serviceClassInst);
@@ -68,9 +63,8 @@ Subclass.Service.ServiceFactory = (function()
      * Creates and returns service class instance
      *
      * @param {Subclass.Service.Service} serviceDefinition
-     * @param {boolean} [newInstance]
      */
-    ServiceFactory.prototype.createService = function(serviceDefinition, newInstance)
+    ServiceFactory.prototype.createService = function(serviceDefinition)
     {
         if (serviceDefinition.getAbstract()) {
             serviceDefinition._throwAbstractService();
@@ -102,10 +96,8 @@ Subclass.Service.ServiceFactory = (function()
 
         if (classInst.isImplements('Subclass/Service/TaggableInterface')) {
             var taggedServices = serviceManager.getServicesByTag(
-                serviceDefinition.getName(),
-                newInstance
+                serviceDefinition.getName()
             );
-
             classInst.processTaggedServices(taggedServices);
         }
 

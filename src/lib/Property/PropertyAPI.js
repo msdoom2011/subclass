@@ -24,16 +24,6 @@ Subclass.Property.PropertyAPI = (function()
     }
 
     /**
-     * Returns class typed property
-     *
-     * @returns {PropertyType}
-     */
-    PropertyAPI.prototype.getValue = function()
-    {
-        return this._property.getValue(this._context);
-    };
-
-    /**
      * Sets class typed property
      *
      * @param {*} value
@@ -42,6 +32,16 @@ Subclass.Property.PropertyAPI = (function()
     PropertyAPI.prototype.setValue = function(value)
     {
         return this._property.setValue(this._context, value);
+    };
+
+    /**
+     * Returns class typed property
+     *
+     * @returns {PropertyType}
+     */
+    PropertyAPI.prototype.getValue = function()
+    {
+        return this._property.getValue(this._context);
     };
 
     /**
@@ -59,6 +59,16 @@ Subclass.Property.PropertyAPI = (function()
         } catch (e) {
             return false;
         }
+    };
+
+    /**
+     * Sets default value of typed class property
+     *
+     * @returns {*}
+     */
+    PropertyAPI.prototype.setDefaultValue = function(value)
+    {
+        return this._property.setDefaultValue(this, value);
     };
 
     /**
@@ -102,7 +112,7 @@ Subclass.Property.PropertyAPI = (function()
     /**
      * Marks property as not modified
      */
-    PropertyAPI.prototype.setUnmodified = function()
+    PropertyAPI.prototype.setUnModified = function()
     {
         return this._property.setIsModified(false);
     };

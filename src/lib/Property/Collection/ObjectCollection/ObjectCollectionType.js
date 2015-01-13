@@ -69,7 +69,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
         if (!propertyType.parseRelatives) {
             return;
         }
-        return propertyType.parseRelatives(propertyDefinition);
+        return propertyType.parseRelatives(propDef);
     };
 
     /**

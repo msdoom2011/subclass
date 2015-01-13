@@ -84,12 +84,6 @@ Subclass.Property.Collection.CollectionType = (function()
     CollectionType.prototype.setProto = function(proto)
     {
         this._proto = proto;
-        //this._proto = this.getPropertyManager().createProperty(
-        //    'collectionItem',
-        //    proto,
-        //    this.getContextClass(),
-        //    this
-        //);
     };
 
     /**

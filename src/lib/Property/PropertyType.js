@@ -387,7 +387,7 @@ Subclass.Property.PropertyType = (function()
         var emptyValue = this.getDefinition().getEmptyValue();
         var value = this.getValue(context);
 
-        return emptyValue === value;
+        return Subclass.Tools.isEqual(emptyValue, value);
     };
 
     /**
@@ -429,6 +429,38 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
+     * Sets property default value
+     *
+     * @param {*} value
+     * @param {Object} [context]
+     */
+    PropertyType.prototype.setDefaultValue = function(context, value)
+    {
+        var propertyDefinition = this.getDefinition();
+        var oldDefaultValue = this.getDefaultValue();
+
+        propertyDefinition.setDefault(value);
+
+        if (context) {
+            if (
+                (
+                    Subclass.Tools.isEqual(oldDefaultValue, this.getValue(context))
+                    && !this.isModified()
+                )
+                || (
+                    oldDefaultValue === null
+                    && this.isEmpty(context)
+                    && !this.isModified()
+                )
+            ) {
+                this.setValue(context, value);
+                this.setIsModified(false);
+            }
+        }
+    };
+
+    /**
+     * Returns property default value
      *
      * @returns {*}
      */

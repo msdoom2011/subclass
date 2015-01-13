@@ -50,9 +50,11 @@ Subclass.Property.Map.MapDefinition = (function()
                 if (!property.hasChild(propName)) {
                     var childrenProps = property.getChildren();
 
-                    throw new Error('Trying to set not registered property "' + propName + '" ' +
+                    throw new Error(
+                        'Trying to set not registered property "' + propName + '" ' +
                         'to not extendable map property ' + property + '. ' +
-                        'Allowed properties are: "' + Object.keys(childrenProps).join('", "') + '".');
+                        'Allowed properties are: "' + Object.keys(childrenProps).join('", "') + '".'
+                    );
 
                 } else {
                     property
@@ -90,10 +92,11 @@ Subclass.Property.Map.MapDefinition = (function()
             !schema
             || typeof schema != 'object'
             || !Subclass.Tools.isPlainObject(schema)
-            || !Object.keys(schema).length
         ) {
-            throw new Error('Attribute "schema" is not valid ' +
-                'in definition of property ' + this.getProperty() + ".");
+            throw new Error(
+                'Attribute "schema" is not valid ' +
+                'in definition of property ' + this.getProperty() + "."
+            );
         }
     };
 

@@ -69,7 +69,7 @@ Subclass.Property.Class.ClassDefinition = (function()
         var classManager = property.getPropertyManager().getModule().getClassManager();
 
         if (!classManager.issetClass(className)) {
-            throw new Error('Specified non existent class in "className" attribute ' +
+            throw new Error('Specified non existent class in "' + className + '" attribute ' +
                 'in definition of property ' + property + '.');
         }
     };

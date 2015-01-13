@@ -173,7 +173,10 @@ Subclass.Service.Service = (function()
      */
     Service.prototype.createInstance = function()
     {
-        return this.getServiceManager().getService(this.getName());
+        return this.getServiceManager()
+            .getServiceFactory()
+            .getService(this)
+        ;
     };
 
     /**
@@ -535,7 +538,7 @@ Subclass.Service.Service = (function()
      */
     Service.prototype.getTags = function()
     {
-        return this.getDefinition().tags;
+        return this.getDefinition().tags || [];
     };
 
     /**
@@ -605,6 +608,7 @@ Subclass.Service.Service = (function()
     Service.prototype.validateDefinition = function()
     {
         var serviceManager = this.getServiceManager();
+        var tags = this.getTags();
         var args = this.getArguments();
         var calls = this.getCalls();
         var chain = [this.getName()];
@@ -619,7 +623,7 @@ Subclass.Service.Service = (function()
             if (typeof arg == 'string' && arg.match(/^@[a-z_0-9]+$/i)) {
                 var serviceName = arg.substr(1);
 
-                if (serviceName == chain[0]) {
+                if (tags.indexOf(serviceName) >= 0 || serviceName == chain[0]) {
                     $this._throwRecursionInjection();
                 }
                 if (chain.indexOf(serviceName) > 0) {

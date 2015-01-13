@@ -52,7 +52,7 @@ Subclass.Service.ServiceManager = (function()
         var eventManager = this.getModule().getEventManager();
         var $this = this;
 
-        eventManager.getEvent('onReady').addListener(70, function() {
+        eventManager.getEvent('onReady').addListener(100000, function() {
             if (!$this.getModule().isRoot()) {
                 return;
             }

@@ -425,16 +425,16 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.addClass = function(classTypeName, className, classDefinition)
     {
         if (!classTypeName) {
-            throw new Error('Trying to register class without specifying class type.');
+            throw new Error('Trying to register class "' + className + '" without specifying class type.');
         }
         if (!Subclass.Class.ClassManager.issetClassType(classTypeName)) {
-            throw new Error('Trying to register class of unknown class type "' + classTypeName + '".');
+            throw new Error('Trying to register class "' + className + '" of unknown class type "' + classTypeName + '".');
         }
         if (!className || typeof className != 'string') {
             throw new Error('Trying to register class with wrong name "' + className + '".');
         }
         if (!classDefinition || typeof classDefinition != 'object') {
-            throw new Error('Trying to register class with empty or not valid class definition.');
+            throw new Error('Trying to register class "' + className + '" with empty or not valid class definition.');
         }
         if (this.issetClass(className)) {
             throw new Error('Trying to redefine already existed class "' + className + '".');

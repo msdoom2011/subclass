@@ -232,11 +232,27 @@ Subclass.Class.Config.ConfigDefinition = (function()
         };
 
         /**
+         * Sets class property defaults
+         *
+         * @param defaults
+         * @returns {*}
+         */
+        classDefinition.setDefaults = function(defaults)
+        {
+            for (var propName in defaults) {
+                if (defaults.hasOwnProperty(propName)) {
+                    this.getProperty(propName).setDefaultValue(defaults[propName]);
+                }
+            }
+            return defaults;
+        };
+
+        /**
          * Returns default values
          *
          * @returns {Object}
          */
-        classDefinition.getDefaults = function ()
+        classDefinition.getDefaults = function()
         {
             var defaults = {};
             var properties = this.$_class.getProperties();

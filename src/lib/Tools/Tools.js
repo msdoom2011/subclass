@@ -245,6 +245,47 @@ Subclass.Tools = (function()
         },
 
         /**
+         * Checks whether two arguments are equivalent
+         *
+         * @param {*} arg1
+         * @param {*} arg2
+         * @returns {boolean}
+         */
+        isEqual: function(arg1, arg2)
+        {
+            if (typeof arg1 !== 'object' && typeof arg2 !== 'object') {
+                return arg1 === arg2;
+            }
+            if (typeof arg1 !== typeof arg2) {
+                return false;
+            }
+            if (arg1.constructor != arg2.constructor) {
+                return false;
+            }
+            if (Array.isArray(arg1)) {
+                if (arg1.length != arg2.length) {
+                    return false;
+                }
+                for (var i = 0; i < arg1.length; i++) {
+                    if (this.isEqual(arg1[i], arg2[i]) === false) {
+                        return false;
+                    }
+                }
+            }
+            if (Array.isPlainObject(arg1)) {
+                if (Object.keys(arg1).length != Object.keys(arg2).length) {
+                    return false;
+                }
+                for (var propName in arg1) {
+                    if (this.isEqual(arg1[propName], arg2[propName]) === false) {
+                        return false;
+                    }
+                }
+            }
+            return arg1 == arg2;
+        },
+
+        /**
          * Returns array with unique elements
          *
          * @param {Array} array

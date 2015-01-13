@@ -18,6 +18,14 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
 
     /**
      * @inheritDoc
+     */
+    ArrayCollectionDefinition.prototype.getEmptyValue = function()
+    {
+        return this.isNullable() ? null : [];
+    };
+
+    /**
+     * @inheritDoc
      * @retruns {(string|null)}
      */
     ArrayCollectionDefinition.prototype.validateValue = function(value)

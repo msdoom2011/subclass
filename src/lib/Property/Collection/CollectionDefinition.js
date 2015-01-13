@@ -48,6 +48,7 @@ Subclass.Property.Collection.CollectionDefinition = (function()
 
         var property = this.getProperty();
         var propertyManager = property.getPropertyManager();
+        proto.accessors = false;
 
         property.setProto(propertyManager.createProperty(
             'collectionItem',

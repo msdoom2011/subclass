@@ -435,7 +435,7 @@ Subclass.Class.ClassTypeBuilder = (function()
      * @returns {Subclass.Class.ClassTypeBuilder}
      * @private
      */
-    ClassTypeBuilder.prototype._validateClass = function()
+    ClassTypeBuilder.prototype._validate = function()
     {
         if (!this.getName()) {
             throw new Error('Future class must be named.');
@@ -449,11 +449,11 @@ Subclass.Class.ClassTypeBuilder = (function()
     /**
      * Saves class definition changes and registers class if it's needed
      *
-     * @returns {ClassType}
+     * @returns {Subclass.Class.ClassTypeInterface}
      */
-    ClassTypeBuilder.prototype.saveClass = function()
+    ClassTypeBuilder.prototype.save = function()
     {
-        this._validateClass();
+        this._validate();
 
         if (this._class) {
             this._class.setDefinition(this._getDefinition());

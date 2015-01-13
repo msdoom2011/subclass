@@ -93,16 +93,6 @@ Subclass.Property.Collection.CollectionDefinition = (function()
         return attrs.concat(['proto']);
     };
 
-    /**
-    * @inheritDoc
-    */
-    CollectionDefinition.prototype.processData = function()
-    {
-        CollectionDefinition.$parent.prototype.processData.call(this);
-
-        //this.getProperty().setProto(this.getProto());
-    };
-
     return CollectionDefinition;
 
 })();

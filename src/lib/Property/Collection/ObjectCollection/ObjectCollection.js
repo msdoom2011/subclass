@@ -17,18 +17,6 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
 
     /**
      * @inheritDoc
-     */
-    ObjectCollection.prototype.normalize = function()
-    {
-        var $this = this;
-
-        this.eachItem(function(item, itemName) {
-            $this.normalizeItem(itemName);
-        });
-    };
-
-    /**
-     * @inheritDoc
      *
      * @returns {Subclass.Property.Collection.ObjectCollection.ObjectCollection}
      */
@@ -48,7 +36,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
                 'by non existent another collection element with key "' + item.extends + '".'
             );
         }
-        var parentItem = Subclass.Tools.copy(this.normalize(item.extends));
+        var parentItem = Subclass.Tools.copy(this.normalizeItem(item.extends));
         item.extends = null;
 
         item = Subclass.Tools.extendDeep(parentItem, item);

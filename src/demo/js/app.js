@@ -439,8 +439,7 @@ var class3Inst = app.getClassManager().alterClass("Class2")
             }
 
         })
-        .saveClass()
-//                .registerClass()
+        .save()
     ;
 
 console.log(class3Inst);
@@ -488,9 +487,15 @@ app.registerConfig("ConfigBase", {
                 key2: { type: "string" },
                 key3: { type: "string" }
             }
+        },
+        value: {
+            itemBase: {
+                key1: "base key 1",
+                key2: "base key 2",
+                key3: "base key 3"
+            }
         }
     }
-
 });
 
 
@@ -576,9 +581,14 @@ app.registerConfig("Config", {
 
     propObjectCollection: {
         item1: {
-            key1: "key 1 value",
+            extends: "itemBase",
+            //key1: "key 1 value",
             key2: "key 2 value",
             key3: "key 3 value"
+        },
+        item2: {
+            extends: "item1",
+            key3: "item 2 value!!!!"
         }
     }
 

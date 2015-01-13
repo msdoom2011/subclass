@@ -46,8 +46,6 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
      */
     ObjectCollectionDefinition.prototype.processData = function()
     {
-        ObjectCollectionDefinition.$parent.prototype.processData.call(this);
-
         var defaultValue = this.getDefault();
         var proto = this.getProto();
 
@@ -61,11 +59,11 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
             if (!proto.schema.extends) {
                 proto.schema.extends = {
                     type: "string",
-                    value: null,
                     nullable: true
                 };
             }
         }
+        ObjectCollectionDefinition.$parent.prototype.processData.call(this);
 
         if (defaultValue !== null) {
             var collection = this.getProperty().getCollection();
@@ -79,11 +77,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
                 if (!this.isWritable()) {
                     proto.writable = false;
                 }
-                collection.addItem(
-                    propName,
-                    defaultValue[propName],
-                    false
-                );
+                collection.addItem(propName, defaultValue[propName], false);
             }
             collection.normalizeItems();
         }

@@ -246,7 +246,11 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.normalizeItems = function()
     {
-        // Do something
+        var $this = this;
+
+        this.eachItem(function(item, itemName) {
+            $this.normalizeItem(itemName);
+        });
     };
 
     /**

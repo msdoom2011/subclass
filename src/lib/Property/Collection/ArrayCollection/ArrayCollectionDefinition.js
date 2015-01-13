@@ -49,10 +49,10 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
         ArrayCollectionDefinition.$parent.prototype.processData.call(this);
 
         var defaultValue = this.getDefault();
+        var proto = this.getProto();
 
         if (defaultValue !== null) {
             var collection = this.getProperty().getCollection();
-            var proto = this.getProto();
 
             this.getProperty().setIsNull(false);
 
@@ -63,8 +63,9 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
                 if (!this.isWritable()) {
                     proto.writable = false;
                 }
-                collection.addItem(defaultValue[propName]);
+                collection.addItem(defaultValue[propName], false);
             }
+            collection.normalizeItems();
         }
     };
 

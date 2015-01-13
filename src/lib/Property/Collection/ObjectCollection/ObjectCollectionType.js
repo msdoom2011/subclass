@@ -88,6 +88,26 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
         return Subclass.Property.Collection.ObjectCollection.ObjectCollection;
     };
 
+    /**
+     * @inheritDoc
+     */
+    ObjectCollectionType.prototype.getValue = function(context, dataOnly)
+    {
+        var value = ObjectCollectionType.$parent.prototype.getValue.call(this, context, dataOnly);
+
+        if (dataOnly !== true) {
+            return value;
+        }
+        var collection = this.getCollection();
+        var collectionItems = {};
+
+        collection.eachItem(function(item, itemName) {
+            collectionItems[itemName] = collection._itemsProto[itemName].getValue(collection._items, dataOnly);
+        });
+
+        return collectionItems;
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

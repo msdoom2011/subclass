@@ -172,6 +172,25 @@ Subclass.Property.Map.Map = (function()
     };
 
     /**
+     * @inheritDoc
+     */
+    MapType.prototype.getValue = function(context, dataOnly)
+    {
+        var value = MapType.$parent.prototype.getValue.call(this, context, dataOnly);
+        var valueClear = {};
+
+        if (dataOnly !== true) {
+            return value;
+        }
+        for (var propName in value) {
+            if (value.hasOwnProperty(propName) && !propName.match(/^_(.+)[0-9]+$/i)) {
+                valueClear[propName] = value[propName];
+            }
+        }
+        return valueClear;
+    };
+
+    /**
     * @inheritDoc
     */
     MapType.prototype.generateGetter = function()

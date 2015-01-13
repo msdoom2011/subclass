@@ -205,8 +205,16 @@ Subclass.Property.PropertyTypeInterface = (function()
      * Returns value of current property
      *
      * @param {Object} context An object to which current property belongs to.
+     * @param {boolean} [dataOnly] Returns only data without hashed fields and accessor functions
      */
-    PropertyTypeInterface.prototype.getValue = function(context) {};
+    PropertyTypeInterface.prototype.getValue = function(context, dataOnly) {};
+
+    /**
+     * Returns property default value
+     *
+     * @returns {*}
+     */
+    PropertyTypeInterface.prototype.setDefaultValue = function(context, value) {};
 
     /**
      * Returns property default value
@@ -214,6 +222,13 @@ Subclass.Property.PropertyTypeInterface = (function()
      * @returns {*}
      */
     PropertyTypeInterface.prototype.getDefaultValue = function() {};
+
+    /**
+     * Returns property default value
+     *
+     * @returns {*}
+     */
+    PropertyTypeInterface.prototype.isDefaultValue = function(context) {};
 
     /**
      * Generates property getter function

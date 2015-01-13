@@ -44,33 +44,12 @@ Subclass.Property.Collection.Collection = (function()
             key, protoDefinition, property.getContextClass(), property
         );
         this._itemsProto[key].attach(this._items);
-        this._items[key] = value;
+
+        if (value !== undefined) {
+            this._items[key] = value;
+        }
 
         return this._items[key];
-    };
-
-    Collection.prototype._getItemValue = function(key)
-    {
-        if (!this.issetItem(key)) {
-            throw new Error(
-                'Trying to get non existent collection item with key "' + key + '" ' +
-                'in property ' + this.getProperty() + '.'
-            );
-        }
-        var value = this._items[key];
-
-        if (Subclass.Tools.isPlainObject(value)) {
-            var valueClear = {};
-
-            for (var propName in value) {
-                if (value.hasOwnProperty(propName) && !propName.match(/^_(.+)[0-9]+$/i)) {
-                    valueClear[propName] = value[propName];
-                }
-            }
-
-            return valueClear;
-        }
-        return value;
     };
 
     /**
@@ -92,36 +71,7 @@ Subclass.Property.Collection.Collection = (function()
         if (normalize !== false) {
             normalize = true;
         }
-
         this._createItem(key, value);
-
-        //var property = this.getProperty();
-        //var proto = property.getProto();
-        //var protoDefinition = Subclass.Tools.copy(proto.getDefinition().getData());
-        //    protoDefinition.value = value;
-        //
-        //this._itemsProto[key] = this.getProperty().getPropertyManager().createProperty(
-        //    key, protoDefinition, property.getContextClass(), property
-        //);
-        //this._itemsProto[key].attach(this._items);
-
-        //if (value !== undefined) {
-        //    this.validateValue(value);
-        //
-        //} else {
-        //    value = proto.getDefaultValue();
-        //}
-        //
-        //if (proto instanceof Subclass.Property.Collection.CollectionType) {
-        //    var protoCollectionClass = proto.getCollectionClass();
-        //    var newValue = new protoCollectionClass(proto);
-        //
-        //    newValue.setItems(value);
-        //    value = newValue;
-        //}
-        //
-        //this._items[key] = value;
-
 
         if (normalize) {
             this.normalizeItem(key);
@@ -164,9 +114,6 @@ Subclass.Property.Collection.Collection = (function()
         } else {
             this._createItem(key, value);
         }
-        //this.validateValue(value);
-        //this._items[key] = value;
-
         if (normalize) {
             this.normalizeItem(key);
         }
@@ -358,16 +305,6 @@ Subclass.Property.Collection.Collection = (function()
     {
         return Object.keys(this._items).length;
     };
-    //
-    ///**
-    // * Validates collection item value
-    // *
-    // * @param {*} value
-    // */
-    //Collection.prototype.validateValue = function(value)
-    //{
-    //    this.getProperty().getProto().validateValue(value);
-    //};
 
     /**
      * Returns collection value

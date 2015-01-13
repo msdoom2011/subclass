@@ -39,9 +39,9 @@ Subclass.Property.PropertyAPI = (function()
      *
      * @returns {PropertyType}
      */
-    PropertyAPI.prototype.getValue = function()
+    PropertyAPI.prototype.getValue = function(dataOnly)
     {
-        return this._property.getValue(this._context);
+        return this._property.getValue(this._context, dataOnly);
     };
 
     /**
@@ -68,7 +68,7 @@ Subclass.Property.PropertyAPI = (function()
      */
     PropertyAPI.prototype.setDefaultValue = function(value)
     {
-        return this._property.setDefaultValue(this, value);
+        return this._property.setDefaultValue(this._context, value);
     };
 
     /**
@@ -79,6 +79,16 @@ Subclass.Property.PropertyAPI = (function()
     PropertyAPI.prototype.getDefaultValue = function()
     {
         return this._property.getDefaultValue();
+    };
+
+    /**
+     * Checks whether property value is equals default and is not modified
+     *
+     * @returns {*}
+     */
+    PropertyAPI.prototype.isDefaultValue = function()
+    {
+        return this._property.isDefaultValue(this._context);
     };
 
     /**

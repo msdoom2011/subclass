@@ -91,6 +91,26 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
+    ArrayCollectionType.prototype.getValue = function(context, dataOnly)
+    {
+        var value = ArrayCollectionType.$parent.prototype.getValue.call(this, context, dataOnly);
+
+        if (dataOnly !== true) {
+            return value;
+        }
+        var collection = this.getCollection();
+        var collectionItems = [];
+
+        collection.eachItem(function(item, itemName) {
+            collectionItems[itemName] = collection._itemsProto[itemName].getValue(collection._items, dataOnly);
+        });
+
+        return collectionItems;
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayCollectionType.prototype.generateSetter = function()
     {
         var hashedPropName = this.getNameHashed();

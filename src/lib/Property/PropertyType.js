@@ -418,7 +418,7 @@ Subclass.Property.PropertyType = (function()
     /**
      * @inheritDoc
      */
-    PropertyType.prototype.getValue = function(context)
+    PropertyType.prototype.getValue = function(context, dataOnly)
     {
         if (this.getDefinition().isAccessors()) {
             var getterName = Subclass.Tools.generateGetterName(this.getName());
@@ -437,25 +437,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.setDefaultValue = function(context, value)
     {
         var propertyDefinition = this.getDefinition();
-        var oldDefaultValue = this.getDefaultValue();
+            propertyDefinition.setDefault(value);
 
-        propertyDefinition.setDefault(value);
-
-        if (context) {
-            if (
-                (
-                    Subclass.Tools.isEqual(oldDefaultValue, this.getValue(context))
-                    && !this.isModified()
-                )
-                || (
-                    oldDefaultValue === null
-                    && this.isEmpty(context)
-                    && !this.isModified()
-                )
-            ) {
-                this.setValue(context, value);
-                this.setIsModified(false);
-            }
+        if (this.isDefaultValue(context)) {
+            this.setValue(context, value);
+            this.setIsModified(false);
         }
     };
 
@@ -467,6 +453,32 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.getDefaultValue = function()
     {
         return this.getDefinition().getDefault();
+    };
+
+    /**
+     * Checks whether current property equals default and was not modified
+     *
+     * @param context
+     * @returns {boolean}
+     */
+    PropertyType.prototype.isDefaultValue = function(context)
+    {
+        var oldDefaultValue = this.getDefaultValue();
+
+        if (context) {
+            if ((
+                Subclass.Tools.isEqual(oldDefaultValue, this.getValue(context))
+                && !this.isModified()
+                ) || (
+                oldDefaultValue === null
+                && this.isEmpty(context)
+                && !this.isModified()
+                )
+            ) {
+                return true;
+            }
+        }
+        return false;
     };
 
     /**

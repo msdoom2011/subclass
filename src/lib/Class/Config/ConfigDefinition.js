@@ -225,7 +225,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
 
             for (var propName in properties) {
                 if (properties.hasOwnProperty(propName)) {
-                    values[propName] = properties[propName].getValue(this);
+                    values[propName] = properties[propName].getValue(this, true);
                 }
             }
             return values;

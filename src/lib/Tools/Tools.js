@@ -259,6 +259,12 @@ Subclass.Tools = (function()
             if (typeof arg1 !== typeof arg2) {
                 return false;
             }
+            if ((!arg1 && arg2) || (arg1 && !arg2)) {
+                return false;
+            }
+            if (!arg1 && !arg2) {
+                return true;
+            }
             if (arg1.constructor != arg2.constructor) {
                 return false;
             }

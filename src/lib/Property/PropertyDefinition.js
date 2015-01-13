@@ -318,6 +318,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.getBaseData = function()
     {
         return {
+
             /**
              * @type {string}
              *

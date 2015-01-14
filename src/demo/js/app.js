@@ -284,7 +284,7 @@ app.registerAbstractClass("Class2", {
             default: "100%"
         },
 
-        typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, value: {
+        typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, default: {
             num1: 1,
             num2: 1,
             num3: 3
@@ -940,25 +940,25 @@ app.onReady(function() {
 
     objectCollection.psix = '1111';
     objectCollection.addItem("psix", 555);
-    console.log(objectCollection.getItems());
+    console.log(objectCollection.valueOf());
 
     objectCollection.removeItem("psix");
-    console.log(objectCollection.getItems());
+    console.log(objectCollection.valueOf());
 
     objectCollection.addItems({
         psix: 222,
         psix2: 111
     });
-    console.log(objectCollection.getItems());
+    console.log(objectCollection.valueOf());
 
     objectCollection.addItem("psix", 777);
-    console.log(objectCollection.getItems());
+    console.log(objectCollection.valueOf());
 
     console.log(objectCollection.getItem("psix"));
-    console.log(objectCollection.getItems());
+    console.log(objectCollection.valueOf());
 
     objectCollection.removeItems();
-    console.log(objectCollection.getItems());
+    console.log(objectCollection.valueOf());
 
     inst.setTypedObjectCollection(null);
     console.log(inst.getTypedObjectCollection());
@@ -979,7 +979,7 @@ app.onReady(function() {
 
     arrayCollection.psix = '1111';
     arrayCollection.addItem("psix");
-    console.log(arrayCollection.getItems());
+    console.log(arrayCollection.valueOf());
 
     var filteredItems = arrayCollection.filter(function(element, index) {
         if (element.match(/^str/)) {
@@ -989,29 +989,35 @@ app.onReady(function() {
     console.log(filteredItems);
 
     var removeArrayItem = arrayCollection.indexOf('psix');
-    arrayCollection.removeItem(removeArrayItem);
-    console.log(arrayCollection.getItems());
 
-    removeArrayItem = arrayCollection.indexOf(function(element, index) {
+    console.log(removeArrayItem);
+
+    arrayCollection.removeItem(removeArrayItem);
+    console.log(arrayCollection.valueOf());
+
+    var removeArrayItemIndex = arrayCollection.indexOf(function(element, index) {
         if (element.match(/^str/)) {
             return true;
         }
     });
-    arrayCollection.removeItem(removeArrayItem);
-    console.log(arrayCollection.getItems());
+
+    console.log(removeArrayItemIndex);
+
+    arrayCollection.removeItem(removeArrayItemIndex);
+    console.log(arrayCollection.valueOf());
 
     arrayCollection.addItems(["new1", "new2"]);
-    console.log(arrayCollection.getItems());
+    console.log(arrayCollection.valueOf());
 
     arrayCollection.addItem("psix222");
-    console.log(arrayCollection.getItems());
+    console.log(arrayCollection.valueOf());
 
     var psixElemIndex = arrayCollection.indexOf("psix222");
     console.log(arrayCollection.getItem(psixElemIndex));
-    console.log(arrayCollection.getItems());
+    console.log(arrayCollection.valueOf());
 
     arrayCollection.removeItems();
-    console.log(arrayCollection.getItems());
+    console.log(arrayCollection.valueOf());
 
     inst.setTypedArrayCollection(null);
     console.log(inst.getTypedArrayCollection());

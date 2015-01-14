@@ -6,11 +6,12 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
 {
     /**
      * @param {CollectionType} property
+     * @param {Object} context
      * @constructor
      */
-    function ObjectCollection(property)
+    function ObjectCollection(property, context)
     {
-        ObjectCollection.$parent.call(this, property);
+        ObjectCollection.$parent.call(this, property, context);
     }
 
     ObjectCollection.$parent = Subclass.Property.Collection.Collection;

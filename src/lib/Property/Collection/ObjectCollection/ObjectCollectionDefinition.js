@@ -64,23 +64,6 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
             }
         }
         ObjectCollectionDefinition.$parent.prototype.processData.call(this);
-
-        if (defaultValue !== null) {
-            var collection = this.getProperty().getCollection();
-
-            this.getProperty().setIsNull(false);
-
-            for (var propName in defaultValue) {
-                if (!defaultValue.hasOwnProperty(propName)) {
-                    continue;
-                }
-                if (!this.isWritable()) {
-                    proto.writable = false;
-                }
-                collection.addItem(propName, defaultValue[propName], false);
-            }
-            collection.normalizeItems();
-        }
     };
 
     return ObjectCollectionDefinition;

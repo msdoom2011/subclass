@@ -5,15 +5,50 @@ Subclass.Property.Collection.Collection = (function()
 {
     /**
      * @param {CollectionType} property
+     * @param {Object} context
      * @constructor
      */
-    function Collection(property)
+    function Collection(property, context)
     {
         if (!property) {
             throw new Error('Missed argument "property" in collection constructor.');
         }
+        if (!context || typeof context != 'object') {
+            throw new Error(
+                'Invalid context of collection property ' + property + '. ' +
+                'It must be an object.'
+            );
+        }
+        /**
+         * Property instance
+         *
+         * @type {Subclass.Property.Collection.CollectionType}
+         * @private
+         */
         this._property = property;
+
+        /**
+         * Collection property context
+         *
+         * @type {Object}
+         * @private
+         */
+        this._context = context;
+
+        /**
+         * List of collection item property instances
+         *
+         * @type {Object}
+         * @private
+         */
         this._itemsProto = {};
+
+        /**
+         * List of collection items
+         *
+         * @type {Object}
+         * @private
+         */
         this._items = {};
     }
 
@@ -25,6 +60,16 @@ Subclass.Property.Collection.Collection = (function()
     Collection.prototype.getProperty = function()
     {
         return this._property;
+    };
+
+    /**
+     * Returns context object
+     *
+     * @returns {Object}
+     */
+    Collection.prototype.getContext = function()
+    {
+        return this._context;
     };
 
     /**
@@ -155,24 +200,18 @@ Subclass.Property.Collection.Collection = (function()
     };
 
     /**
-     * Returns copy of all collection items.
-     *
-     * @returns {Object|Array}
-     */
-    Collection.prototype.getItems = function()
-    {
-        return Subclass.Tools.extend({}, this._items);
-    };
-
-    /**
      * Removes item with specified key from collection
      *
      * @param {(string|number)} key
      */
     Collection.prototype.removeItem = function(key)
     {
+        var value = this._itemsProto[key].getValue(this.getContext(), true);
+
         delete this._items[key];
         delete this._itemsProto[key];
+
+        return value;
     };
 
     /**
@@ -307,13 +346,13 @@ Subclass.Property.Collection.Collection = (function()
     };
 
     /**
-     * Returns collection value
-     *
-     * @returns {Object|Array}
-     */
+    * Returns collection value
+    *
+    * @returns {Object|Array}
+    */
     Collection.prototype.valueOf = function()
     {
-        return this.getItems();
+        return this.getProperty().getValue(this._context, true);
     };
 
     return Collection;

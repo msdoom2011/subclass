@@ -91,6 +91,14 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
+    ArrayCollectionType.prototype.addCollectionItem = function(key, value)
+    {
+        this._collection.addItem(value, false);
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayCollectionType.prototype.getValue = function(context, dataOnly)
     {
         var value = ArrayCollectionType.$parent.prototype.getValue.call(this, context, dataOnly);
@@ -113,7 +121,6 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
      */
     ArrayCollectionType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function(value) {
@@ -124,12 +131,12 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
                 $this.setIsNull(false);
 
                 for (var i = 0; i < value.length; i++) {
-                    this[hashedPropName].addItem(value[i]);
+                    this[$this.getNameHashed()].addItem(value[i]);
                 }
 
             } else {
                 $this.setIsNull(true);
-                $this._collection.removeItems();
+                $this.getCollection(this).removeItems();
             }
         };
     };

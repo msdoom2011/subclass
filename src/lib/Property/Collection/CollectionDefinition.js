@@ -76,6 +76,12 @@ Subclass.Property.Collection.CollectionDefinition = (function()
         var baseDefinition = CollectionDefinition.$parent.prototype.getBaseData.call(this);
 
         /**
+         * Default property value
+         * @type {null}
+         */
+        baseDefinition.default = {};
+
+        /**
          * Property definition which every collection element must match.
          * @type {null}
          */

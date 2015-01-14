@@ -6,11 +6,12 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
 {
     /**
      * @param {CollectionType} property
+     * @param {Object} context
      * @constructor
      */
-    function ArrayCollection(property)
+    function ArrayCollection(property, context)
     {
-        ArrayCollection.$parent.call(this, property);
+        ArrayCollection.$parent.call(this, property, context);
     }
 
     ArrayCollection.$parent = Subclass.Property.Collection.Collection;
@@ -40,8 +41,12 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         for (var i = 0; i < items.length; i++) {
             itemsNew[String(i)] = items[i];
         }
-
-        return ArrayCollection.$parent.prototype.addItems.call(this, itemsNew);
+        for (var key in items) {
+            if (items.hasOwnProperty(key)) {
+                this.addItem(items[key], false);
+            }
+        }
+        this.normalizeItems();
     };
 
     /**
@@ -66,6 +71,68 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     };
 
     /**
+     * Removes item with specified key from collection
+     *
+     * @param {(string|number)} key
+     */
+    ArrayCollection.prototype.removeItem = function(key)
+    {
+        key = parseInt(key);
+        var $this = this;
+        var value = false;
+
+        this.eachItem(function(item, index) {
+            if (index == key) {
+                value = ArrayCollection.$parent.prototype.removeItem.call($this, key);
+            }
+            if (index > key) {
+                var newName = String(index - 1);
+                var context = $this._items;
+
+                $this._itemsProto[index].rename(newName, context);
+                $this._itemsProto[newName] = $this._itemsProto[index];
+            }
+        });
+
+        return value;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ArrayCollection.prototype.indexOf = function(value)
+    {
+        var key = ArrayCollection.$parent.prototype.indexOf.call(this, value);
+
+        if (key === false) {
+            return key;
+        }
+        return parseInt(key);
+    };
+
+    /**
+     * Filters collection using passed callback function
+     *
+     * @param testCallback
+     * @returns {(Array|Object)}
+     */
+    ArrayCollection.prototype.filter = function(testCallback)
+    {
+        if (!testCallback || typeof testCallback !== 'function') {
+            throw new Error('Argument "testCallback" must be a function.');
+        }
+        var items = [];
+
+        this.eachItem(function(itemValue, itemKey) {
+            if (testCallback(itemValue, itemKey) === true) {
+                items[itemKey] = itemValue;
+            }
+        });
+
+        return items;
+    };
+
+    /**
      * Sorts out all collection items using passed callback function
      *
      * @param callback
@@ -75,14 +142,24 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         if (typeof callback != 'function') {
             throw new Error('Invalid callback argument in method "ArrayCollection#eachItem". It must be a function.');
         }
-        for (var key in this._items) {
-            if (!this._items.hasOwnProperty(key) || !key.match(/^[0-9]+$/i)) {
-                continue;
+
+        var keysAll = Object.keys(this._items);
+        var $this = this;
+        var keys = [];
+
+        keysAll.map(function(keyName) {
+            if (keyName.match(/^[0-9]+$/i)) {
+                keys.push(parseInt(keyName));
             }
-            if (callback(this._items[key], parseInt(key)) === false) {
-                break;
+        });
+        keys.sort();
+
+        keys.every(function(key) {
+            if (callback.call($this, $this._items[key], key) === false) {
+                return false;
             }
-        }
+            return true;
+        });
     };
 
     return ArrayCollection;

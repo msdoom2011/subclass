@@ -195,14 +195,13 @@ Subclass.Property.Map.Map = (function()
     */
     MapType.prototype.generateGetter = function()
     {
-        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function() {
             if ($this.isNull()) {
                 return null;
             }
-            return this[hashedPropName];
+            return this[$this.getNameHashed()];
         };
     };
 
@@ -211,7 +210,6 @@ Subclass.Property.Map.Map = (function()
      */
     MapType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function(value) {
@@ -226,7 +224,7 @@ Subclass.Property.Map.Map = (function()
                     if (!value.hasOwnProperty(childPropName)) {
                         continue;
                     }
-                    this[hashedPropName][childPropName] = value[childPropName];
+                    this[$this.getNameHashed()][childPropName] = value[childPropName];
                 }
             } else {
                 $this.setIsNull(true);

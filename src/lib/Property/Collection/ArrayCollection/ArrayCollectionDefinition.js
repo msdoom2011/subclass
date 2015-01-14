@@ -52,29 +52,17 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
     /**
      * @inheritDoc
      */
-    ArrayCollectionDefinition.prototype.processData = function()
+    ArrayCollectionDefinition.prototype.getBaseData = function()
     {
-        ArrayCollectionDefinition.$parent.prototype.processData.call(this);
+        var baseDefinition = ArrayCollectionDefinition.$parent.prototype.getBaseData.call(this);
 
-        var defaultValue = this.getDefault();
-        var proto = this.getProto();
+        /**
+         * Default property value
+         * @type {null}
+         */
+        baseDefinition.default = [];
 
-        if (defaultValue !== null) {
-            var collection = this.getProperty().getCollection();
-
-            this.getProperty().setIsNull(false);
-
-            for (var propName in defaultValue) {
-                if (!defaultValue.hasOwnProperty(propName)) {
-                    continue;
-                }
-                if (!this.isWritable()) {
-                    proto.writable = false;
-                }
-                collection.addItem(defaultValue[propName], false);
-            }
-            collection.normalizeItems();
-        }
+        return baseDefinition;
     };
 
     return ArrayCollectionDefinition;

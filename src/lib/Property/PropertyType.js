@@ -80,6 +80,38 @@ Subclass.Property.PropertyType = (function()
     PropertyType.$parent = Subclass.Property.PropertyTypeInterface;
 
     /**
+     * Returns name of current property type
+     *
+     * @static
+     * @returns {string}
+     */
+    PropertyType.getPropertyTypeName = function()
+    {
+        throw new Error('Not implemented method "PropertyType#getPropertyTypeName".');
+    };
+
+    /**
+     * Checks if specified value can be allowed by current property type
+     *
+     * @static
+     * @returns {boolean}
+     */
+    PropertyType.isAllowedValue = function(value)
+    {
+        throw new Error('Not implemented method "PropertyType#isAllowedValue".');
+    };
+
+    /**
+     * Parses passed property definition and returns required classes to load
+     *
+     * @param {Object} propertyDefinition
+     */
+    PropertyType.parseRequires = function(propertyDefinition)
+    {
+        throw new Error('Not implemented method "PropertyType#parseRequires".');
+    };
+
+    /**
      * @inheritDoc
      */
     PropertyType.getDefinitionClass = function()
@@ -153,6 +185,39 @@ Subclass.Property.PropertyType = (function()
             return propertyName;
         }
         return "_" + propertyName + "_" + propertyNameHash;
+    };
+
+    /**
+     * Renames current property
+     *
+     * @param {string} newName
+     * @param {Object} context
+     */
+    PropertyType.prototype.rename = function(newName, context)
+    {
+        if (!newName || typeof newName != 'string') {
+            throw new Error(
+                'Specified invalid new value argument while was called method rename in property ' + this + '. ' +
+                'It must be a string.'
+            );
+        }
+        if (Object.isSealed(context)) {
+            throw new Error(
+                'Can\'t rename property ' + this + '. ' +
+                'The context object is sealed.'
+            );
+        }
+        var definition = this.getDefinition();
+        var value = this.getValue(context, true);
+
+        if (definition.isAccessors()) {
+            throw new Error('Can\'t rename property ' + this + ' because it uses accessor functions.');
+        }
+
+        this.detach(context);
+        this._name = newName;
+        this.attach(context);
+        this.setValue(context, value);
     };
 
     /**
@@ -486,8 +551,7 @@ Subclass.Property.PropertyType = (function()
      */
     PropertyType.prototype.generateGetter = function()
     {
-        var hashedPropName = this.getNameHashed();
-        var propName = this.getName();
+        var $this = this;
 
         if (
             this.getDefinition().isAccessors()
@@ -497,12 +561,12 @@ Subclass.Property.PropertyType = (function()
             )
         ) {
             return function () {
-                return this[hashedPropName];
+                return this[$this.getNameHashed()];
             };
 
         } else {
             return function() {
-                return this[propName];
+                return this[$this.getName()];
             }
         }
     };
@@ -512,7 +576,6 @@ Subclass.Property.PropertyType = (function()
      */
     PropertyType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         if (!this.getDefinition().isWritable()) {
@@ -525,7 +588,7 @@ Subclass.Property.PropertyType = (function()
             value = $this.invokeWatchers(this, value, $this.getValue(this));
             $this.validateValue(value);
             $this.setIsModified(true);
-            this[hashedPropName] = value;
+            this[$this.getNameHashed()] = value;
         };
     };
 
@@ -564,6 +627,27 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
+     * Detaches property from class instance
+     *
+     * @param {Object} context
+     */
+    PropertyType.prototype.detach = function(context)
+    {
+        if (!context) {
+            throw new Error('To detach property ' + this + ' cause you must specify context.');
+        }
+        if (Object.isSealed(context)) {
+            throw new Error('Can\'t detach property ' + this + ' because the context object is sealed.');
+        }
+        var hashedPropName = this.getNameHashed();
+        var propName = this.getName();
+
+        for (var i = 0, propNames = [hashedPropName, propName]; i < propNames.length; i++) {
+            delete context[propNames[i]];
+        }
+    };
+
+    /**
      * @inheritDoc
      */
     PropertyType.prototype.attachAccessors = function(context)
@@ -597,7 +681,6 @@ Subclass.Property.PropertyType = (function()
         ) {
             Object.defineProperty(context, hashedPropName, {
                 configurable: true,
-                enumerable: true,
                 writable: true,
                 value: defaultValue
             });

@@ -157,12 +157,33 @@ Subclass.Property.Collection.CollectionType = (function()
      *
      * @returns {Collection}
      */
-    CollectionType.prototype.getCollection = function()
+    CollectionType.prototype.getCollection = function(context)
     {
         if (!this._collection) {
             var collectionConstructor = this.getCollectionConstructor();
+            var propertyDefinition = this.getDefinition();
+            var defaultValue = this.getDefaultValue();
+            var proto = this.getProto();
 
-            this._collection = new collectionConstructor(this);
+            this._collection = new collectionConstructor(this, context);
+
+            if (defaultValue !== null) {
+                this.setIsNull(false);
+
+                for (var propName in defaultValue) {
+                    if (!defaultValue.hasOwnProperty(propName)) {
+                        continue;
+                    }
+                    if (!propertyDefinition.isWritable()) {
+                        proto.getDefinition().setWritable(false);
+                    }
+                    this.addCollectionItem(
+                        propName,
+                        defaultValue[propName]
+                    );
+                }
+                this._collection.normalizeItems();
+            }
 
             Object.seal(this._collection);
         }
@@ -170,18 +191,28 @@ Subclass.Property.Collection.CollectionType = (function()
     };
 
     /**
+     * Adds new item to collection
+     *
+     * @param key
+     * @param value
+     */
+    CollectionType.prototype.addCollectionItem = function(key, value)
+    {
+        throw new Error('Abstract method "addCollectionItem" is not implemented.');
+    };
+
+    /**
      * @inheritDoc
      */
     CollectionType.prototype.generateGetter = function()
     {
-        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function() {
             if ($this.isNull()) {
                 return null;
             }
-            return this[hashedPropName];
+            return this[$this.getNameHashed()];
         };
     };
 
@@ -190,7 +221,6 @@ Subclass.Property.Collection.CollectionType = (function()
      */
     CollectionType.prototype.generateSetter = function()
     {
-        var hashedPropName = this.getNameHashed();
         var $this = this;
 
         return function(value) {
@@ -204,14 +234,14 @@ Subclass.Property.Collection.CollectionType = (function()
                     if (!value.hasOwnProperty(childPropName)) {
                         continue;
                     }
-                    this[hashedPropName].setItem(
+                    this[$this.getNameHashed()].setItem(
                         childPropName,
                         value[childPropName]
                     );
                 }
             } else {
                 $this.setIsNull(true);
-                $this._collection.removeItems();
+                $this.getCollection(this).removeItems();
             }
         };
     };
@@ -232,7 +262,7 @@ Subclass.Property.Collection.CollectionType = (function()
             configurable: true,
             enumerable: true,
             writable: true,
-            value: this.getCollection()
+            value: this.getCollection(context)
         });
     };
 

@@ -10,11 +10,11 @@ Subclass.Property.PropertyDefinition = (function()
      */
     function PropertyDefinition (property, propertyDefinition)
     {
-        if (!property || !(property instanceof Subclass.Property.PropertyTypeInterface)) {
+        if (!property || !(property instanceof Subclass.Property.PropertyType)) {
             throw new Error(
                 'Invalid argument "property" in constructor ' +
                 'of "Subclass.Property.PropertyDefinition" class.' +
-                'It must be an instance of class "Subclass.Property.PropertyTypeInterface".'
+                'It must be an instance of class "Subclass.Property.PropertyType".'
             );
         }
         if (!propertyDefinition || typeof propertyDefinition != 'object') {

@@ -24,6 +24,36 @@ Subclass.Property.PropertyAPI = (function()
     }
 
     /**
+     * Returns property instance
+     *
+     * @returns {Subclass.Property.PropertyType}
+     */
+    PropertyAPI.prototype.getProperty = function()
+    {
+        return this._property;
+    };
+
+    /**
+     * Returns property name
+     *
+     * @returns {string}
+     */
+    PropertyAPI.prototype.getName = function()
+    {
+        return this._property.getName();
+    };
+
+    /**
+     * Tries to rename property
+     *
+     * @param {string} newName
+     */
+    PropertyAPI.prototype.rename = function(newName)
+    {
+        return this._property.rename(newName, this._context);
+    };
+
+    /**
      * Sets class typed property
      *
      * @param {*} value
@@ -180,6 +210,11 @@ Subclass.Property.PropertyAPI = (function()
     PropertyAPI.prototype.removeWatchers = function()
     {
         return this._property.removeWatchers();
+    };
+
+    PropertyAPI.prototype.toString = function()
+    {
+        return this._property.toString();
     };
 
     return PropertyAPI;

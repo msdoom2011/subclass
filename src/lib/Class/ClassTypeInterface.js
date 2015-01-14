@@ -97,7 +97,7 @@ Subclass.Class.ClassTypeInterface = (function()
      * Returns all typed properties in current class instance
      *
      * @param {boolean} withInherited
-     * @returns {Object.<Subclass.Property.PropertyTypeInterface>}
+     * @returns {Object.<Subclass.Property.PropertyType>}
      */
     ClassTypeInterface.prototype.getProperties = function(withInherited) {};
 
@@ -113,7 +113,7 @@ Subclass.Class.ClassTypeInterface = (function()
      * Returns property instance by its name
      *
      * @param {string} propertyName
-     * @returns {Subclass.Property.PropertyTypeInterface}
+     * @returns {Subclass.Property.PropertyType}
      * @throws {Error}
      */
     ClassTypeInterface.prototype.getProperty = function(propertyName) {};

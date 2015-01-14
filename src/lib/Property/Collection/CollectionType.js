@@ -79,7 +79,7 @@ Subclass.Property.Collection.CollectionType = (function()
     /**
     * Sets prototype of collection items
     *
-    * @param {Subclass.Property.PropertyTypeInterface} proto
+    * @param {Subclass.Property.PropertyType} proto
     */
     CollectionType.prototype.setProto = function(proto)
     {

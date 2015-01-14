@@ -1,6 +1,5 @@
 /**
  * @class
- * @implements {Subclass.Property.PropertyTypeInterface}
  */
 Subclass.Property.PropertyType = (function()
 {
@@ -77,7 +76,7 @@ Subclass.Property.PropertyType = (function()
         this._isModified = false;
     }
 
-    PropertyType.$parent = Subclass.Property.PropertyTypeInterface;
+    PropertyType.$parent = null;
 
     /**
      * Returns name of current property type
@@ -112,7 +111,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property definition constructor
+     *
+     * @returns {Function}
      */
     PropertyType.getDefinitionClass = function()
     {
@@ -120,7 +121,7 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Initializing property instance
      */
     PropertyType.prototype.initialize = function()
     {
@@ -134,7 +135,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property manager instance
+     *
+     * @returns {Subclass.Property.PropertyManager}
      */
     PropertyType.prototype.getPropertyManager = function()
     {
@@ -142,15 +145,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
-     */
-    PropertyType.prototype.getContextProperty = function()
-    {
-        return this._contextProperty;
-    };
-
-    /**
-     * @inheritDoc
+     * Returns property clear name
+     *
+     * @returns {string}
      */
     PropertyType.prototype.getName = function()
     {
@@ -158,7 +155,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property name with names of context property
+     *
+     * @returns {string}
      */
     PropertyType.prototype.getNameFull = function()
     {
@@ -174,7 +173,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property hashed name
+     *
+     * @returns {*}
      */
     PropertyType.prototype.getNameHashed = function()
     {
@@ -272,7 +273,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property definition instance
+     *
+     * @returns {Subclass.Property.PropertyDefinition}
      */
     PropertyType.prototype.getDefinition = function()
     {
@@ -280,7 +283,10 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property api
+     *
+     * @param {Object} context
+     * @returns {Subclass.Property.PropertyAPI}
      */
     PropertyType.prototype.getAPI = function(context)
     {
@@ -292,7 +298,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Setup marker if current property value was ever modified
+     *
+     * @param {boolean} isModified
      */
     PropertyType.prototype.setIsModified = function(isModified)
     {
@@ -306,7 +314,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Checks if current property value was ever modified
+     *
+     * @returns {boolean}
      */
     PropertyType.prototype.isModified = function()
     {
@@ -314,7 +324,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Sets property context class
+     *
+     * @param {(ClassType|null)} contextClass
      */
     PropertyType.prototype.setContextClass = function(contextClass)
     {
@@ -341,7 +353,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns context class instance to which current property belongs to
+     *
+     * @returns {(ClassType|null)}
      */
     PropertyType.prototype.getContextClass = function()
     {
@@ -349,7 +363,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Sets name of the chain of properties to which current property belongs to.
+     *
+     * @param {(PropertyType|null)} contextProperty
      */
     PropertyType.prototype.setContextProperty = function(contextProperty)
     {
@@ -358,7 +374,7 @@ Subclass.Property.PropertyType = (function()
                 && contextProperty !== null
             ) || (
                 contextProperty
-                && !(contextProperty instanceof Subclass.Property.PropertyTypeInterface)
+                && !(contextProperty instanceof Subclass.Property.PropertyType)
             )
         ) {
             var message = 'Trying to set not valid context property ' +
@@ -379,7 +395,19 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns name of the chain of properties to which current property belongs to.
+     *
+     * @returns {string}
+     */
+    PropertyType.prototype.getContextProperty = function()
+    {
+        return this._contextProperty;
+    };
+
+    /**
+     * Returns all registered watchers
+     *
+     * @returns {Function[]}
      */
     PropertyType.prototype.getWatchers = function()
     {
@@ -387,7 +415,15 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Adds new watcher
+     *
+     * @param {Function} callback Function, that takes two arguments:
+     *      - newValue {*} New property value
+     *      - oldValue {*} Old property value
+     *
+     *      "this" variable inside callback function will link to the class instance to which property belongs to
+     *      This callback function MUST return newValue value.
+     *      So you can modify it if you need.
      */
     PropertyType.prototype.addWatcher = function(callback)
     {
@@ -400,7 +436,10 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Checks if specified watcher callback is registered
+     *
+     * @param {Function} callback
+     * @returns {boolean}
      */
     PropertyType.prototype.issetWatcher = function(callback)
     {
@@ -408,7 +447,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Removes specified watcher callback
+     *
+     * @param {Function} callback
      */
     PropertyType.prototype.removeWatcher = function(callback)
     {
@@ -420,7 +461,7 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Unbind all watchers from current property
      */
     PropertyType.prototype.removeWatchers = function()
     {
@@ -428,7 +469,11 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Invokes all registered watcher functions
+     *
+     * @param {Object} context
+     * @param {*} newValue
+     * @param {*} oldValue
      */
     PropertyType.prototype.invokeWatchers = function(context, newValue, oldValue)
     {
@@ -445,7 +490,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Checks if property contains empty value
+     *
+     * @returns {boolean}
      */
     PropertyType.prototype.isEmpty = function(context)
     {
@@ -456,7 +503,11 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Validates property value. Throws error if value is invalid
+     *
+     * @param {*} value
+     * @returns {boolean}
+     * @throws {Error}
      */
     PropertyType.prototype.validateValue = function(value)
     {
@@ -464,7 +515,11 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Sets property value
+     *
+     * @param {Object} context
+     * @param {*} value
+     * @returns {*}
      */
     PropertyType.prototype.setValue = function(context, value)
     {
@@ -481,7 +536,10 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns value of current property
+     *
+     * @param {Object} context An object to which current property belongs to.
+     * @param {boolean} [dataOnly] Returns only data without hashed fields and accessor functions
      */
     PropertyType.prototype.getValue = function(context, dataOnly)
     {
@@ -532,12 +590,12 @@ Subclass.Property.PropertyType = (function()
 
         if (context) {
             if ((
-                Subclass.Tools.isEqual(oldDefaultValue, this.getValue(context))
-                && !this.isModified()
+                    Subclass.Tools.isEqual(oldDefaultValue, this.getValue(context))
+                    && !this.isModified()
                 ) || (
-                oldDefaultValue === null
-                && this.isEmpty(context)
-                && !this.isModified()
+                    oldDefaultValue === null
+                    && this.isEmpty(context)
+                    && !this.isModified()
                 )
             ) {
                 return true;
@@ -547,7 +605,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Generates property getter function
+     *
+     * @returns {Function}
      */
     PropertyType.prototype.generateGetter = function()
     {
@@ -572,7 +632,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Generates setter for specified property
+     *
+     * @returns {function}
      */
     PropertyType.prototype.generateSetter = function()
     {
@@ -593,7 +655,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Attaches property to specified context
+     *
+     * @param {Object} context
      */
     PropertyType.prototype.attach = function(context)
     {
@@ -648,7 +712,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Attaches property accessor functions
+     *
+     * @param {Object} context
      */
     PropertyType.prototype.attachAccessors = function(context)
     {
@@ -665,7 +731,9 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Attaches property that will hold property value in class instance
+     *
+     * @param {Object} context
      */
     PropertyType.prototype.attachHashed = function(context)
     {
@@ -695,6 +763,11 @@ Subclass.Property.PropertyType = (function()
         }
     };
 
+    /**
+     * Return string implementation of property
+     *
+     * @returns {string}
+     */
     PropertyType.prototype.toString = function()
     {
         var propertyName = this.getNameFull();

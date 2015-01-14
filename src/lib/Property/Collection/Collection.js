@@ -350,7 +350,7 @@ Subclass.Property.Collection.Collection = (function()
     *
     * @returns {Object|Array}
     */
-    Collection.prototype.valueOf = function()
+    Collection.prototype.getData = function()
     {
         return this.getProperty().getValue(this._context, true);
     };

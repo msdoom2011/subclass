@@ -184,9 +184,23 @@ Subclass.Property.Map.Map = (function()
         }
         for (var propName in value) {
             if (value.hasOwnProperty(propName) && !propName.match(/^_(.+)[0-9]+$/i)) {
-                valueClear[propName] = value[propName];
+                if (
+                    value[propName]
+                    && (
+                        Subclass.Tools.isPlainObject(value[propName])
+                        && value[propName].getData
+                    ) || (
+                        value[propName] instanceof Subclass.Property.Collection.Collection
+                    )
+                ) {
+                    valueClear[propName] = value[propName].getData();
+
+                } else {
+                    valueClear[propName] = value[propName];
+                }
             }
         }
+
         return valueClear;
     };
 
@@ -241,6 +255,7 @@ Subclass.Property.Map.Map = (function()
 
         context[hashedPropName] = {};
         this.attachChildren(context);
+        this.attachMethods(context);
 
         Object.seal(context[hashedPropName]);
     };
@@ -252,20 +267,36 @@ Subclass.Property.Map.Map = (function()
      */
     MapType.prototype.attachChildren = function(context)
     {
-        var propertyDefinition = this.getDefinition();
+        var propertyNameHashed = this.getNameHashed();
+        var childrenContext = context[propertyNameHashed];
+        var children = this.getChildren();
 
-        if (propertyDefinition.isWritable()) {
-            var propertyNameHashed = this.getNameHashed();
-            var childrenContext = context[propertyNameHashed];
-            var children = this.getChildren();
-
-            for (var childPropName in children) {
-                if (!children.hasOwnProperty(childPropName)) {
-                    continue;
-                }
-                children[childPropName].attach(childrenContext);
+        for (var childPropName in children) {
+            if (!children.hasOwnProperty(childPropName)) {
+                continue;
             }
+            children[childPropName].attach(childrenContext);
         }
+    };
+
+    MapType.prototype.attachMethods = function(context)
+    {
+        var $this = this;
+        var propName;
+
+        if ($this.getDefinition().isAccessors()) {
+            propName = $this.getNameHashed();
+
+        } else {
+            propName = $this.getName();
+        }
+
+        Object.defineProperty(context[propName], 'getData', {
+            configurable: true,
+            value: function() {
+                return $this.getValue(context, true);
+            }
+        });
     };
 
     /**

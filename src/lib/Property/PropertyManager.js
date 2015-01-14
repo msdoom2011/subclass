@@ -172,8 +172,8 @@ Subclass.Property.PropertyManager = (function()
 
         inst.initialize();
 
-        if (!(inst instanceof Subclass.Property.PropertyTypeInterface)) {
-            throw new Error('Property type factory must instance of "Subclass.Property.PropertyTypeInterface" class.');
+        if (!(inst instanceof Subclass.Property.PropertyType)) {
+            throw new Error('Property type factory must instance of "Subclass.Property.PropertyType" class.');
         }
 
         return inst;

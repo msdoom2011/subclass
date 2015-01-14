@@ -929,6 +929,7 @@ app.onReady(function() {
     });
 
     console.log(inst.getTypedMap());
+    console.log(inst.getTypedMap().getData());
 
 
 
@@ -940,25 +941,25 @@ app.onReady(function() {
 
     objectCollection.psix = '1111';
     objectCollection.addItem("psix", 555);
-    console.log(objectCollection.valueOf());
+    console.log(objectCollection.getData());
 
     objectCollection.removeItem("psix");
-    console.log(objectCollection.valueOf());
+    console.log(objectCollection.getData());
 
     objectCollection.addItems({
         psix: 222,
         psix2: 111
     });
-    console.log(objectCollection.valueOf());
+    console.log(objectCollection.getData());
 
     objectCollection.addItem("psix", 777);
-    console.log(objectCollection.valueOf());
+    console.log(objectCollection.getData());
 
     console.log(objectCollection.getItem("psix"));
-    console.log(objectCollection.valueOf());
+    console.log(objectCollection.getData());
 
     objectCollection.removeItems();
-    console.log(objectCollection.valueOf());
+    console.log(objectCollection.getData());
 
     inst.setTypedObjectCollection(null);
     console.log(inst.getTypedObjectCollection());
@@ -979,7 +980,7 @@ app.onReady(function() {
 
     arrayCollection.psix = '1111';
     arrayCollection.addItem("psix");
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     var filteredItems = arrayCollection.filter(function(element, index) {
         if (element.match(/^str/)) {
@@ -993,7 +994,7 @@ app.onReady(function() {
     console.log(removeArrayItem);
 
     arrayCollection.removeItem(removeArrayItem);
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     var removeArrayItemIndex = arrayCollection.indexOf(function(element, index) {
         if (element.match(/^str/)) {
@@ -1004,20 +1005,20 @@ app.onReady(function() {
     console.log(removeArrayItemIndex);
 
     arrayCollection.removeItem(removeArrayItemIndex);
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     arrayCollection.addItems(["new1", "new2"]);
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     arrayCollection.addItem("psix222");
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     var psixElemIndex = arrayCollection.indexOf("psix222");
     console.log(arrayCollection.getItem(psixElemIndex));
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     arrayCollection.removeItems();
-    console.log(arrayCollection.valueOf());
+    console.log(arrayCollection.getData());
 
     inst.setTypedArrayCollection(null);
     console.log(inst.getTypedArrayCollection());

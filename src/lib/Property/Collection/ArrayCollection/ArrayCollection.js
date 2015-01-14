@@ -87,10 +87,11 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
             }
             if (index > key) {
                 var newName = String(index - 1);
-                var context = $this._items;
+                var context = $this.getItems();
+                var itemProto = $this.getProto(index);
 
-                $this._itemsProto[index].rename(newName, context);
-                $this._itemsProto[newName] = $this._itemsProto[index];
+                itemProto.rename(newName, context);
+                $this.getItemsProto()[newName] = itemProto;
             }
         });
 
@@ -143,7 +144,8 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
             throw new Error('Invalid callback argument in method "ArrayCollection#eachItem". It must be a function.');
         }
 
-        var keysAll = Object.keys(this._items);
+        var items = this.getItems();
+        var keysAll = Object.keys(items);
         var $this = this;
         var keys = [];
 
@@ -155,11 +157,34 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         keys.sort();
 
         keys.every(function(key) {
-            if (callback.call($this, $this._items[key], key) === false) {
+            if (callback.call($this, items[key], key) === false) {
                 return false;
             }
             return true;
         });
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ArrayCollection.prototype.getLength = function()
+    {
+        var keys = Object.keys(this.getItems());
+        var numericKeys = [];
+
+        for (var i = 0; i < keys.length; i++) {
+            var numKey = parseInt(keys[i]);
+
+            if (!isNaN(numKey)) {
+                numericKeys.push(numKey);
+            }
+        }
+        if (!numericKeys.length) {
+            return 0;
+        }
+        numericKeys.sort();
+
+        return numericKeys[numericKeys.length - 1] + 1;
     };
 
     return ArrayCollection;

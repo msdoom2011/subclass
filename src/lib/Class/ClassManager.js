@@ -40,7 +40,7 @@ Subclass.Class.ClassManager = (function()
         /**
          * Collection of registered classes
          *
-         * @type {Object.<Subclass.Class.ClassTypeInterface>}
+         * @type {Object.<Subclass.Class.ClassType>}
          * @private
          */
         this._classes = {};
@@ -232,7 +232,7 @@ Subclass.Class.ClassManager = (function()
      *
      * @param {boolean} [withParentClasses = true]
      *
-     * @returns {Object.<Subclass.Class.ClassTypeInterface>}
+     * @returns {Object.<Subclass.Class.ClassType>}
      */
     ClassManager.prototype.getClasses = function(privateClasses, withParentClasses)
     {
@@ -373,7 +373,7 @@ Subclass.Class.ClassManager = (function()
      * @param {Object} classDefinition
      *      A definition of the creating class
      *
-     * @returns {Subclass.Class.ClassTypeInterface} class
+     * @returns {Subclass.Class.ClassType} class
      */
     ClassManager.prototype.createClass = function(classConstructor, className, classDefinition)
     {
@@ -420,7 +420,7 @@ Subclass.Class.ClassManager = (function()
      * @param {string} classTypeName
      * @param {string} className
      * @param {object} classDefinition
-     * @returns {Subclass.Class.ClassTypeInterface}
+     * @returns {Subclass.Class.ClassType}
      */
     ClassManager.prototype.addClass = function(classTypeName, className, classDefinition)
     {
@@ -457,7 +457,7 @@ Subclass.Class.ClassManager = (function()
      * Returns class
      *
      * @param {string} className
-     * @returns {Subclass.Class.ClassTypeInterface}
+     * @returns {Subclass.Class.ClassType}
      */
     ClassManager.prototype.getClass = function(className)
     {
@@ -495,7 +495,7 @@ Subclass.Class.ClassManager = (function()
      * Builds new class of specified class type
      *
      * @param {string} classType Type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
-     * @returns {Subclass.Class.ClassTypeInterface}
+     * @returns {Subclass.Class.ClassType}
      */
     ClassManager.prototype.buildClass = function(classType)
     {
@@ -506,7 +506,7 @@ Subclass.Class.ClassManager = (function()
      * Modifies existed class definition
      *
      * @param {string} className A name of the class
-     * @returns {Subclass.Class.ClassTypeInterface}
+     * @returns {Subclass.Class.ClassType}
      */
     ClassManager.prototype.alterClass = function(className)
     {

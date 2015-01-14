@@ -5,11 +5,11 @@ Subclass.Class.ClassDefinition = (function()
 {
     function ClassDefinition (classInst, classDefinition)
     {
-        if (!classInst || !(classInst instanceof Subclass.Class.ClassTypeInterface)) {
+        if (!classInst || !(classInst instanceof Subclass.Class.ClassType)) {
             throw new Error(
                 'Invalid argument "classInst" in constructor ' +
                 'of "Subclass.Class.ClassDefinition" class.' +
-                'It must be an instance of "Subclass.Class.ClassTypeInterface".'
+                'It must be an instance of "Subclass.Class.ClassType".'
             );
         }
         if (!classDefinition || typeof classDefinition != 'object') {

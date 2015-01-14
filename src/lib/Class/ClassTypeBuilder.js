@@ -449,7 +449,7 @@ Subclass.Class.ClassTypeBuilder = (function()
     /**
      * Saves class definition changes and registers class if it's needed
      *
-     * @returns {Subclass.Class.ClassTypeInterface}
+     * @returns {Subclass.Class.ClassType}
      */
     ClassTypeBuilder.prototype.save = function()
     {

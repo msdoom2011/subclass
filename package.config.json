@@ -25,7 +25,6 @@
         "files": [
           "<%= config.lib.content.class.dir %>/ClassManager.js",
           "<%= config.lib.content.class.dir %>/ClassManagerAPI.js",
-          "<%= config.lib.content.class.dir %>/ClassTypeInterface.js",
           "<%= config.lib.content.class.dir %>/ClassType.js",
           "<%= config.lib.content.class.dir %>/ClassDefinition.js",
           "<%= config.lib.content.class.dir %>/*.js",
@@ -47,7 +46,6 @@
         "files": [
           "<%= config.lib.content.property.dir %>/PropertyManager.js",
           "<%= config.lib.content.property.dir %>/CustomTypesManager.js",
-          "<%= config.lib.content.property.dir %>/PropertyTypeInterface.js",
           "<%= config.lib.content.property.dir %>/PropertyType.js",
           "<%= config.lib.content.property.dir %>/PropertyDefinition.js",
           "<%= config.lib.content.property.dir %>/PropertyAPI.js",

@@ -73,28 +73,72 @@ Subclass.Property.Collection.Collection = (function()
     };
 
     /**
-     * Creates collection item
+     * Returns collection items
      *
-     * @param key
-     * @param value
+     * @returns {Object}
+     */
+    Collection.prototype.getItems = function()
+    {
+        return this._items;
+    };
+
+    /**
+     * Returns collection items proto. Each item proto is a PropertyType instance
+     *
+     * @returns {Object}
+     */
+    Collection.prototype.getItemsProto = function()
+    {
+        return this._itemsProto;
+    };
+
+    /**
+     * Returns collection item proto
+     *
+     * @param {string} key
      * @returns {*}
      */
-    Collection.prototype._createItem = function(key, value)
+    Collection.prototype.getProto = function(key)
+    {
+        return this.getItemsProto()[key];
+    };
+
+    /**
+     * Returns clear data of collection item
+     *
+     * @param key
+     * @returns {*|PropertyType}
+     */
+    Collection.prototype.getItemData = function(key)
+    {
+        return this.getProto(key).getValue(this.getItems(), true);
+    };
+
+    /**
+     * Creates collection item
+     *
+     * @param {string} key
+     * @param {*} value
+     * @returns {*}
+     */
+    Collection.prototype.createItem = function(key, value)
     {
         var property = this.getProperty();
         var proto = property.getProto();
         var protoDefinition = Subclass.Tools.copy(proto.getDefinition().getData());
+        var itemsProto = this.getItemsProto();
+        var items = this.getItems();
 
-        this._itemsProto[key] = this.getProperty().getPropertyManager().createProperty(
+        itemsProto[key] = this.getProperty().getPropertyManager().createProperty(
             key, protoDefinition, property.getContextClass(), property
         );
-        this._itemsProto[key].attach(this._items);
+        itemsProto[key].attach(items);
 
         if (value !== undefined) {
-            this._items[key] = value;
+            items[key] = value;
         }
 
-        return this._items[key];
+        return items[key];
     };
 
     /**
@@ -116,7 +160,7 @@ Subclass.Property.Collection.Collection = (function()
         if (normalize !== false) {
             normalize = true;
         }
-        this._createItem(key, value);
+        this.createItem(key, value);
 
         if (normalize) {
             this.normalizeItem(key);
@@ -154,10 +198,10 @@ Subclass.Property.Collection.Collection = (function()
             normalize = true;
         }
         if (this.issetItem(key)) {
-            this._items[key] = value;
+            this.getItems()[key] = value;
 
         } else {
-            this._createItem(key, value);
+            this.createItem(key, value);
         }
         if (normalize) {
             this.normalizeItem(key);
@@ -196,7 +240,7 @@ Subclass.Property.Collection.Collection = (function()
                 'in property ' + this.getProperty() + '.'
             );
         }
-        return this._items[key];
+        return this.getItems()[key];
     };
 
     /**
@@ -206,10 +250,10 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.removeItem = function(key)
     {
-        var value = this._itemsProto[key].getValue(this.getContext(), true);
+        var value = this.getItemData(key);
 
-        delete this._items[key];
-        delete this._itemsProto[key];
+        delete this.getItems()[key];
+        delete this.getItemsProto()[key];
 
         return value;
     };
@@ -219,8 +263,8 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.removeItems = function()
     {
-        this._items = Object.create(Object.getPrototypeOf(this._items));
-        this._itemsProto = Object.create(Object.getPrototypeOf(this._items));
+        this._items = Object.create(Object.getPrototypeOf(this.getItems()));
+        this._itemsProto = Object.create(Object.getPrototypeOf(this.getItemsProto()));
     };
 
     /**
@@ -231,7 +275,7 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.issetItem = function(key)
     {
-        return !!this._items.hasOwnProperty(key);
+        return !!this.getItems().hasOwnProperty(key);
     };
 
     /**
@@ -244,11 +288,13 @@ Subclass.Property.Collection.Collection = (function()
         if (typeof callback != 'function') {
             throw new Error('Invalid callback argument in method "Collection.eachItem". It must be a function.');
         }
-        for (var key in this._items) {
-            if (!this._items.hasOwnProperty(key) || key.match(/^_(.+)[0-9]+$/i)) {
+        var items = this.getItems();
+
+        for (var key in items) {
+            if (!items.hasOwnProperty(key) || key.match(/^_(.+)[0-9]+$/i)) {
                 continue;
             }
-            if (callback(this._items[key], key) === false) {
+            if (callback(items[key], key) === false) {
                 break;
             }
         }
@@ -299,7 +345,7 @@ Subclass.Property.Collection.Collection = (function()
         if (!testCallback || typeof testCallback !== 'function') {
             throw new Error('Argument "testCallback" must be a function.');
         }
-        var items = Object.create(Object.getPrototypeOf(this._items));
+        var items = Object.create(Object.getPrototypeOf(this.getItems()));
 
         this.eachItem(function(itemValue, itemKey) {
             if (testCallback(itemValue, itemKey) === true) {
@@ -342,17 +388,17 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.getLength = function()
     {
-        return Object.keys(this._items).length;
+        return Object.keys(this.getItems()).length;
     };
 
     /**
     * Returns collection value
     *
-    * @returns {Object|Array}
+    * @returns {(Object)}
     */
     Collection.prototype.getData = function()
     {
-        return this.getProperty().getValue(this._context, true);
+        return this.getProperty().getValue(this.getContext(), true);
     };
 
     return Collection;

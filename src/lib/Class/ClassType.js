@@ -1,6 +1,6 @@
 /**
  * @class
- * @implements {Subclass.Class.ClassTypeInterface}
+ * @implements {Subclass.Class.ClassType}
  * @description Abstract class of the each class type.
  *      Each instance of current class is a class definition which will be used
  *      for creating instances of its declaration.
@@ -76,13 +76,17 @@ Subclass.Class.ClassType = (function()
     /**
      * Can be parent class type
      *
-     * @type {(ClassTypeInterface|null)}
+     * @type {(Subclass.Class.ClassType|null)}
      */
-    ClassType.$parent = Subclass.Class.ClassTypeInterface;
+    ClassType.$parent = null;
 
     /**
-     * @inheritDoc
-     * @abstract
+     * Returns name of class type
+     *
+     * @example Example:
+     *      Subclass.Class.Trait.Trait.getClassTypeName(); // returns "Trait"
+     *
+     * @returns {string}
      */
     ClassType.getClassTypeName = function ()
     {
@@ -90,8 +94,13 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
-     * @abstract
+     * Returns class builder constructor for specific class of current class type.
+     *
+     * @example Example:
+     *      Subclass.Class.AbstractClass.AbstractClass.getBuilderClass();
+     *      // returns Subclass.Class.AbstractClass.AbstractClassBuilder class constructor
+     *
+     * @returns {Function}
      */
     ClassType.getBuilderClass = function()
     {
@@ -99,7 +108,13 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns constructor for creating class definition instance
+     *
+     * @example Example:
+     *      Subclass.Class.Class.Class.getDefinitionClass();
+     *      // returns Subclass.Class.Class.ClassDefinition class constructor
+     *
+     * @returns {Function}
      */
     ClassType.getDefinitionClass = function()
     {
@@ -107,7 +122,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Initializes class on creation stage.
+     * Current method invokes automatically right at the end of the class type constructor.
+     * It can contain different manipulations with class definition or other manipulations that is needed
      */
     ClassType.prototype.initialize = function()
     {
@@ -116,7 +133,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns class manager instance
+     *
+     * @returns {Subclass.Class.ClassManager}
      */
     ClassType.prototype.getClassManager = function ()
     {
@@ -124,7 +143,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns name of the current class instance
+     *
+     * @returns {string}
      */
     ClassType.prototype.getName = function()
     {
@@ -185,7 +206,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Sets class definition
+     *
+     * @param {Object} classDefinition
      */
     ClassType.prototype.setDefinition = function(classDefinition)
     {
@@ -198,7 +221,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns class definition object
+     *
+     * @returns {Subclass.Class.ClassDefinition}
      */
     ClassType.prototype.getDefinition = function()
     {
@@ -206,7 +231,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Sets class parent
+     *
+     * @param {string} parentClassName
      */
     ClassType.prototype.setParent = function (parentClassName)
     {
@@ -225,7 +252,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns parent class instance
+     *
+     * @return {(Subclass.Class.ClassType|null)}
      */
     ClassType.prototype.getParent = function ()
     {
@@ -233,7 +262,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Checks whether current class extends another one
+     *
+     * @returns {boolean}
      */
     ClassType.prototype.hasParent = function()
     {
@@ -241,7 +272,10 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all typed properties in current class instance
+     *
+     * @param {boolean} withInherited
+     * @returns {Object.<Subclass.Property.PropertyType>}
      */
     ClassType.prototype.getProperties = function(withInherited)
     {
@@ -267,7 +301,10 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Adds new typed property to class
+     *
+     * @param {string} propertyName
+     * @param {Object} propertyDefinition
      */
     ClassType.prototype.addProperty = function(propertyName, propertyDefinition)
     {
@@ -281,7 +318,11 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns property instance by its name
+     *
+     * @param {string} propertyName
+     * @returns {Subclass.Property.PropertyType}
+     * @throws {Error}
      */
     ClassType.prototype.getProperty = function(propertyName)
     {
@@ -298,7 +339,10 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Checks if property with specified property name exists
+     *
+     * @param {string} propertyName
+     * @returns {boolean}
      */
     ClassType.prototype.issetProperty = function(propertyName)
     {
@@ -314,7 +358,10 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns constructor function for current class type
+     *
+     * @returns {function} Returns named function
+     * @throws {Error}
      */
     ClassType.prototype.getConstructorEmpty = function ()
     {
@@ -322,7 +369,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns class constructor
+     *
+     * @returns {Function}
      */
     ClassType.prototype.getConstructor = function ()
     {
@@ -363,7 +412,6 @@ Subclass.Class.ClassType = (function()
         }
 
         this.attachProperties(classConstructor.prototype);
-
         Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
         Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
         Object.defineProperty(classConstructor.prototype, "constructor", {
@@ -379,7 +427,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Creates and attaches class typed properties
+     *
+     * @param {Object} context Class constructor prototype
      */
     ClassType.prototype.attachProperties = function(context)
     {
@@ -394,7 +444,9 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Creates class instance of current class type
+     *
+     * @returns {object} Class instance
      */
     ClassType.prototype.createInstance = function()
     {
@@ -478,7 +530,10 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * @inheritDoc
+     * Checks if current class is instance of another class
+     *
+     * @param {string} className
+     * @return {boolean}
      */
     ClassType.prototype.isInstanceOf = function (className)
     {

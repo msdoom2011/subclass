@@ -23,7 +23,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
      */
     ObjectCollection.prototype.normalizeItem = function(itemName)
     {
-        var item = this._itemsProto[itemName].getValue(this._items, true);
+        var item = this.getData(itemName);
 
         if (this.getProperty().getProto().constructor.getPropertyTypeName() != 'map') {
             return item;
@@ -44,8 +44,8 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
             if (!item.hasOwnProperty(propName)) {
                 continue;
             }
-            var itemChild = this._itemsProto[itemName].getChild(propName);
-            var itemChildContext = this._items[itemName];
+            var itemChild = this.getProto(itemName).getChild(propName);
+            var itemChildContext = this.getItem(itemName);
 
             if (itemChild.isDefaultValue(itemChildContext)) {
                 delete item[propName];

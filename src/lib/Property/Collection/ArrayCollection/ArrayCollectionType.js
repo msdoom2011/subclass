@@ -110,7 +110,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         var collectionItems = [];
 
         collection.eachItem(function(item, itemName) {
-            collectionItems[itemName] = collection._itemsProto[itemName].getValue(collection._items, dataOnly);
+            collectionItems[itemName] = collection.getItemData(itemName);
         });
 
         return collectionItems;

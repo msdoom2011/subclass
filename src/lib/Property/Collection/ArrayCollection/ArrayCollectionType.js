@@ -91,6 +91,18 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
+    ArrayCollectionType.prototype.alterCollection = function()
+    {
+        Object.defineProperty(this._collection, 'length', {
+            enumerable: false,
+            get: this._collection.getLength,
+            set: function() {}
+        });
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayCollectionType.prototype.addCollectionItem = function(key, value)
     {
         this._collection.addItem(value, false);

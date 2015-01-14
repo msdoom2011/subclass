@@ -28,6 +28,60 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     };
 
     /**
+     * @alias Subclass.Property.Collection.ArrayCollection#addItem
+     */
+    ArrayCollection.prototype.push = ArrayCollection.prototype.addItem;
+
+    /**
+     * Removes from array and returns the last item in collection
+     *
+     * @returns {(*|null)}
+     */
+    ArrayCollection.prototype.pop = function()
+    {
+        var length = this.getLength();
+
+        if (!length) {
+            return null;
+        }
+        return this.removeItem(length - 1);
+    };
+
+    /**
+     * Removes from array and returns the first item in collection
+     *
+     * @returns {(*|null)}
+     */
+    ArrayCollection.prototype.shift = function()
+    {
+        var length = this.getLength();
+
+        if (!length) {
+            return null;
+        }
+        return this.removeItem(0);
+    };
+
+    /**
+     * Adds new item to the start of array
+     */
+    ArrayCollection.prototype.unshift = function(value)
+    {
+        var $this = this;
+
+        this.eachItem(true, function(item, index) {
+            var newName = String(index + 1);
+            var context = $this.getItems();
+            var itemProto = $this.getProto(index);
+
+            itemProto.rename(newName, context);
+            $this.getItemsProto()[newName] = itemProto;
+        });
+
+        this.setItem(0, value);
+    };
+
+    /**
     * @inheritDoc
     * @param {Array} items
     */
@@ -54,6 +108,16 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     * @param {Array} items
     */
     ArrayCollection.prototype.setItems = ArrayCollection.prototype.addItems;
+
+    ArrayCollection.prototype.setItem = function(key, value, normalize)
+    {
+        if (isNaN(parseInt(key))) {
+            throw new Error('Array item index must be a number.');
+        }
+        return ArrayCollection.$parent.prototype.setItem.call(
+            this, String(key), value, normalize
+        );
+    };
 
     /**
      * @inheritDoc
@@ -101,6 +165,17 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
+    ArrayCollection.prototype.issetItem = function(key)
+    {
+        if (isNaN(parseInt(key))) {
+            throw new Error('Array item index must be a number.');
+        }
+        return !!this.getItems().hasOwnProperty(String(key));
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayCollection.prototype.indexOf = function(value)
     {
         var key = ArrayCollection.$parent.prototype.indexOf.call(this, value);
@@ -126,7 +201,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
 
         this.eachItem(function(itemValue, itemKey) {
             if (testCallback(itemValue, itemKey) === true) {
-                items[itemKey] = itemValue;
+                items[parseInt(itemKey)] = itemValue;
             }
         });
 
@@ -136,12 +211,22 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * Sorts out all collection items using passed callback function
      *
-     * @param callback
+     * @param {boolean} [reverse]
+     * @param {Function} callback
      */
-    ArrayCollection.prototype.eachItem = function(callback)
+    ArrayCollection.prototype.eachItem = function(reverse, callback)
     {
+        if (typeof reverse == 'function') {
+            callback = reverse;
+        }
         if (typeof callback != 'function') {
-            throw new Error('Invalid callback argument in method "ArrayCollection#eachItem". It must be a function.');
+            throw new Error(
+                'Invalid callback argument in method "ArrayCollection#eachItem". ' +
+                'It must be a function.'
+            );
+        }
+        if (reverse !== true) {
+            reverse = false;
         }
 
         var items = this.getItems();
@@ -155,6 +240,10 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
             }
         });
         keys.sort();
+
+        if (reverse) {
+            keys.reverse();
+        }
 
         keys.every(function(key) {
             if (callback.call($this, items[key], key) === false) {

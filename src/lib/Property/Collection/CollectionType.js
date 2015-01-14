@@ -166,6 +166,7 @@ Subclass.Property.Collection.CollectionType = (function()
             var proto = this.getProto();
 
             this._collection = new collectionConstructor(this, context);
+            this.alterCollection();
 
             if (defaultValue !== null) {
                 this.setIsNull(false);
@@ -188,6 +189,14 @@ Subclass.Property.Collection.CollectionType = (function()
             Object.seal(this._collection);
         }
         return this._collection;
+    };
+
+    /**
+     * Alters collection instance
+     */
+    CollectionType.prototype.alterCollection = function()
+    {
+        // Do something
     };
 
     /**

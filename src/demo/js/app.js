@@ -1024,7 +1024,18 @@ app.onReady(function() {
     console.log(inst.getTypedArrayCollection());
 
     inst.setTypedArrayCollection(["psixNew1", "psixNew2"]);
-    console.log(inst.getTypedArrayCollection());
+    console.log(inst.getTypedArrayCollection().getData());
+
+    arrayCollection.unshift("unshifted");
+    arrayCollection.push("pushed");
+
+    console.log(arrayCollection.getData());
+
+    arrayCollection.shift();
+    arrayCollection.pop();
+
+    console.log(arrayCollection.getData());
+    console.log(arrayCollection.length);
 
 
 

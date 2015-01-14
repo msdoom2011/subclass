@@ -50,6 +50,7 @@
           "<%= config.lib.content.property.dir %>/PropertyDefinition.js",
           "<%= config.lib.content.property.dir %>/PropertyAPI.js",
           "<%= config.lib.content.property.dir %>/Collection/CollectionType.js",
+          "<%= config.lib.content.property.dir %>/Collection/CollectionManager.js",
           "<%= config.lib.content.property.dir %>/Collection/*.js",
           "<%= config.lib.content.property.dir %>/Collection/*Collection/*Type.js",
           "<%= config.lib.content.property.dir %>/Collection/*Collection/*.js",

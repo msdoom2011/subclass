@@ -19,6 +19,7 @@ Subclass.Property.Collection.Collection = (function()
                 'It must be an object.'
             );
         }
+
         /**
          * Property instance
          *
@@ -36,20 +37,12 @@ Subclass.Property.Collection.Collection = (function()
         this._context = context;
 
         /**
-         * List of collection item property instances
+         * Instance of collection manager
          *
-         * @type {Object}
+         * @type {Subclass.Property.Collection.CollectionManager}
          * @private
          */
-        this._itemsProto = {};
-
-        /**
-         * List of collection items
-         *
-         * @type {Object}
-         * @private
-         */
-        this._items = {};
+        this._manager = new Subclass.Property.Collection.CollectionManager(this);
     }
 
     /**
@@ -73,34 +66,13 @@ Subclass.Property.Collection.Collection = (function()
     };
 
     /**
-     * Returns collection items
+     * Returns instance of collection manager
      *
-     * @returns {Object}
+     * @returns {Subclass.Property.Collection.CollectionManager}
      */
-    Collection.prototype.getItems = function()
+    Collection.prototype.getManager = function()
     {
-        return this._items;
-    };
-
-    /**
-     * Returns collection items proto. Each item proto is a PropertyType instance
-     *
-     * @returns {Object}
-     */
-    Collection.prototype.getItemsProto = function()
-    {
-        return this._itemsProto;
-    };
-
-    /**
-     * Returns collection item proto
-     *
-     * @param {string} key
-     * @returns {*}
-     */
-    Collection.prototype.getProto = function(key)
-    {
-        return this.getItemsProto()[key];
+        return this._manager;
     };
 
     /**
@@ -111,34 +83,12 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.getItemData = function(key)
     {
-        return this.getProto(key).getValue(this.getItems(), true);
-    };
+        var manager = this.getManager();
 
-    /**
-     * Creates collection item
-     *
-     * @param {string} key
-     * @param {*} value
-     * @returns {*}
-     */
-    Collection.prototype.createItem = function(key, value)
-    {
-        var property = this.getProperty();
-        var proto = property.getProto();
-        var protoDefinition = Subclass.Tools.copy(proto.getDefinition().getData());
-        var itemsProto = this.getItemsProto();
-        var items = this.getItems();
-
-        itemsProto[key] = this.getProperty().getPropertyManager().createProperty(
-            key, protoDefinition, property.getContextClass(), property
+        return manager.getItemProp(key).getValue(
+            manager.getItems(),
+            true
         );
-        itemsProto[key].attach(items);
-
-        if (value !== undefined) {
-            items[key] = value;
-        }
-
-        return items[key];
     };
 
     /**
@@ -160,7 +110,7 @@ Subclass.Property.Collection.Collection = (function()
         if (normalize !== false) {
             normalize = true;
         }
-        this.createItem(key, value);
+        this.getManager().createItem(key, value);
 
         if (normalize) {
             this.normalizeItem(key);
@@ -198,10 +148,10 @@ Subclass.Property.Collection.Collection = (function()
             normalize = true;
         }
         if (this.issetItem(key)) {
-            this.getItems()[key] = value;
+            this.getManager().getItems()[key] = value;
 
         } else {
-            this.createItem(key, value);
+            this.getManager().createItem(key, value);
         }
         if (normalize) {
             this.normalizeItem(key);
@@ -240,7 +190,7 @@ Subclass.Property.Collection.Collection = (function()
                 'in property ' + this.getProperty() + '.'
             );
         }
-        return this.getItems()[key];
+        return this.getManager().getItems()[key];
     };
 
     /**
@@ -251,9 +201,10 @@ Subclass.Property.Collection.Collection = (function()
     Collection.prototype.removeItem = function(key)
     {
         var value = this.getItemData(key);
+        var manager = this.getManager();
 
-        delete this.getItems()[key];
-        delete this.getItemsProto()[key];
+        delete manager.getItems()[key];
+        delete manager.getItemProps()[key];
 
         return value;
     };
@@ -263,8 +214,10 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.removeItems = function()
     {
-        this._items = Object.create(Object.getPrototypeOf(this.getItems()));
-        this._itemsProto = Object.create(Object.getPrototypeOf(this.getItemsProto()));
+        var manager = this.getManager();
+
+        manager.setItems(Object.create(Object.getPrototypeOf(manager.getItems())));
+        manager.setItemProps(Object.create(Object.getPrototypeOf(manager.getItemProps())));
     };
 
     /**
@@ -275,7 +228,7 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.issetItem = function(key)
     {
-        return !!this.getItems().hasOwnProperty(key);
+        return !!this.getManager().getItems().hasOwnProperty(key);
     };
 
     /**
@@ -288,7 +241,7 @@ Subclass.Property.Collection.Collection = (function()
         if (typeof callback != 'function') {
             throw new Error('Invalid callback argument in method "Collection.eachItem". It must be a function.');
         }
-        var items = this.getItems();
+        var items = this.getManager().getItems();
 
         for (var key in items) {
             if (!items.hasOwnProperty(key) || key.match(/^_(.+)[0-9]+$/i)) {
@@ -345,7 +298,7 @@ Subclass.Property.Collection.Collection = (function()
         if (!testCallback || typeof testCallback !== 'function') {
             throw new Error('Argument "testCallback" must be a function.');
         }
-        var items = Object.create(Object.getPrototypeOf(this.getItems()));
+        var items = Object.create(Object.getPrototypeOf(this.getManager().getItems()));
 
         this.eachItem(function(itemValue, itemKey) {
             if (testCallback(itemValue, itemKey) === true) {
@@ -388,7 +341,7 @@ Subclass.Property.Collection.Collection = (function()
      */
     Collection.prototype.getLength = function()
     {
-        return Object.keys(this.getItems()).length;
+        return Object.keys(this.getManager().getItems()).length;
     };
 
     /**

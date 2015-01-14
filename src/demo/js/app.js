@@ -1031,8 +1031,8 @@ app.onReady(function() {
 
     console.log(arrayCollection.getData());
 
-    arrayCollection.shift();
-    arrayCollection.pop();
+    console.log(arrayCollection.shift());
+    console.log(arrayCollection.pop());
 
     console.log(arrayCollection.getData());
     console.log(arrayCollection.length);

@@ -67,15 +67,16 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
      */
     ArrayCollection.prototype.unshift = function(value)
     {
+        var manager = this.getManager();
         var $this = this;
 
         this.eachItem(true, function(item, index) {
             var newName = String(index + 1);
-            var context = $this.getItems();
-            var itemProto = $this.getProto(index);
+            var context = manager.getItems();
+            var itemProto = manager.getItemProp(index);
 
             itemProto.rename(newName, context);
-            $this.getItemsProto()[newName] = itemProto;
+            manager.getItemProps()[newName] = itemProto;
         });
 
         this.setItem(0, value);
@@ -131,7 +132,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
                 'in property ' + this.getProperty() + '.'
             );
         }
-        return this._items[index];
+        return this.getManager().getItems()[index];
     };
 
     /**
@@ -142,6 +143,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     ArrayCollection.prototype.removeItem = function(key)
     {
         key = parseInt(key);
+        var manager = this.getManager();
         var $this = this;
         var value = false;
 
@@ -151,11 +153,11 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
             }
             if (index > key) {
                 var newName = String(index - 1);
-                var context = $this.getItems();
-                var itemProto = $this.getProto(index);
+                var context = manager.getItems();
+                var itemProto = manager.getItemProp(index);
 
                 itemProto.rename(newName, context);
-                $this.getItemsProto()[newName] = itemProto;
+                manager.getItemProps()[newName] = itemProto;
             }
         });
 
@@ -170,7 +172,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         if (isNaN(parseInt(key))) {
             throw new Error('Array item index must be a number.');
         }
-        return !!this.getItems().hasOwnProperty(String(key));
+        return !!this.getManager().getItems().hasOwnProperty(String(key));
     };
 
     /**
@@ -229,7 +231,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
             reverse = false;
         }
 
-        var items = this.getItems();
+        var items = this.getManager().getItems();
         var keysAll = Object.keys(items);
         var $this = this;
         var keys = [];
@@ -258,7 +260,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
      */
     ArrayCollection.prototype.getLength = function()
     {
-        var keys = Object.keys(this.getItems());
+        var keys = Object.keys(this.getManager().getItems());
         var numericKeys = [];
 
         for (var i = 0; i < keys.length; i++) {

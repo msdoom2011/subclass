@@ -146,7 +146,11 @@ Subclass.Property.Collection.CollectionType = (function()
             );
 
             collectionConstructor.prototype = collectionConstructorProto;
-            collectionConstructor.prototype.constructor = collectionConstructor;
+
+            Object.defineProperty(collectionConstructor.prototype, 'constructor', {
+                enumerable: false,
+                value: collectionConstructor
+            });
         }
 
         return collectionConstructor;

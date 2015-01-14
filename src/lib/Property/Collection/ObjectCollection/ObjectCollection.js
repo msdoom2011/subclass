@@ -24,6 +24,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
     ObjectCollection.prototype.normalizeItem = function(itemName)
     {
         var item = this.getData(itemName);
+        var manager = this.getManager();
 
         if (this.getProperty().getProto().constructor.getPropertyTypeName() != 'map') {
             return item;
@@ -44,7 +45,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
             if (!item.hasOwnProperty(propName)) {
                 continue;
             }
-            var itemChild = this.getProto(itemName).getChild(propName);
+            var itemChild = manager.getItemProp(itemName).getChild(propName);
             var itemChildContext = this.getItem(itemName);
 
             if (itemChild.isDefaultValue(itemChildContext)) {

@@ -76,6 +76,7 @@ Subclass.Tools.CheckTools = (function()
         {
             if (
                 typeof value != "object"
+                || value === null
                 || value.nodeType
                 || value == window
             ) {

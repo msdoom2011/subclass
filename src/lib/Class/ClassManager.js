@@ -465,7 +465,10 @@ Subclass.Class.ClassManager = (function()
             throw new Error('Trying to call to none existed class "' + className + '".');
         }
         var classInst = this.getClasses()[className];
+
+        if (classInst.createConstructorOnGet()) {
             classInst.getConstructor();
+        }
 
         return classInst;
     };

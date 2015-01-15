@@ -103,6 +103,12 @@ Subclass.Class.Config.ConfigDefinition = (function()
     {
         this.validateIncludes(includes);
         this.getData().$_includes = includes || [];
+
+        if (includes) {
+            for (var i = 0; i < includes.length; i++) {
+                this.getClass().addInclude(includes[i]);
+            }
+        }
     };
 
     /**
@@ -112,7 +118,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.getIncludes = function()
     {
-        return this.getData().$_includes;
+        return this.getData().$_includes || [];
     };
 
     /**
@@ -158,6 +164,12 @@ Subclass.Class.Config.ConfigDefinition = (function()
     {
         this.validateDecorators(decorators);
         this.getData().$_decorators = decorators || [];
+
+        if (decorators) {
+            for (var i = 0; i < decorators.length; i++) {
+                this.getClass().addDecorator(decorators[i]);
+            }
+        }
     };
 
     /**
@@ -167,7 +179,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.getDecorators = function()
     {
-        return this.getData().$_decorators;
+        return this.getData().$_decorators || [];
     };
 
     /**
@@ -291,6 +303,193 @@ Subclass.Class.Config.ConfigDefinition = (function()
         };
 
         return classDefinition;
+    };
+
+    /**
+     * Normalizes class definition at initialisation stage
+     */
+    ConfigDefinition.prototype.normalizeData = function()
+    {
+        // Retrieving class definition data
+        var dataDefault = this.getData();
+
+        // Retrieving all properties we want to save
+        var parentClassName = this.getExtends();
+        var decorators = this.getDecorators();
+        var includes = this.getIncludes();
+
+        // Removing from definition data all properties that are not definitions of typed properties
+        delete dataDefault.$_decorators;
+        delete dataDefault.$_includes;
+        delete dataDefault.$_extends;
+        delete dataDefault.$_properties;
+
+        // Creating new empty class definition data
+
+        this._data = {};
+        var data = this._data;
+
+        // Filling $_properties parameter by all property definitions from old class definition
+
+        data.$_properties = dataDefault;
+
+        // Setting parent class if exists
+
+        if (parentClassName) {
+            data.$_extends = parentClassName;
+        }
+
+        // Setting includes if exists
+
+        if (includes && Array.isArray(includes)) {
+            data.$_includes = includes;
+        }
+
+        // Setting decorators if exists
+
+        if (decorators && Array.isArray(decorators)) {
+            data.$_decorators = decorators;
+        }
+
+        // Extending class properties
+
+        this.normalizeProperties();
+
+        // Customising property definitions
+
+        for (var propName in data.$_properties) {
+            if (data.$_properties.hasOwnProperty(propName)) {
+                data.$_properties[propName].accessors = false;
+            }
+        }
+    };
+
+    /**
+     * Normalising class properties
+     */
+    ConfigDefinition.prototype.normalizeProperties = function()
+    {
+        var classProperties = this.getProperties();
+        var propName;
+
+        // Processing parent class
+
+        if (this.getExtends()) {
+            var parentClassName = this.getExtends();
+            var parentClass = this.getClass().getClassManager().getClass(parentClassName);
+            var parentClassConstructor = parentClass.getConstructor();
+            var parentClassProperties = parentClass.getDefinition().getProperties();
+
+            this.extendProperties(classProperties, parentClassProperties);
+        }
+
+        // Processing included and decoration classes
+
+        var classCollections = {
+            includes: this.getIncludes(),
+            decorators: this.getDecorators()
+        };
+
+        for (var collectionType in classCollections) {
+            if (!classCollections.hasOwnProperty(collectionType)) {
+                continue;
+            }
+            var includes = classCollections[collectionType];
+
+            for (var i = 0; i < includes.length; i++) {
+                var includeClassName = includes[i];
+                var includeClass = this.getClass().getClassManager().getClass(includeClassName);
+                var includeClassConstructor = includeClass.getConstructor();
+                var includeClassProperties = Subclass.Tools.copy(includeClass.getDefinition().getProperties());
+
+                switch (collectionType) {
+                    case 'includes':
+                        this.extendProperties(
+                            classProperties,
+                            includeClassProperties
+                        );
+                        for (propName in includeClassProperties) {
+                            if (
+                                includeClassProperties.hasOwnProperty(propName)
+                                && !classProperties.hasOwnProperty(propName)
+                            ) {
+                                classProperties[propName] = Subclass.Tools.copy(includeClassProperties[propName]);
+                            }
+                        }
+                        break;
+
+                    case 'decorators':
+                        this.extendProperties(
+                            includeClassProperties,
+                            classProperties
+                        );
+                        for (propName in classProperties) {
+                            if (
+                                classProperties.hasOwnProperty(propName)
+                                && !includeClassProperties.hasOwnProperty(propName)
+                            ) {
+                                includeClassProperties[propName] = Subclass.Tools.copy(classProperties[propName]);
+                            }
+                        }
+                        this.getData().$_properties = includeClassProperties;
+                        classProperties = this.getProperties();
+                        break;
+                }
+
+            }
+        }
+
+        // Validating result properties
+
+        for (propName in classProperties) {
+            if (!classProperties.hasOwnProperty(propName)) {
+                continue;
+            }
+            var property = classProperties[propName];
+
+            if (!property || !Subclass.Tools.isPlainObject(property)) {
+                throw new Error(
+                    'Specified invalid property definition "' + propName + '" ' +
+                    'in class "' + this.getClass().getName() + '".'
+                );
+            }
+        }
+    };
+
+    /**
+     * Extending class property definitions
+     *
+     * @param {Object} childProperties
+     * @param {Object} parentProperties
+     */
+    ConfigDefinition.prototype.extendProperties = function(childProperties, parentProperties)
+    {
+        for (var propName in childProperties) {
+            if (!childProperties.hasOwnProperty(propName)) {
+                continue;
+            }
+            if (
+                Subclass.Tools.isPlainObject(childProperties[propName])
+                && childProperties[propName].hasOwnProperty('type')
+                && parentProperties
+                && parentProperties.hasOwnProperty(propName)
+            ) {
+                childProperties[propName] = Subclass.Tools.extendDeep(
+                    Subclass.Tools.copy(parentProperties[propName]),
+                    childProperties[propName]
+                );
+
+            } else if (
+                //childProperties[propName]
+                parentProperties
+                && parentProperties[propName]
+            ) {
+                childProperties[propName] = Subclass.Tools.extendDeep(
+                    Subclass.Tools.copy(parentProperties[propName]),
+                    { value: childProperties[propName] }
+                );
+            }
+        }
     };
 
     ConfigDefinition.prototype.processRelatives = function()

@@ -112,6 +112,24 @@ Subclass.Class.Config.ConfigBuilder = (function()
     };
 
     /**
+     * Adds new include
+     *
+     * @param {string[]} include
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    ConfigBuilder.prototype.addInclude = function(include)
+    {
+        this._validateInclude(include);
+
+        if (!this._getDefinition().$_includes) {
+            this._getDefinition().$_includes = [];
+        }
+        this._getDefinition().$_includes.push(include);
+
+        return this;
+    };
+
+    /**
      * Returns includes list
      *
      * @returns {string[]}
@@ -217,6 +235,24 @@ Subclass.Class.Config.ConfigBuilder = (function()
             this._getDefinition().$_decorators = [];
         }
         this._getDefinition().$_decorators = this._getDefinition().$_decorators.concat(decoratorsList);
+
+        return this;
+    };
+
+    /**
+     * Adds new decorator
+     *
+     * @param {string[]} decorator
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    ConfigBuilder.prototype.addDecorator = function(decorator)
+    {
+        this._validateInclude(decorator);
+
+        if (!this._getDefinition().$_decorators) {
+            this._getDefinition().$_decorators = [];
+        }
+        this._getDefinition().$_decorators.push(decorator);
 
         return this;
     };

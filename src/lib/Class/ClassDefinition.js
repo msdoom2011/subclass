@@ -539,6 +539,14 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
+     * Normalizes definition data
+     */
+    ClassDefinition.prototype.normalizeData = function()
+    {
+        // Do something
+    };
+
+    /**
      * Validates class definition
      *
      * @returns {boolean}

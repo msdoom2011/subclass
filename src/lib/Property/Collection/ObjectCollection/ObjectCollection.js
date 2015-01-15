@@ -23,7 +23,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
      */
     ObjectCollection.prototype.normalizeItem = function(itemName)
     {
-        var item = this.getData(itemName);
+        var item = this.getItemData(itemName);
         var manager = this.getManager();
 
         if (this.getProperty().getProto().constructor.getPropertyTypeName() != 'map') {

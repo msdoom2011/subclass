@@ -419,7 +419,7 @@ app.registerClass("Class3", {
     }
 });
 
-var class3Inst = app.getClassManager().alterClass("Class2")
+var class3Inst = app.alterClass("Class2")
 //            .setClassName("firstBuiltClass")
 //            .setClassParent('AbstractClass')
         .addInterfaces(["InterfaceExtra"])
@@ -539,13 +539,13 @@ app.registerConfig("Config", {
 
     $_extends: "ConfigBase",
 
-    $_includes: [
-        "ConfigInclude"
-    ],
-
-    $_decorators: [
-        "ConfigDecorator"
-    ],
+    //$_includes: [
+    //    "ConfigInclude"
+    //],
+    //
+    //$_decorators: [
+    //    "ConfigDecorator"
+    //],
 
     propString: "TEST!!!!!",
 
@@ -582,7 +582,6 @@ app.registerConfig("Config", {
     propObjectCollection: {
         item1: {
             extends: "itemBase",
-            //key1: "key 1 value",
             key2: "key 2 value",
             key3: "key 3 value"
         },
@@ -591,8 +590,12 @@ app.registerConfig("Config", {
             key3: "item 2 value!!!!"
         }
     }
-
 });
+
+app.alterClass("Config")
+    .addInclude("ConfigInclude")
+    .addDecorator("ConfigDecorator")
+    .save();
 
 app.registerClass('Logger', {
 
@@ -757,6 +760,7 @@ app.onReady(function() {
     console.log(configInst.getValues());
     console.log(configInst.getDefaults());
     console.log(configInst.getSchemaDefaults());
+    console.log(configInst.getValues().propObjectCollection.item2);
 
 
     console.log('');

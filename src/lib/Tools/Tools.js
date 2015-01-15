@@ -126,6 +126,7 @@ Subclass.Tools = (function()
             {
                 if (
                     typeof obj != "object"
+                    || obj === null
                     || obj.nodeType
                     || obj == window
                 ) {

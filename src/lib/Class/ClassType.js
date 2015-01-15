@@ -379,6 +379,8 @@ Subclass.Class.ClassType = (function()
             var classDefinition = this.getDefinition();
             var baseClassDefinition = classDefinition.getBaseData();
 
+            classDefinition.normalizeData();
+
             classDefinition.setData(Subclass.Tools.extend(
                 baseClassDefinition,
                 classDefinition.getData()
@@ -424,6 +426,17 @@ Subclass.Class.ClassType = (function()
         classConstructor.prototype.$_class = this;
 
         return classConstructor;
+    };
+
+    /**
+     * Returns whether it is needed to create constructor right away
+     * after get class instance by Subclass.Class.ClassManager#getClass method
+     *
+     * @returns {boolean}
+     */
+    ClassType.prototype.createConstructorOnGet = function()
+    {
+        return true;
     };
 
     /**

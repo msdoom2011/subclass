@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Class.ClassTypeBuilder}
+ * @extends {Subclass.Class.ClassBuilder}
  */
 Subclass.Class.Interface.InterfaceBuilder = (function()
 {
@@ -9,7 +9,7 @@ Subclass.Class.Interface.InterfaceBuilder = (function()
         InterfaceBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    InterfaceBuilder.$parent = Subclass.Class.ClassTypeBuilder;
+    InterfaceBuilder.$parent = Subclass.Class.ClassBuilder;
 
     InterfaceBuilder.prototype.setProperties = undefined;
 

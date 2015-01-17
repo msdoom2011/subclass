@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Class.ClassTypeBuilder}
+ * @extends {Subclass.Class.ClassBuilder}
  */
 Subclass.Class.Class.ClassBuilder = (function()
 {
@@ -9,7 +9,7 @@ Subclass.Class.Class.ClassBuilder = (function()
         ClassBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    ClassBuilder.$parent = Subclass.Class.ClassTypeBuilder;
+    ClassBuilder.$parent = Subclass.Class.ClassBuilder;
 
     /**
      * Validates traits list argument

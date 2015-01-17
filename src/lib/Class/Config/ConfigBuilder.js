@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Class.ClassTypeBuilder}
+ * @extends {Subclass.Class.ClassBuilder}
  */
 Subclass.Class.Config.ConfigBuilder = (function()
 {
@@ -9,7 +9,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
         ConfigBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    ConfigBuilder.$parent = Subclass.Class.ClassTypeBuilder;
+    ConfigBuilder.$parent = Subclass.Class.ClassBuilder;
 
     /**
      * Validates includes list argument

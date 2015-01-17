@@ -29,40 +29,51 @@ Subclass.Module = {};
  * @param {Object} [moduleConfigs={}]
  *      Module configuration object. Allowed configs are: <pre>
  *
- * plugin         {boolean}     optional    Tells that current module is
- *                                          a plugin and its onReady callback
- *                                          will be called only after this
- *                                          module will be included in main
- *                                          module. If "plugin" is true the
- *                                          "autoload" option automatically
- *                                          sets in false and can't be changed.
- *                                          Default false.
+ * plugin       {boolean}   opt   false  Tells that current module is
+ *                                       a plugin and its onReady callback
+ *                                       will be called only after this
+ *                                       module will be included in main
+ *                                       module. If "plugin" is true the
+ *                                       "autoload" option automatically
+ *                                       sets in false and can't be changed.
  *
- * pluginOf       {string}      optional    Specifies parent module to which
- *                                          current one belongs to. If its sets
- *                                          in true the "plugin" option will
- *                                          atomatically sets in true.
+ * pluginOf     {string}    opt          Specifies parent module to which
+ *                                       current one belongs to. If its sets
+ *                                       in true the "plugin" option will
+ *                                       atomatically sets in true.
  *
- * autoload       {boolean}     optional    Enables class autoload or not.
- *                                          It's true by default
+ * autoload     {boolean}   opt   true   Enables class autoload or not.
+ *                                       It's true by default
  *
- * rootPath       {string}      optional    Path to root directory of the
- *                                          project. It's required if autoload
- *                                          parameter value is true.
+ * rootPath     {string}    opt          The path to root directory of the
+ *                                       project. It's required if autoload
+ *                                       parameter value is true.
  *
- * dataTypes      {Object}      optional    Object, which keys will be type
- *                                          names (alias) and value will
- *                                          be its definitions.
+ * mainFile     {string}    opt          The path of the file with the main
+ *                                       class of module. If it was not
+ *                                       specified that means the main class
+ *                                       is in the file where current module
+ *                                       was defined. It's may be actual if
+ *                                       "autoload" option is switched on.
  *
- * parameters     {Object}      optional    Object with parameters which can
- *                                          be used in service definitions
- *                                          or in any other places,
- *                                          i.e in classes.
+ * dataTypes    {Object}    opt          Object, which keys will be type
+ *                                       names (alias) and value will
+ *                                       be its definitions.
  *
- * services       {Object}      optional    List of service definitions.
+ * parameters   {Object}    opt          Object with parameters which can
+ *                                       be used in service definitions
+ *                                       or in any other places,
+ *                                       i.e in classes.
  *
- * onReady        {Function}    optional    Callback that will be invoked when
- *                                          all module classes will be loaded.
+ * services     {Object}    opt          List of service definitions.
+ *
+ * onReady      {Function}  opt          Callback that will be invoked when
+ *                                       all module classes will be loaded.
+ *
+ * onReadyCall  {boolean}   opt   true   Allows specify whether onReady callbacks
+ *                                       should be invoked automatically
+ *                                       when the module will ready
+ *
  * </pre>
  */
 Subclass.Module.Module = (function()
@@ -429,8 +440,10 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.setReady = function()
     {
+        var configManager = this.getConfigManager();
+
         if (
-            this.getConfigManager().isPlugin()
+            configManager.isPlugin()
             && (
                 !this.hasParent()
                 || (
@@ -442,8 +455,11 @@ Subclass.Module.Module = (function()
             return;
         }
         if (this.getClassManager().isLoadStackEmpty()) {
-            this.triggerOnReady();
             this._ready = true;
+
+            if (configManager.isOnReadyAutoCall()) {
+                this.triggerOnReady();
+            }
         }
     };
 
@@ -458,6 +474,11 @@ Subclass.Module.Module = (function()
     Module.prototype.isReady = function()
     {
         return this._ready;
+    };
+
+    Module.prototype.loadModule = function()
+    {
+
     };
 
     return Module;

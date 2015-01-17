@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Class.ClassTypeBuilder}
+ * @extends {Subclass.Class.ClassBuilder}
  */
 Subclass.Class.Trait.TraitBuilder = (function()
 {
@@ -9,7 +9,7 @@ Subclass.Class.Trait.TraitBuilder = (function()
         TraitBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    TraitBuilder.$parent = Subclass.Class.ClassTypeBuilder;
+    TraitBuilder.$parent = Subclass.Class.ClassBuilder;
 
     TraitBuilder.prototype.setStatic = undefined;
 

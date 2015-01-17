@@ -149,6 +149,9 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.completeLoading = function()
     {
+        if (this._loading === false) {
+            return;
+        }
         clearTimeout(this._loadingEndTimeout);
         var $this = this;
 
@@ -299,20 +302,25 @@ Subclass.Class.ClassManager = (function()
     /**
      * Loads new class by its name
      *
-     * @param className
-     * @returns {(XMLHttpRequest|null)}
      * @throws {Error}
+     * @param {string} className
+     * @param {Function} [callback]
+     * @returns {(XMLHttpRequest|null)}
      */
-    ClassManager.prototype.loadClass = function(className)
+    ClassManager.prototype.loadClass = function(className, callback)
     {
+        if (callback && typeof callback != 'function') {
+            throw new Error(
+                'Trying to specify not valid callback. ' +
+                'It must be a function.'
+            );
+        }
         if (this.issetClass(className)) {
             return null;
         }
         if (this.isInLoadStack(className)) {
             return null;
         }
-
-        clearTimeout(this.getModule()._readyCallbackCallTimeout);
 
         var moduleConfigs = this.getModule().getConfigManager();
         var rootPath = moduleConfigs.getRootPath();
@@ -325,13 +333,8 @@ Subclass.Class.ClassManager = (function()
 
         var xmlhttp = new XMLHttpRequest();
         var documentScripts = document.querySelectorAll('script');
-        var currentScript;
+        var currentScript = documentScripts[documentScripts.length - 1];
 
-        for (var i = 0; i < documentScripts.length; i++) {
-            if (documentScripts[i].src.match(/\/subclass(\.min)*\.js/i)) {
-                currentScript = documentScripts[i];
-            }
-        }
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 var script = document.createElement('script');
@@ -347,6 +350,9 @@ Subclass.Class.ClassManager = (function()
                         if (!$this.issetClass(className)) {
                             throw new Error('Loading class "' + className + '" failed.');
                         }
+                        if (callback) {
+                            callback($this.getClass(className));
+                        }
                     }
                 } else {
                     throw new Error('Loading class "' + className + '" failed.');
@@ -355,6 +361,7 @@ Subclass.Class.ClassManager = (function()
                 throw new Error('Loading class "' + className + '" failed.');
             }
         };
+
         xmlhttp.open("GET", classPath, true);
         xmlhttp.send();
 
@@ -562,8 +569,8 @@ Subclass.Class.ClassManager = (function()
         if (createInstance) {
             var inst = new classBuilderConstructor(this, classType, className);
 
-            if (!(inst instanceof Subclass.Class.ClassTypeBuilder)) {
-                throw new Error('Class builder must be instance of "Subclass.Class.ClassTypeBuilder" class.');
+            if (!(inst instanceof Subclass.Class.ClassBuilder)) {
+                throw new Error('Class builder must be instance of "Subclass.Class.ClassBuilder" class.');
             }
             return inst;
         }

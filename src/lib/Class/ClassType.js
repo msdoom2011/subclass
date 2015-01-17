@@ -68,6 +68,14 @@ Subclass.Class.ClassType = (function()
         this._properties = {};
 
         /**
+         * Reports whether the instance of current class was created
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._created = false;
+
+        /**
          * Initializing operations
          */
         this.initialize();
@@ -475,7 +483,6 @@ Subclass.Class.ClassType = (function()
         var classInstance = new classConstructor();
         var setterName;
 
-
         // Attaching hashed typed properties
 
         for (var propertyName in classProperties) {
@@ -539,7 +546,28 @@ Subclass.Class.ClassType = (function()
             classInstance.$_constructor.apply(classInstance, args);
         }
 
+        // Telling that instance of current class was created
+        this.setInstanceCreated();
+
         return classInstance;
+    };
+
+    /**
+     * Sets state that the instance of current class was created
+     */
+    ClassType.prototype.setInstanceCreated = function()
+    {
+        this._created = true;
+    };
+
+    /**
+     * Reports whether the instance of current class was ever created
+     *
+     * @returns {boolean}
+     */
+    ClassType.prototype.wasInstanceCreated = function()
+    {
+        return this._created;
     };
 
     /**

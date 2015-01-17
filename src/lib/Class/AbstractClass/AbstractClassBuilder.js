@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Class.ClassTypeBuilder}
+ * @extends {Subclass.Class.ClassBuilder}
  */
 Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
 {

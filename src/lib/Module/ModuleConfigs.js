@@ -60,14 +60,6 @@ Subclass.Module.ModuleConfigs = (function()
         this._rootPath = null;
 
         /**
-         * The path of the main class of the module
-         *
-         * @type {(string|null)}
-         * @private
-         */
-        this._mainFile = null;
-
-        /**
          *
          * @type {boolean}
          * @private
@@ -146,7 +138,7 @@ Subclass.Module.ModuleConfigs = (function()
                         'services',
                         'plugin',
                         'pluginOf',
-                        'mainFile',
+                        'files',
                         'onReady'
                     ].indexOf(configName) >= 0
                 ) {
@@ -181,8 +173,8 @@ Subclass.Module.ModuleConfigs = (function()
                 }
             }
 
-            if (moduleConfigs.hasOwnProperty('mainFile')) {
-                this.setMainFile(moduleConfigs.mainFile, setRestConfigs);
+            if (moduleConfigs.hasOwnProperty('files')) {
+                this.setFiles(moduleConfigs.files, setRestConfigs);
 
             } else {
                 setRestConfigs();
@@ -385,55 +377,69 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Sets the path to the main file of the module relative
-     * to the root path and loads needed class immediately
+     * Sets and loads specified files.
      *
-     * @method setMainFile
+     * @method setFiles
      * @memberOf Subclass.Module.ModuleConfigs.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
      *      - trying to change value after the module became ready<br />
-     *      - specified not string or null argument value
+     *      - specified not array of strings argument value
      *
-     * @param {string} mainFile
-     *      The path of the main class of the module relative to the root path
+     * @param {string[]} files
+     *      An array with file names which will be loaded before module
+     *      will become ready. Each file name can be an absolute or relative.
+     *      If file name specified with sign "^" at start it means that is an absolute path.
+     *      Otherwise it is a path of file relative to "rootPath".
      *
      * @param {Function} callback
      *      The callback function which will invoked after
      *      the specified main file will loaded
      *
      */
-    ModuleConfigs.prototype.setMainFile = function(mainFile, callback)
+    ModuleConfigs.prototype.setFiles = function(files, callback)
     {
         this._checkModuleIsReady();
 
-        if (mainFile !== null && typeof mainFile != 'string') {
+        function throwInvalidArgument() {
             throw new Error(
-                'Trying to set invalid path to main file of the module. ' +
-                'It must be a string or null.'
+                "Trying to set invalid files array in module configuration set. " +
+                "It must contain the names of files."
             );
         }
-        this._mainFile = mainFile;
 
-        if (this.isAutoloadEnabled) {
-            Subclass.Tools.loadJS(
-                this.getRootPath() + "/" + mainFile,
-                callback
-            );
+        if (!files || !Array.isArray(files)) {
+            throwInvalidArgument();
         }
-    };
+        if (Subclass.Tools.isEmpty(files)) {
+            callback();
+        }
+        for (var i = 0; i < files.length; i++) {
+            if (typeof files[i] != 'string') {
+                throwInvalidArgument();
+            }
+            if (!files[i].match(/^\^/i)) {
+                files[i] = this.getRootPath() + files[i];
 
-    /**
-     * Returns the path to the main file of the module relative to the root path
-     *
-     * @method getMainFile
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     * @returns {string|null}
-     */
-    ModuleConfigs.prototype.getMainFile = function()
-    {
-        return this._mainFile;
+            } else {
+                files[i] = files[i].substr(1);
+            }
+        }
+
+        if (this.isAutoloadEnabled()) {
+            Subclass.Tools.loadJS(files.shift(), function loadCallback() {
+                if (Subclass.Tools.isEmpty(files)) {
+                    return callback();
+
+                } else {
+                    return Subclass.Tools.loadJS(
+                        files.shift(),
+                        loadCallback
+                    );
+                }
+            });
+        }
     };
 
     /**
@@ -546,6 +552,13 @@ Subclass.Module.ModuleConfigs = (function()
     ModuleConfigs.prototype.setParameters = function(parameters)
     {
         this._checkModuleIsReady();
+
+        if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
+            throw new Error(
+                'Specified invalid parameters. ' +
+                'It must be a plain object.'
+            );
+        }
         var parameterManager = this.getModule().getParameterManager();
 
         for (var paramName in parameters) {
@@ -651,6 +664,13 @@ Subclass.Module.ModuleConfigs = (function()
     ModuleConfigs.prototype.setServices = function(services)
     {
         this._checkModuleIsReady();
+
+        if (!services || !Subclass.Tools.isPlainObject(services)) {
+            throw new Error(
+                'Invalid definition of services. ' +
+                'It must be a plain object.'
+            );
+        }
         var serviceManager = this.getModule().getServiceManager();
 
         for (var serviceName in services) {

@@ -324,7 +324,7 @@ Subclass.Class.ClassManager = (function()
 
         var moduleConfigs = this.getModule().getConfigManager();
         var rootPath = moduleConfigs.getRootPath();
-        var classPath = rootPath + "/" + className + '.js';
+        var classPath = rootPath + className + '.js';
         var $this = this;
 
         if (!rootPath) {

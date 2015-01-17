@@ -228,6 +228,34 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
+     * The same as the {@link Subclass.Service.ServiceManager#registerService}
+     *
+     * @method registerService
+     * @memberOf Subclass.Module.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.registerService = function()
+    {
+        return this.getModule().getServiceManager().registerService.apply(
+            this.getModule().getServiceManager(),
+            arguments
+        );
+    };
+
+    /**
+     * The same as the {@link Subclass.Module.ModuleConfigs#setServices}
+     *
+     * @method registerServices
+     * @memberOf Subclass.Module.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.registerServices = function()
+    {
+        return this.getModule().getConfigManager().setServices.apply(
+            this.getModule().getConfigManager(),
+            arguments
+        );
+    };
+
+    /**
      * The same as the {@link Subclass.Service.ServiceManager#getService}
      *
      * @method getService
@@ -237,6 +265,34 @@ Subclass.Module.ModuleAPI = (function()
     {
         return this.getModule().getServiceManager().getService.apply(
             this.getModule().getServiceManager(),
+            arguments
+        );
+    };
+
+    /**
+     * The same as the {@link Subclass.Parameter.ParameterManager#registerParameter}
+     *
+     * @method registerService
+     * @memberOf Subclass.Module.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.registerParameter = function()
+    {
+        return this.getModule().getParameterManager().registerParameter.apply(
+            this.getModule().getParameterManager(),
+            arguments
+        );
+    };
+
+    /**
+     * The same as the {@link Subclass.Module.ModuleConfigs#setParameters}
+     *
+     * @method registerParameters
+     * @memberOf Subclass.Module.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.registerParameters = function()
+    {
+        return this.getModule().getConfigManager().setParameters.apply(
+            this.getModule().getConfigManager(),
             arguments
         );
     };
@@ -265,6 +321,17 @@ Subclass.Module.ModuleAPI = (function()
     {
         return this.getModule().getParameterManager().getParameter.apply(
             this.getModule().getParameterManager(),
+            arguments
+        );
+    };
+
+    /**
+     * The same as the {@link Subclass.Module.ModuleConfigs#setDataTypes}
+     */
+    ModuleAPI.prototype.registerDataTypes = function()
+    {
+        return this.getModule().getConfigManager().setDataTypes.apply(
+            this.getModule().getConfigManager(),
             arguments
         );
     };

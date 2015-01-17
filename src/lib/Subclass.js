@@ -27,8 +27,10 @@ window.Subclass = (function()
          * @param {string} moduleName
          *      A name of the future module
          *
-         * @param {string[]} [moduleDependencies]
+         * @param {Array} [moduleDependencies]
          *      The names of the modules that you want to include to the current module
+         *      or if dependency modules are not loaded at the moment it should be
+         *      objects like: { name: "depModuleName", file: "file/of/module.js" }
          *
          * @param {Object} [moduleConfigs = {}]
          *      A configuration of the creating module
@@ -36,6 +38,56 @@ window.Subclass = (function()
          * @returns {Subclass.Module.ModuleAPI}
          * @memberOf Subclass
          * @static
+         *
+         * @example
+         * ...
+         *
+         * // The simplest way to create module
+         * var app = Subclass.createModule("app");
+         *
+         * // Creating module with configuration and without dependencies
+         * var app = Subclass.createModule("app", {
+         *      // Optional module configuration
+         * });
+         *
+         * // Creating module with dependencies which are loaded to the document at the moment
+         * var app = Subclass.createModule("app", ["plugin1", "plugin2"], {
+         *      // Optional module configuration
+         * });
+         *
+         * // Creating module with dependencies which are not loaded to the document at the moment
+         * var app = Subclass.createModule("app", [
+         *      {
+         *          name: "plugin1",
+         *          file: "file/of/plugin1.js"
+         *      }, {
+         *          name: "plugin2",
+         *          files: [
+         *              "path/to/file_1/of/plugin2.js",
+         *              "path/to/file_2/of/plugin2.js"
+         *          ]
+         *      }
+         * ], {
+         *      // Optional module configuration
+         * });
+         *
+         * // Creating module with loaded and not loaded dependencies to the document at the moment
+         * var app = Subclass.createModule("app", [
+         *      plugin1,
+         *      plugin2,
+         *      {
+         *          name: "plugin3",
+         *          file: "path/to/file/of/plugin3.js"
+         *      }, {
+         *          name: "plugin4",
+         *          files: [
+         *              "path/to/file_1/of/plugin4.js",
+         *              "path/to/file_2/of/plugin4.js"
+         *          ]
+         *      }
+         * ], {
+         *      // Optional module configuration
+         * });
          */
         createModule: function(moduleName, moduleDependencies, moduleConfigs)
         {
@@ -59,6 +111,59 @@ window.Subclass = (function()
             }
 
             moduleDependencies = Subclass.Tools.unique(moduleDependencies);
+            var deleteDependencies = [];
+            var dependencyFiles = {};
+
+            function addDependencyFile(depModuleName, fileName) {
+                if (!dependencyFiles[depModuleName]) {
+                    dependencyFiles[depModuleName] = [];
+                }
+                dependencyFiles[depModuleName].push(fileName);
+            }
+
+            function throwInvalidDependencyDef(optName, optType) {
+                throw new Error(
+                    'Specified invalid dependency module definition while creating module "' + moduleName + '". ' +
+                    'The required option "' + optName + '" was missed or is not ' + optType + '.'
+                );
+            }
+
+            for (i = 0; i < moduleDependencies.length; i++) {
+                if (Subclass.Tools.isPlainObject(moduleDependencies[i])) {
+                    var moduleDef = moduleDependencies[i];
+                    deleteDependencies.push(i);
+
+                    if (!moduleDef.name || typeof moduleDef.name != 'string') {
+                        throwInvalidDependencyDef('name', 'a string');
+
+                    } else if (Subclass.issetModule(moduleDef.name)) {
+                        continue;
+                    }
+                    if ((!moduleDef.files || !Array.isArray(moduleDef.files)) && !moduleDef.hasOwnProperty('file')) {
+                        throwInvalidDependencyDef('files', 'an array with strings');
+                    }
+                    if ((!moduleDef.file || typeof moduleDef.file != 'string') && !moduleDef.hasOwnProperty('files')) {
+                        throwInvalidDependencyDef('file', 'a string');
+                    }
+                    if (moduleDef.files) {
+                        for (i = 0; i < moduleDef.files.length; i++) {
+                            addDependencyFile(moduleDef.name, moduleDef.files[i]);
+                        }
+                    }
+                    if (moduleDef.file) {
+                        addDependencyFile(moduleDef.name, moduleDef.file);
+                    }
+                }
+            }
+
+            deleteDependencies.sort();
+
+            for (i = 0; i < deleteDependencies.length; i++) {
+                var index = deleteDependencies[i];
+                moduleDependencies.splice(index - i, 1);
+            }
+
+            dependencyFiles = Subclass.Tools.unique(dependencyFiles);
 
             // Creating instance of module
 
@@ -68,6 +173,30 @@ window.Subclass = (function()
                 moduleConfigs
             );
             _modules.push(module);
+
+            if (dependencyFiles.length) {
+                for (var depModuleName in dependencyFiles) {
+                    if (!dependencyFiles.hasOwnProperty(depModuleName)) {
+                        continue;
+                    }
+                    var depModuleFiles = dependencyFiles[depModuleName];
+
+                    (function(moduleName, moduleFiles) {
+                        Subclass.Tools.loadJS(moduleFiles.shift(), function loadCallback()
+                        {
+                            if (Subclass.Tools.isEmpty(moduleFiles)) {
+                                //module.addPlugin(moduleName);
+
+                            } else {
+                                return Subclass.Tools.loadJS(
+                                    moduleFiles.shift(),
+                                    loadCallback
+                                );
+                            }
+                        });
+                    })(depModuleName, depModuleFiles);
+                }
+            }
 
             return module.getAPI();
         },

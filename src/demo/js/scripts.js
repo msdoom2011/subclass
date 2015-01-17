@@ -10,8 +10,10 @@ app.onReady(function() {
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
     var logger = app.getService('logger');
-    var loggerElse = app.getService('logger', true);
+    var loggerElse = app.getService('logger');
+    var loggerPsix = app.getService('psix');
 
+    console.log('not logger service "psix" with class from logger', loggerPsix);
     console.log(loggerElse == logger);
     console.log(logger.getBugs());
 

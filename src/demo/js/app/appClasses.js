@@ -466,3 +466,7 @@ app.alterClass("Config")
     .addInclude("ConfigInclude")
     .addDecorator("ConfigDecorator")
     .save();
+
+app.registerService("psix", {
+    className: "Logger/Logger"
+});

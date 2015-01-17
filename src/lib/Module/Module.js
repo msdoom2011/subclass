@@ -49,12 +49,8 @@ Subclass.Module = {};
  *                                       project. It's required if autoload
  *                                       parameter value is true.
  *
- * mainFile     {string}    opt          The path of the file with the main
- *                                       class of module. If it was not
- *                                       specified that means the main class
- *                                       is in the file where current module
- *                                       was defined. It's may be actual if
- *                                       "autoload" option is switched on.
+ * files        {string[]}  opt          Array of JS file names. It's actual
+ *                                       if "autoload" option is switched on.
  *
  * dataTypes    {Object}    opt          Object, which keys will be type
  *                                       names (alias) and value will

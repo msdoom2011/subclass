@@ -111,59 +111,59 @@ window.Subclass = (function()
             }
 
             moduleDependencies = Subclass.Tools.unique(moduleDependencies);
-            var deleteDependencies = [];
-            var dependencyFiles = {};
+            //var deleteDependencies = [];
+            //var dependencyFiles = {};
 
-            function addDependencyFile(depModuleName, fileName) {
-                if (!dependencyFiles[depModuleName]) {
-                    dependencyFiles[depModuleName] = [];
-                }
-                dependencyFiles[depModuleName].push(fileName);
-            }
-
-            function throwInvalidDependencyDef(optName, optType) {
-                throw new Error(
-                    'Specified invalid dependency module definition while creating module "' + moduleName + '". ' +
-                    'The required option "' + optName + '" was missed or is not ' + optType + '.'
-                );
-            }
-
-            for (i = 0; i < moduleDependencies.length; i++) {
-                if (Subclass.Tools.isPlainObject(moduleDependencies[i])) {
-                    var moduleDef = moduleDependencies[i];
-                    deleteDependencies.push(i);
-
-                    if (!moduleDef.name || typeof moduleDef.name != 'string') {
-                        throwInvalidDependencyDef('name', 'a string');
-
-                    } else if (Subclass.issetModule(moduleDef.name)) {
-                        continue;
-                    }
-                    if ((!moduleDef.files || !Array.isArray(moduleDef.files)) && !moduleDef.hasOwnProperty('file')) {
-                        throwInvalidDependencyDef('files', 'an array with strings');
-                    }
-                    if ((!moduleDef.file || typeof moduleDef.file != 'string') && !moduleDef.hasOwnProperty('files')) {
-                        throwInvalidDependencyDef('file', 'a string');
-                    }
-                    if (moduleDef.files) {
-                        for (i = 0; i < moduleDef.files.length; i++) {
-                            addDependencyFile(moduleDef.name, moduleDef.files[i]);
-                        }
-                    }
-                    if (moduleDef.file) {
-                        addDependencyFile(moduleDef.name, moduleDef.file);
-                    }
-                }
-            }
-
-            deleteDependencies.sort();
-
-            for (i = 0; i < deleteDependencies.length; i++) {
-                var index = deleteDependencies[i];
-                moduleDependencies.splice(index - i, 1);
-            }
-
-            dependencyFiles = Subclass.Tools.unique(dependencyFiles);
+            //function addDependencyFile(depModuleName, fileName) {
+            //    if (!dependencyFiles[depModuleName]) {
+            //        dependencyFiles[depModuleName] = [];
+            //    }
+            //    dependencyFiles[depModuleName].push(fileName);
+            //}
+            //
+            //function throwInvalidDependencyDef(optName, optType) {
+            //    throw new Error(
+            //        'Specified invalid dependency module definition while creating module "' + moduleName + '". ' +
+            //        'The required option "' + optName + '" was missed or is not ' + optType + '.'
+            //    );
+            //}
+            //
+            //for (i = 0; i < moduleDependencies.length; i++) {
+            //    if (Subclass.Tools.isPlainObject(moduleDependencies[i])) {
+            //        var moduleDef = moduleDependencies[i];
+            //        deleteDependencies.push(i);
+            //
+            //        if (!moduleDef.name || typeof moduleDef.name != 'string') {
+            //            throwInvalidDependencyDef('name', 'a string');
+            //
+            //        } else if (Subclass.issetModule(moduleDef.name)) {
+            //            continue;
+            //        }
+            //        if ((!moduleDef.files || !Array.isArray(moduleDef.files)) && !moduleDef.hasOwnProperty('file')) {
+            //            throwInvalidDependencyDef('files', 'an array with strings');
+            //        }
+            //        if ((!moduleDef.file || typeof moduleDef.file != 'string') && !moduleDef.hasOwnProperty('files')) {
+            //            throwInvalidDependencyDef('file', 'a string');
+            //        }
+            //        if (moduleDef.files) {
+            //            for (i = 0; i < moduleDef.files.length; i++) {
+            //                addDependencyFile(moduleDef.name, moduleDef.files[i]);
+            //            }
+            //        }
+            //        if (moduleDef.file) {
+            //            addDependencyFile(moduleDef.name, moduleDef.file);
+            //        }
+            //    }
+            //}
+            //
+            //deleteDependencies.sort();
+            //
+            //for (i = 0; i < deleteDependencies.length; i++) {
+            //    var index = deleteDependencies[i];
+            //    moduleDependencies.splice(index - i, 1);
+            //}
+            //
+            //dependencyFiles = Subclass.Tools.unique(dependencyFiles);
 
             // Creating instance of module
 
@@ -174,29 +174,29 @@ window.Subclass = (function()
             );
             _modules.push(module);
 
-            if (dependencyFiles.length) {
-                for (var depModuleName in dependencyFiles) {
-                    if (!dependencyFiles.hasOwnProperty(depModuleName)) {
-                        continue;
-                    }
-                    var depModuleFiles = dependencyFiles[depModuleName];
-
-                    (function(moduleName, moduleFiles) {
-                        Subclass.Tools.loadJS(moduleFiles.shift(), function loadCallback()
-                        {
-                            if (Subclass.Tools.isEmpty(moduleFiles)) {
-                                //module.addPlugin(moduleName);
-
-                            } else {
-                                return Subclass.Tools.loadJS(
-                                    moduleFiles.shift(),
-                                    loadCallback
-                                );
-                            }
-                        });
-                    })(depModuleName, depModuleFiles);
-                }
-            }
+            //if (dependencyFiles.length) {
+            //    for (var depModuleName in dependencyFiles) {
+            //        if (!dependencyFiles.hasOwnProperty(depModuleName)) {
+            //            continue;
+            //        }
+            //        var depModuleFiles = dependencyFiles[depModuleName];
+            //
+            //        (function(moduleName, moduleFiles) {
+            //            Subclass.Tools.loadJS(moduleFiles.shift(), function loadCallback()
+            //            {
+            //                if (Subclass.Tools.isEmpty(moduleFiles)) {
+            //                    //module.addPlugin(moduleName);
+            //
+            //                } else {
+            //                    return Subclass.Tools.loadJS(
+            //                        moduleFiles.shift(),
+            //                        loadCallback
+            //                    );
+            //                }
+            //            });
+            //        })(depModuleName, depModuleFiles);
+            //    }
+            //}
 
             return module.getAPI();
         },

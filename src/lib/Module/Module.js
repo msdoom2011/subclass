@@ -472,9 +472,9 @@ Subclass.Module.Module = (function()
         return this._ready;
     };
 
-    Module.prototype.loadModule = function()
+    Module.prototype.addPlugin = function(pluginName, files)
     {
-
+        //@TODO
     };
 
     return Module;

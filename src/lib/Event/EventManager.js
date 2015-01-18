@@ -142,7 +142,7 @@ Subclass.Event.EventManager = (function()
     EventManager.prototype.getEvent = function(eventName)
     {
         if (!this.issetEvent(eventName)) {
-            throw new Error('Trying to get non existent event.');
+            throw new Error('Trying to get non existent event "' + eventName + '".');
         }
         return this.getEvents()[eventName];
     };

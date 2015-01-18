@@ -468,5 +468,6 @@ app.alterClass("Config")
     .save();
 
 app.registerService("psix", {
-    className: "Logger/Logger"
+    className: "Logger/Logger",
+    arguments: ["%mode%"]
 });

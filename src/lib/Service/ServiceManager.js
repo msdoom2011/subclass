@@ -52,34 +52,14 @@ Subclass.Service.ServiceManager = (function()
         var eventManager = this.getModule().getEventManager();
         var $this = this;
 
-        eventManager.getEvent('onLoadingEnd').addListener(100000, function(force) {
-            if (force !== true) {
-                force = false;
+        eventManager.getEvent('onLoadingEnd').addListener(100000, function() {
+            if ($this.getModule().isRoot()) {
+                $this.normalizeServices();
             }
-            if (force || !$this.getModule().isRoot()) {
-                return;
-            }
-
-            var serviceDefinitions = $this.getServices();
-
-            for (var serviceName in serviceDefinitions) {
-                if (!serviceDefinitions.hasOwnProperty(serviceName)) {
-                    continue;
-                }
-                var parentServiceName = serviceDefinitions[serviceName].getExtends();
-                var definition = serviceDefinitions[serviceName].getDefinition();
-
-                if (parentServiceName) {
-                    var parentServiceDefinition = $this.getServiceDefinition(parentServiceName);
-                    var parentDefinition = Subclass.Tools.copy(parentServiceDefinition.getDefinition());
-
-                    if (!definition.abstract) {
-                        definition.abstract = false;
-                    }
-
-                    definition = Subclass.Tools.extend(parentDefinition, definition);
-                    serviceDefinitions[serviceName].setDefinition(definition);
-                }
+        });
+        eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
+            if ($this.getModule().getRoot().isReady()) {
+                $this.normalizeServices();
             }
         });
     }
@@ -102,6 +82,34 @@ Subclass.Service.ServiceManager = (function()
     ServiceManager.prototype.getServiceFactory = function()
     {
         return this._serviceFactory;
+    };
+
+    /**
+     * Normalizes services. Brings the service definitions to the one format
+     */
+    ServiceManager.prototype.normalizeServices = function()
+    {
+        var serviceDefinitions = this.getServices();
+
+        for (var serviceName in serviceDefinitions) {
+            if (!serviceDefinitions.hasOwnProperty(serviceName)) {
+                continue;
+            }
+            var parentServiceName = serviceDefinitions[serviceName].getExtends();
+            var definition = serviceDefinitions[serviceName].getDefinition();
+
+            if (parentServiceName) {
+                var parentServiceDefinition = this.getServiceDefinition(parentServiceName);
+                var parentDefinition = Subclass.Tools.copy(parentServiceDefinition.getDefinition());
+
+                if (!definition.abstract) {
+                    definition.abstract = false;
+                }
+
+                definition = Subclass.Tools.extend(parentDefinition, definition);
+                serviceDefinitions[serviceName].setDefinition(definition);
+            }
+        }
     };
 
     /**
@@ -201,6 +209,7 @@ Subclass.Service.ServiceManager = (function()
         if (!this.issetService(serviceName)) {
             throw new Error('Service with name "' + serviceName + '" is not exists.');
         }
+
         return this.getServiceFactory().getService(this.getServices()[serviceName]);
     };
 

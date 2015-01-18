@@ -118,7 +118,7 @@ Subclass.Module.ModuleManager = (function()
     ModuleManager.prototype.addDependency = function(moduleName)
     {
         var processedModule = this._processModules([moduleName]);
-        this._modules = this._modules.concat(processedModule);
+        this._modules.push(processedModule[0]);
     };
 
     /**

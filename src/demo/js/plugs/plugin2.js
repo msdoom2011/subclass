@@ -8,8 +8,12 @@ var appPlugin2 = Subclass.createModule('appPlugin2', {
         mode: "yo!!!!"
     },
     services: {
-        bug2: {
+        bug4: {
             extends: 'bug',
+            className: "Bug4"
+        },
+        bug2: {
+            extends: "bug",
             className: "Bug2Changed"
         }
     },
@@ -48,5 +52,15 @@ appPlugin2.registerClass("Bug2Changed", {
     _name: "bug2changed",
 
     _message: "Bug 2 changed happens."
+
+});
+
+appPlugin2.registerClass("Bug4", {
+
+    $_extends: "Logger/BugAbstract",
+
+    _name: "bug4",
+
+    _message: "Bug 4 happens."
 
 });

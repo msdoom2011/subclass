@@ -128,6 +128,7 @@ Subclass.Module.Module = (function()
         this.getEventManager()
             .registerEvent('onReady')
             .registerEvent('onReadyAfter')
+            .registerEvent('onAddPlugin')
         ;
 
         /**
@@ -199,8 +200,25 @@ Subclass.Module.Module = (function()
 
         // Adding event listeners
 
-        this.getEventManager().getEvent('onLoadingEnd').addListener(function() {
+        var eventManager = this.getEventManager();
+
+        eventManager.getEvent('onLoadingEnd').addListener(function() {
             $this.setReady();
+        });
+
+        eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
+            var pluginEventManager = pluginModule.getEventManager();
+
+            if (!$this.isOnReadyTriggered()) {
+                var onReadyAfter = eventManager.getEvent('onReadyAfter');
+
+                onReadyAfter.addListener(function() {
+                    pluginEventManager.getEvent('onLoadingEnd').triggerPrivate();
+                });
+
+            } else {
+                pluginEventManager.getEvent('onLoadingEnd').triggerPrivate();
+            }
         });
     }
 
@@ -514,19 +532,10 @@ Subclass.Module.Module = (function()
             moduleManager.addDependency(moduleName);
 
         if (this.isReady()) {
-            var pluginModule = Subclass.getModule(moduleName);
-            var pluginEventManager = pluginModule.getEventManager();
+            var pluginModule = Subclass.getModule(moduleName).getModule();
+            var eventManager = this.getEventManager();
 
-            if (!this.isOnReadyTriggered()) {
-                var eventManager = this.getEventManager();
-                var onReadyAfter = eventManager.getEvent('onReadyAfter');
-
-                onReadyAfter.addListener(function() {
-                    pluginEventManager.getEvent('onLoadingEnd').trigger(true);
-                });
-            } else {
-                pluginEventManager.getEvent('onLoadingEnd').trigger(true);
-            }
+            eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
         }
     };
 

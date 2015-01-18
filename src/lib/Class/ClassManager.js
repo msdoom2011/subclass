@@ -352,6 +352,8 @@ Subclass.Class.ClassManager = (function()
             return null;
         }
 
+        this.pauseLoading();
+
         var moduleConfigs = this.getModule().getConfigManager();
         var rootPath = moduleConfigs.getRootPath();
         var classPath = rootPath + className + '.js';

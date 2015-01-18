@@ -38,6 +38,14 @@ Subclass.Class.ClassManager = (function()
         this._loading = false;
 
         /**
+         * Reports that loading was paused
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._pause = false;
+
+        /**
          * Collection of registered classes
          *
          * @type {Object.<Subclass.Class.ClassType>}
@@ -142,6 +150,26 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.startLoading = function()
     {
         this._loading = true;
+        this._pause = false;
+    };
+
+    /**
+     * Clears loading end timeout
+     */
+    ClassManager.prototype.pauseLoading = function()
+    {
+        clearTimeout(this._loadingEndTimeout);
+        this._pause = true;
+    };
+
+    /**
+     * Reports that class loading was paused
+     *
+     * @returns {boolean|*}
+     */
+    ClassManager.prototype.isLoadingPaused = function()
+    {
+        return this._pause;
     };
 
     /**
@@ -155,10 +183,12 @@ Subclass.Class.ClassManager = (function()
         clearTimeout(this._loadingEndTimeout);
         var $this = this;
 
-        this._loadingEndTimeout = setTimeout(function() {
-            $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
-            $this._loading = false;
-        }, 10);
+        if (!this.isLoadingPaused()) {
+            this._loadingEndTimeout = setTimeout(function() {
+                $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
+                $this._loading = false;
+            }, 10);
+        }
     };
 
     /**
@@ -350,6 +380,7 @@ Subclass.Class.ClassManager = (function()
                         if (!$this.issetClass(className)) {
                             throw new Error('Loading class "' + className + '" failed.');
                         }
+
                         if (callback) {
                             callback($this.getClass(className));
                         }
@@ -454,6 +485,7 @@ Subclass.Class.ClassManager = (function()
         this.removeFromLoadStack(className);
 
         if (this.isLoadStackEmpty()) {
+            this.startLoading();
             this.completeLoading();
         }
 

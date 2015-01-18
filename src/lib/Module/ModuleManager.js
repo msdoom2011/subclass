@@ -79,7 +79,6 @@ Subclass.Module.ModuleManager = (function()
      * Normalizes dependency modules
      *
      * @method _processModules
-     * @memberOf Subclass.Module.ModuleManager.prototype
      *
      * @throws {Error}
      *      Throws error if specified in dependencies module that is not a plugin.
@@ -90,7 +89,6 @@ Subclass.Module.ModuleManager = (function()
      *
      * @returns {Array.<Subclass.Module.Module>}
      * @private
-     * @ignore
      */
     ModuleManager.prototype._processModules = function(moduleNames)
     {
@@ -109,6 +107,18 @@ Subclass.Module.ModuleManager = (function()
         }
 
         return modules;
+    };
+
+    /**
+     * Adds new dependency module
+     *
+     * @param {string} moduleName
+     *      The name of dependency module
+     */
+    ModuleManager.prototype.addDependency = function(moduleName)
+    {
+        var processedModule = this._processModules([moduleName]);
+        this._modules = this._modules.concat(processedModule);
     };
 
     /**

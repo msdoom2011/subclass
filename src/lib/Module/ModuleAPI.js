@@ -48,6 +48,17 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
+     * The same as the {@link Subclass.Module.Module#addPlugin}
+     *
+     * @method addPlugin
+     * @memberOf Subclass.Module.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.addPlugin = function()
+    {
+        return this.getModule().addPlugin.apply(this.getModule(), arguments);
+    };
+
+    /**
      * The same as the {@link Subclass.Class.ClassManager#loadClass}
      *
      * @method loadClass

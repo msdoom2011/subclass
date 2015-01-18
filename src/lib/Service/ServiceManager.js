@@ -52,10 +52,14 @@ Subclass.Service.ServiceManager = (function()
         var eventManager = this.getModule().getEventManager();
         var $this = this;
 
-        eventManager.getEvent('onLoadingEnd').addListener(100000, function() {
-            if (!$this.getModule().isRoot()) {
+        eventManager.getEvent('onLoadingEnd').addListener(100000, function(force) {
+            if (force !== true) {
+                force = false;
+            }
+            if (force || !$this.getModule().isRoot()) {
                 return;
             }
+
             var serviceDefinitions = $this.getServices();
 
             for (var serviceName in serviceDefinitions) {

@@ -125,7 +125,10 @@ Subclass.Module.Module = (function()
 
         // Registering events
 
-        this.getEventManager().registerEvent('onReady');
+        this.getEventManager()
+            .registerEvent('onReady')
+            .registerEvent('onReadyAfter')
+        ;
 
         /**
          * Collection of modules
@@ -184,6 +187,14 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._ready = false;
+
+        /**
+         * Tells if onReady callbacks was triggered
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._onReadyTriggered = false;
 
 
         // Adding event listeners
@@ -274,8 +285,8 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Checks whether current module is root module, i.e. has a parent module.<br />
-     * Alias of method {@link Subclass.Module.Module#hasParent}
+     * Checks whether current module is root module,
+     * i.e. has a parent module and is a plugin.
      *
      * @method isRoot
      * @memberOf Subclass.Module.Module.prototype
@@ -283,7 +294,7 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.isRoot = function()
     {
-        return !this.hasParent();
+        return !this.hasParent() && !this.getConfigManager().isPlugin();
     };
 
     /**
@@ -425,6 +436,17 @@ Subclass.Module.Module = (function()
     Module.prototype.triggerOnReady = function()
     {
         this.getEventManager().getEvent('onReady').trigger();
+        this._onReadyTriggered = true;
+    };
+
+    /**
+     * Reports whether the onReady event was ever triggered in current module
+     *
+     * @returns {boolean}
+     */
+    Module.prototype.isOnReadyTriggered = function()
+    {
+        return this._onReadyTriggered;
     };
 
     /**
@@ -455,6 +477,7 @@ Subclass.Module.Module = (function()
 
             if (configManager.isOnReadyAutoCall()) {
                 this.triggerOnReady();
+                this.getEventManager().getEvent('onReadyAfter').trigger();
             }
         }
     };
@@ -472,9 +495,39 @@ Subclass.Module.Module = (function()
         return this._ready;
     };
 
-    Module.prototype.addPlugin = function(pluginName, files)
+    /**
+     * Allows to add plug-in to the current module.
+     * If specified the second argument it means that first
+     * will be loaded the specified files and then the plug-in module
+     * will be added to current module and will be invoked
+     * it onReady callback functions.
+     *
+     * @method addPlugin
+     * @memberOf Subclass.Module.Module.prototype
+     *
+     * @param {string} moduleName
+     * @param {(Array.<Object>|string)} [moduleFiles]
+     */
+    Module.prototype.addPlugin = function(moduleName, moduleFiles)
     {
-        //@TODO
+        var moduleManager = this.getModuleManager();
+            moduleManager.addDependency(moduleName);
+
+        if (this.isReady()) {
+            var pluginModule = Subclass.getModule(moduleName);
+            var pluginEventManager = pluginModule.getEventManager();
+
+            if (!this.isOnReadyTriggered()) {
+                var eventManager = this.getEventManager();
+                var onReadyAfter = eventManager.getEvent('onReadyAfter');
+
+                onReadyAfter.addListener(function() {
+                    pluginEventManager.getEvent('onLoadingEnd').trigger(true);
+                });
+            } else {
+                pluginEventManager.getEvent('onLoadingEnd').trigger(true);
+            }
+        }
     };
 
     return Module;

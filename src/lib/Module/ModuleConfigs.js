@@ -427,9 +427,17 @@ Subclass.Module.ModuleConfigs = (function()
             }
         }
 
+        var classManager = this.getModule().getClassManager();
+
         if (this.isAutoloadEnabled()) {
+            classManager.pauseLoading();
+
             Subclass.Tools.loadJS(files.shift(), function loadCallback() {
+                classManager.pauseLoading();
+
                 if (Subclass.Tools.isEmpty(files)) {
+                    classManager.startLoading();
+                    classManager.completeLoading();
                     return callback();
 
                 } else {

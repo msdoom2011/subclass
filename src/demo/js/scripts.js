@@ -9,6 +9,12 @@ app.onReady(function() {
     console.log('');
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
+    app.addPlugin('appPlugin2');
+
+    Не подключются теггированные сервисы к логгеру
+    проблемы с конструктором (см сонсоль)
+
+
     var logger = app.getService('logger');
     var loggerElse = app.getService('logger');
     var loggerPsix = app.getService('psix');

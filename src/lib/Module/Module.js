@@ -23,7 +23,7 @@ Subclass.Module = {};
  * @param {string} moduleName
  *      A name of creating module
  *
- * @param {string[]} [moduleDependencies=[]]
+ * @param {string[]} [modulePlugins=[]]
  *      Array with names of another modules which are plugins for current one
  *
  * @param {Object} [moduleConfigs={}]
@@ -77,7 +77,7 @@ Subclass.Module.Module = (function()
     /**
      * @alias Subclass.Module.Module
      */
-    function Module(moduleName, moduleDependencies, moduleConfigs)
+    function Module(moduleName, modulePlugins, moduleConfigs)
     {
         var $this = this;
 
@@ -87,8 +87,8 @@ Subclass.Module.Module = (function()
         if (!moduleConfigs) {
             moduleConfigs = {};
         }
-        if (!moduleDependencies) {
-            moduleDependencies = [];
+        if (!modulePlugins) {
+            modulePlugins = [];
         }
 
         /**
@@ -139,7 +139,7 @@ Subclass.Module.Module = (function()
          * @type {Subclass.Module.ModuleManager}
          * @private
          */
-        this._moduleManager = new Subclass.Module.ModuleManager(this, moduleDependencies);
+        this._moduleManager = new Subclass.Module.ModuleManager(this, modulePlugins);
 
         /**
          * Property manager instance
@@ -367,7 +367,7 @@ Subclass.Module.Module = (function()
 
     /**
      * Returns an instance of manager that holds and can process all plugins (modules which
-     * names were specified earlier in module constructor as moduleDependencies)
+     * names were specified earlier in module constructor as modulePlugins)
      * and link on this module
      *
      * @method getModuleManager
@@ -518,7 +518,7 @@ Subclass.Module.Module = (function()
 
     Module.prototype.isPluginsReady = function()
     {
-        var plugins = this.getModuleManager().getDependencies();
+        var plugins = this.getModuleManager().getPlugins();
         var result = true;
 
         for (var i = 0; i < plugins.length; i++) {
@@ -601,7 +601,7 @@ Subclass.Module.Module = (function()
         }
 
         var moduleManager = this.getModuleManager();
-            moduleManager.addDependency(moduleName);
+            moduleManager.addPlugin(moduleName);
 
         if (this.isReady()) {
             var eventManager = this.getEventManager();

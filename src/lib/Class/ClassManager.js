@@ -347,7 +347,7 @@ Subclass.Class.ClassManager = (function()
      *
      * @param {boolean} [privateClasses = false]
      *      If passed true it returns classes only from current module
-     *      without classes from its dependencies
+     *      without classes from its plug-ins
      *
      * @param {boolean} [withParentClasses = true]
      *

@@ -12,12 +12,12 @@
  * @param {Subclass.Module.Module} module
  *      An instance of module
  *
- * @param {string[]} dependencyModuleNames
+ * @param {string[]} pluginModuleNames
  *      Array of plug-in module names
  */
 Subclass.Module.ModuleManager = (function()
 {
-    function ModuleManager(module, dependencyModuleNames)
+    function ModuleManager(module, pluginModuleNames)
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
             throw new Error(
@@ -25,13 +25,13 @@ Subclass.Module.ModuleManager = (function()
                 'of "Subclass.Module.Module".'
             );
         }
-        if (dependencyModuleNames && !Array.isArray(dependencyModuleNames)) {
+        if (pluginModuleNames && !Array.isArray(pluginModuleNames)) {
             throw new Error(
-                'Specified invalid dependency modules argument. ' +
+                'Specified invalid plug-in modules argument. ' +
                 'It must be array names of injecting modules.'
             );
-        } else if (!dependencyModuleNames) {
-            dependencyModuleNames = [];
+        } else if (!pluginModuleNames) {
+            pluginModuleNames = [];
         }
 
         /**
@@ -42,11 +42,11 @@ Subclass.Module.ModuleManager = (function()
         this._module = module;
 
         /**
-         * Collection with current module and its dependency modules
+         * Collection with current module and its plug-in modules
          *
          * @type {Array.<Subclass.Module.Module>}
          */
-        this._modules = this._processModules(dependencyModuleNames);
+        this._modules = this._processModules(pluginModuleNames);
         this._modules.unshift(module);
     }
 
@@ -76,12 +76,12 @@ Subclass.Module.ModuleManager = (function()
     };
 
     /**
-     * Normalizes dependency modules
+     * Normalizes plugin modules
      *
      * @method _processModules
      *
      * @throws {Error}
-     *      Throws error if specified in dependencies module that is not a plugin.
+     *      Throws error if specified in plugins module that is not a plugin.
      *
      * @param {string[]} moduleNames
      *      Array of module names. Each module should be marked as a plugin
@@ -100,7 +100,7 @@ Subclass.Module.ModuleManager = (function()
             var childModuleConfigs = childModule.getConfigManager();
 
             if (!childModuleConfigs.isPlugin()) {
-                throw new Error('Specified in dependencies module "' + moduleNames[i] + '" that is not a plugin.');
+                throw new Error('Specified in plugins module "' + moduleNames[i] + '" that is not a plugin.');
             }
             childModule.setParent(mainModule);
             modules.push(childModule);
@@ -110,25 +110,25 @@ Subclass.Module.ModuleManager = (function()
     };
 
     /**
-     * Adds new dependency module
+     * Adds new plugin module
      *
      * @param {string} moduleName
-     *      The name of dependency module
+     *      The name of plug-in module
      */
-    ModuleManager.prototype.addDependency = function(moduleName)
+    ModuleManager.prototype.addPlugin = function(moduleName)
     {
         var processedModule = this._processModules([moduleName]);
         this._modules.push(processedModule[0]);
     };
 
     /**
-     * Returns all module dependencies (plug-in modules)
+     * Returns all module plug-ins
      *
-     * @method getDependencies
+     * @method getPlugins
      * @memberOf Subclass.Module.ModuleManager.prototype
      * @returns {Array.<Subclass.Module.Module>}
      */
-    ModuleManager.prototype.getDependencies = function()
+    ModuleManager.prototype.getPlugins = function()
     {
         var modules = this.getModules();
         var modulesCopy = [];

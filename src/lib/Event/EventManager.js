@@ -61,7 +61,7 @@ Subclass.Event.EventManager = (function()
      *
      * @param {boolean} [privateEvents=false]
      *      If passed true it returns events only from current module
-     *      without events from it dependency (plug-in) modules .
+     *      without events from it plug-in modules .
      *
      * @returns {Object.<Subclass.Event.Event>}
      */

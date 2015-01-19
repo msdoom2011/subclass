@@ -118,7 +118,7 @@ Subclass.Property.CustomTypesManager = (function()
      *
      * @param {boolean} [privateDefinitions = false]
      *      If passed true it returns type definitions only from current module
-     *      without type definitions from its dependencies
+     *      without type definitions from its plug-ins
      *
      * @returns {Object}
      */
@@ -170,7 +170,7 @@ Subclass.Property.CustomTypesManager = (function()
      *
      * @param {boolean} [privateTypes = false]
      *      If passed true it returns data types only from current module
-     *      without data types from its dependencies
+     *      without data types from its plug-ins
      *
      * @returns {Object}
      */

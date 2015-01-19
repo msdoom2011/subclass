@@ -68,7 +68,7 @@ Subclass.Parameter.ParameterManager = (function()
      *
      * @param {boolean} [privateParameters=false]
      *      If specified true it returns parameters only from current module
-     *      without parameters from its dependency (plug-in) modules
+     *      without parameters from its plug-in modules
      *
      * @returns {Object}
      */

@@ -117,7 +117,7 @@ Subclass.Service.ServiceManager = (function()
      *
      * @param {boolean} [privateServices = false]
      *      If passed true it returns services only from current module
-     *      without services from its dependencies.
+     *      without services from its plug-ins.
      *
      * @returns {Object.<Subclass.Service.Service>}
      */

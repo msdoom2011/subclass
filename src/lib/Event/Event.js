@@ -211,7 +211,7 @@ Subclass.Event.Event = (function()
      *
      * @param {boolean} [privateListeners = false]
      *      If passed true it returns event listeners only from event instance from current module
-     *      without listeners from its dependency module events with the same name.
+     *      without listeners from its plug-in module events with the same name.
      *
      * @returns {Object.<Subclass.Event.EventListener>}
      */

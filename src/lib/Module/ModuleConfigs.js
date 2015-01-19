@@ -136,7 +136,6 @@ Subclass.Module.ModuleConfigs = (function()
                     || [
                         'parameters',
                         'services',
-                        'plugin',
                         'pluginOf',
                         'files',
                         'onReady'
@@ -153,9 +152,6 @@ Subclass.Module.ModuleConfigs = (function()
                     );
                 }
                 this[setterName](moduleConfigs[configName]);
-            }
-            if (moduleConfigs.hasOwnProperty('plugin')) {
-                this.setPlugin(moduleConfigs.plugin);
             }
             if (moduleConfigs.hasOwnProperty('pluginOf')) {
                 this.setPluginOf(moduleConfigs.pluginOf);
@@ -217,9 +213,6 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (typeof isPlugin != 'boolean') {
             throw new Error('Invalid value of "plugin" parameter. It must be a boolean value.');
-        }
-        if (isPlugin === true) {
-            this._autoload = false;
         }
         this._plugin = isPlugin;
     };

@@ -8,13 +8,5 @@ Subclass.Class.ClassManager.registerClass("Interface", "Subclass/Service/Taggabl
      *
      * @param {Array} taggedServices Array of class instances
      */
-    processTaggedServices: function(taggedServices) {},
-
-    /**
-     * Allows to add and process the new tagged service
-     *
-     * @param {Object} taggedService An instance of some class
-     */
-    addTaggedService: function(taggedService) {}
-
+    processTaggedServices: function(taggedServices) {}
 });

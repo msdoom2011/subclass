@@ -27,7 +27,7 @@ Subclass.Class.ClassManager = (function()
          * @type {Array}
          * @private
          */
-        this._loadStack = [];
+        this._loadStack = {};
 
         /**
          * Checks whether the loading process continues
@@ -43,7 +43,15 @@ Subclass.Class.ClassManager = (function()
          * @type {boolean}
          * @private
          */
-        this._pause = false;
+        this._loadingPause = false;
+
+        /**
+         * Reports that loading is locked
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._loadingLocked = true;
 
         /**
          * Collection of registered classes
@@ -54,12 +62,20 @@ Subclass.Class.ClassManager = (function()
         this._classes = {};
 
         /**
-         * The timeout after which ready callback will be called
+         * The timeout after which the ready callback will be called
          *
-         * @type {(Function|null)}
+         * @type {null}
          * @private
          */
         this._loadingEndTimeout = null;
+
+        /**
+         * The timeout after which the classes in load stack will start loading
+         *
+         * @type {null}
+         * @private
+         */
+        this._addToLoadStackTimeout = null;
     }
 
     ClassManager.prototype.initialize = function()
@@ -100,6 +116,12 @@ Subclass.Class.ClassManager = (function()
 
         var eventManager = module.getEventManager();
 
+        eventManager.getEvent('onInit').addListener(function() {
+            if ($this.getModule().isRoot()) {
+                $this.unlockLoading();
+            }
+        });
+
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
             var mainModule = module;
             var moduleManager = module.getModuleManager();
@@ -112,6 +134,8 @@ Subclass.Class.ClassManager = (function()
                 }
                 var moduleClassManager = module.getClassManager();
                 var moduleClasses = moduleClassManager.getClasses(false, false);
+
+                moduleClassManager.unlockLoading();
 
                 for (var className in moduleClasses) {
                     if (
@@ -145,12 +169,45 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
+     * Locks loading process
+     */
+    ClassManager.prototype.lockLoading = function()
+    {
+        this._loadingLocked = true;
+    };
+
+    /**
+     * Unlocks loading process
+     */
+    ClassManager.prototype.unlockLoading = function()
+    {
+        this._loadingLocked = false;
+        this.startLoading();
+        this.completeLoading();
+    };
+
+    /**
+     * Reports whether the loading process is locked
+     *
+     * @returns {boolean|*}
+     */
+    ClassManager.prototype.isLoadingLocked = function()
+    {
+        return this._loadingLocked;
+    };
+
+    /**
      * Sets loading process start
      */
     ClassManager.prototype.startLoading = function()
     {
+        if (this.isLoadingLocked()) {
+            return;
+        }
         this._loading = true;
-        this._pause = false;
+        this._loadingPause = false;
+
+        this.processLoadStack();
     };
 
     /**
@@ -159,7 +216,7 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.pauseLoading = function()
     {
         clearTimeout(this._loadingEndTimeout);
-        this._pause = true;
+        this._loadingPause = true;
     };
 
     /**
@@ -169,7 +226,7 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.isLoadingPaused = function()
     {
-        return this._pause;
+        return this._loadingPause;
     };
 
     /**
@@ -177,13 +234,13 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.completeLoading = function()
     {
-        if (this._loading === false) {
+        if (!this.isLoading()) {
             return;
         }
         clearTimeout(this._loadingEndTimeout);
         var $this = this;
 
-        if (!this.isLoadingPaused()) {
+        if (!this.isLoadingPaused() && this.isLoadStackEmpty()) {
             this._loadingEndTimeout = setTimeout(function() {
                 $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
                 $this._loading = false;
@@ -209,15 +266,42 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.addToLoadStack = function(className)
     {
         var moduleConfigs = this.getModule().getConfigManager();
+        var $this = this;
 
         if (!moduleConfigs.isAutoloadEnabled() || this.isInLoadStack(className)) {
             return;
         }
-        var xmlhttp = this.loadClass(className);
-        this.startLoading();
+        if (this.issetClass(className)) {
+            return;
+        }
+        this._loadStack[className] = true;
+        clearTimeout(this._addToLoadStackTimeout);
 
-        if (xmlhttp) {
-            this._loadStack[className] = xmlhttp;
+        this._addToLoadStackTimeout = setTimeout(function() {
+            if (!$this.isLoadingLocked()) {
+                $this.startLoading();
+            }
+        }, 10);
+    };
+
+    ClassManager.prototype.processLoadStack = function()
+    {
+        for (var className in this._loadStack) {
+            if (
+                !this._loadStack.hasOwnProperty(className)
+                || typeof this._loadStack[className] != 'boolean'
+            ) {
+                continue;
+            }
+            if (this.issetClass(className)) {
+                this.removeFromLoadStack(className);
+            }
+
+            var xmlhttp = this.loadClass(className);
+
+            if (xmlhttp) {
+                this._loadStack[className] = xmlhttp;
+            }
         }
     };
 
@@ -228,10 +312,12 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.removeFromLoadStack = function(className)
     {
-        if (!this.isInLoadStack(className)) {
+        if (!this._loadStack.hasOwnProperty(className)) {
             return;
         }
-        this._loadStack[className].abort();
+        if (typeof this._loadStack[className] != 'boolean') {
+            this._loadStack[className].abort();
+        }
         delete this._loadStack[className];
     };
 
@@ -243,7 +329,7 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.isInLoadStack = function(className)
     {
-        return !!this._loadStack[className];
+        return this._loadStack[className] && typeof this._loadStack[className] != 'boolean';
     };
 
     /**

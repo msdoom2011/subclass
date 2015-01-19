@@ -1,6 +1,7 @@
 var appPlugin2 = Subclass.createModule('appPlugin2', {
     plugin: true,
     //pluginOf: "app",
+    rootPath: "/SubclassJS/build/demo/js/plugs/",
     dataTypes: {
         //percents: { type: "string", pattern: /^[a]+%$/ }
     },
@@ -43,7 +44,7 @@ appPlugin2.setConfigs({
     }
 });
 
-appPlugin1.getModule().getParameterManager().getParameter('mode');
+appPlugin2.getModule().getParameterManager().getParameter('mode');
 
 appPlugin2.registerClass("Bug2Changed", {
 

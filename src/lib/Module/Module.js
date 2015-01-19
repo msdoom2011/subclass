@@ -126,7 +126,9 @@ Subclass.Module.Module = (function()
         // Registering events
 
         this.getEventManager()
+            .registerEvent('onInit')
             .registerEvent('onReady')
+            .registerEvent('onReadyBefore')
             .registerEvent('onReadyAfter')
             .registerEvent('onAddPlugin')
         ;
@@ -202,26 +204,10 @@ Subclass.Module.Module = (function()
 
         var eventManager = this.getEventManager();
 
+        eventManager.getEvent('onInit').triggerPrivate();
+
         eventManager.getEvent('onLoadingEnd').addListener(function() {
             $this.setReady();
-        });
-
-        eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
-            var pluginEventManager = pluginModule.getEventManager();
-
-            if (pluginModule.getClassManager().isLoading()) {
-                return;
-            }
-            if (!$this.isOnReadyTriggered()) {
-                var onReadyAfter = eventManager.getEvent('onReadyAfter');
-
-                onReadyAfter.addListener(function() {
-                    pluginEventManager.getEvent('onLoadingEnd').triggerPrivate();
-                });
-
-            } else {
-                pluginEventManager.getEvent('onLoadingEnd').triggerPrivate();
-            }
         });
     }
 
@@ -307,7 +293,7 @@ Subclass.Module.Module = (function()
 
     /**
      * Checks whether current module is root module,
-     * i.e. has a parent module and is a plugin.
+     * i.e. hasn't the parent module and isn't a plugin.
      *
      * @method isRoot
      * @memberOf Subclass.Module.Module.prototype
@@ -315,7 +301,19 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.isRoot = function()
     {
-        return !this.hasParent() && !this.getConfigManager().isPlugin();
+        return !this.hasParent() && !this.isPlugin();
+    };
+
+    /**
+     * Checks whether current module is a plug-in.
+     *
+     * @method isPlugin
+     * @memberOf Subclass.Module.Module.prototype
+     * @returns {*}
+     */
+    Module.prototype.isPlugin = function()
+    {
+        return this.getConfigManager().isPlugin();
     };
 
     /**
@@ -479,24 +477,26 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.setReady = function()
     {
-        var configManager = this.getConfigManager();
-
-        if (
-            configManager.isPlugin()
-            && (
-                !this.hasParent()
-                || (
-                    this.hasParent()
-                    && !this.getRoot().isReady()
-                )
-            )
-        ) {
+        if (this.isReady()) {
             return;
         }
-        if (this.getClassManager().isLoadStackEmpty()) {
+        if (this.getClassManager().isLoadStackEmpty() && this.isPluginsReady()) {
             this._ready = true;
 
-            if (configManager.isOnReadyAutoCall()) {
+            if (this.isPlugin() && this.hasParent() && !this.getRoot().isReady()) {
+                this.getRoot().setReady();
+                return;
+            }
+            if ((
+                    this.isRoot()
+                    && this.getConfigManager().isOnReadyAutoCall()
+                ) || (
+                    this.isPlugin()
+                    && this.hasParent()
+                    && this.getRoot().isReady()
+                )
+            ) {
+                this.getEventManager().getEvent('onReadyBefore').trigger();
                 this.triggerOnReady();
                 this.getEventManager().getEvent('onReadyAfter').trigger();
             }
@@ -516,6 +516,26 @@ Subclass.Module.Module = (function()
         return this._ready;
     };
 
+    Module.prototype.isPluginsReady = function()
+    {
+        var plugins = this.getModuleManager().getDependencies();
+        var result = true;
+
+        for (var i = 0; i < plugins.length; i++) {
+            if (
+                result
+                && (
+                    !plugins[i].isReady()
+                    || !plugins[i].isPluginsReady()
+                )
+            ) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    };
+
     /**
      * Allows to add plug-in to the current module.
      * If specified the second argument it means that first
@@ -529,16 +549,15 @@ Subclass.Module.Module = (function()
      * @param {string} moduleName
      *      The name of the module which you want to add to the current one as a plug-in
      *
-     * @param {(Array.<Object>|string)} [moduleFiles]
-     *      A file name or an array of file names which is needed for working plug-in module.
-     *      These files will load first before the plug-in module will be added to the current module.
+     * @param {(Array.<Object>|string)} [moduleFile]
+     *      A file name with the definition of plug-in module.
      *
      * @param {Function} [callback]
      *      The callback function which will be invoked when plug-in module becomes ready.
      *      It is actual only if the module files (the second argument) was specified.
      *      Otherwise it will never be invoked.
      */
-    Module.prototype.addPlugin = function(moduleName, moduleFiles, callback)
+    Module.prototype.addPlugin = function(moduleName, moduleFile, callback)
     {
         var $this = this;
 
@@ -549,39 +568,34 @@ Subclass.Module.Module = (function()
             Subclass.issetModule(moduleName)
             && Subclass.getModule(moduleName).getParentModule()
         ) {
-            throw new Error('The module "' + moduleName + '" is already added to another module as a plugin.');
+            throw new Error('The module "' + moduleName + '" is already added as a plug-in to another module.');
         }
-        if (moduleFiles && typeof moduleFiles == 'string') {
-            moduleFiles = [moduleFiles];
-        }
-        if (moduleFiles && !Array.isArray(moduleFiles)) {
+        if (moduleFile && typeof moduleFile != 'string') {
             throw new Error(
-                'Specified invalid module files. ' +
-                'It must be a string or an array of strings.'
+                'Specified not valid file of plug-in module "' + moduleName + '". ' +
+                'It must be a string or be omitted.'
             );
         }
         if (callback && typeof callback != 'function') {
             throw new Error('Specified invalid callback. It must be a function.');
         }
-        if (moduleFiles) {
-            Subclass.Tools.loadJS(moduleFiles.shift(), function loadCallback() {
-                if (Subclass.Tools.isEmpty(moduleFiles)) {
-                    if (callback) {
-                        var module = Subclass.getModule(moduleName).getModule();
-                        var moduleEventManager = module.getEventManager();
+        if (!moduleFile && callback) {
+            throw new Error(
+                'You can\'t specify the callback function without ' +
+                'file of module "' + moduleName + '".'
+            );
+        }
+        if (moduleFile) {
+            Subclass.Tools.loadJS(moduleFile, function loadCallback() {
+                if (callback) {
+                    var module = Subclass.getModule(moduleName).getModule();
+                    var moduleEventManager = module.getEventManager();
 
-                        moduleEventManager.getEvent('onReady').addListener(function() {
-                            callback();
-                        });
-                    }
-                    $this.addPlugin(moduleName);
-
-                } else {
-                    return Subclass.Tools.loadJS(
-                        moduleFiles.shift(),
-                        loadCallback
-                    );
+                    moduleEventManager.getEvent('onLoadingEnd').addListener(function() {
+                        callback();
+                    });
                 }
+                $this.addPlugin(moduleName);
             });
             return;
         }
@@ -590,8 +604,9 @@ Subclass.Module.Module = (function()
             moduleManager.addDependency(moduleName);
 
         if (this.isReady()) {
-            var pluginModule = Subclass.getModule(moduleName).getModule();
             var eventManager = this.getEventManager();
+            var pluginModule = Subclass.getModule(moduleName).getModule();
+                pluginModule.getClassManager().unlockLoading();
 
             eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
         }

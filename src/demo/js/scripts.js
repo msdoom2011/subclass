@@ -1,7 +1,7 @@
 
 app.onReady(function() {
 
-    app.addPlugin('appPlugin2');
+    //app.addPlugin('appPlugin2');
 
     console.log('****************');
     //alert('initializing app');
@@ -12,21 +12,23 @@ app.onReady(function() {
     console.log('----------------------------------- INITIALIZED!!!!!!!!!!!!!! ---------------------------------------');
 
 
-    var logger = app.getService('logger');
-    var loggerElse = app.getService('logger');
-    var loggerPsix = app.getService('psix');
+    app.addPlugin('appPlugin2', '/SubclassJS/build/demo/js/plugs/plugin2.js', function() {
+        var logger = app.getService('logger');
+        var loggerElse = app.getService('logger');
+        var loggerPsix = app.getService('psix');
 
-    console.log('not logger service "psix" with class from logger', loggerPsix);
-    console.log(loggerElse == logger);
-    console.log(logger.getBugs());
+        console.log('not logger service "psix" with class from logger', loggerPsix);
+        console.log(loggerElse == logger);
+        console.log(logger.getBugs());
 
-    var bugs = logger.getBugs();
+        var bugs = logger.getBugs();
 
-    for (var i = 0; i < bugs.length; i++) {
-        console.log(bugs[i].getName());
-        console.log(bugs[i].getMessage());
-        console.log('-----------');
-    }
+        for (var i = 0; i < bugs.length; i++) {
+            console.log(bugs[i].getName());
+            console.log(bugs[i].getMessage());
+            console.log('-----------');
+        }
+    });
 
     //app.getClass('Psix').createInstance().psix();
 

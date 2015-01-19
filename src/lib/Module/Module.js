@@ -209,6 +209,9 @@ Subclass.Module.Module = (function()
         eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
             var pluginEventManager = pluginModule.getEventManager();
 
+            if (pluginModule.getClassManager().isLoading()) {
+                return;
+            }
             if (!$this.isOnReadyTriggered()) {
                 var onReadyAfter = eventManager.getEvent('onReadyAfter');
 
@@ -524,10 +527,65 @@ Subclass.Module.Module = (function()
      * @memberOf Subclass.Module.Module.prototype
      *
      * @param {string} moduleName
+     *      The name of the module which you want to add to the current one as a plug-in
+     *
      * @param {(Array.<Object>|string)} [moduleFiles]
+     *      A file name or an array of file names which is needed for working plug-in module.
+     *      These files will load first before the plug-in module will be added to the current module.
+     *
+     * @param {Function} [callback]
+     *      The callback function which will be invoked when plug-in module becomes ready.
+     *      It is actual only if the module files (the second argument) was specified.
+     *      Otherwise it will never be invoked.
      */
-    Module.prototype.addPlugin = function(moduleName, moduleFiles)
+    Module.prototype.addPlugin = function(moduleName, moduleFiles, callback)
     {
+        var $this = this;
+
+        if (!moduleName || typeof moduleName != 'string') {
+            throw new Error('Missed or invalid the module name "' + moduleName + '".');
+
+        } else if (
+            Subclass.issetModule(moduleName)
+            && Subclass.getModule(moduleName).getParentModule()
+        ) {
+            throw new Error('The module "' + moduleName + '" is already added to another module as a plugin.');
+        }
+        if (moduleFiles && typeof moduleFiles == 'string') {
+            moduleFiles = [moduleFiles];
+        }
+        if (moduleFiles && !Array.isArray(moduleFiles)) {
+            throw new Error(
+                'Specified invalid module files. ' +
+                'It must be a string or an array of strings.'
+            );
+        }
+        if (callback && typeof callback != 'function') {
+            throw new Error('Specified invalid callback. It must be a function.');
+        }
+        if (moduleFiles) {
+            Subclass.Tools.loadJS(moduleFiles.shift(), function loadCallback() {
+                if (Subclass.Tools.isEmpty(moduleFiles)) {
+                    if (callback) {
+                        var module = Subclass.getModule(moduleName).getModule();
+                        var moduleEventManager = module.getEventManager();
+
+                        moduleEventManager.getEvent('onReady').addListener(function() {
+                            callback();
+                        });
+                    }
+                    $this.addPlugin(moduleName);
+
+                } else {
+                    return Subclass.Tools.loadJS(
+                        moduleFiles.shift(),
+                        loadCallback
+                    );
+                }
+            });
+            return;
+        }
+
         var moduleManager = this.getModuleManager();
             moduleManager.addDependency(moduleName);
 

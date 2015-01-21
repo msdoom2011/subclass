@@ -172,6 +172,20 @@ window.Subclass = (function()
         },
 
         /**
+         * Loads module if it wasn't loaded earlier
+         *
+         * @memberOf Subclass
+         *
+         * @param {string} moduleFileName
+         * @param {Function} callback
+         * @returns {XMLHttpRequest}
+         */
+        loadModule: function(moduleFileName, callback)
+        {
+            return Subclass.Tools.loadJS(moduleFileName, callback);
+        },
+
+        /**
          * Returns public API for the module with specified name
          *
          * @param {string} moduleName

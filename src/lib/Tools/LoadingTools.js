@@ -3,7 +3,7 @@ Subclass.Tools.LoadingTools = (function()
     Subclass.Tools.extend(Subclass.Tools, {
 
         /**
-         * Loads and invoke the java script file
+         * Loads, embeds and invoke the java script file
          *
          * @param {string} fileName
          *      The path to the requested file
@@ -34,27 +34,7 @@ Subclass.Tools.LoadingTools = (function()
          */
         loadJS: function(fileName, callback)
         {
-            if (
-                callback
-                && typeof callback != 'function'
-                && !this.isPlainObject(callback)
-            ) {
-                throw new Error(
-                    'Trying to specify not valid callback. ' +
-                    'It must be a function.'
-                );
-            }
-
-            var beforeCallback, afterCallback;
-
-            if (typeof callback == 'function') {
-                afterCallback = callback;
-            }
-            if (typeof callback == 'object') {
-                beforeCallback = callback.before;
-                afterCallback = callback.after;
-            }
-
+            var callbacks = _processLoadArguments(fileName, callback);
             var xmlhttp = new XMLHttpRequest();
             var documentScripts = document.querySelectorAll('script');
             var currentScript = documentScripts[documentScripts.length - 1];
@@ -67,16 +47,61 @@ Subclass.Tools.LoadingTools = (function()
 
                     if (script.text) {
                         if (currentScript) {
-                            if (beforeCallback) {
-                                beforeCallback();
+                            if (callbacks.beforeCallback) {
+                                callbacks.beforeCallback();
                             }
                             currentScript.parentNode.insertBefore(
                                 script,
                                 currentScript.nextSibling
                             );
-                            if (afterCallback) {
-                                afterCallback();
+                            if (callbacks.afterCallback) {
+                                callbacks.afterCallback();
                             }
+                        }
+                    } else {
+                        throw new Error('Loading file "' + fileName + '" failed.');
+                    }
+                } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
+                    throw new Error('Loading file "' + fileName + '" failed.');
+                }
+            };
+
+            xmlhttp.open("GET", fileName, true);
+            xmlhttp.send();
+
+            return xmlhttp;
+        },
+
+        /**
+         * Loads and embeds css file
+         *
+         * @param {string} fileName
+         *      The path to the requested file
+         *
+         * @param {(Function|Object)} callback
+         *      The callback function. See more details in {@link Subclass.Tools#loadJS}
+         *
+         * @returns {XMLHttpRequest}
+         */
+        loadCSS: function(fileName, callback)
+        {
+            var callbacks = _processLoadArguments(fileName, callback);
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    var script = document.createElement('script');
+                    script.setAttribute("type", "text/javascript");
+                    script.text = xmlhttp.responseText;
+
+                    if (script.text) {
+                        if (callbacks.beforeCallback) {
+                            callbacks.beforeCallback();
+                        }
+                        window.document.getElementsByTagName("HEAD")[0].appendChild(script);
+
+                        if (callbacks.afterCallback) {
+                            callbacks.afterCallback();
                         }
                     } else {
                         throw new Error('Loading file "' + fileName + '" failed.');
@@ -92,6 +117,49 @@ Subclass.Tools.LoadingTools = (function()
             return xmlhttp;
         }
     });
+
+    /**
+     * Processes the load file arguments and returns callback functions
+     *
+     * @param {string} fileName
+     * @param {Function} [callback]
+     * @returns {{afterCallback: *, beforeCallback: *}}
+     * @private
+     */
+    function _processLoadArguments(fileName, callback)
+    {
+        if (!fileName || typeof fileName != 'string') {
+            throw new Error(
+                'Specified invalid file name "' + fileName + '" when trying to load it. ' +
+                'It must be a string.'
+            );
+        }
+        if (
+            callback
+            && typeof callback != 'function'
+            && !this.isPlainObject(callback)
+        ) {
+            throw new Error(
+                'Specify not valid callback when trying to load file "' + fileName + '". ' +
+                'It must be a function.'
+            );
+        }
+
+        var beforeCallback, afterCallback;
+
+        if (typeof callback == 'function') {
+            afterCallback = callback;
+        }
+        if (typeof callback == 'object') {
+            beforeCallback = callback.before;
+            afterCallback = callback.after;
+        }
+
+        return {
+            afterCallback: afterCallback,
+            beforeCallback: beforeCallback
+        };
+    }
 
     return Subclass.Tools;
 })();

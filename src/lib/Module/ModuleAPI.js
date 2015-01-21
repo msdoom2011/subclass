@@ -59,20 +59,6 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Class.ClassManager#loadClass}
-     *
-     * @method loadClass
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.loadClass = function()
-    {
-        return this.getModule().getClassManager().loadClass.apply(
-            this.getModule().getClassManager(),
-            arguments
-        );
-    };
-
-    /**
      * The same as the {@link Subclass.Class.ClassManager#getClass}
      *
      * @method getClass

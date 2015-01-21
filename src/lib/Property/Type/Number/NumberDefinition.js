@@ -29,9 +29,12 @@ Subclass.Property.Number.NumberDefinition = (function()
      */
     NumberDefinition.prototype.validateValue = function(value)
     {
-        if (NumberDefinition.$parent.prototype.validateValue.call(this, value)) {
+        NumberDefinition.$parent.prototype.validateValue.call(this, value);
+
+        if (value === null) {
             return;
         }
+
         var property = this.getProperty();
         var minValue = this.getMinValue();
         var maxValue = this.getMaxValue();
@@ -40,27 +43,20 @@ Subclass.Property.Number.NumberDefinition = (function()
         if (typeof value != 'number') {
             error = true;
         }
-        if (!error && value !== null && minValue !== null && value < minValue) {
+        if (!error && minValue !== null && value < minValue) {
             throw new Error('The value of the property ' + property + ' is too small ' +
                 'and must be more or equals number ' + minValue + ".");
         }
-        if (!error && value !== null && maxValue !== null && value > maxValue) {
+        if (!error && maxValue !== null && value > maxValue) {
             throw new Error('The value of the property ' + property + ' is too big ' +
                 'and must be less or equals number ' + maxValue + ".");
         }
         if (error) {
-            var message = 'The value of the property ' + property + ' must be a number. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'a number'
+            );
         }
     };
 
@@ -142,8 +138,10 @@ Subclass.Property.Number.NumberDefinition = (function()
         var maxValue = this.getMaxValue();
 
         if (minValue !== null && maxValue !== null && minValue > maxValue) {
-            throw new Error('The "maxLength" attribute value must be more than "minLength" attribute value' +
-                ' in definition of property ' + property + ' must be number or null.');
+            throw new Error(
+                'The "maxLength" attribute value must be more than "minLength" attribute value ' +
+                'in definition of property ' + property + ' must be number or null.'
+            );
         }
     };
 

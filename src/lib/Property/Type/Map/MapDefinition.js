@@ -29,15 +29,17 @@ Subclass.Property.Map.MapDefinition = (function()
      */
     MapDefinition.prototype.validateValue = function(value)
     {
-        if (MapDefinition.$parent.prototype.validateValue.call(this, value)) {
-            return;
-        }
+        MapDefinition.$parent.prototype.validateValue.call(this, value);
+
         var property = this.getProperty();
         var error = false;
 
         if (
-            typeof value != 'object'
-            || !Subclass.Tools.isPlainObject(value)
+            value
+            && (
+                typeof value != 'object'
+                || !Subclass.Tools.isPlainObject(value)
+            )
         ) {
             error = true;
         }
@@ -64,20 +66,12 @@ Subclass.Property.Map.MapDefinition = (function()
                 }
             }
         }
-
         if (error) {
-            var message = 'The value of the property ' + property + ' must be a plain object or null. ';
-
-            if (typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                "a plain object"
+            );
         }
     };
 

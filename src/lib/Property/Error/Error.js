@@ -1,0 +1,4 @@
+/**
+ * @namespace
+ */
+Subclass.Property.Error = {};

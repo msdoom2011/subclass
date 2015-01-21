@@ -114,6 +114,7 @@ app.onReady(function() {
     console.log('============== String property ==============');
 
     console.log(inst.getTypedString());
+    //inst.setTypedString(111);
 
     inst.getProperty("typedString").addWatcher(function(newValue, oldValue) {
 
@@ -150,7 +151,7 @@ app.onReady(function() {
     console.log('============= Boolean property ==============');
 
     console.log(inst.getTypedBoolean());
-    //        inst.setTypedBoolean(null);
+            inst.setTypedBoolean(null);
     inst.setTypedBoolean(true);
     console.log(inst.getTypedBoolean());
 
@@ -161,6 +162,7 @@ app.onReady(function() {
 
     console.log(inst.getTypedNumber());
     inst.setTypedNumber(null);
+    //inst.setTypedNumber('string');
     inst.setTypedNumber(777);
     console.log(inst.getTypedNumber());
 
@@ -171,6 +173,7 @@ app.onReady(function() {
 
     console.log(inst.getTypedObject());
     inst.setTypedObject(null);
+    //inst.setTypedObject('string');
     inst.setTypedObject({a: 777, b: 888, c: 999});
     console.log(inst.getTypedObject());
 
@@ -180,6 +183,7 @@ app.onReady(function() {
     console.log('============= Array property ==============');
 
     console.log(inst.getTypedArray());
+    //inst.setTypedArray('string');
     inst.setTypedArray(null);
     inst.setTypedArray(['psix']);
     console.log(inst.getTypedArray());
@@ -190,7 +194,7 @@ app.onReady(function() {
     console.log('============= Enum property ==============');
 
     console.log(inst.getTypedEnum());
-    //        inst.setTypedEnum(null);
+    //inst.setTypedEnum(null);
     inst.setTypedEnum(3);
     console.log(inst.getTypedEnum());
 
@@ -201,6 +205,7 @@ app.onReady(function() {
 
     console.log(inst.getTypedClass());
     inst.setTypedClass(null);
+    //inst.setTypedClass(logger);
     inst.setTypedClass(inst2);
     console.log(inst.getTypedClass());
 
@@ -211,6 +216,7 @@ app.onReady(function() {
 
     console.log(inst.getTypedFunction());
     inst.setTypedFunction(null);
+    //inst.setTypedFunction(111);
     inst.setTypedFunction(function() { alert(2); });
     console.log(inst.getTypedFunction());
 
@@ -231,6 +237,7 @@ app.onReady(function() {
 
     console.log(inst.getTypedMixed());
     inst.setTypedMixed(null);
+    //inst.setTypedMixed({});
     console.log(inst.getTypedMixed());
     inst.setTypedMixed("string with psix");
     console.log(inst.getTypedMixed());
@@ -249,6 +256,7 @@ app.onReady(function() {
     console.log('-------------------------');
 
     console.log(inst.getTypedMap());
+    //console.log(inst.setTypedMap(111));
     console.log(inst.getTypedMap().propMapString);
     console.log(inst.getTypedMap().propMapMap.propMapMapString);
     //        inst.getTypedMap().propMapMap.propMapMapString = 111;
@@ -313,6 +321,7 @@ app.onReady(function() {
     console.log(objectCollection.getData());
 
     inst.setTypedObjectCollection(null);
+    //inst.setTypedObjectCollection('string');
     console.log(inst.getTypedObjectCollection());
 
     inst.setTypedObjectCollection({

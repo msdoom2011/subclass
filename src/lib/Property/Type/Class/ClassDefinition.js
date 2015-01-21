@@ -21,14 +21,12 @@ Subclass.Property.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.validateValue = function(value)
     {
-        if (ClassDefinition.$parent.prototype.validateValue.call(this, value)) {
-            return;
-        }
+        ClassDefinition.$parent.prototype.validateValue.call(this, value);
 
         var neededClassName = this.getClassName();
 
         if (
-            !value
+            (!value && value !== null)
             || typeof value != 'object'
             || (
                 value
@@ -39,19 +37,11 @@ Subclass.Property.Class.ClassDefinition = (function()
                 )
             )
         ) {
-            var message = 'The value of the property ' + this.getProperty() + ' must be ' +
-                'an instance of class "' + neededClassName + '" or null. ';
-
-            if (typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'an instance of class "' + neededClassName + '" or null'
+            );
         }
     };
 
@@ -71,6 +61,19 @@ Subclass.Property.Class.ClassDefinition = (function()
         if (!classManager.issetClass(className)) {
             throw new Error('Specified non existent class in "' + className + '" attribute ' +
                 'in definition of property ' + property + '.');
+        }
+    };
+
+    /**
+     * @inheritDoc
+     * @throws {Error}
+     */
+    ClassDefinition.prototype.setNullable = function(nullable)
+    {
+        this.validateNullable(nullable);
+
+        if (typeof nullable == 'boolean' && !nullable) {
+            throw new Error('The "class" property ' + this.getProperty() + ' can\'t be not nullable.');
         }
     };
 

@@ -29,9 +29,12 @@ Subclass.Property.Mixed.MixedDefinition = (function()
      */
     MixedDefinition.prototype.validateValue = function(value)
     {
-        if (MixedDefinition.$parent.prototype.validateValue.call(this, value)) {
+        MixedDefinition.$parent.prototype.validateValue.call(this, value);
+
+        if (value === null) {
             return;
         }
+
         var allowedTypes = this.getProperty().getAllowedTypes();
         var error = true;
 
@@ -48,24 +51,11 @@ Subclass.Property.Mixed.MixedDefinition = (function()
             }
         }
         if (error) {
-            var allowedTypeNames = this.getAllowsNames();
-
-            var message = 'The value of the property ' + this.getProperty() + ' is not valid ' +
-                'and must belongs to one of the specified types [' + allowedTypeNames.join(", ") + ']. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else if (value === null) {
-                message += 'null value was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'one of the specified types [' + this.getAllowsNames().join(", ") + ']'
+            );
         }
     };
 

@@ -76,9 +76,9 @@ app.registerInterface("InterfaceExtra", {
 app.registerTrait("TraitBase", {
     $_properties: {
 
-        typedBoolean: { type: "boolean" },
+        typedBoolean: { type: "boolean", nullable: true },
 
-        typedNumber: { type: "number", value: 111 }
+        typedNumber: { type: "number", value: 111, nullable: true }
     },
     eat: function() {
         alert("eating!!!!!");
@@ -95,11 +95,11 @@ app.registerTrait("Trait", {
 //                    value: "my testing string changed!",
 //                    pattern: null
 //                },
-        typedObject: { type: "object", default: { psix: true } },
+        typedObject: { type: "object", default: { psix: true }, nullable: true },
 
         typedArray: { type: "array", default: [] },
 
-        typedEnum: { type: "enum", allows: [1, 2, 3], value: 1 },
+        typedEnum: { type: "enum", allows: [1, 2, 3], value: 1, nullable: false },
 
         typedClass: { type: "class", className: "AbstractClass" },
 
@@ -154,7 +154,7 @@ app.registerAbstractClass("Class2", {
             default: "100%"
         },
 
-        typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, default: {
+        typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, nullable: true, default: {
             num1: 1,
             num2: 1,
             num3: 3
@@ -163,6 +163,7 @@ app.registerAbstractClass("Class2", {
         typedArrayCollection: {
             type: "arrayCollection",
             proto: { type: "string" },
+            nullable: true,
             value: [
                 "str1",
                 "str2",
@@ -229,11 +230,9 @@ app.registerClass("Class3", {
             allows: [
                 { type: "number" },
                 { type: "boolean" },
-                {
-                    type: "string",
-                    pattern: /psix/i
-                }
+                { type: "string", pattern: /psix/i }
             ],
+            nullable: true,
             value: 0
         }
     },

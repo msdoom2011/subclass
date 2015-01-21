@@ -49,12 +49,22 @@
           "<%= config.lib.content.property.dir %>/PropertyType.js",
           "<%= config.lib.content.property.dir %>/PropertyDefinition.js",
           "<%= config.lib.content.property.dir %>/PropertyAPI.js",
-          "<%= config.lib.content.property.dir %>/Collection/CollectionType.js",
-          "<%= config.lib.content.property.dir %>/Collection/CollectionManager.js",
-          "<%= config.lib.content.property.dir %>/Collection/*.js",
-          "<%= config.lib.content.property.dir %>/Collection/*Collection/*Type.js",
-          "<%= config.lib.content.property.dir %>/Collection/*Collection/*.js",
+          "<%= config.lib.content.property.dir %>/Error/Error.js",
+          "<%= config.lib.content.property.dir %>/Error/**/*.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/CollectionType.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/CollectionManager.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/*.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/*Collection/*Type.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/*Collection/*.js",
+          "<%= config.lib.content.property.dir %>/Type/**/*.js",
           "<%= config.lib.content.property.dir %>/**/*.js"
+        ]
+      },
+      "exception": {
+        "dir": "Exception",
+        "files": [
+          "<%= config.lib.content.exception.dir %>/Exception.js",
+          "<%= config.lib.content.exception.dir %>/**/*.js"
         ]
       },
       "service": {
@@ -90,6 +100,7 @@
       "<%= config.lib.content.main %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.module.files %>",
+      "<%= config.lib.content.exception.files %>",
       "<%= config.lib.content.event.files %>",
       "<%= config.lib.content.property.files %>",
       "<%= config.lib.content.class.files %>",

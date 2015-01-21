@@ -26,32 +26,30 @@ Subclass.Property.Enum.EnumDefinition = (function()
 
     /**
      * @inheritDoc
+     * @throws {Error}
+     */
+    EnumDefinition.prototype.setNullable = function(nullable)
+    {
+        this.validateNullable(nullable);
+
+        if (typeof nullable == 'boolean' && nullable) {
+            throw new Error('The "enum" type property ' + this.getProperty() + ' can\'t be nullable.');
+        }
+    };
+
+    /**
+     * @inheritDoc
      */
     EnumDefinition.prototype.validateValue = function(value)
     {
-        if (EnumDefinition.$parent.prototype.validateValue.call(this, value)) {
-            return;
-        }
-
         var allows = this.getAllows();
 
         if (allows.indexOf(value) < 0) {
-            var message = 'The value of the property ' + this.getProperty() + ' is not valid ' +
-                'and must be one of the specified values [' + allows.join(", ") + ']. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else if (value === null) {
-                message += 'null value was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'one of the specified values [' + allows.join(", ") + ']'
+            );
         }
     };
 
@@ -69,16 +67,16 @@ Subclass.Property.Enum.EnumDefinition = (function()
         if (!Array.isArray(allows) || !allows.length) {
             throw new Error('Specified not valid "allows" parameter in definition ' +
                 'of property ' + this.getProperty() + '. ' +
-                'It must be a not empty array with items of a certain types: "string", "number", "boolean".');
+                'It must be a not empty array with items of a certain types: "string", "number", "boolean" or null.');
         }
 
         var allowedTypes = ['string', 'number', 'boolean'];
 
         for (var i = 0; i < allows.length; i++) {
-            if (allowedTypes.indexOf(typeof allows[i]) < 0) {
+            if (allowedTypes.indexOf(typeof allows[i]) < 0 && allows[i] !== null) {
                 throw new Error('Specified not valid values in "allows" parameter in definition ' +
                     'of property ' + this.getProperty() + '. ' +
-                    'Allowed types are: ' + allowedTypes.join(", ") + '".');
+                    'Allowed types are: ' + allowedTypes.join(", ") + '" or null.');
             }
         }
     };

@@ -29,23 +29,16 @@ Subclass.Property.Function.FunctionDefinition = (function()
      */
     FunctionDefinition.prototype.validateValue = function(value)
     {
-        if (FunctionDefinition.$parent.prototype.validateValue.call(this, value)) {
-            return;
+        FunctionDefinition.$parent.prototype.validateValue.call(this, value);
+
+        if (value && typeof value != 'function') {
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                "a function"
+            );
         }
-        if (typeof value != 'function') {
-            var message = 'The value of the property ' + this.getProperty() + ' must be a function. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
-        }
+        return true;
     };
 
     return FunctionDefinition;

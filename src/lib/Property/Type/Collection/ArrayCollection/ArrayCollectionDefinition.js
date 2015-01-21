@@ -30,22 +30,18 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
      */
     ArrayCollectionDefinition.prototype.validateValue = function(value)
     {
-        if (ArrayCollectionDefinition.$parent.prototype.validateValue.call(this, value)) {
+        ArrayCollectionDefinition.$parent.prototype.validateValue.call(this, value);
+
+        if (value === null) {
             return;
         }
+
         if (!value || typeof value != 'object' || !Array.isArray(value)) {
-            var message = 'The value of the property ' + this.getProperty() + ' must be an array or null. ';
-
-            if (typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'an array'
+            );
         }
     };
 

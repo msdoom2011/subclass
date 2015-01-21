@@ -22,22 +22,18 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
      */
     ObjectCollectionDefinition.prototype.validateValue = function(value)
     {
-        if (ObjectCollectionDefinition.$parent.prototype.validateValue.call(this, value)) {
+        ObjectCollectionDefinition.$parent.prototype.validateValue.call(this, value);
+
+        if (value === null) {
             return;
         }
+
         if (!value || typeof value != 'object' || !Subclass.Tools.isPlainObject(value)) {
-            var message = 'The value of the property ' + this.getProperty() + ' must be a plain object or null. ';
-
-            if (typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'a plain object'
+            );
         }
     };
 

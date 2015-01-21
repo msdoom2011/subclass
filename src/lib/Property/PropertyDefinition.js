@@ -109,7 +109,12 @@ Subclass.Property.PropertyDefinition = (function()
      */
     PropertyDefinition.prototype.validateValue = function(value)
     {
-        return this.isNullable() && value === null;
+        if (value === null && !this.isNullable()) {
+            throw new Subclass.Property.Error.EmptyValue(
+                this.getProperty(),
+                value
+            );
+        }
     };
 
     /**

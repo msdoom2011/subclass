@@ -29,9 +29,12 @@ Subclass.Property.String.StringDefinition = (function()
      */
     StringDefinition.prototype.validateValue = function(value)
     {
-        if (StringDefinition.$parent.prototype.validateValue.call(this, value)) {
+        StringDefinition.$parent.prototype.validateValue.call(this, value);
+
+        if (value === null) {
             return;
         }
+
         var pattern = this.getPattern();
         var minLength = this.getMinLength();
         var maxLength = this.getMaxLength();
@@ -41,31 +44,30 @@ Subclass.Property.String.StringDefinition = (function()
         if (typeof value != 'string') {
             error = true;
         }
-        if (!error && value !== null && pattern && !pattern.test(value)) {
-            throw new Error('The value of the property ' + property + ' is not valid ' +
-            'and must match regular expression "' + pattern.toString() + '".');
+        if (!error && pattern && !pattern.test(value)) {
+            throw new Error(
+                'The value of the property ' + property + ' is not valid ' +
+                'and must match regular expression "' + pattern.toString() + '".'
+            );
         }
-        if (!error && value !== null && minLength !== null && value.length < minLength) {
-            throw new Error('The value of the property ' + property + ' is too short ' +
-            'and must consist of at least ' + minLength + ' symbols.');
+        if (!error && minLength !== null && value.length < minLength) {
+            throw new Error(
+                'The value of the property ' + property + ' is too short ' +
+                'and must consist of at least ' + minLength + ' symbols.'
+            );
         }
-        if (!error && value !== null && maxLength !== null && value.length > maxLength) {
-            throw new Error('The value of the property "' + property + '" is too long ' +
-            'and must be not longer than ' + maxLength + ' symbols.');
+        if (!error && maxLength !== null && value.length > maxLength) {
+            throw new Error(
+                'The value of the property "' + property + '" is too long ' +
+                'and must be not longer than ' + maxLength + ' symbols.'
+            );
         }
         if (error) {
-            var message = 'The value of the property ' + property + ' must be a string. ';
-
-            if (value && typeof value == 'object' && value.$_className) {
-                message += 'Instance of class "' + value.$_className + '" was received instead.';
-
-            } else if (value && typeof value == 'object') {
-                message += 'Object with type "' + value.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof value) + '" was received instead.';
-            }
-            throw new Error(message);
+            throw new Subclass.Property.Error.InvalidValue(
+                this.getProperty(),
+                value,
+                'a string'
+            );
         }
     };
 

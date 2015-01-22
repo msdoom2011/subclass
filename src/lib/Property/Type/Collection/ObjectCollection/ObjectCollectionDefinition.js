@@ -29,7 +29,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
         }
 
         if (!value || typeof value != 'object' || !Subclass.Tools.isPlainObject(value)) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'a plain object'

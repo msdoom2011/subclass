@@ -32,7 +32,7 @@ Subclass.Property.Collection.CollectionDefinition = (function()
     CollectionDefinition.prototype.validateProto = function(proto)
     {
         if (!proto || typeof proto != 'object') {
-            this._throwInvalidAttribute('proto', 'an object');
+            Subclass.Property.Error.InvalidOption('proto', proto, this.getProperty(), 'a plain object');
         }
     };
 

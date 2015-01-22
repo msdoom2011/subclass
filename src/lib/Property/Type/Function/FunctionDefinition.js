@@ -32,7 +32,7 @@ Subclass.Property.Function.FunctionDefinition = (function()
         FunctionDefinition.$parent.prototype.validateValue.call(this, value);
 
         if (value && typeof value != 'function') {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 "a function"

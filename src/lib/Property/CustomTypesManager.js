@@ -61,9 +61,10 @@ Subclass.Property.CustomTypesManager = (function()
 
         } catch (e) {
             if (e == 'error') {
-                throw new Error(
-                    'Invalid argument "definitions" in method "setTypeDefinitions" in class "CustomTypesManager". ' +
-                    'It must be a plain object that contains another plain objects.'
+                Subclass.Exception.InvalidArgument(
+                    "definitions",
+                    definitions,
+                    'a plain object with another plain objects'
                 );
             }
             throw e;

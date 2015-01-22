@@ -67,7 +67,7 @@ Subclass.Property.Map.MapDefinition = (function()
             }
         }
         if (error) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 "a plain object"

@@ -32,7 +32,7 @@ Subclass.Property.Object.ObjectDefinition = (function()
         ObjectDefinition.$parent.prototype.validateValue.call(this, value);
 
         if (value && !Subclass.Tools.isPlainObject(value)) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'a plain object'

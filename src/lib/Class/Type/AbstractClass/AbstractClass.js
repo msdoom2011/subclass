@@ -66,7 +66,7 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
             && this._parent.constructor != AbstractClass
             && !(this._parent instanceof AbstractClass)
         ) {
-            throw new Error('Abstract class "' + this.getName() + '" can be inherited only from the another abstract class.');
+            throw new Error('The abstract class "' + this.getName() + '" can be inherited only from the another abstract class.');
         }
     };
 

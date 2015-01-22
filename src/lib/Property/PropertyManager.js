@@ -266,7 +266,11 @@ Subclass.Property.PropertyManager = (function()
                 }
             }
         } catch (e) {
-            throw new Error('Property names argument is not valid! It must be an array of strings.');
+            Subclass.Exception.InvalidArgument(
+                "propertyNames",
+                propertyNames,
+                "an array of strings"
+            );
         }
     };
 

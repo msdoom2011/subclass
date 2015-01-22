@@ -51,7 +51,7 @@ Subclass.Property.Mixed.MixedDefinition = (function()
             }
         }
         if (error) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'one of the specified types [' + this.getAllowsNames().join(", ") + ']'

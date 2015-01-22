@@ -30,10 +30,18 @@ Subclass.Event.EventListener = (function()
             priority = 0;
         }
         if (typeof priority != 'number') {
-            throw new Error('The priority of event listener must be a number.');
+            Subclass.Exception.InvalidArgument(
+                "priority",
+                priority,
+                'a number'
+            );
         }
         if (typeof callback != 'function') {
-            throw new Error('The event listener callback must be a function.');
+            Subclass.Exception.InvalidArgument(
+                "callback",
+                callback,
+                'a function'
+            );
         }
 
         /**

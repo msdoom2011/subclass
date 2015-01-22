@@ -32,7 +32,7 @@ Subclass.Property.Array.ArrayDefinition = (function()
         ArrayDefinition.$parent.prototype.validateValue.call(this, value);
 
         if (value && !Array.isArray(value)) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 "an array"

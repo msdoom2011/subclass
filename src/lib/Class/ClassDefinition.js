@@ -6,17 +6,17 @@ Subclass.Class.ClassDefinition = (function()
     function ClassDefinition (classInst, classDefinition)
     {
         if (!classInst || !(classInst instanceof Subclass.Class.ClassType)) {
-            throw new Error(
-                'Invalid argument "classInst" in constructor ' +
-                'of "Subclass.Class.ClassDefinition" class.' +
-                'It must be an instance of "Subclass.Class.ClassType".'
+            Subclass.Exception.InvalidArgument(
+                "classInst",
+                classInst,
+                'an instance of "Subclass.Class.ClassType"'
             );
         }
         if (!classDefinition || typeof classDefinition != 'object') {
-            throw new Error(
-                'Invalid argument "classDefinition" in constructor ' +
-                'of "Subclass.Class.ClassDefinition" class.' +
-                'It must be a plain object'
+            Subclass.Exception.InvalidArgument(
+                "classDefinition",
+                classDefinition,
+                'a plain object'
             );
         }
 
@@ -53,7 +53,11 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setData = function(data)
     {
         if (!data || typeof data != 'object') {
-            throw new Error('Invalid argument "data" in method "setData". It must be an object.');
+            Subclass.Exception.InvalidArgument(
+                "data",
+                data,
+                "a plain object"
+            );
         }
         this._data = data;
     };
@@ -78,13 +82,23 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateRequires = function(requires)
     {
         if (requires && typeof requires != 'object') {
-            this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
+            Subclass.Class.Error.InvalidOption(
+                '$_requires',
+                requires,
+                this.getClass(),
+                'a plain object with string properties'
+            );
         }
         if (requires) {
             if (Array.isArray(requires)) {
                 for (var i = 0; i < requires.length; i++) {
                     if (typeof requires[i] != 'string') {
-                        this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
+                        Subclass.Class.Error.InvalidOption(
+                            '$_requires',
+                            requires,
+                            this.getClass(),
+                            'a plain object with string properties'
+                        );
                     }
                 }
             } else {
@@ -99,7 +113,12 @@ Subclass.Class.ClassDefinition = (function()
                         );
                     }
                     if (typeof requires[alias] != 'string') {
-                        this._throwInvalidAttribute('$_requires', 'a plain object with string properties.');
+                        Subclass.Class.Error.InvalidOption(
+                            '$_requires',
+                            requires,
+                            this.getClass(),
+                            'a plain object with string properties'
+                        );
                     }
                 }
             }
@@ -171,7 +190,12 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateExtends = function(parentClassName)
     {
         if (parentClassName !== null && typeof parentClassName != 'string') {
-            this._throwInvalidAttribute('$_requires', 'a string or null.');
+            Subclass.Class.Error.InvalidOption(
+                '$_extends',
+                parentClassName,
+                this.getClass(),
+                'a string or null'
+            );
         }
         return true;
     };
@@ -211,7 +235,12 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateProperties = function(properties)
     {
         if (properties && typeof properties != 'object') {
-            this._throwInvalidAttribute('$_properties', 'a plain object with property definitions');
+            Subclass.Class.Error.InvalidOption(
+                '$_properties',
+                properties,
+                this.getClass(),
+                'a plain object with property definitions'
+            );
 
         } else if (properties) {
             for (var propName in properties) {
@@ -225,12 +254,18 @@ Subclass.Class.ClassDefinition = (function()
                     );
                 }
                 if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
-                    this._throwInvalidAttribute('$_properties', 'a plain object with not empty property definitions');
+                    Subclass.Class.Error.InvalidOption(
+                        '$_properties',
+                        properties,
+                        this.getClass(),
+                        'a plain object with property definitions'
+                    );
                 }
                 if (!properties[propName].type) {
                     throw new Error(
-                        'Trying to set not valid definition of typed property "' + propName + '" in attribute "$_properties" ' +
-                        'in definition of class "' + this.getClass().getName() + '". Required property "type" was missed.'
+                        'Trying to set not valid definition of typed property "' + propName + '" in option "$_properties" ' +
+                        'in definition of class "' + this.getClass().getName() + '". ' +
+                        'Required property "type" was missed.'
                     );
                 }
             }
@@ -708,22 +743,6 @@ Subclass.Class.ClassDefinition = (function()
                 }
             }
         }
-    };
-
-    /**
-     * Throws error if specified attribute value is invalid
-     *
-     * @param {string} attributeName
-     * @param {string} types
-     * @private
-     */
-    ClassDefinition.prototype._throwInvalidAttribute = function(attributeName, types)
-    {
-        throw new Error(
-            'Invalid value of attribute "' + attributeName + '" ' +
-            'in definition of class ' + this.getClass().getName() + '. ' +
-            'It must be ' + types + '.'
-        );
     };
 
     return ClassDefinition;

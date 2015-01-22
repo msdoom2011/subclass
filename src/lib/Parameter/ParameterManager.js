@@ -25,9 +25,10 @@ Subclass.Parameter.ParameterManager = (function()
     function ParameterManager(module)
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
-            throw new Error(
-                'Invalid module argument. ' +
-                'It must be instance of "Subclass.Module.Module" class.'
+            Subclass.Exception.InvalidArgument(
+                "module",
+                module,
+                'an instance of "Subclass.Module.Module" class'
             );
         }
 

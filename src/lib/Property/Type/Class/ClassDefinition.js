@@ -37,7 +37,7 @@ Subclass.Property.Class.ClassDefinition = (function()
                 )
             )
         ) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'an instance of class "' + neededClassName + '" or null'
@@ -53,14 +53,16 @@ Subclass.Property.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateClassName = function(className)
     {
         if (typeof className != 'string') {
-            this._throwInvalidAttribute('className', 'a string');
+            Subclass.Property.Error.InvalidOption('className', className, this.getProperty(), 'a string');
         }
         var property = this.getProperty();
         var classManager = property.getPropertyManager().getModule().getClassManager();
 
         if (!classManager.issetClass(className)) {
-            throw new Error('Specified non existent class in "' + className + '" attribute ' +
-                'in definition of property ' + property + '.');
+            throw new Error(
+                'Specified non existent class in "' + className + '" attribute ' +
+                'in definition of property ' + property + '.'
+            );
         }
     };
 

@@ -95,9 +95,10 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._setDefinition = function(classDefinition)
     {
         if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
-            throw new Error(
-                'Invalid argument "classDefinition" in method "_setDefinition" in ClassBuilder. ' +
-                'It must be a plain object.'
+            Subclass.Exception.InvalidArgument(
+                "classDefinition",
+                classDefinition,
+                "a plain object"
             );
         }
         this._definition = classDefinition;
@@ -125,8 +126,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setType = function(classType)
     {
         if (typeof classType !== 'string') {
-            throw new Error('Invalid argument "classType" in method "setType" in ClassBuilder. ' +
-                'It must be a string.');
+            Subclass.Exception.InvalidArgument(
+                "classType",
+                classType,
+                "a string"
+            );
         }
         if (this._class) {
             throw new Error('Can\'t redefine class type of already registered class.');
@@ -204,8 +208,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._validateProperties = function(classProperties)
     {
         if (!classProperties || !Subclass.Tools.isPlainObject(classProperties)) {
-            throw new Error('Invalid argument "classProperties" in method "_validateProperties" in ClassBuilder. ' +
-            'It must be a plain object.');
+            Subclass.Exception.InvalidArgument(
+                "classProperties",
+                classProperties,
+                "a plain object"
+            );
         }
     };
 
@@ -263,8 +270,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.removeProperty = function(propertyName)
     {
         if (typeof propertyName !== 'string') {
-            throw new Error('Invalid argument "propertyName" in method "removeProperty" in ClassBuilder. ' +
-                'It must be a string.');
+            Subclass.Exception.InvalidArgument(
+                "propertyName",
+                propertyName,
+                "a string"
+            );
         }
         delete this._getDefinition().$_properties[propertyName];
 
@@ -280,8 +290,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setStatic = function(staticProperties)
     {
         if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
-            throw new Error('Invalid argument "staticProperties" in method "setStatic" in ClassBuilder. ' +
-                'It must be a plain object.');
+            Subclass.Exception.InvalidArgument(
+                "staticProperties",
+                staticProperties,
+                "a plain object"
+            );
         }
         this._getDefinition().$_static = staticProperties;
 
@@ -308,8 +321,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
     {
         if (typeof staticPropertyName !== 'string') {
-            throw new Error('Invalid argument "staticPropertyName" in method "setStaticProperty" in ClassBuilder. ' +
-                'It must be a string.');
+            Subclass.Exception.InvalidArgument(
+                "staticPropertyName",
+                staticPropertyName,
+                "a string"
+            );
         }
         this._getDefinition().$_static[staticPropertyName] = staticPropertyValue;
 
@@ -325,8 +341,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.removeStaticProperty = function(staticPropertyName)
     {
         if (typeof staticPropertyName !== 'string') {
-            throw new Error('Invalid argument "staticPropertyName" in method "removeStaticProperty" in ClassBuilder. ' +
-            'It must be a string.');
+            Subclass.Exception.InvalidArgument(
+                "staticPropertyName",
+                staticPropertyName,
+                "a string"
+            );
         }
         delete this._getDefinition().$_static[staticPropertyName];
 
@@ -343,8 +362,11 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._prepareBody = function(classBody)
     {
         if (!classBody || typeof classBody != 'object') {
-            throw new Error('Invalid argument "classBody" in method "setBody" in ClassBuilder. ' +
-            'It must be a plain object.');
+            Subclass.Exception.InvalidArgument(
+                "classBody",
+                classBody,
+                "a plain object"
+            );
         }
         for (var propName in classBody) {
             if (!classBody.hasOwnProperty(propName)) {

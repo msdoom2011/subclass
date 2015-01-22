@@ -61,7 +61,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
      */
     InterfaceDefinition.prototype.validateTraits = function(value)
     {
-        throw new Error('Interface "' + this.getClass().getName() + '" can\'t contains any traits.');
+        throw new Error('The interface "' + this.getClass().getName() + '" can\'t contains any traits.');
     };
 
     /**

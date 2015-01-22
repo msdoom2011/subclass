@@ -127,7 +127,11 @@ Subclass.Module.ModuleConfigs = (function()
             throw new Error('Can\'t change configs in ready module.');
         }
         if (moduleConfigs && !Subclass.Tools.isPlainObject(moduleConfigs)) {
-            throw new Error('Specified invalid configs. It must be an object.');
+            Subclass.Exception.InvalidArgument(
+                "moduleConfigs",
+                moduleConfigs,
+                "a plain object"
+            );
         }
         if (moduleConfigs) {
             for (var configName in moduleConfigs) {
@@ -148,7 +152,7 @@ Subclass.Module.ModuleConfigs = (function()
                 if (!this[setterName]) {
                     throw new Error(
                         'Configuration parameter "' + configName + '" is not allowed ' +
-                        'by the module configuration system.'
+                        'by the module.'
                     );
                 }
                 this[setterName](moduleConfigs[configName]);
@@ -212,7 +216,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof isPlugin != 'boolean') {
-            throw new Error('Invalid value of "plugin" parameter. It must be a boolean value.');
+            throw new Error('Invalid value of "plugin" option. It must be a boolean value.');
         }
         this._plugin = isPlugin;
     };
@@ -257,7 +261,7 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (parentModuleName !== null && typeof parentModuleName != 'string') {
             throw new Error(
-                'Invalid module config parameter "pluginOf". ' +
+                'Invalid module config option "pluginOf". ' +
                 'It must be a string (name of another module).'
             );
         }
@@ -556,7 +560,7 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
             throw new Error(
-                'Specified invalid parameters. ' +
+                'Specified invalid parameters set. ' +
                 'It must be a plain object.'
             );
         }
@@ -668,7 +672,7 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (!services || !Subclass.Tools.isPlainObject(services)) {
             throw new Error(
-                'Invalid definition of services. ' +
+                'Invalid definition of services set. ' +
                 'It must be a plain object.'
             );
         }
@@ -785,7 +789,11 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof onReadyCall != 'boolean') {
-            throw new Error('Specified invalid value. It must be a boolean.');
+            Subclass.Exception.InvalidArgument(
+                "onReadyCall",
+                onReadyCall,
+                "a boolean"
+            );
         }
         this._onReadyCall = onReadyCall;
     };

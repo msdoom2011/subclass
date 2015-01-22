@@ -37,7 +37,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition = (functi
         }
 
         if (!value || typeof value != 'object' || !Array.isArray(value)) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'an array'

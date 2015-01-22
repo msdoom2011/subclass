@@ -27,7 +27,11 @@ Subclass.Class.Config.ConfigBuilder = (function()
                 this._validateInclude(includesList[i]);
             }
         } catch (e) {
-            throw new Error('Invalid value of argument "includesList" in "ConfigBuilder" class.');
+            Subclass.Exception.InvalidArgument(
+                "includesList",
+                includesList,
+                "an array of strings"
+            );
         }
     };
 
@@ -155,7 +159,11 @@ Subclass.Class.Config.ConfigBuilder = (function()
                 this._validateDecorator(decoratorsList[i]);
             }
         } catch (e) {
-            throw new Error('Invalid value of argument "decoratorsList" in "ConfigBuilder" class.');
+            Subclass.Exception.InvalidArgument(
+                "decoratorsList",
+                decoratorsList,
+                'an array of strings or instances of "Subclass.Class.Config.Config" class'
+            );
         }
     };
 
@@ -173,7 +181,11 @@ Subclass.Class.Config.ConfigBuilder = (function()
             && decorator.getClassTypeName
             && decorator.getClassTypeName() !== "Config"
         ) {
-            throw new Error('Specified invalid decorator in "Config" class.');
+            Subclass.Exception.InvalidArgument(
+                "decorator",
+                decorator,
+                'a string or instance of "Subclass.Class.Config.Config" class'
+            );
         }
     };
 

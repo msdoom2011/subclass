@@ -89,7 +89,7 @@ Subclass.Class.Class.Class = (function() {
         ) {
             throw new Error(
                 'Class "' + this.getName() + '" can be inherited ' +
-                'only from an another class or an abstract class.'
+                'only from another class or abstract class.'
             );
         }
     };
@@ -152,8 +152,10 @@ Subclass.Class.Class.Class = (function() {
             }
 
             if (notImplementedMethods.length) {
-                throw new Error('Class "' + this.getName() + '" must be an abstract or implement abstract methods: ' +
-                    '"' + notImplementedMethods.join('", "') + '".');
+                throw new Error(
+                    'Class "' + this.getName() + '" must be an abstract or implement abstract methods: ' +
+                    '"' + notImplementedMethods.join('", "') + '".'
+                );
             }
         }
 
@@ -209,7 +211,7 @@ Subclass.Class.Class.Class = (function() {
     Class.prototype.getTraits = function ()
     {
         if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            throw new Error('Trying to call non existent method "getTraits".');
+            Subclass.Exception.NonExistentMethod('getTraits');
         }
         return this._traits;
     };
@@ -225,10 +227,14 @@ Subclass.Class.Class.Class = (function() {
         var classDefinition = this.getDefinition();
 
         if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            throw new Error('Trying to call non existent method "addTrait".');
+            Subclass.Exception.NonExistentMethod('addTrait');
         }
         if (!traitName) {
-            throw new Error('Trait name must be specified.');
+            Subclass.Exception.EmptyArgument(
+                "traitName",
+                traitName,
+                "a string"
+            );
         }
         var traitClass = this.getClassManager().getClass(traitName);
         var traitClassConstructor = traitClass.getConstructor();
@@ -236,7 +242,7 @@ Subclass.Class.Class.Class = (function() {
         var traitProps = {};
 
         if (traitClass.constructor != Subclass.Class.Trait.Trait) {
-            throw new Error('Trying add to "$_traits" parameter new class "' + traitName + '" that is not trait.');
+            throw new Error('Trying add to "$_traits" option the new class "' + traitName + '" that is not a trait.');
         }
 
         for (var propName in traitClassProperties) {
@@ -273,10 +279,10 @@ Subclass.Class.Class.Class = (function() {
     Class.prototype.hasTrait = function (traitName)
     {
         if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            throw new Error('Trying to call non existent method "hasTrait".');
+            Subclass.Exception.NonExistentMethod('hasTrait');
         }
         if (!traitName || typeof traitName != "string") {
-            throw new Error('Trait name must be specified.');
+            Subclass.Exception.EmptyArgument('traitName', traitName, 'a string');
         }
         var traits = this.getTraits();
 
@@ -304,7 +310,7 @@ Subclass.Class.Class.Class = (function() {
     Class.prototype.getInterfaces = function ()
     {
         if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
-            throw new Error('Trying to call non existent method "getInterfaces".');
+            Subclass.Exception.NonExistentMethod('getInterfaces');
         }
         return this._interfaces;
     };
@@ -318,10 +324,14 @@ Subclass.Class.Class.Class = (function() {
     Class.prototype.addInterface = function (interfaceName)
     {
         if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
-            throw new Error('Trying to call non existent method "addInterface".');
+            Subclass.Exception.NonExistentMethod('addInterface');
         }
         if (!interfaceName) {
-            throw new Error('Interface name must be specified.');
+            Subclass.Exception.EmptyArgument(
+                "interfaceName",
+                interfaceName,
+                "a string"
+            );
         }
         var interfaceClass = this.getClassManager().getClass(interfaceName);
 
@@ -335,7 +345,10 @@ Subclass.Class.Class.Class = (function() {
         var abstractMethods = {};
 
         if (interfaceClass.constructor != Subclass.Class.Interface.Interface) {
-            throw new Error('Trying add to "$_implements" parameter new class "' + interfaceName + '" that is not interface.');
+            throw new Error(
+                'Trying add to "$_implements" option ' +
+                'the new class "' + interfaceName + '" that is not an interface.'
+            );
         }
 
         // Add interface properties
@@ -383,10 +396,14 @@ Subclass.Class.Class.Class = (function() {
     Class.prototype.isImplements = function (interfaceName)
     {
         if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
-            throw new Error('Trying to call non existent method "isImplements".');
+            Subclass.Exception.NonExistentMethod('isImplements');
         }
         if (!interfaceName) {
-            throw new Error('Interface name must be specified.');
+            Subclass.Exception.EmptyArgument(
+                "interfaceName",
+                interfaceName,
+                "a string"
+            );
         }
         var classManager = this.getClassManager();
         var interfaces = this.getInterfaces();

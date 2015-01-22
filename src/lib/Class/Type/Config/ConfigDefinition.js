@@ -22,7 +22,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateAbstract = function(value)
     {
-        throw new Error('Config "' + this.getClass().getName() + '" can\'t contain any abstract methods.');
+        throw new Error('The config "' + this.getClass().getName() + '" can\'t contain any abstract methods.');
     };
 
     /**
@@ -33,7 +33,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateImplements = function(value)
     {
-        throw new Error('Config "' + this.getClass().getName() + '" can\'t implements any interfaces.');
+        throw new Error('The config "' + this.getClass().getName() + '" can\'t implements any interfaces.');
     };
 
     /**
@@ -44,7 +44,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateStatic = function(value)
     {
-        throw new Error('Config "' + this.getClass().getName() + '" can\'t contain any static properties and methods.');
+        throw new Error('The config "' + this.getClass().getName() + '" can\'t contain any static properties and methods.');
     };
 
     /**
@@ -55,9 +55,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateTraits = function(value)
     {
-        throw new Error(
-            'Config "' + this.getClass().getName() + '" can\'t contain any traits.'
-        );
+        throw new Error('The config "' + this.getClass().getName() + '" can\'t contain any traits.');
     };
 
     /**
@@ -81,7 +79,12 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            this._throwInvalidAttribute('$_includes', 'an array with string elements.');
+            Subclass.Class.Error.InvalidOption(
+                '$_includes',
+                includes,
+                this.getClass(),
+                'an array of strings'
+            );
         }
         return true;
     };
@@ -142,7 +145,12 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            this._throwInvalidAttribute('$_decorators', 'an array with string elements.');
+            Subclass.Class.Error.InvalidOption(
+                '$_decorators',
+                decorators,
+                this.getClass(),
+                'an array of strings'
+            );
         }
         return true;
     };
@@ -214,8 +222,10 @@ Subclass.Class.Config.ConfigDefinition = (function()
         classDefinition.setValues = function(values)
         {
             if (!values || !Subclass.Tools.isPlainObject(values)) {
-                throw new Error(
-                    'Trying to set not valid values object in class "' + this.getClassName() + '".'
+                Subclass.Exception.InvalidArgument(
+                    "values",
+                    values,
+                    'a plain object'
                 );
             }
             for (var propName in values) {

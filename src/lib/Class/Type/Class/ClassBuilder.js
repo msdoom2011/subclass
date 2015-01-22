@@ -29,7 +29,11 @@ Subclass.Class.Class.ClassBuilder = (function()
                 }
             }
         } catch (e) {
-            throw new Error('Invalid value of argument "traitsList" in method "setTraits" in "ClassBuilder" class.');
+            Subclass.Exception.InvalidArgument(
+                "traitsList",
+                traitsList,
+                "an array of strings"
+            );
         }
     };
 
@@ -87,7 +91,11 @@ Subclass.Class.Class.ClassBuilder = (function()
                 }
             }
         } catch (e) {
-            throw new Error('Invalid value of argument "interfacesList" in method "setInterfaces" in "ClassBuilder" class.');
+            Subclass.Exception.InvalidArgument(
+                "interfacesList",
+                interfacesList,
+                "an array of strings"
+            );
         }
     };
 

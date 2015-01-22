@@ -38,7 +38,12 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
                 }
             }
         } catch (e) {
-            this._throwInvalidAttribute('$_abstract', 'an object with methods or null.');
+            Subclass.Class.Error.InvalidOption(
+                '$_abstract',
+                value,
+                this.getClass(),
+                'a plain object with methods or a null'
+            );
         }
         return true;
     };

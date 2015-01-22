@@ -63,7 +63,7 @@ Subclass.Property.String.StringDefinition = (function()
             );
         }
         if (error) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'a string'
@@ -79,7 +79,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.validatePattern = function(pattern)
     {
         if (pattern !== null && typeof pattern != 'object' && !(pattern instanceof RegExp)) {
-            this._throwInvalidAttribute('pattern', 'a RegExp object instance or null');
+            Subclass.Property.Error.InvalidOption('pattern', pattern, this.getProperty(), 'a RegExp instance or null');
         }
     };
 
@@ -112,7 +112,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.validateMaxLength = function(maxLength)
     {
         if (maxLength !== null && typeof maxLength != 'number') {
-            this._throwInvalidAttribute('maxLength', 'a number or null');
+            Subclass.Property.Error.InvalidOption('maxLength', maxLength, this.getProperty(), 'a number or null');
         }
     };
 
@@ -146,7 +146,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.validateMinLength = function(minLength)
     {
         if (minLength !== null && typeof minLength != 'number') {
-            this._throwInvalidAttribute('minLength', 'a number or null');
+            Subclass.Property.Error.InvalidOption('minLength', minLength, this.getProperty(), 'a number or null');
         }
     };
 

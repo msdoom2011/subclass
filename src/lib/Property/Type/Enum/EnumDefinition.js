@@ -45,7 +45,7 @@ Subclass.Property.Enum.EnumDefinition = (function()
         var allows = this.getAllows();
 
         if (allows.indexOf(value) < 0) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'one of the specified values [' + allows.join(", ") + ']'

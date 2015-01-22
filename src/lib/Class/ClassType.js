@@ -1,6 +1,5 @@
 /**
  * @class
- * @implements {Subclass.Class.ClassType}
  * @description Abstract class of the each class type.
  *      Each instance of current class is a class definition which will be used
  *      for creating instances of its declaration.
@@ -22,13 +21,25 @@ Subclass.Class.ClassType = (function()
     function ClassType(classManager, className, classDefinition)
     {
         if (!classManager) {
-            throw new Error("The first parameter is required and must be instance of ClassManager class.");
+            Subclass.Exception.InvalidArgument(
+                "classManager",
+                classManager,
+                "an instance of Subclass.Class.ClassManager class"
+            );
         }
         if (!className || typeof className != 'string') {
-            throw new Error("Class name must be a string!");
+            Subclass.Exception.InvalidArgument(
+                "className",
+                className,
+                "a string"
+            );
         }
         if (!classDefinition && typeof classDefinition != 'object') {
-            throw new Error("Class definition must be an object.");
+            Subclass.Exception.InvalidArgument(
+                "classDefinition",
+                classDefinition,
+                "a plain object"
+            );
         }
 
         /**
@@ -98,7 +109,7 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.getClassTypeName = function ()
     {
-        throw new Error('Static method "getClassTypeName" must be implemented.');
+        Subclass.Exception.AbstractMethod("getClassTypeName", true);
     };
 
     /**
@@ -112,7 +123,7 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.getBuilderClass = function()
     {
-        throw new Error('Static method "getClassBuilder" must be implemented.');
+        Subclass.Exception.AbstractMethod("getBuilderClass", true);
     };
 
     /**
@@ -252,9 +263,10 @@ Subclass.Class.ClassType = (function()
             this._parent = null;
 
         } else {
-            throw new Error(
-                'Argument parentClassName is not valid. It must be a name of parent class or null ' +
-                'in class "' + this.getName() + '".'
+            Subclass.Exception.InvalidArgument(
+                "parentClassName",
+                parentClassName,
+                'a name of parent class or null in class "' + this.getName() + '"'
             );
         }
     };
@@ -340,7 +352,8 @@ Subclass.Class.ClassType = (function()
             return this.getParent().getProperty(propertyName);
 
         } else if (!classProperties[propertyName]) {
-            throw new Error('Trying to call to non existent property "' + propertyName + '" ' +
+            throw new Error(
+                'Trying to call to non existent property "' + propertyName + '" ' +
                 'in class "' + this.getName() + '".');
         }
         return this.getProperties()[propertyName];
@@ -373,7 +386,7 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.getConstructorEmpty = function ()
     {
-        throw new Error('Static method "getConstructor" must be implemented.');
+        Subclass.Exception.AbstractMethod("getConstructorEmpty", true);
     };
 
     /**
@@ -579,7 +592,11 @@ Subclass.Class.ClassType = (function()
     ClassType.prototype.isInstanceOf = function (className)
     {
         if (!className) {
-            throw new Error('Class name must be specified!');
+            Subclass.Exception.EmptyArgument(
+                "className",
+                className,
+                "a string"
+            );
         }
         if (this.getName() == className) {
             return true;

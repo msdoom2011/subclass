@@ -32,10 +32,18 @@ Subclass.Event.Event = (function()
     function Event(eventManager, eventName, context)
     {
         if (!eventManager || !(eventManager instanceof Subclass.Event.EventManager)) {
-            throw new Error('Invalid eventManager argumetn. It must be instance of "Subclass.Event.EventManager".');
+            Subclass.Exception.InvalidArgument(
+                "eventManager",
+                eventManager,
+                'an instance of "Subclass.Event.EventManager"'
+            );
         }
         if (!eventName || typeof eventName != 'string') {
-            throw new Error('Missed required argument "name" in Subclass.Event.Event constructor.');
+            Subclass.Exception.InvalidArgument(
+                "eventName",
+                eventName,
+                'a string'
+            );
         }
         if (!context) {
             context = {};
@@ -180,7 +188,11 @@ Subclass.Event.Event = (function()
     Event.prototype.getListenerByCallback = function(callback)
     {
         if (!callback || typeof callback != 'Function') {
-            throw new Error('Specified not a function callback.');
+            Subclass.Exception.InvalidArgument(
+                "callback",
+                callback,
+                'a function'
+            );
         }
         var mainModule = this.getEventManager().getModule();
         var moduleManager = mainModule.getModuleManager();

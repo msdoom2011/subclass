@@ -86,7 +86,7 @@ Subclass.Property.PropertyType = (function()
      */
     PropertyType.getPropertyTypeName = function()
     {
-        throw new Error('Not implemented method "PropertyType#getPropertyTypeName".');
+        Subclass.Exception.AbstractMethod("getPropertyTypeName", true);
     };
 
     /**
@@ -97,7 +97,7 @@ Subclass.Property.PropertyType = (function()
      */
     PropertyType.isAllowedValue = function(value)
     {
-        throw new Error('Not implemented method "PropertyType#isAllowedValue".');
+        Subclass.Exception.AbstractMethod("isAllowedValue", true);
     };
 
     /**
@@ -107,7 +107,7 @@ Subclass.Property.PropertyType = (function()
      */
     PropertyType.parseRequires = function(propertyDefinition)
     {
-        throw new Error('Not implemented method "PropertyType#parseRequires".');
+        Subclass.Exception.AbstractMethod("parseRequires", true);
     };
 
     /**
@@ -263,8 +263,10 @@ Subclass.Property.PropertyType = (function()
             var inst = new construct(this, propertyDefinition);
 
             if (!(inst instanceof Subclass.Property.PropertyDefinition)) {
-                throw new Error('Property definition class must be instance of ' +
-                    '"Subclass.Property.PropertyDefinition" class.');
+                throw new Error(
+                    'Property definition class must be instance of ' +
+                    '"Subclass.Property.PropertyDefinition" class.'
+                );
             }
             return inst;
         }
@@ -305,7 +307,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.setIsModified = function(isModified)
     {
         if (typeof isModified != 'boolean') {
-            throw new Error('Argument isModified must be a boolean value.');
+            Subclass.Exception.InvalidArgument(
+                "isModified",
+                isModified,
+                "a boolean"
+            );
         }
         if (this.getContextProperty()) {
             this.getContextProperty().setIsModified(isModified);
@@ -338,16 +344,11 @@ Subclass.Property.PropertyType = (function()
                 && !(contextClass instanceof Subclass.Class.ClassType)
             )
         ) {
-            var message = 'Trying to set not valid context class ' +
-                'in property ' + this + '. It must be an instance of class "ClassType" or null. ';
-
-            if (typeof contextClass == 'object') {
-                message += 'Object with type "' + contextClass.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof contextClass) + '" was received instead.';
-            }
-            throw new Error(message);
+            Subclass.Exception.InvalidArgument(
+                "contextClass",
+                contextClass,
+                'an instance of class "Subclass.Class.ClassType"'
+            );
         }
         this._contextClass = contextClass;
     };
@@ -377,19 +378,11 @@ Subclass.Property.PropertyType = (function()
                 && !(contextProperty instanceof Subclass.Property.PropertyType)
             )
         ) {
-            var message = 'Trying to set not valid context property ' +
-                'for property ' + this + '. It must be an instance of class "PropertyType" or null. ';
-
-            if (typeof contextProperty == 'object' && contextProperty.$_className) {
-                message += 'Instance of class "' + contextProperty.$_className + '" was received instead.';
-
-            } else if (typeof contextProperty == 'object') {
-                message += 'Object with type "' + contextProperty.constructor.name + '" was received instead.';
-
-            } else {
-                message += 'Value with type "' + (typeof contextProperty) + '" was received instead.';
-            }
-            throw new Error(message);
+            Subclass.Exception.InvalidArgument(
+                "contextProperty",
+                contextProperty,
+                'an instance of "Subclass.Property.PropertyType" class'
+            );
         }
         this._contextProperty = contextProperty;
     };
@@ -428,7 +421,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.addWatcher = function(callback)
     {
         if (typeof callback != "function") {
-            throw new Error('Trying to add invalid watcher to property ' + this + '. It must be a function.');
+            Subclass.Exception.InvalidArgument(
+                "callback",
+                callback,
+                "a function"
+            );
         }
         if (!this.issetWatcher(callback)) {
             this._watchers.push(callback);
@@ -478,7 +475,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.invokeWatchers = function(context, newValue, oldValue)
     {
         if (typeof context != "object" || Array.isArray(context)) {
-            throw new Error('Trying to invoke watchers in invalid context in property ' + this + '. It must be an object.');
+            Subclass.Exception.InvalidArgument(
+                "context",
+                context,
+                "an object"
+            );
         }
         var watchers = this.getWatchers();
 
@@ -662,7 +663,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.attach = function(context)
     {
         if (!context) {
-            throw new Error('To attach property "' + this.getNameFull() + '" you must specify context.');
+            Subclass.Exception.EmptyArgument(
+                "context",
+                context,
+                "an object"
+            );
         }
         var propName = this.getName();
 
@@ -698,7 +703,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.detach = function(context)
     {
         if (!context) {
-            throw new Error('To detach property ' + this + ' cause you must specify context.');
+            Subclass.Exception.EmptyArgument(
+                "context",
+                context,
+                "an object"
+            );
         }
         if (Object.isSealed(context)) {
             throw new Error('Can\'t detach property ' + this + ' because the context object is sealed.');
@@ -738,7 +747,11 @@ Subclass.Property.PropertyType = (function()
     PropertyType.prototype.attachHashed = function(context)
     {
         if (!context) {
-            throw new Error('To attach hashed property "' + this.getNameFull() + '" you must specify context.');
+            Subclass.Exception.InvalidArgument(
+                "context",
+                context,
+                "an object"
+            );
         }
         var hashedPropName = this.getNameHashed();
         var defaultValue = this.getDefaultValue();

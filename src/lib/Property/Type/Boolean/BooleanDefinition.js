@@ -43,7 +43,7 @@ Subclass.Property.Boolean.BooleanDefinition = (function()
         BooleanDefinition.$parent.prototype.validateValue.call(this, value);
 
         if (value && typeof value != 'boolean') {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 "a boolean"

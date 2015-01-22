@@ -82,7 +82,11 @@ Subclass.Module.Module = (function()
         var $this = this;
 
         if (!moduleName || typeof moduleName != 'string') {
-            throw new Error('The module name was not specified.');
+            Subclass.Exception.InvalidArgument(
+                "moduleName",
+                moduleName,
+                'a string'
+            );
         }
         if (!moduleConfigs) {
             moduleConfigs = {};
@@ -237,7 +241,11 @@ Subclass.Module.Module = (function()
     Module.prototype.setParent = function(parentModule)
     {
         if (parentModule !== null && !(parentModule instanceof Subclass.Module.Module)) {
-            throw new Error('Invalid parent module. It must be instance of "Subclass.Module.Module".');
+            Subclass.Exception.InvalidArgument(
+                "parentModule",
+                parentModule,
+                'an instance of "Subclass.Module.Module"'
+            );
         }
         this._parent = parentModule;
     };
@@ -562,7 +570,11 @@ Subclass.Module.Module = (function()
         var $this = this;
 
         if (!moduleName || typeof moduleName != 'string') {
-            throw new Error('Missed or invalid the module name "' + moduleName + '".');
+            Subclass.Exception.InvalidArgument(
+                "moduleName",
+                moduleName,
+                "a string"
+            );
 
         } else if (
             Subclass.issetModule(moduleName)
@@ -571,13 +583,18 @@ Subclass.Module.Module = (function()
             throw new Error('The module "' + moduleName + '" is already added as a plug-in to another module.');
         }
         if (moduleFile && typeof moduleFile != 'string') {
-            throw new Error(
-                'Specified not valid file of plug-in module "' + moduleName + '". ' +
-                'It must be a string or be omitted.'
+            Subclass.Exception.InvalidArgument(
+                "moduleFile",
+                moduleFile,
+                "a string or be omitted"
             );
         }
         if (callback && typeof callback != 'function') {
-            throw new Error('Specified invalid callback. It must be a function.');
+            Subclass.Exception.InvalidArgument(
+                "callback",
+                callback,
+                "a function"
+            );
         }
         if (!moduleFile && callback) {
             throw new Error(

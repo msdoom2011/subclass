@@ -52,7 +52,7 @@ Subclass.Property.Number.NumberDefinition = (function()
                 'and must be less or equals number ' + maxValue + ".");
         }
         if (error) {
-            throw new Subclass.Property.Error.InvalidValue(
+            Subclass.Property.Error.InvalidValue(
                 this.getProperty(),
                 value,
                 'a number'
@@ -68,7 +68,7 @@ Subclass.Property.Number.NumberDefinition = (function()
     NumberDefinition.prototype.validateMaxValue = function(maxValue)
     {
         if (maxValue !== null && typeof maxValue != 'number') {
-            this._throwInvalidAttribute('maxValue', 'a number or null');
+            Subclass.Property.Error.InvalidOption('maxValue', maxValue, this.getProperty(), 'a number or null');
         }
     };
 
@@ -102,7 +102,7 @@ Subclass.Property.Number.NumberDefinition = (function()
     NumberDefinition.prototype.validateMinValue = function(minValue)
     {
         if (minValue !== null && typeof minValue != 'number') {
-            this._throwInvalidAttribute('minValue', 'a number or null');
+            Subclass.Property.Error.InvalidOption('minValue', minValue, this.getProperty(), 'a number or null');
         }
     };
 

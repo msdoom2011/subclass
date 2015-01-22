@@ -20,15 +20,17 @@ Subclass.Module.ModuleManager = (function()
     function ModuleManager(module, pluginModuleNames)
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
-            throw new Error(
-                'Specified invalid module argument. It must be instance ' +
-                'of "Subclass.Module.Module".'
+            Subclass.Exception.InvalidArgument(
+                "module",
+                module,
+                'an instance of "Subclass.Module.Module"'
             );
         }
         if (pluginModuleNames && !Array.isArray(pluginModuleNames)) {
-            throw new Error(
-                'Specified invalid plug-in modules argument. ' +
-                'It must be array names of injecting modules.'
+            Subclass.Exception.InvalidArgument(
+                "pluginModuleNames",
+                pluginModuleNames,
+                'an array of plug-in module names'
             );
         } else if (!pluginModuleNames) {
             pluginModuleNames = [];

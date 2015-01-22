@@ -11,17 +11,17 @@ Subclass.Property.PropertyDefinition = (function()
     function PropertyDefinition (property, propertyDefinition)
     {
         if (!property || !(property instanceof Subclass.Property.PropertyType)) {
-            throw new Error(
-                'Invalid argument "property" in constructor ' +
-                'of "Subclass.Property.PropertyDefinition" class.' +
-                'It must be an instance of class "Subclass.Property.PropertyType".'
+            Subclass.Exception.InvalidArgument(
+                "property",
+                property,
+                'an instance of "Subclass.Property.PropertyType"'
             );
         }
         if (!propertyDefinition || typeof propertyDefinition != 'object') {
-            throw new Error(
-                'Invalid argument "propertyDefinition" in constructor ' +
-                'of "Subclass.Property.PropertyDefinition" class.' +
-                'It must be a plain object.'
+            Subclass.Exception.InvalidArgument(
+                "propertyDefinition",
+                propertyDefinition,
+                'a plain object'
             );
         }
         /**
@@ -77,7 +77,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateType = function(type)
     {
         if (typeof type != 'string') {
-            this._throwInvalidAttribute('type', 'a string');
+            Subclass.Property.Error.InvalidOption('type', type, this.getProperty(), 'a string');
         }
     };
 
@@ -110,7 +110,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateValue = function(value)
     {
         if (value === null && !this.isNullable()) {
-            throw new Subclass.Property.Error.EmptyValue(
+            Subclass.Property.Error.EmptyValue(
                 this.getProperty(),
                 value
             );
@@ -170,7 +170,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateWatcher = function(watcher)
     {
         if (watcher !== null && typeof watcher != 'function') {
-            this._throwInvalidAttribute('watcher', 'a function or null');
+            Subclass.Property.Error.InvalidOption('watcher', watcher, this.getProperty(), 'a funciton or null');
         }
     };
 
@@ -203,7 +203,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateAccessors = function(isAccessors)
     {
         if (isAccessors !== null && typeof isAccessors != 'boolean') {
-            this._throwInvalidAttribute('accessors', 'a boolean or null');
+            Subclass.Property.Error.InvalidOption('accessors', isAccessors, this.getProperty(), 'a boolean or null');
         }
     };
 
@@ -238,7 +238,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateWritable = function(isWritable)
     {
         if (isWritable !== null && typeof isWritable != 'boolean') {
-            this._throwInvalidAttribute('writable', 'a boolean or null');
+            Subclass.Property.Error.InvalidOption('writable', isWritable, this.getProperty(), 'a boolean or null');
         }
     };
 
@@ -278,7 +278,7 @@ Subclass.Property.PropertyDefinition = (function()
     PropertyDefinition.prototype.validateNullable = function(isNullable)
     {
         if (isNullable !== null && typeof isNullable != 'boolean') {
-            this._throwInvalidAttribute('nullable', 'a boolean or null');
+            Subclass.Property.Error.InvalidOption('nullable', isNullable, this.getProperty(), 'a boolean or null');
         }
     };
 
@@ -390,7 +390,10 @@ Subclass.Property.PropertyDefinition = (function()
             var attrName = requiredAttributes[i];
 
             if (!definition.hasOwnProperty(attrName)) {
-                this._throwMissedAttribute(attrName);
+                throw new Error(
+                    'Missed required attribute "' + attrName + '" ' +
+                    'in definition of property ' + this.getProperty() + '.'
+                );
             }
         }
         if (this.getWritable() === false && this.getValue() !== undefined) {
@@ -442,37 +445,6 @@ Subclass.Property.PropertyDefinition = (function()
         if (definition.hasOwnProperty('value')) {
             this.setValue(definition.value);
         }
-    };
-
-    /**
-     * Throws error if specified argument was missed
-     *
-     * @param {string} attributeName
-     * @throws {Error}
-     * @private
-     */
-    PropertyDefinition.prototype._throwMissedAttribute = function(attributeName)
-    {
-        throw new Error(
-            'Missed required attribute "' + attributeName + '" ' +
-            'in definition of property ' + this.getProperty() + '.'
-        );
-    };
-
-    /**
-     * Throws error if specified attribute value is invalid
-     *
-     * @param {string} attributeName
-     * @param {string} types
-     * @private
-     */
-    PropertyDefinition.prototype._throwInvalidAttribute = function(attributeName, types)
-    {
-        throw new Error(
-            'Invalid value of attribute "' + attributeName + '" ' +
-            'in definition of property ' + this.getProperty() + '. ' +
-            'It must be ' + types + '.'
-        );
     };
 
     return PropertyDefinition;

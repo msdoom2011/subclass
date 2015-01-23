@@ -30,18 +30,20 @@ Subclass.Event.EventListener = (function()
             priority = 0;
         }
         if (typeof priority != 'number') {
-            Subclass.Exception.InvalidArgument(
-                "priority",
-                priority,
-                'a number'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("event callback priority", false)
+                .received(priority)
+                .expected('a number')
+                .apply()
+            ;
         }
         if (typeof callback != 'function') {
-            Subclass.Exception.InvalidArgument(
-                "callback",
-                callback,
-                'a function'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("callback")
+                .received(callback)
+                .expected('a function')
+                .apply()
+            ;
         }
 
         /**

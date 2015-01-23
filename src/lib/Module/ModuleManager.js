@@ -102,7 +102,10 @@ Subclass.Module.ModuleManager = (function()
             var childModuleConfigs = childModule.getConfigManager();
 
             if (!childModuleConfigs.isPlugin()) {
-                throw new Error('Specified in plugins module "' + moduleNames[i] + '" that is not a plugin.');
+                Subclass.Error.create(
+                    'Specified in plugins module "' + moduleNames[i] + '" ' +
+                    'that is not a plugin.'
+                );
             }
             childModule.setParent(mainModule);
             modules.push(childModule);

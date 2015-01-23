@@ -32,18 +32,20 @@ Subclass.Event.Event = (function()
     function Event(eventManager, eventName, context)
     {
         if (!eventManager || !(eventManager instanceof Subclass.Event.EventManager)) {
-            Subclass.Exception.InvalidArgument(
-                "eventManager",
-                eventManager,
-                'an instance of "Subclass.Event.EventManager"'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("event manager", false)
+                .received(eventManager)
+                .expected('an instance of "Subclass.Event.EventManager"')
+                .apply()
+            ;
         }
         if (!eventName || typeof eventName != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "eventName",
-                eventName,
-                'a string'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of event", false)
+                .received(eventName)
+                .expected('a string')
+                .apply()
+            ;
         }
         if (!context) {
             context = {};
@@ -188,11 +190,12 @@ Subclass.Event.Event = (function()
     Event.prototype.getListenerByCallback = function(callback)
     {
         if (!callback || typeof callback != 'Function') {
-            Subclass.Exception.InvalidArgument(
-                "callback",
-                callback,
-                'a function'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("callback")
+                .received(callback)
+                .expected('a function')
+                .apply()
+            ;
         }
         var mainModule = this.getEventManager().getModule();
         var moduleManager = mainModule.getModuleManager();

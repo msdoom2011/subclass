@@ -99,8 +99,8 @@
     "files": [
       "<%= config.lib.content.main %>",
       "<%= config.lib.content.tools.files %>",
-      "<%= config.lib.content.module.files %>",
       "<%= config.lib.content.error.files %>",
+      "<%= config.lib.content.module.files %>",
       "<%= config.lib.content.event.files %>",
       "<%= config.lib.content.property.files %>",
       "<%= config.lib.content.class.files %>",

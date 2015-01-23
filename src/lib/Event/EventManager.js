@@ -118,7 +118,7 @@ Subclass.Event.EventManager = (function()
     EventManager.prototype.registerEvent = function(eventName, context)
     {
         if (this.issetEvent(eventName, true)) {
-            throw new Error('Event with name "' + eventName + '" already exists.');
+            Subclass.Error.create('Event with name "' + eventName + '" already exists.');
         }
         this._events[eventName] = new Subclass.Event.Event(this, eventName, context);
 
@@ -142,7 +142,7 @@ Subclass.Event.EventManager = (function()
     EventManager.prototype.getEvent = function(eventName)
     {
         if (!this.issetEvent(eventName)) {
-            throw new Error('Trying to get non existent event "' + eventName + '".');
+            Subclass.Error.create('Trying to get non existent event "' + eventName + '".');
         }
         return this.getEvents()[eventName];
     };

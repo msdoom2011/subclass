@@ -4,6 +4,11 @@
 Subclass.Module = {};
 
 /**
+ * @namespace
+ */
+Subclass.Module.Error = {};
+
+/**
  * @class
  * @constructor
  * @description
@@ -580,7 +585,10 @@ Subclass.Module.Module = (function()
             Subclass.issetModule(moduleName)
             && Subclass.getModule(moduleName).getParentModule()
         ) {
-            throw new Error('The module "' + moduleName + '" is already added as a plug-in to another module.');
+            Subclass.Error.create(
+                'The module "' + moduleName + '" is already ' +
+                'added as a plug-in to another module.'
+            );
         }
         if (moduleFile && typeof moduleFile != 'string') {
             Subclass.Exception.InvalidArgument(
@@ -597,7 +605,7 @@ Subclass.Module.Module = (function()
             );
         }
         if (!moduleFile && callback) {
-            throw new Error(
+            Subclass.Error.create(
                 'You can\'t specify the callback function without ' +
                 'file of module "' + moduleName + '".'
             );

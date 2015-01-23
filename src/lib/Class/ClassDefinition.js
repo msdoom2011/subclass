@@ -377,7 +377,9 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype._getDataPart = function(typeName, withInherited)
     {
         if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
-            Subclass.Error.create('Trying to get not existent class definition part data "' + typeName + '".');
+            Subclass.Error.create(
+                'Trying to get not existent class definition part data "' + typeName + '".'
+            );
         }
         if (withInherited !== true) {
             withInherited = false;

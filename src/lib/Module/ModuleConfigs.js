@@ -124,7 +124,7 @@ Subclass.Module.ModuleConfigs = (function()
         var $this = this;
 
         if (this.getModule().isReady()) {
-            throw new Error('Can\'t change configs in ready module.');
+            Subclass.Error.create('Can\'t change configs in ready module.');
         }
         if (moduleConfigs && !Subclass.Tools.isPlainObject(moduleConfigs)) {
             Subclass.Exception.InvalidArgument(
@@ -150,7 +150,7 @@ Subclass.Module.ModuleConfigs = (function()
                 var setterName = "set" + configName[0].toUpperCase() + configName.substr(1);
 
                 if (!this[setterName]) {
-                    throw new Error(
+                    Subclass.Error.create(
                         'Configuration parameter "' + configName + '" is not allowed ' +
                         'by the module.'
                     );
@@ -216,7 +216,13 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof isPlugin != 'boolean') {
-            throw new Error('Invalid value of "plugin" option. It must be a boolean value.');
+            Subclass.Error.create('InvalidModuleConfigOption')
+                .option('plugin')
+                .module(this.getModule().getName())
+                .received(isPlugin)
+                .expected('a boolean value')
+                .apply()
+            ;
         }
         this._plugin = isPlugin;
     };
@@ -260,10 +266,13 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (parentModuleName !== null && typeof parentModuleName != 'string') {
-            throw new Error(
-                'Invalid module config option "pluginOf". ' +
-                'It must be a string (name of another module).'
-            );
+            Subclass.Error.create('InvalidModuleConfigOption')
+                .option('pluginOf')
+                .module(this.getModule().getName())
+                .received(parentModuleName)
+                .expected('a string (name of another module that is not marked as a plugin)')
+                .apply()
+            ;
         }
         this._pluginOf = parentModuleName;
         this.setPlugin(true);
@@ -300,7 +309,13 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof autoload != 'boolean') {
-            throw new Error('Specified not valid "autoload" option. It must be boolean.');
+            Subclass.Error.create('InvalidModuleConfigOption')
+                .option('autoload')
+                .module(this.getModule().getName())
+                .received(autoload)
+                .expected('a boolean')
+                .apply()
+            ;
         }
         this._autoload = autoload;
     };
@@ -353,10 +368,13 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof rootPath != 'string') {
-            throw new Error(
-                'Trying to set invalid root path of the project. ' +
-                'It must be a string.'
-            );
+            Subclass.Error.create('InvalidModuleConfigOption')
+                .option('rootPath')
+                .module(this.getModule().getName())
+                .received(rootPath)
+                .expected('a string')
+                .apply()
+            ;
         }
         this._rootPath = rootPath;
     };
@@ -400,7 +418,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         function throwInvalidArgument() {
-            throw new Error(
+            Subclass.Error.create(
                 "Trying to set invalid files array in module configuration set. " +
                 "It must contain the names of files."
             );
@@ -559,10 +577,13 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
-            throw new Error(
-                'Specified invalid parameters set. ' +
-                'It must be a plain object.'
-            );
+            Subclass.Error.create('InvalidModuleConfigOption')
+                .option('parameters')
+                .module(this.getModule().getName())
+                .received(parameters)
+                .expected('a plain object')
+                .apply()
+            ;
         }
         var parameterManager = this.getModule().getParameterManager();
 
@@ -671,10 +692,13 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (!services || !Subclass.Tools.isPlainObject(services)) {
-            throw new Error(
-                'Invalid definition of services set. ' +
-                'It must be a plain object.'
-            );
+            Subclass.Error.create('InvalidModuleConfigOption')
+                .option('services')
+                .module(this.getModule().getName())
+                .received(services)
+                .expected('a plain object')
+                .apply()
+            ;
         }
         var serviceManager = this.getModule().getServiceManager();
 
@@ -739,7 +763,12 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof callback != "function") {
-            throw new Error('On ready callback must be function.');
+            Subclass.Error.create('InvalidArgument')
+                .argument('callback')
+                .received(callback)
+                .expected('a function')
+                .apply()
+            ;
         }
         var module = this.getModule();
         var classManager = module.getClassManager();
@@ -829,7 +858,7 @@ Subclass.Module.ModuleConfigs = (function()
     ModuleConfigs.prototype._checkModuleIsReady = function()
     {
         if (this.getModule().isReady()) {
-            throw new Error('Can\'t change configs in ready module.');
+            Subclass.Error.create('Can\'t change configs in ready module.');
         }
     };
 

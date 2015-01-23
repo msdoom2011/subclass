@@ -63,7 +63,7 @@ Subclass.Class.Interface.Interface = (function()
             && this._parent.constructor != Interface
             && !(this._parent instanceof Interface)
         ) {
-            throw new Error(
+            Subclass.Error.create(
                 'Interface "' + this.getName() + '" can be inherited ' +
                 'only from the another interface.'
             );

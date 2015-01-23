@@ -21,25 +21,28 @@ Subclass.Class.ClassType = (function()
     function ClassType(classManager, className, classDefinition)
     {
         if (!classManager) {
-            Subclass.Exception.InvalidArgument(
-                "classManager",
-                classManager,
-                "an instance of Subclass.Class.ClassManager class"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("class manager", false)
+                .received(classManager)
+                .expected("an instance of Subclass.Class.ClassManager class")
+                .apply()
+            ;
         }
         if (!className || typeof className != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "className",
-                className,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of class", false)
+                .received(className)
+                .expected("a string")
+                .apply()
+            ;
         }
         if (!classDefinition && typeof classDefinition != 'object') {
-            Subclass.Exception.InvalidArgument(
-                "classDefinition",
-                classDefinition,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("definition of class", false)
+                .received(classDefinition)
+                .expected("a plain object")
+                .apply()
+            ;
         }
 
         /**
@@ -109,7 +112,10 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.getClassTypeName = function ()
     {
-        Subclass.Exception.AbstractMethod("getClassTypeName", true);
+        Subclass.Error.create("NotImplementedMethod")
+            .method("getClassTypeName")
+            .apply()
+        ;
     };
 
     /**
@@ -123,7 +129,10 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.getBuilderClass = function()
     {
-        Subclass.Exception.AbstractMethod("getBuilderClass", true);
+        Subclass.Error.create("NotImplementedMethod")
+            .method("getBuilderClass")
+            .apply()
+        ;
     };
 
     /**
@@ -213,7 +222,7 @@ Subclass.Class.ClassType = (function()
             var inst = new construct(this, classDefinition);
 
             if (!(inst instanceof Subclass.Class.ClassDefinition)) {
-                throw new Error(
+                Subclass.Error.create(
                     'Class definition class must be instance of ' +
                     '"Subclass.Class.ClassDefinition" class.'
                 );
@@ -263,11 +272,12 @@ Subclass.Class.ClassType = (function()
             this._parent = null;
 
         } else {
-            Subclass.Exception.InvalidArgument(
-                "parentClassName",
-                parentClassName,
-                'a name of parent class or null in class "' + this.getName() + '"'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of parent class", false)
+                .received(parentClassName)
+                .expected('a name of parent class or null in class "' + this.getName() + '"')
+                .apply()
+            ;
         }
     };
 
@@ -352,9 +362,10 @@ Subclass.Class.ClassType = (function()
             return this.getParent().getProperty(propertyName);
 
         } else if (!classProperties[propertyName]) {
-            throw new Error(
+            Subclass.Error.create(
                 'Trying to call to non existent property "' + propertyName + '" ' +
-                'in class "' + this.getName() + '".');
+                'in class "' + this.getName() + '".'
+            );
         }
         return this.getProperties()[propertyName];
     };
@@ -386,7 +397,10 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.getConstructorEmpty = function ()
     {
-        Subclass.Exception.AbstractMethod("getConstructorEmpty", true);
+        Subclass.Error.create("NotImplementedMethod")
+            .method("getConstructorEmpty")
+            .apply()
+        ;
     };
 
     /**
@@ -591,12 +605,13 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.isInstanceOf = function (className)
     {
-        if (!className) {
-            Subclass.Exception.EmptyArgument(
-                "className",
-                className,
-                "a string"
-            );
+        if (!className || typeof className != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of class", false)
+                .received(className)
+                .expected("a string")
+                .apply()
+            ;
         }
         if (this.getName() == className) {
             return true;

@@ -6,18 +6,20 @@ Subclass.Class.ClassDefinition = (function()
     function ClassDefinition (classInst, classDefinition)
     {
         if (!classInst || !(classInst instanceof Subclass.Class.ClassType)) {
-            Subclass.Exception.InvalidArgument(
-                "classInst",
-                classInst,
-                'an instance of "Subclass.Class.ClassType"'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("class instance", false)
+                .received(classInst)
+                .expected('an instance of "Subclass.Class.ClassType"')
+                .apply()
+            ;
         }
         if (!classDefinition || typeof classDefinition != 'object') {
-            Subclass.Exception.InvalidArgument(
-                "classDefinition",
-                classDefinition,
-                'a plain object'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("definition of class", false)
+                .received(classDefinition)
+                .expected('a plain object')
+                .apply()
+            ;
         }
 
         /**
@@ -53,11 +55,12 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.setData = function(data)
     {
         if (!data || typeof data != 'object') {
-            Subclass.Exception.InvalidArgument(
-                "data",
-                data,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("definition data", false)
+                .received(data)
+                .expected("a plain object")
+                .apply()
+            ;
         }
         this._data = data;
     };
@@ -82,23 +85,25 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateRequires = function(requires)
     {
         if (requires && typeof requires != 'object') {
-            Subclass.Class.Error.InvalidOption(
-                '$_requires',
-                requires,
-                this.getClass(),
-                'a plain object with string properties'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .argument('$_requires')
+                .received(requires)
+                .className(this.getClass().getName())
+                .expected('a plain object with string properties')
+                .apply()
+            ;
         }
         if (requires) {
             if (Array.isArray(requires)) {
                 for (var i = 0; i < requires.length; i++) {
                     if (typeof requires[i] != 'string') {
-                        Subclass.Class.Error.InvalidOption(
-                            '$_requires',
-                            requires,
-                            this.getClass(),
-                            'a plain object with string properties'
-                        );
+                        Subclass.Error.create('InvalidClassDefinitionOption')
+                            .argument('$_requires')
+                            .received(requires)
+                            .className(this.getClass().getName())
+                            .expected('a plain object with string properties')
+                            .apply()
+                        ;
                     }
                 }
             } else {
@@ -107,18 +112,19 @@ Subclass.Class.ClassDefinition = (function()
                         continue;
                     }
                     if (!alias[0].match(/[a-z$_]/i)) {
-                        throw new Error(
+                        Subclass.Error.create(
                             'Invalid alias name for required class "' + requires[alias] + '" ' +
                             'in class "' + this.getClass().getName() + '".'
                         );
                     }
                     if (typeof requires[alias] != 'string') {
-                        Subclass.Class.Error.InvalidOption(
-                            '$_requires',
-                            requires,
-                            this.getClass(),
-                            'a plain object with string properties'
-                        );
+                        Subclass.Error.create('InvalidClassDefinitionOption')
+                            .argument('$_requires')
+                            .received(requires)
+                            .className(this.getClass().getName())
+                            .expected('a plain object with string properties')
+                            .apply()
+                        ;
                     }
                 }
             }
@@ -190,12 +196,13 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateExtends = function(parentClassName)
     {
         if (parentClassName !== null && typeof parentClassName != 'string') {
-            Subclass.Class.Error.InvalidOption(
-                '$_extends',
-                parentClassName,
-                this.getClass(),
-                'a string or null'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .argument('$_extends')
+                .received(parentClassName)
+                .className(this.getClass().getName())
+                .expected('a string or null')
+                .apply()
+            ;
         }
         return true;
     };
@@ -235,12 +242,13 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateProperties = function(properties)
     {
         if (properties && typeof properties != 'object') {
-            Subclass.Class.Error.InvalidOption(
-                '$_properties',
-                properties,
-                this.getClass(),
-                'a plain object with property definitions'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .argument('$_properties')
+                .received(properties)
+                .className(this.getClass().getName())
+                .expected('a plain object with property definitions')
+                .apply()
+            ;
 
         } else if (properties) {
             for (var propName in properties) {
@@ -248,21 +256,22 @@ Subclass.Class.ClassDefinition = (function()
                     continue;
                 }
                 if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
-                    throw Error(
+                    Subclass.Error.create(
                         'Specified not allowed typed property name "' + propName + '" in attribute "$_properties" ' +
                         'in definition of class "' + this.getClass().getName() + '".'
                     );
                 }
                 if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
-                    Subclass.Class.Error.InvalidOption(
-                        '$_properties',
-                        properties,
-                        this.getClass(),
-                        'a plain object with property definitions'
-                    );
+                    Subclass.Error.create('InvalidClassDefinitionOption')
+                        .argument('$_properties')
+                        .received(properties)
+                        .className(this.getClass().getName())
+                        .expected('a plain object with property definitions')
+                        .apply()
+                    ;
                 }
                 if (!properties[propName].type) {
-                    throw new Error(
+                    Subclass.Error.create(
                         'Trying to set not valid definition of typed property "' + propName + '" in option "$_properties" ' +
                         'in definition of class "' + this.getClass().getName() + '". ' +
                         'Required property "type" was missed.'
@@ -368,7 +377,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype._getDataPart = function(typeName, withInherited)
     {
         if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
-            throw new Error('Trying to get not existent class definition part data "' + typeName + '".');
+            Subclass.Error.create('Trying to get not existent class definition part data "' + typeName + '".');
         }
         if (withInherited !== true) {
             withInherited = false;
@@ -597,7 +606,7 @@ Subclass.Class.ClassDefinition = (function()
                 continue;
             }
             if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
-                throw new Error(
+                Subclass.Error.create(
                     'Trying to define property with not allowed name "' + propName + '" ' +
                     'in class "' + classInst.getName() + '".'
                 );

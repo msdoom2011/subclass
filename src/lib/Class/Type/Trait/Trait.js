@@ -63,7 +63,10 @@ Subclass.Class.Trait.Trait = (function()
             && this._parent.constructor != Trait
             && !(this._parent instanceof Trait)
         ) {
-            throw new Error('The trait "' + this.getName() + '" can be inherited only from the another trait.');
+            Subclass.Error.create(
+                'The trait "' + this.getName() + '" can be ' +
+                'inherited only from the another trait.'
+            );
         }
     };
 

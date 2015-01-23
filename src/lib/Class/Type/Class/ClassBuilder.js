@@ -29,11 +29,12 @@ Subclass.Class.Class.ClassBuilder = (function()
                 }
             }
         } catch (e) {
-            Subclass.Exception.InvalidArgument(
-                "traitsList",
-                traitsList,
-                "an array of strings"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("list of trait names", false)
+                .received(traitsList)
+                .expected("an array of strings")
+                .apply()
+            ;
         }
     };
 
@@ -91,11 +92,12 @@ Subclass.Class.Class.ClassBuilder = (function()
                 }
             }
         } catch (e) {
-            Subclass.Exception.InvalidArgument(
-                "interfacesList",
-                interfacesList,
-                "an array of strings"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("list of interface names", false)
+                .received(interfacesList)
+                .expected("an array of strings")
+                .apply()
+            ;
         }
     };
 

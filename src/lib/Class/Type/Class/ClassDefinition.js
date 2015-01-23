@@ -24,12 +24,13 @@ Subclass.Class.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateStatic = function(value)
     {
         if (value !== null && !Subclass.Tools.isPlainObject(value)) {
-            Subclass.Class.Error.InvalidOption(
-                '$_static',
-                value,
-                this.getClass(),
-                'a plain object or null'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .option('$_static')
+                .className(this.getClass().getName())
+                .received(value)
+                .expected('a plain object or null')
+                .apply()
+            ;
         }
         return true;
     };
@@ -139,12 +140,13 @@ Subclass.Class.Class.ClassDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Class.Error.InvalidOption(
-                '$_implements',
-                interfaces,
-                this.getClass(),
-                'an array of strings'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .option('$_implements')
+                .className(this.getClass().getName())
+                .received(interfaces)
+                .expected('an array of strings')
+                .apply()
+            ;
         }
         return true;
     };

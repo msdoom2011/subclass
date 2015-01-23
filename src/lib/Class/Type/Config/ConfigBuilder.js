@@ -27,11 +27,12 @@ Subclass.Class.Config.ConfigBuilder = (function()
                 this._validateInclude(includesList[i]);
             }
         } catch (e) {
-            Subclass.Exception.InvalidArgument(
-                "includesList",
-                includesList,
-                "an array of strings"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("list of config including class names", false)
+                .received(includesList)
+                .expected("an array of strings")
+                .apply()
+            ;
         }
     };
 
@@ -49,7 +50,12 @@ Subclass.Class.Config.ConfigBuilder = (function()
             && include.getClassTypeName
             && include.getClassTypeName() !== "Config"
         ) {
-            throw new Error('Specified invalid includes in "Config" class.');
+            Subclass.Error.create('InvalidArgument')
+                .argument('include')
+                .expected('an instance of config class or a string')
+                .received(include)
+                .apply()
+            ;
         }
     };
 
@@ -159,11 +165,12 @@ Subclass.Class.Config.ConfigBuilder = (function()
                 this._validateDecorator(decoratorsList[i]);
             }
         } catch (e) {
-            Subclass.Exception.InvalidArgument(
-                "decoratorsList",
-                decoratorsList,
-                'an array of strings or instances of "Subclass.Class.Config.Config" class'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("list of config decorator class names", false)
+                .received(decoratorsList)
+                .expected('an array of strings or instances of "Subclass.Class.Config.Config" class')
+                .apply()
+            ;
         }
     };
 
@@ -181,11 +188,12 @@ Subclass.Class.Config.ConfigBuilder = (function()
             && decorator.getClassTypeName
             && decorator.getClassTypeName() !== "Config"
         ) {
-            Subclass.Exception.InvalidArgument(
-                "decorator",
-                decorator,
-                'a string or instance of "Subclass.Class.Config.Config" class'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("config decorating class name", false)
+                .received(decorator)
+                .expected('a string or instance of "Subclass.Class.Config.Config" class')
+                .apply()
+            ;
         }
     };
 

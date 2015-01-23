@@ -22,7 +22,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
      */
     InterfaceDefinition.prototype.validateAbstract = function(value)
     {
-        throw new Error(
+        Subclass.Error.create(
             'You can\'t specify abstract method by the property "$_abstract". ' +
             'All methods specified in interface are abstract by default.'
         );
@@ -36,7 +36,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
      */
     InterfaceDefinition.prototype.validateImplements = function(value)
     {
-        throw new Error(
+        Subclass.Error.create(
             'Interface "' + this.getClass().getName() + '" can\'t implements any interfaces. ' +
             'You can extend this one from another interface instead.'
         );
@@ -50,7 +50,7 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
      */
     InterfaceDefinition.prototype.validateStatic = function(value)
     {
-        throw new Error('You can\'t specify any static properties or methods in interface.');
+        Subclass.Error.create('You can\'t specify any static properties or methods in interface.');
     };
 
     /**
@@ -61,7 +61,9 @@ Subclass.Class.Interface.InterfaceDefinition = (function()
      */
     InterfaceDefinition.prototype.validateTraits = function(value)
     {
-        throw new Error('The interface "' + this.getClass().getName() + '" can\'t contains any traits.');
+        Subclass.Error.create(
+            'The interface "' + this.getClass().getName() + '" can\'t contains any traits.'
+        );
     };
 
     /**

@@ -1,13 +1,13 @@
 /**
+ * @final
  * @class
  * @extends {Subclass.Error.Error}
- * @final
  */
-Subclass.Error.InvalidArgumentError = (function()
+Subclass.Property.Error.InvalidPropertyValueError = (function()
 {
-    function InvalidArgumentError(message)
+    function InvalidPropertyValueError(message)
     {
-        InvalidArgumentError.$parent.call(this, message);
+        InvalidPropertyValueError.$parent.call(this, message);
     }
 
     /**
@@ -16,20 +16,20 @@ Subclass.Error.InvalidArgumentError = (function()
      * @returns {string}
      * @static
      */
-    InvalidArgumentError.getName = function()
+    InvalidPropertyValueError.getName = function()
     {
-        return "InvalidArgument";
+        return "InvalidPropertyValue";
     };
 
     /**
      * @inheritDoc
      */
-    InvalidArgumentError.getOptions = function()
+    InvalidPropertyValueError.getOptions = function()
     {
         var options = this.$parent.getOptions();
 
         return options.concat([
-            'argument',
+            'property',
             'expected',
             'received'
         ]);
@@ -38,22 +38,24 @@ Subclass.Error.InvalidArgumentError = (function()
     /**
      * @inheritDoc
      */
-    InvalidArgumentError.getOptionsRequired = function()
+    InvalidPropertyValueError.getOptionsRequired = function()
     {
         var required = this.$parent.getOptionsRequired();
 
-        return required.concat(['argument']);
+        return required.concat([
+            'property'
+        ]);
     };
 
     /**
      * @inheritDoc
      */
-    InvalidArgumentError.prototype.buildMessage = function()
+    InvalidPropertyValueError.prototype.buildMessage = function()
     {
         var message = this.constructor.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
-            message += 'Specified invalid argument "' + this.argument() + '" value. ';
+            message += 'Specified invalid value of property ' + this.property() + '. ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""
         }
@@ -62,9 +64,10 @@ Subclass.Error.InvalidArgumentError = (function()
     };
 
     Subclass.Error.registerType(
-        InvalidArgumentError.getName(),
-        InvalidArgumentError
+        InvalidPropertyValueError.getName(),
+        InvalidPropertyValueError
     );
 
-    return InvalidArgumentError;
+    return InvalidPropertyValueError;
+
 })();

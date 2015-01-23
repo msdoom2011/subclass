@@ -1,7 +1,7 @@
 /**
  * @mixin
  */
-Subclass.Error.Option.ClassName = (function()
+Subclass.Error.Option.Method = (function()
 {
     return {
 

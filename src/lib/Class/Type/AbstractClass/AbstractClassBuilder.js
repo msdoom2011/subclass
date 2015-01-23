@@ -19,11 +19,12 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
     AbstractClassBuilder.prototype._validateAbstractMethods = function(abstractMethods)
     {
         if (!Subclass.Tools.isPlainObject(abstractMethods)) {
-            Subclass.Exception.InvalidArgument(
-                "abstractMethods",
-                abstractMethods,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("list of abstract methods", false)
+                .received(abstractMethods)
+                .expected("a plain object")
+                .apply()
+            ;
         }
     };
 

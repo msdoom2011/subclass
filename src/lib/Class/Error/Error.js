@@ -1,4 +1,0 @@
-/**
- * @namespace
- */
-Subclass.Class.Error = {};

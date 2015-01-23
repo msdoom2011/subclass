@@ -22,7 +22,7 @@ Subclass.Class.Trait.TraitDefinition = (function()
      */
     TraitDefinition.prototype.validateAbstract = function(value)
     {
-        throw new Error(
+        Subclass.Error.create(
             'You can\'t specify abstract method by the property "$_abstract". ' +
             'All methods specified in interface are abstract by default.'
         );
@@ -36,7 +36,10 @@ Subclass.Class.Trait.TraitDefinition = (function()
      */
     TraitDefinition.prototype.validateImplements = function(value)
     {
-        throw new Error('The trait "' + this.getClass().getName() + '" can\'t implements any interfaces.');
+        Subclass.Error.create(
+            'The trait "' + this.getClass().getName() + '" ' +
+            'can\'t implements any interfaces.'
+        );
     };
 
     /**
@@ -47,7 +50,9 @@ Subclass.Class.Trait.TraitDefinition = (function()
      */
     TraitDefinition.prototype.validateStatic = function(value)
     {
-        throw new Error('You can\'t specify any static properties or methods in trait.');
+        Subclass.Error.create(
+            'You can\'t specify any static properties or methods in trait.'
+        );
     };
 
     /**
@@ -58,7 +63,7 @@ Subclass.Class.Trait.TraitDefinition = (function()
      */
     TraitDefinition.prototype.validateTraits = function(value)
     {
-        throw new Error(
+        Subclass.Error.create(
             'The trait "' + this.getName() + '" can\'t contains another traits. ' +
             'You can extend this one from another trait instead.'
         );

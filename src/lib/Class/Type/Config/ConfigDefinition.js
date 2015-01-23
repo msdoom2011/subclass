@@ -22,7 +22,10 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateAbstract = function(value)
     {
-        throw new Error('The config "' + this.getClass().getName() + '" can\'t contain any abstract methods.');
+        Subclass.Error.create(
+            'The config "' + this.getClass().getName() + '" ' +
+            'can\'t contain any abstract methods.'
+        );
     };
 
     /**
@@ -33,7 +36,10 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateImplements = function(value)
     {
-        throw new Error('The config "' + this.getClass().getName() + '" can\'t implements any interfaces.');
+        Subclass.Error.create(
+            'The config "' + this.getClass().getName() + '" ' +
+            'can\'t implements any interfaces.'
+        );
     };
 
     /**
@@ -44,7 +50,10 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateStatic = function(value)
     {
-        throw new Error('The config "' + this.getClass().getName() + '" can\'t contain any static properties and methods.');
+        Subclass.Error.create(
+            'The config "' + this.getClass().getName() + '" ' +
+            'can\'t contain any static properties and methods.'
+        );
     };
 
     /**
@@ -55,7 +64,9 @@ Subclass.Class.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.validateTraits = function(value)
     {
-        throw new Error('The config "' + this.getClass().getName() + '" can\'t contain any traits.');
+        Subclass.Error.create(
+            'The config "' + this.getClass().getName() + '" can\'t contain any traits.'
+        );
     };
 
     /**
@@ -79,12 +90,13 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Class.Error.InvalidOption(
-                '$_includes',
-                includes,
-                this.getClass(),
-                'an array of strings'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .option('$_includes')
+                .className(this.getClass().getName())
+                .received(includes)
+                .expected('an array of strings')
+                .apply()
+            ;
         }
         return true;
     };
@@ -145,12 +157,13 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Class.Error.InvalidOption(
-                '$_decorators',
-                decorators,
-                this.getClass(),
-                'an array of strings'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .option('$_decorators')
+                .className(this.getClass().getName())
+                .received(decorators)
+                .expected('an array of strings')
+                .apply()
+            ;
         }
         return true;
     };
@@ -222,11 +235,12 @@ Subclass.Class.Config.ConfigDefinition = (function()
         classDefinition.setValues = function(values)
         {
             if (!values || !Subclass.Tools.isPlainObject(values)) {
-                Subclass.Exception.InvalidArgument(
-                    "values",
-                    values,
-                    'a plain object'
-                );
+                Subclass.Error.create('InvalidArgument')
+                    .argument("values")
+                    .received(values)
+                    .expected('a plain object')
+                    .apply()
+                ;
             }
             for (var propName in values) {
                 if (values.hasOwnProperty(propName)) {
@@ -458,8 +472,8 @@ Subclass.Class.Config.ConfigDefinition = (function()
             var property = classProperties[propName];
 
             if (!property || !Subclass.Tools.isPlainObject(property)) {
-                throw new Error(
-                    'Specified invalid property definition "' + propName + '" ' +
+                Subclass.Error.create(
+                    'Specified invalid definition of property "' + propName + '" ' +
                     'in class "' + this.getClass().getName() + '".'
                 );
             }

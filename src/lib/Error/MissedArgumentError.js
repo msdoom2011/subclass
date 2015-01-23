@@ -26,7 +26,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.getOptions = function()
     {
-        var options = this.constructor.$parent.getOptions();
+        var options = this.$parent.getOptions();
 
         return options.concat([
             'argument'
@@ -38,7 +38,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.getOptionsRequired = function()
     {
-        var required = this.constructor.$parent.getOptionsRequired();
+        var required = this.$parent.getOptionsRequired();
 
         return required.concat(['argument']);
     };

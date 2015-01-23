@@ -38,12 +38,13 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Class.Error.InvalidOption(
-                '$_abstract',
-                value,
-                this.getClass(),
-                'a plain object with methods or a null'
-            );
+            Subclass.Error.create('InvalidClassDefinitionOption')
+                .option('$_abstract')
+                .className(this.getClass().getName())
+                .expected('a plain object with methods or a null')
+                .received(value)
+                .apply()
+            ;
         }
         return true;
     };

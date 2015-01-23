@@ -70,7 +70,7 @@ Subclass.Class.ClassBuilder = (function()
         var classDefinition = classInst.getDefinition().getData();
 
         if (classInst.wasInstanceCreated()) {
-            throw new Error(
+            Subclass.Error.create(
                 'Can\'t alter class "' + className + '" because ' +
                 'the one or more it instances was already created.'
             );
@@ -95,11 +95,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._setDefinition = function(classDefinition)
     {
         if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
-            Subclass.Exception.InvalidArgument(
-                "classDefinition",
-                classDefinition,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("classDefinition")
+                .received(classDefinition)
+                .expected("a plain object")
+                .apply()
+            ;
         }
         this._definition = classDefinition;
 
@@ -126,14 +127,15 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setType = function(classType)
     {
         if (typeof classType !== 'string') {
-            Subclass.Exception.InvalidArgument(
-                "classType",
-                classType,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("classType")
+                .received(classType)
+                .expected("a string")
+                .apply()
+            ;
         }
         if (this._class) {
-            throw new Error('Can\'t redefine class type of already registered class.');
+            Subclass.Error.create('Can\'t redefine class type of already registered class.');
         }
         this._type = classType;
 
@@ -159,7 +161,7 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setName = function(className)
     {
         if (this._class) {
-            throw new Error('Can\'t redefine class name of already registered class.');
+            Subclass.Error.create('Can\'t redefine class name of already registered class.');
         }
         this._name = className;
 
@@ -208,11 +210,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._validateProperties = function(classProperties)
     {
         if (!classProperties || !Subclass.Tools.isPlainObject(classProperties)) {
-            Subclass.Exception.InvalidArgument(
-                "classProperties",
-                classProperties,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .option("classProperties")
+                .received(classProperties)
+                .expected("a plain object")
+                .apply()
+            ;
         }
     };
 
@@ -270,11 +273,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.removeProperty = function(propertyName)
     {
         if (typeof propertyName !== 'string') {
-            Subclass.Exception.InvalidArgument(
-                "propertyName",
-                propertyName,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("property name", false)
+                .received(propertyName)
+                .expected("a string")
+                .apply()
+            ;
         }
         delete this._getDefinition().$_properties[propertyName];
 
@@ -290,11 +294,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setStatic = function(staticProperties)
     {
         if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
-            Subclass.Exception.InvalidArgument(
-                "staticProperties",
-                staticProperties,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("static properties", false)
+                .received(staticProperties)
+                .expected("a plain object")
+                .apply()
+            ;
         }
         this._getDefinition().$_static = staticProperties;
 
@@ -321,11 +326,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
     {
         if (typeof staticPropertyName !== 'string') {
-            Subclass.Exception.InvalidArgument(
-                "staticPropertyName",
-                staticPropertyName,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of static property", false)
+                .received(staticPropertyName)
+                .expected("a string")
+                .apply()
+            ;
         }
         this._getDefinition().$_static[staticPropertyName] = staticPropertyValue;
 
@@ -341,11 +347,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.removeStaticProperty = function(staticPropertyName)
     {
         if (typeof staticPropertyName !== 'string') {
-            Subclass.Exception.InvalidArgument(
-                "staticPropertyName",
-                staticPropertyName,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of static property", false)
+                .received(staticPropertyName)
+                .expected("a string")
+                .apply()
+            ;
         }
         delete this._getDefinition().$_static[staticPropertyName];
 
@@ -362,11 +369,12 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._prepareBody = function(classBody)
     {
         if (!classBody || typeof classBody != 'object') {
-            Subclass.Exception.InvalidArgument(
-                "classBody",
-                classBody,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("class body", false)
+                .received(classBody)
+                .expected("a plain object")
+                .apply()
+            ;
         }
         for (var propName in classBody) {
             if (!classBody.hasOwnProperty(propName)) {
@@ -467,10 +475,10 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype._validate = function()
     {
         if (!this.getName()) {
-            throw new Error('Future class must be named.');
+            Subclass.Error.create('The future class must be named.');
         }
         if (!this.getType()) {
-            throw new Error('The type of the future class must be specified.');
+            Subclass.Error.create('The type of the future class must be specified.');
         }
         return this;
     };

@@ -3,6 +3,14 @@
  */
 Subclass.Property = {};
 
+/**
+ * @namespace
+ */
+Subclass.Property.Error = {};
+
+/**
+ * @class
+ */
 Subclass.Property.PropertyManager = (function()
 {
     /**

@@ -87,7 +87,10 @@ Subclass.Class.Config.Config = (function()
             this._parent
             && this._parent.constructor != Config
         ) {
-            throw new Error('The config "' + this.getName() + '" can be inherited only from an another config.');
+            Subclass.Error.create(
+                'The config "' + this.getName() + '" can be ' +
+                'inherited only from an another config.'
+            );
         }
     };
 
@@ -116,15 +119,16 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype.addInclude = function(className)
     {
-        if (typeof className != "string") {
-            Subclass.Exception.InvalidArgument(
-                "className",
-                className,
-                "a name of existent config class"
-            );
+        if (!className || typeof className != "string") {
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of including class", false)
+                .received(className)
+                .expected("a name of existent config class")
+                .apply()
+            ;
         }
         if (!this.getClassManager().issetClass(className)) {
-            throw new Error(
+            Subclass.Error.create(
                 'Trying to include non existent class "' + className + '" ' +
                 'to config class "' + this.getName() + '".'
             );
@@ -143,11 +147,12 @@ Subclass.Class.Config.Config = (function()
     Config.prototype.isIncludes = function(className)
     {
         if (!className || typeof className != 'string') {
-            Subclass.Exception.EmptyArgument(
-                "className",
-                className,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of included class", false)
+                .received(className)
+                .expected("a string")
+                .apply()
+            ;
         }
         var includes = this.getIncludes();
 
@@ -183,15 +188,16 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype.addDecorator = function(className)
     {
-        if (typeof className != "string") {
-            Subclass.Exception.InvalidArgument(
-                "className",
-                className,
-                "a name of existent config class"
-            );
+        if (!className || typeof className != "string") {
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of config decorator class", false)
+                .received(className)
+                .expected("a name of existent config class")
+                .apply()
+            ;
         }
         if (!this.getClassManager().issetClass(className)) {
-            throw new Error(
+            Subclass.Error.create(
                 'Trying to attach non existent decorator class "' + className + '" ' +
                 'to config class "' + this.getName() + '".'
             );
@@ -210,11 +216,12 @@ Subclass.Class.Config.Config = (function()
     Config.prototype.hasDecorator = function(className)
     {
         if (!className || typeof className != 'string') {
-            Subclass.Exception.EmptyArgument(
-                "className",
-                className,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of config decorator class", false)
+                .received(className)
+                .expected("a string")
+                .apply()
+            ;
         }
         var decorators = this.getDecorators();
 

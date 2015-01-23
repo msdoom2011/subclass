@@ -4,6 +4,11 @@
 Subclass.Class = {};
 
 /**
+ * @namespace
+ */
+Subclass.Class.Error = {};
+
+/**
  * @class
  */
 Subclass.Class.ClassManager = (function()
@@ -147,7 +152,7 @@ Subclass.Class.ClassManager = (function()
                     if (classes[className]) {
                         var classLocations = $this.getClassLocations(className);
 
-                        throw new Error(
+                        Subclass.Error.create(
                             'Multiple class definition detected. Class "' + className + '" defined ' +
                             'in modules: "' + classLocations.join('", "') + '".'
                         );
@@ -426,18 +431,20 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.loadClass = function(className, callback)
     {
         if (className && typeof className != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "className",
-                className,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of class", false)
+                .received(className)
+                .expected("a string")
+                .apply()
+            ;
         }
         if (callback && typeof callback != 'function') {
-            Subclass.Exception.InvalidArgument(
-                "callback",
-                callback,
-                "a function"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("callback")
+                .received(callback)
+                .expected("a function")
+                .apply()
+            ;
         }
         if (this.issetClass(className)) {
             return null;
@@ -454,7 +461,7 @@ Subclass.Class.ClassManager = (function()
         var $this = this;
 
         if (!rootPath) {
-            throw new Error('The root path of the project was not specified!');
+            Subclass.Error.create('The root path of the project was not specified!');
         }
 
         var xmlhttp = new XMLHttpRequest();
@@ -474,7 +481,7 @@ Subclass.Class.ClassManager = (function()
                             currentScript.nextSibling
                         );
                         if (!$this.issetClass(className)) {
-                            throw new Error('Loading class "' + className + '" failed.');
+                            Subclass.Error.create('Loading class "' + className + '" failed.');
                         }
 
                         if (callback) {
@@ -482,10 +489,10 @@ Subclass.Class.ClassManager = (function()
                         }
                     }
                 } else {
-                    throw new Error('Loading class "' + className + '" failed.');
+                    Subclass.Error.create('Loading class "' + className + '" failed.');
                 }
             } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
-                throw new Error('Loading class "' + className + '" failed.');
+                Subclass.Error.create('Loading class "' + className + '" failed.');
             }
         };
 
@@ -540,7 +547,9 @@ Subclass.Class.ClassManager = (function()
             var inst = new classConstructor(this, className, classDefinition);
 
             if (!(inst instanceof Subclass.Class.ClassType)) {
-                throw new Error('The class type factory must be instance of "Subclass.Class.ClassType" class.');
+                Subclass.Error.create(
+                    'The class type factory must be instance of "Subclass.Class.ClassType" class.'
+                );
             }
             return inst;
         }
@@ -559,19 +568,32 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.addClass = function(classTypeName, className, classDefinition)
     {
         if (!classTypeName) {
-            throw new Error('Trying to register class "' + className + '" without specifying class type.');
+            Subclass.Error.create(
+                'Trying to register the class "' + className + '" ' +
+                'without specifying class type.'
+            );
         }
         if (!Subclass.Class.ClassManager.issetClassType(classTypeName)) {
-            throw new Error('Trying to register class "' + className + '" of unknown class type "' + classTypeName + '".');
+            Subclass.Error.create(
+                'Trying to register the class "' + className + '" ' +
+                'of unknown class type "' + classTypeName + '".'
+            );
         }
         if (!className || typeof className != 'string') {
-            throw new Error('Trying to register class with wrong name "' + className + '".');
+            Subclass.Error.create(
+                'Trying to register the class with wrong name "' + className + '".'
+            );
         }
         if (!classDefinition || typeof classDefinition != 'object') {
-            throw new Error('Trying to register class "' + className + '" with empty or not valid class definition.');
+            Subclass.Error.create(
+                'Trying to register the class "' + className + '" ' +
+                'with empty or not valid class definition.'
+            );
         }
         if (this.issetClass(className)) {
-            throw new Error('Trying to redefine already existed class "' + className + '".');
+            Subclass.Error.create(
+                'Trying to redefine already existed class "' + className + '".'
+            );
         }
 
         var classTypeConstructor = Subclass.Class.ClassManager.getClassType(classTypeName);
@@ -597,7 +619,7 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.getClass = function(className)
     {
         if (!this.issetClass(className)) {
-            throw new Error('Trying to call to none existed class "' + className + '".');
+            Subclass.Error.create('Trying to call to none existed class "' + className + '".');
         }
         var classInst = this.getClasses()[className];
 
@@ -698,7 +720,10 @@ Subclass.Class.ClassManager = (function()
             var inst = new classBuilderConstructor(this, classType, className);
 
             if (!(inst instanceof Subclass.Class.ClassBuilder)) {
-                throw new Error('The class builder must be instance of "Subclass.Class.ClassBuilder" class.');
+                Subclass.Error.create(
+                    'The class builder must be instance ' +
+                    'of "Subclass.Class.ClassBuilder" class.'
+                );
             }
             return inst;
         }
@@ -742,7 +767,7 @@ Subclass.Class.ClassManager = (function()
     ClassManager.registerClass = function(classTypeName, className, classDefinition)
     {
         if (this.issetClass(className)) {
-            throw new Error('The class "' + className + '" is already registered.');
+            Subclass.Error.create('The class "' + className + '" is already registered.');
         }
         if (!this._classes[classTypeName]) {
             this._classes[classTypeName] = {};
@@ -805,7 +830,7 @@ Subclass.Class.ClassManager = (function()
     ClassManager.getClassType = function(classTypeName)
     {
         if (!this.issetClassType(classTypeName)) {
-            throw new Error('Trying to get non existed class type factory "' + classTypeName + '".');
+            Subclass.Error.create('Trying to get non existed class type factory "' + classTypeName + '".');
         }
         return this._classTypes[classTypeName];
     };

@@ -4,14 +4,9 @@
 Subclass.Error = {};
 
 /**
- * @namespace
- */
-Subclass.Error.Option = {};
-
-/**
  * @class
  */
-Subclass.Error.Error = (function()
+Subclass.Error = (function()
 {
     function Exception(message)
     {
@@ -37,7 +32,7 @@ Subclass.Error.Error = (function()
         if (this._message) {
             return this._message;
         }
-        this.constructor.validateRequiredOptions(this);
+        return "";
     };
 
     /**
@@ -74,6 +69,7 @@ Subclass.Error.Error = (function()
      */
     Exception.prototype.apply = function()
     {
+        this.constructor.$parent.validateRequiredOptions(this);
         var message = this.message();
 
         throw new Error(message);
@@ -97,14 +93,13 @@ Subclass.Error.Error = (function()
         if (!this.issetType(type)) {
             var message = type;
 
-            return new Exception(message);
+            return (new Exception(message)).apply();
         }
         var typeFunc = this.getType(type);
         var constructor = this.createConstructor(typeFunc);
-
         var errorInst = new constructor();
 
-        this.attachOptionProperties(errorInst);
+        this.attachOptionProperties.call(constructor, errorInst);
 
         return errorInst;
     };
@@ -117,17 +112,18 @@ Subclass.Error.Error = (function()
      */
     Exception.createConstructor = function(construct)
     {
-        var constructProto = Object.create(Exception.prototype);
+        var constructProto = Object.create(this.prototype);
 
         constructProto = Subclass.Tools.extend(
             constructProto,
             construct.prototype
         );
 
-        this.attachOptionMethods(construct);
-
         construct.prototype = constructProto;
         construct.prototype.constructor = construct;
+        construct.prototype.constructor.$parent = Exception;
+
+        this.attachOptionMethods.call(construct);
 
         return construct;
     };
@@ -183,10 +179,8 @@ Subclass.Error.Error = (function()
 
     /**
      * Attaches the option methods
-     *
-     * @param {Function} errorTypeConstructor
      */
-    Exception.attachOptionMethods = function(errorTypeConstructor)
+    Exception.attachOptionMethods = function()
     {
         var options = this.getOptions();
 
@@ -195,7 +189,7 @@ Subclass.Error.Error = (function()
             var optionMethods = Subclass.Error.Option[optionName];
 
             Subclass.Tools.extendDeep(
-                errorTypeConstructor.prototype,
+                this.prototype,
                 optionMethods
             );
         }
@@ -241,6 +235,7 @@ Subclass.Error.Error = (function()
                 'It\'s already exists'
             );
         }
+
         this._types[typeName] = typeConstructor;
     };
 
@@ -273,4 +268,8 @@ Subclass.Error.Error = (function()
 
 })();
 
-Subclass.Error = Subclass.Error.Error;
+
+/**
+ * @namespace
+ */
+Subclass.Error.Option = {};

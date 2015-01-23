@@ -25,7 +25,7 @@ Subclass.Error.NotExistentMethodError = (function()
      */
     NotExistentMethodError.getOptions = function()
     {
-        var options = this.constructor.$parent.getOptions();
+        var options = this.$parent.getOptions();
 
         return options.concat([
             'className',
@@ -38,7 +38,7 @@ Subclass.Error.NotExistentMethodError = (function()
      */
     NotExistentMethodError.getOptionsRequired = function()
     {
-        var required = this.constructor.$parent.getOptionsRequired();
+        var required = this.$parent.getOptionsRequired();
 
         return required.concat([
             'className',
@@ -51,7 +51,7 @@ Subclass.Error.NotExistentMethodError = (function()
      */
     NotExistentMethodError.prototype.buildMessage = function()
     {
-        var message = NotExistentMethodError.$parent.prototype.buildMessage.call(this);
+        var message = this.constructor.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'The method "' + this.className() + '#' + this.method() + '" does not exist.';

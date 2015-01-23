@@ -48,13 +48,20 @@ Subclass.Service.Service = (function()
     function Service(serviceManager, serviceName, serviceDefinition)
     {
         if (!serviceManager || !(serviceManager instanceof Subclass.Service.ServiceManager)) {
-            throw new Error(
-                'Specified invalid service manager argument. ' +
-                'It must be an instance of "Subclass.Service.ServiceManager".'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument('service manager', false)
+                .received(serviceManager)
+                .expected('instance of "Subclass.Service.ServiceManager" class')
+                .apply()
+            ;
         }
         if (!serviceName || typeof serviceName != 'string') {
-            throw new Error('Specified invalid name of the service. It must be a string.');
+            Subclass.Error.create('InvalidArgument')
+                .argument('name of service', false)
+                .received(serviceName)
+                .expected('a string')
+                .apply()
+            ;
         }
         /**
          * Service manager instance
@@ -127,10 +134,12 @@ Subclass.Service.Service = (function()
     Service.prototype.setDefinition = function(definition)
     {
         if (!definition || !Subclass.Tools.isPlainObject(definition)) {
-            throw new Error(
-                'Specified invalid definition of service "' + this.getName() + '". ' +
-                'It must be a plain object.'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument('definition of service', false)
+                .received(definition)
+                .expected('a plain object')
+                .apply()
+            ;
         }
         this._definition = definition;
 
@@ -187,7 +196,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setInstance = function(instance)
     {
         if (this.getAbstract()) {
-            this._throwAbstractService();
+            Subclass.Error.create('AbstractService')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this._instance = instance;
     };
@@ -200,7 +212,10 @@ Subclass.Service.Service = (function()
     Service.prototype.getInstance = function()
     {
         if (this.getAbstract()) {
-            this._throwAbstractService();
+            Subclass.Error.create('AbstractService')
+                .service(this.getName())
+                .apply()
+            ;
         }
         return this._instance;
     };
@@ -214,7 +229,13 @@ Subclass.Service.Service = (function()
     Service.prototype.validateAbstract = function(isAbstract)
     {
         if (typeof isAbstract != 'boolean') {
-            this._throwInvalidAttribute('abstract', 'a boolean');
+            Subclass.Error.create('InvalidServiceOption')
+                .option('abstract')
+                .service(this.getName())
+                .received(isAbstract)
+                .expected('a boolean')
+                .apply()
+            ;
         }
         return true;
     };
@@ -227,7 +248,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setAbstract = function(isAbstract)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateAbstract(isAbstract);
         this.getDefinition().abstract = isAbstract;
@@ -251,7 +275,13 @@ Subclass.Service.Service = (function()
     Service.prototype.validateExtends = function(parentServiceName)
     {
         if (typeof parentServiceName != 'string') {
-            this._throwInvalidAttribute('extends', 'a string');
+            Subclass.Error.create('InvalidServiceOption')
+                .option('extends')
+                .service(this.getName())
+                .received(parentServiceName)
+                .expected('a string')
+                .apply()
+            ;
         }
         return true;
     };
@@ -264,7 +294,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setExtends = function(parentServiceName)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateExtends(parentServiceName);
         this.getDefinition().extends = parentServiceName;
@@ -288,7 +321,13 @@ Subclass.Service.Service = (function()
     Service.prototype.validateClassName = function(className)
     {
         if (typeof className != 'string') {
-            this._throwInvalidAttribute('className', 'a string');
+            Subclass.Error.create('InvalidServiceOption')
+                .option('className')
+                .service(this.getName())
+                .received(className)
+                .expected('a string')
+                .apply()
+            ;
         }
         return true;
     };
@@ -301,7 +340,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setClassName = function(className)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateClassName(className);
         this.getDefinition().className = className;
@@ -325,7 +367,13 @@ Subclass.Service.Service = (function()
     Service.prototype.validateArguments = function(args)
     {
         if (args !== null && !Array.isArray(args)) {
-            this._throwInvalidAttribute('arguments', 'an array');
+            Subclass.Error.create('InvalidServiceOption')
+                .option('arguments')
+                .service(this.getName())
+                .received(args)
+                .expected('an array')
+                .apply()
+            ;
         }
         return true;
     };
@@ -338,7 +386,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setArguments = function(args)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateArguments(args);
         this.getDefinition().arguments = args;
@@ -400,18 +451,28 @@ Subclass.Service.Service = (function()
      */
     Service.prototype.validateCalls = function(calls)
     {
-        if ((!calls && calls !== null) || (calls && typeof calls != 'object')) {
-            this._throwInvalidAttribute('calls', 'a plain object with arrays');
-        }
-        if (calls) {
-            for (var methodName in calls) {
-                if (!calls.hasOwnProperty(methodName)) {
-                    continue;
-                }
-                if (!Array.isArray(calls[methodName])) {
-                    this._throwInvalidAttribute('calls', 'a plain object with arrays');
+        try {
+            if ((!calls && calls !== null) || (calls && typeof calls != 'object')) {
+                throw 'error'
+            }
+            if (calls) {
+                for (var methodName in calls) {
+                    if (!calls.hasOwnProperty(methodName)) {
+                        continue;
+                    }
+                    if (!Array.isArray(calls[methodName])) {
+                        throw 'error';
+                    }
                 }
             }
+        } catch (e) {
+            Subclass.Error.create('InvalidServiceOption')
+                .option('calls')
+                .service(this.getName())
+                .received(calls)
+                .expected('a plain object with array properties')
+                .apply()
+            ;
         }
         return true;
     };
@@ -424,7 +485,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setCalls = function(calls)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateCalls(calls);
         this.getDefinition().calls = calls;
@@ -474,7 +538,13 @@ Subclass.Service.Service = (function()
     Service.prototype.validateSingleton = function(singleton)
     {
         if (singleton !== null && typeof singleton != 'boolean') {
-            this._throwInvalidAttribute('singleton', 'a boolean');
+            Subclass.Error.create('InvalidServiceOption')
+                .option('singleton')
+                .service(this.getName())
+                .received(singleton)
+                .expected('a boolean')
+                .apply()
+            ;
         }
         return true;
     };
@@ -487,7 +557,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setSingleton = function(singleton)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateSingleton(singleton);
         this.getDefinition().singleton = singleton;
@@ -512,7 +585,13 @@ Subclass.Service.Service = (function()
     Service.prototype.validateTags = function(tags)
     {
         if (tags !== null && !Array.isArray(tags)) {
-            this._throwInvalidAttribute('tags', 'an array');
+            Subclass.Error.create('InvalidServiceOption')
+                .option('tags')
+                .service(this.getName())
+                .received(tags)
+                .expected('an array of strings')
+                .apply()
+            ;
         }
         return true;
     };
@@ -525,7 +604,10 @@ Subclass.Service.Service = (function()
     Service.prototype.setTags = function(tags)
     {
         if (this.isInitialized()) {
-            this._throwServiceInitialized();
+            Subclass.Error.create('ServiceInitialized')
+                .service(this.getName())
+                .apply()
+            ;
         }
         this.validateTags(tags);
         this.getDefinition().tags = tags;
@@ -624,7 +706,10 @@ Subclass.Service.Service = (function()
                 var serviceName = arg.substr(1);
 
                 if (tags.indexOf(serviceName) >= 0 || serviceName == chain[0]) {
-                    $this._throwRecursionInjection();
+                    Subclass.Error.create(
+                        'Can\'t create instance of service "' + this.getName() + '". ' +
+                        'Circular dependency injection was found.'
+                    );
                 }
                 if (chain.indexOf(serviceName) > 0) {
                     return;
@@ -675,59 +760,6 @@ Subclass.Service.Service = (function()
         // Tells that service was initialized
 
         this._initialized = true;
-    };
-
-    /**
-     * Throws error when specified attribute is not valid
-     *
-     * @param {string} attributeName
-     * @param {string} types
-     * @throws {Error}
-     * @private
-     */
-    Service.prototype._throwInvalidAttribute = function(attributeName, types)
-    {
-        throw new Error(
-            'Invalid value of attribute "' + attributeName + '" ' +
-            'in definition of service ' + this.getName() + '. ' +
-            'It must be ' + types + '.'
-        );
-    };
-
-    /**
-     * Throws error when trying to modify service definition after its creation
-     *
-     * @throws {Error}
-     * @private
-     */
-    Service.prototype._throwServiceInitialized = function()
-    {
-        throw new Error('You can\'t modify service definition after it was created');
-    };
-
-    /**
-     * Throws error when circular dependency injection happens.
-     *
-     * @throws {Error}
-     * @private
-     */
-    Service.prototype._throwRecursionInjection = function()
-    {
-        throw new Error(
-            'Can\'t create instance of service "' + this.getName() + '". ' +
-            'Circular dependency injection was found.'
-        );
-    };
-
-    /**
-     * Throws error when trying to get/set instance of abstract service
-     *
-     * @throws {Error}
-     * @private
-     */
-    Service.prototype._throwAbstractService = function()
-    {
-        throw new Error('You can\'t get/create instance of abstract service "' + this.getName() + '".');
     };
 
     return Service;

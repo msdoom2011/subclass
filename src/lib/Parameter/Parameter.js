@@ -23,11 +23,12 @@ Subclass.Parameter.Parameter = (function()
     function Parameter(parameterName, parameterValue)
     {
         if (!parameterName || typeof parameterName != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "parameterName",
-                parameterName,
-                'a string'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of parameter", false)
+                .received(parameterName)
+                .expected('a string')
+                .apply()
+            ;
         }
 
         /**

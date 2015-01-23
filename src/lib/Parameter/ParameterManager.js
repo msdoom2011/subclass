@@ -25,11 +25,12 @@ Subclass.Parameter.ParameterManager = (function()
     function ParameterManager(module)
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
-            Subclass.Exception.InvalidArgument(
-                "module",
-                module,
-                'an instance of "Subclass.Module.Module" class'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("module instance", false)
+                .received(module)
+                .expected('an instance of "Subclass.Module.Module" class')
+                .apply()
+            ;
         }
 
         /**
@@ -125,7 +126,7 @@ Subclass.Parameter.ParameterManager = (function()
     ParameterManager.prototype.registerParameter = function(paramName, paramValue)
     {
         if (this.getModule().isReady()) {
-            throw new Error('Can\'t register new parameter when module is ready.');
+            Subclass.Error.create('Can\'t register new parameter when module is ready.');
         }
         this._parameters[paramName] = new Subclass.Parameter.Parameter(
             paramName,
@@ -153,10 +154,10 @@ Subclass.Parameter.ParameterManager = (function()
     ParameterManager.prototype.setParameter = function(paramName, paramValue)
     {
         if (this.getModule().isReady()) {
-            throw new Error('Can\'t change parameter value when module is ready.');
+            Subclass.Error.create('Can\'t change parameter value when module is ready.');
         }
         if (!this.issetParameter(paramName)) {
-            throw new Error('Parameter with name "' + paramName + '" is not exists.');
+            Subclass.Error.create('Parameter with name "' + paramName + '" is not exists.');
         }
         this._parameters[paramName].setValue(paramValue);
     };
@@ -178,7 +179,7 @@ Subclass.Parameter.ParameterManager = (function()
     ParameterManager.prototype.getParameter = function(paramName)
     {
         if (!this.issetParameter(paramName)) {
-            throw new Error('Parameter with name "' + paramName + '" is not exists.');
+            Subclass.Error.create('Parameter with name "' + paramName + '" is not exists.');
         }
         return this.getParameters()[paramName].getValue();
     };

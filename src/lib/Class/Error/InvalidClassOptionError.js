@@ -3,11 +3,11 @@
  * @class
  * @extends {Subclass.Error.Error}
  */
-Subclass.Module.Error.InvalidModuleConfigOptionError = (function()
+Subclass.Class.Error.InvalidClassOptionError = (function()
 {
-    function InvalidModuleConfigOptionError(message)
+    function InvalidClassOptionError(message)
     {
-        InvalidModuleConfigOptionError.$parent.call(this, message);
+        InvalidClassOptionError.$parent.call(this, message);
     }
 
     /**
@@ -16,35 +16,22 @@ Subclass.Module.Error.InvalidModuleConfigOptionError = (function()
      * @returns {string}
      * @static
      */
-    InvalidModuleConfigOptionError.getName = function()
+    InvalidClassOptionError.getName = function()
     {
-        return "InvalidModuleConfigOption";
+        return "InvalidClassOption";
     };
 
     /**
      * @inheritDoc
      */
-    InvalidModuleConfigOptionError.getOptions = function()
+    InvalidClassOptionError.getOptions = function()
     {
         var options = this.$parent.getOptions();
 
         return options.concat([
-            'option',
-            'module',
+            'className',
             'expected',
-            'received'
-        ]);
-    };
-
-    /**
-     * @inheritDoc
-     */
-    InvalidModuleConfigOptionError.getOptionsRequired = function()
-    {
-        var required = this.$parent.getOptionsRequired();
-
-        return required.concat([
-            'module',
+            'received',
             'option'
         ]);
     };
@@ -52,13 +39,26 @@ Subclass.Module.Error.InvalidModuleConfigOptionError = (function()
     /**
      * @inheritDoc
      */
-    InvalidModuleConfigOptionError.prototype.buildMessage = function()
+    InvalidClassOptionError.getOptionsRequired = function()
+    {
+        var required = this.$parent.getOptionsRequired();
+
+        return required.concat([
+            'className',
+            'option'
+        ]);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    InvalidClassOptionError.prototype.buildMessage = function()
     {
         var message = this.constructor.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Invalid value of option "' + this.option() + '" ';
-            message += 'in configuration of module "' + this.module() + '". ';
+            message += 'in definition of class "' + this.className() + '". ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""
         }
@@ -67,10 +67,10 @@ Subclass.Module.Error.InvalidModuleConfigOptionError = (function()
     };
 
     Subclass.Error.registerType(
-        InvalidModuleConfigOptionError.getName(),
-        InvalidModuleConfigOptionError
+        InvalidClassOptionError.getName(),
+        InvalidClassOptionError
     );
 
-    return InvalidModuleConfigOptionError;
+    return InvalidClassOptionError;
 
 })();

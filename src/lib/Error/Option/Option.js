@@ -9,9 +9,10 @@ Subclass.Error.Option.Option = (function()
          * Sets/returns options name
          *
          * @param {string} [option]
+         * @param {boolean} [quotes]
          * @returns {Subclass.Error}
          */
-        option: function(option)
+        option: function(option, quotes)
         {
             if (!arguments.length) {
                 return this._option;
@@ -19,7 +20,16 @@ Subclass.Error.Option.Option = (function()
             if (option && typeof option != 'string') {
                 throw new Error('Specified invalid option name. It must be a string.');
             }
-            this._option = option;
+            if (quotes !== false) {
+                quotes = true;
+            }
+            var opt = [option];
+
+            if (quotes) {
+                opt.unshift('"');
+                opt.push('"');
+            }
+            this._option = opt.join("");
 
             return this;
         },

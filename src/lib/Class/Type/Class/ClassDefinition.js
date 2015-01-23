@@ -24,7 +24,7 @@ Subclass.Class.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateStatic = function(value)
     {
         if (value !== null && !Subclass.Tools.isPlainObject(value)) {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .option('$_static')
                 .className(this.getClass().getName())
                 .received(value)
@@ -140,7 +140,7 @@ Subclass.Class.Class.ClassDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .option('$_implements')
                 .className(this.getClass().getName())
                 .received(interfaces)

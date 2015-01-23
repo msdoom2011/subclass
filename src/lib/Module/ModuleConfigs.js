@@ -127,11 +127,12 @@ Subclass.Module.ModuleConfigs = (function()
             Subclass.Error.create('Can\'t change configs in ready module.');
         }
         if (moduleConfigs && !Subclass.Tools.isPlainObject(moduleConfigs)) {
-            Subclass.Exception.InvalidArgument(
-                "moduleConfigs",
-                moduleConfigs,
-                "a plain object"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("module configuration", false)
+                .received(moduleConfigs)
+                .expected("a plain object")
+                .apply()
+            ;
         }
         if (moduleConfigs) {
             for (var configName in moduleConfigs) {
@@ -216,7 +217,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof isPlugin != 'boolean') {
-            Subclass.Error.create('InvalidModuleConfigOption')
+            Subclass.Error.create('InvalidModuleOption')
                 .option('plugin')
                 .module(this.getModule().getName())
                 .received(isPlugin)
@@ -266,7 +267,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (parentModuleName !== null && typeof parentModuleName != 'string') {
-            Subclass.Error.create('InvalidModuleConfigOption')
+            Subclass.Error.create('InvalidModuleOption')
                 .option('pluginOf')
                 .module(this.getModule().getName())
                 .received(parentModuleName)
@@ -309,7 +310,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof autoload != 'boolean') {
-            Subclass.Error.create('InvalidModuleConfigOption')
+            Subclass.Error.create('InvalidModuleOption')
                 .option('autoload')
                 .module(this.getModule().getName())
                 .received(autoload)
@@ -368,7 +369,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof rootPath != 'string') {
-            Subclass.Error.create('InvalidModuleConfigOption')
+            Subclass.Error.create('InvalidModuleOption')
                 .option('rootPath')
                 .module(this.getModule().getName())
                 .received(rootPath)
@@ -577,7 +578,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
-            Subclass.Error.create('InvalidModuleConfigOption')
+            Subclass.Error.create('InvalidModuleOption')
                 .option('parameters')
                 .module(this.getModule().getName())
                 .received(parameters)
@@ -692,7 +693,7 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (!services || !Subclass.Tools.isPlainObject(services)) {
-            Subclass.Error.create('InvalidModuleConfigOption')
+            Subclass.Error.create('InvalidModuleOption')
                 .option('services')
                 .module(this.getModule().getName())
                 .received(services)
@@ -818,11 +819,12 @@ Subclass.Module.ModuleConfigs = (function()
         this._checkModuleIsReady();
 
         if (typeof onReadyCall != 'boolean') {
-            Subclass.Exception.InvalidArgument(
-                "onReadyCall",
-                onReadyCall,
-                "a boolean"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("automatically call onReady callbacks marker", false)
+                .received(onReadyCall)
+                .expected("a boolean")
+                .apply()
+            ;
         }
         this._onReadyCall = onReadyCall;
     };

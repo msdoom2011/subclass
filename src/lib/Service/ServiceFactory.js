@@ -38,7 +38,10 @@ Subclass.Service.ServiceFactory = (function()
         var firstCreation = false;
 
         if (serviceDefinition.getAbstract()) {
-            serviceDefinition._throwAbstractService();
+            Subclass.Error.create('AbstractService')
+                .service(serviceDefinition.getName())
+                .apply()
+            ;
         }
         if (
             serviceDefinition.isInitialized()
@@ -67,7 +70,10 @@ Subclass.Service.ServiceFactory = (function()
     ServiceFactory.prototype.createService = function(serviceDefinition)
     {
         if (serviceDefinition.getAbstract()) {
-            serviceDefinition._throwAbstractService();
+            Subclass.Error.create('AbstractService')
+                .service(serviceDefinition.getName())
+                .apply()
+            ;
         }
         var serviceManager = this.getServiceManager();
         var classManager = serviceManager.getModule().getClassManager();

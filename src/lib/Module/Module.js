@@ -87,11 +87,12 @@ Subclass.Module.Module = (function()
         var $this = this;
 
         if (!moduleName || typeof moduleName != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "moduleName",
-                moduleName,
-                'a string'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of module", false)
+                .received(moduleName)
+                .expected('a string')
+                .apply()
+            ;
         }
         if (!moduleConfigs) {
             moduleConfigs = {};
@@ -246,11 +247,12 @@ Subclass.Module.Module = (function()
     Module.prototype.setParent = function(parentModule)
     {
         if (parentModule !== null && !(parentModule instanceof Subclass.Module.Module)) {
-            Subclass.Exception.InvalidArgument(
-                "parentModule",
-                parentModule,
-                'an instance of "Subclass.Module.Module"'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("parent module instance", false)
+                .received(parentModule)
+                .expected('an instance of "Subclass.Module.Module"')
+                .apply()
+            ;
         }
         this._parent = parentModule;
     };
@@ -575,11 +577,12 @@ Subclass.Module.Module = (function()
         var $this = this;
 
         if (!moduleName || typeof moduleName != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "moduleName",
-                moduleName,
-                "a string"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of module", false)
+                .received(moduleName)
+                .expected("a string")
+                .apply()
+            ;
 
         } else if (
             Subclass.issetModule(moduleName)
@@ -591,18 +594,20 @@ Subclass.Module.Module = (function()
             );
         }
         if (moduleFile && typeof moduleFile != 'string') {
-            Subclass.Exception.InvalidArgument(
-                "moduleFile",
-                moduleFile,
-                "a string or be omitted"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("name of module", false)
+                .received(moduleFile)
+                .expected("a string or be omitted")
+                .apply()
+            ;
         }
         if (callback && typeof callback != 'function') {
-            Subclass.Exception.InvalidArgument(
-                "callback",
-                callback,
-                "a function"
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("callback")
+                .received(callback)
+                .expected("a function")
+                .apply()
+            ;
         }
         if (!moduleFile && callback) {
             Subclass.Error.create(

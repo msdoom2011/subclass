@@ -59,10 +59,10 @@ Subclass.Tools.LoadingTools = (function()
                             }
                         }
                     } else {
-                        throw new Error('Loading file "' + fileName + '" failed.');
+                        Subclass.Error.create('Loading file "' + fileName + '" failed.');
                     }
                 } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
-                    throw new Error('Loading file "' + fileName + '" failed.');
+                    Subclass.Error.create('Loading file "' + fileName + '" failed.');
                 }
             };
 
@@ -104,10 +104,10 @@ Subclass.Tools.LoadingTools = (function()
                             callbacks.afterCallback();
                         }
                     } else {
-                        throw new Error('Loading file "' + fileName + '" failed.');
+                        Subclass.Error.create('Loading file "' + fileName + '" failed.');
                     }
                 } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
-                    throw new Error('Loading file "' + fileName + '" failed.');
+                    Subclass.Error.create('Loading file "' + fileName + '" failed.');
                 }
             };
 
@@ -129,20 +129,24 @@ Subclass.Tools.LoadingTools = (function()
     function _processLoadArguments(fileName, callback)
     {
         if (!fileName || typeof fileName != 'string') {
-            throw new Error(
-                'Specified invalid file name "' + fileName + '" when trying to load it. ' +
-                'It must be a string.'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument('name of file')
+                .received(fileName)
+                .expected('a string')
+                .apply()
+            ;
         }
         if (
             callback
             && typeof callback != 'function'
             && !this.isPlainObject(callback)
         ) {
-            throw new Error(
-                'Specify not valid callback when trying to load file "' + fileName + '". ' +
-                'It must be a function.'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument('callback when trying to load file "' + fileName + '"', false)
+                .received(callback)
+                .expected('a function')
+                .apply()
+            ;
         }
 
         var beforeCallback, afterCallback;

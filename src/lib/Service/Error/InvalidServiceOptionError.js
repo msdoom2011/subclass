@@ -3,11 +3,11 @@
  * @class
  * @extends {Subclass.Error.Error}
  */
-Subclass.Class.Error.InvalidClassDefinitionOptionError = (function()
+Subclass.Service.Error.InvalidServiceOptionError = (function()
 {
-    function InvalidClassDefinitionOptionError(message)
+    function InvalidServiceOptionError(message)
     {
-        InvalidClassDefinitionOptionError.$parent.call(this, message);
+        InvalidServiceOptionError.$parent.call(this, message);
     }
 
     /**
@@ -16,35 +16,35 @@ Subclass.Class.Error.InvalidClassDefinitionOptionError = (function()
      * @returns {string}
      * @static
      */
-    InvalidClassDefinitionOptionError.getName = function()
+    InvalidServiceOptionError.getName = function()
     {
-        return "InvalidClassDefinitionOption";
+        return "InvalidServiceOption";
     };
 
     /**
      * @inheritDoc
      */
-    InvalidClassDefinitionOptionError.getOptions = function()
+    InvalidServiceOptionError.getOptions = function()
     {
         var options = this.$parent.getOptions();
 
         return options.concat([
-            'className',
+            'option',
+            'service',
             'expected',
-            'received',
-            'option'
+            'received'
         ]);
     };
 
     /**
      * @inheritDoc
      */
-    InvalidClassDefinitionOptionError.getOptionsRequired = function()
+    InvalidServiceOptionError.getOptionsRequired = function()
     {
         var required = this.$parent.getOptionsRequired();
 
         return required.concat([
-            'className',
+            'service',
             'option'
         ]);
     };
@@ -52,13 +52,13 @@ Subclass.Class.Error.InvalidClassDefinitionOptionError = (function()
     /**
      * @inheritDoc
      */
-    InvalidClassDefinitionOptionError.prototype.buildMessage = function()
+    InvalidServiceOptionError.prototype.buildMessage = function()
     {
         var message = this.constructor.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Invalid value of option "' + this.option() + '" ';
-            message += 'in definition of class "' + this.className() + '". ';
+            message += 'in definition of service "' + this.service() + '". ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""
         }
@@ -67,10 +67,10 @@ Subclass.Class.Error.InvalidClassDefinitionOptionError = (function()
     };
 
     Subclass.Error.registerType(
-        InvalidClassDefinitionOptionError.getName(),
-        InvalidClassDefinitionOptionError
+        InvalidServiceOptionError.getName(),
+        InvalidServiceOptionError
     );
 
-    return InvalidClassDefinitionOptionError;
+    return InvalidServiceOptionError;
 
 })();

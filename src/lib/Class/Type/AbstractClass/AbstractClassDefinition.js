@@ -38,7 +38,7 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .option('$_abstract')
                 .className(this.getClass().getName())
                 .expected('a plain object with methods or a null')

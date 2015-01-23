@@ -57,7 +57,7 @@ Subclass.Tools.PropertyTools = (function()
     function _generateAccessorName(accessorType, propertyName)
     {
         if (['get', 'set', 'is'].indexOf(accessorType) < 0) {
-            throw new Error('Invalid accessor type! It can be only "get", "set" or "is".');
+            Subclass.Error.create('Invalid accessor type! It can be only "get", "set" or "is".');
         }
         var propNameParts = propertyName.split("_");
 

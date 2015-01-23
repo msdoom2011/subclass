@@ -141,7 +141,7 @@ Subclass.Tools.CheckTools = (function()
         isNumberEven: function(value)
         {
             if (!this.isNumber(value)) {
-                throw new Error('Trying to check is even not number value.');
+                Subclass.Error.create('Trying to check whether is even the not number value.');
             }
             return value % 2 == !1;
         },

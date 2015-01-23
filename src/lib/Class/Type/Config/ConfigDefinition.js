@@ -90,7 +90,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .option('$_includes')
                 .className(this.getClass().getName())
                 .received(includes)
@@ -157,7 +157,7 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .option('$_decorators')
                 .className(this.getClass().getName())
                 .received(decorators)

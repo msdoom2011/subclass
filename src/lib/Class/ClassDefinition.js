@@ -85,7 +85,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateRequires = function(requires)
     {
         if (requires && typeof requires != 'object') {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .argument('$_requires')
                 .received(requires)
                 .className(this.getClass().getName())
@@ -97,7 +97,7 @@ Subclass.Class.ClassDefinition = (function()
             if (Array.isArray(requires)) {
                 for (var i = 0; i < requires.length; i++) {
                     if (typeof requires[i] != 'string') {
-                        Subclass.Error.create('InvalidClassDefinitionOption')
+                        Subclass.Error.create('InvalidClassOption')
                             .argument('$_requires')
                             .received(requires)
                             .className(this.getClass().getName())
@@ -118,7 +118,7 @@ Subclass.Class.ClassDefinition = (function()
                         );
                     }
                     if (typeof requires[alias] != 'string') {
-                        Subclass.Error.create('InvalidClassDefinitionOption')
+                        Subclass.Error.create('InvalidClassOption')
                             .argument('$_requires')
                             .received(requires)
                             .className(this.getClass().getName())
@@ -196,7 +196,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateExtends = function(parentClassName)
     {
         if (parentClassName !== null && typeof parentClassName != 'string') {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .argument('$_extends')
                 .received(parentClassName)
                 .className(this.getClass().getName())
@@ -242,7 +242,7 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.validateProperties = function(properties)
     {
         if (properties && typeof properties != 'object') {
-            Subclass.Error.create('InvalidClassDefinitionOption')
+            Subclass.Error.create('InvalidClassOption')
                 .argument('$_properties')
                 .received(properties)
                 .className(this.getClass().getName())
@@ -262,7 +262,7 @@ Subclass.Class.ClassDefinition = (function()
                     );
                 }
                 if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
-                    Subclass.Error.create('InvalidClassDefinitionOption')
+                    Subclass.Error.create('InvalidClassOption')
                         .argument('$_properties')
                         .received(properties)
                         .className(this.getClass().getName())

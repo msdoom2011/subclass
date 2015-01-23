@@ -20,18 +20,20 @@ Subclass.Module.ModuleManager = (function()
     function ModuleManager(module, pluginModuleNames)
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
-            Subclass.Exception.InvalidArgument(
-                "module",
-                module,
-                'an instance of "Subclass.Module.Module"'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("module", false)
+                .received(module)
+                .expected('an instance of "Subclass.Module.Module"')
+                .apply()
+            ;
         }
         if (pluginModuleNames && !Array.isArray(pluginModuleNames)) {
-            Subclass.Exception.InvalidArgument(
-                "pluginModuleNames",
-                pluginModuleNames,
-                'an array of plug-in module names'
-            );
+            Subclass.Error.create('InvalidArgument')
+                .argument("list of plug-in module names", false)
+                .received(pluginModuleNames)
+                .expected('an array of plug-in module names')
+                .apply()
+            ;
         } else if (!pluginModuleNames) {
             pluginModuleNames = [];
         }

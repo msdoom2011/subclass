@@ -4,6 +4,11 @@
 Subclass.Service = {};
 
 /**
+ * @namespace
+ */
+Subclass.Service.Error = {};
+
+/**
  * @class
  */
 Subclass.Service.ServiceManager = (function()
@@ -184,7 +189,7 @@ Subclass.Service.ServiceManager = (function()
     ServiceManager.prototype.registerService = function(serviceName, serviceDefinition)
     {
         if (this.getModule().isReady()) {
-            throw new Error('Can\'t define new services when module is ready.');
+            Subclass.Error.create('Can\'t define new services when module is ready.');
         }
         var service = new Subclass.Service.Service(this, serviceName, serviceDefinition);
         this._services[serviceName] = service;
@@ -207,9 +212,8 @@ Subclass.Service.ServiceManager = (function()
     ServiceManager.prototype.getService = function(serviceName)
     {
         if (!this.issetService(serviceName)) {
-            throw new Error('Service with name "' + serviceName + '" is not exists.');
+            Subclass.Error.create('Service with name "' + serviceName + '" is not exists.');
         }
-
         return this.getServiceFactory().getService(this.getServices()[serviceName]);
     };
 
@@ -222,7 +226,7 @@ Subclass.Service.ServiceManager = (function()
     ServiceManager.prototype.getServiceDefinition = function(serviceName)
     {
         if (!this.issetService(serviceName)) {
-            throw new Error('Service with name "' + serviceName + '" is not exists.');
+            Subclass.Error.create('Service with name "' + serviceName + '" is not exists.');
         }
         return this.getServices()[serviceName];
     };

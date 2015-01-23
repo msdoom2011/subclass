@@ -109,7 +109,7 @@ window.Subclass = (function()
             var lazyPlugins = [];
 
             function throwInvalidPluginDef(optName, optType) {
-                throw new Error(
+                Subclass.Error.create(
                     'Specified invalid plug-in module definition while creating module "' + moduleName + '". ' +
                     'The required option "' + optName + '" was missed or is not ' + optType + '.'
                 );
@@ -198,7 +198,7 @@ window.Subclass = (function()
         getModule: function(moduleName)
         {
             if (!this.issetModule(moduleName)) {
-                throw new Error('Trying to get non existent module "' + moduleName + '".');
+                Subclass.Error.create('Trying to get non existent module "' + moduleName + '".');
             }
             for (var i = 0; i < _modules.length; i++) {
                 if (_modules[i].getName() == moduleName) {

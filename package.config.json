@@ -6,7 +6,7 @@
   "doc_dir": "doc/api",
   "lib": {
     "dir": {
-      "src": "<%= config.src_dir %>/lib",
+      "src": "<%= config.src_dir %>",
       "build": "<%= config.build_dir %>/lib",
       "release": "<%= config.release_dir %>/lib"
     },
@@ -114,7 +114,7 @@
   },
   "demo": {
     "dir": {
-      "src": "<%= config.src_dir %>/demo",
+      "src": "demo",
       "build": "<%= config.build_dir %>/demo",
       "release": "<%= config.release_dir %>/demo"
     },

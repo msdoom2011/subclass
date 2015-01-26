@@ -14,6 +14,9 @@
  *
  * @param {string[]} pluginModuleNames
  *      Array of plug-in module names
+ *
+ * @param {string[]} lazyModuleNames
+ *      Array of plug-in module names which are in loading process at the moment
  */
 Subclass.Module.ModuleManager = (function()
 {
@@ -38,6 +41,18 @@ Subclass.Module.ModuleManager = (function()
             pluginModuleNames = [];
         }
 
+        // Selecting lazy modules
+
+        var lazyModuleNames = [];
+
+        for (var i = 0; i < pluginModuleNames.length; i++) {
+            if (typeof pluginModuleNames == 'object') {
+                lazyModuleNames.push(pluginModuleNames[i].name);
+                pluginModuleNames.splice(i, 1);
+                i--;
+            }
+        }
+
         /**
          * Main module instance
          *
@@ -52,6 +67,14 @@ Subclass.Module.ModuleManager = (function()
          */
         this._modules = this._processModules(pluginModuleNames);
         this._modules.unshift(module);
+
+        /**
+         * The list of module names that are loading at the moment
+         * When each of lazy modules will be loaded, it will be removed from current array.
+         *
+         * @type {string[]}
+         */
+        this._lazyModules = lazyModuleNames;
     }
 
     /**
@@ -77,6 +100,55 @@ Subclass.Module.ModuleManager = (function()
     ModuleManager.prototype.getModules = function()
     {
         return this._modules;
+    };
+
+    /**
+     * Returns the list of all lazy plug-in modules
+     *
+     * @method getLazyModules
+     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @returns {string[]}
+     */
+    ModuleManager.prototype.getLazyModules = function()
+    {
+        return this._lazyModules;
+    };
+
+    /**
+     * Checks whether module with specified name is lazy
+     *
+     * @mthod issetLazyModule
+     * @memberOf Subclass.Module.ModuleManager.prototype
+     *
+     * @param {string} moduleName
+     *      A name of lazy module
+     *
+     * @returns {boolean}
+     */
+    ModuleManager.prototype.issetLazyModule = function(moduleName)
+    {
+        return this.getLazyModules().indexOf(moduleName) >= 0;
+    };
+
+    /**
+     * Reports whether current module has lazy plug-in modules
+     *
+     * @returns {boolean}
+     */
+    ModuleManager.prototype.hasLazyModules = function()
+    {
+        return !!this.getLazyModules().length;
+    };
+
+    ModuleManager.prototype.resolveLazyModule = function(moduleName)
+    {
+        if (!this.issetLazyModule(moduleName)) {
+            return;
+        }
+        var lazyModules = this.getLazyModules();
+        var lazyModuleIndex = lazyModules.indexOf(moduleName);
+
+        this.getLazyModules().splice(lazyModuleIndex, 1);
     };
 
     /**

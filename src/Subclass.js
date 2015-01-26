@@ -105,7 +105,7 @@ window.Subclass = (function()
             }
 
             modulePlugins = Subclass.Tools.unique(modulePlugins);
-            var deletePlugins = [];
+            //var deletePlugins = [];
             var lazyPlugins = [];
 
             function throwInvalidPluginDef(optName, optType) {
@@ -119,7 +119,7 @@ window.Subclass = (function()
                 if (Subclass.Tools.isPlainObject(modulePlugins[i])) {
                     var moduleDef = modulePlugins[i];
                     lazyPlugins.push(modulePlugins[i]);
-                    deletePlugins.push(i);
+                    //deletePlugins.push(i);
 
                     if (!moduleDef.name || typeof moduleDef.name != 'string') {
                         throwInvalidPluginDef('name', 'a string');
@@ -133,12 +133,12 @@ window.Subclass = (function()
                 }
             }
 
-            deletePlugins.sort();
-
-            for (i = 0; i < deletePlugins.length; i++) {
-                var index = deletePlugins[i];
-                modulePlugins.splice(index - i, 1);
-            }
+            //deletePlugins.sort();
+            //
+            //for (i = 0; i < deletePlugins.length; i++) {
+            //    var index = deletePlugins[i];
+            //    modulePlugins.splice(index - i, 1);
+            //}
 
             // Creating instance of module
 
@@ -158,7 +158,6 @@ window.Subclass = (function()
                         for (var i = 0; i < lazyPluginsLength; i++) {
                             module.addPlugin(lazyPluginsOrder[i].name);
                         }
-
                     } else {
                         return Subclass.Tools.loadJS(
                             lazyPlugins.shift().file,

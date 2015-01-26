@@ -41,26 +41,32 @@ Subclass.Tools.LoadingTools = (function()
 
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    var script = document.createElement('script');
-                    script.setAttribute("type", "text/javascript");
-                    script.text = xmlhttp.responseText;
+                    setTimeout(function()
+                    {
+                        console.log('-skldjflksfjkldsjfksjfkljskdljflsjdfkljsdkfjsdklflksjflksdjf');
 
-                    if (script.text) {
-                        if (currentScript) {
-                            if (callbacks.beforeCallback) {
-                                callbacks.beforeCallback();
+                        var script = document.createElement('script');
+                        script.setAttribute("type", "text/javascript");
+                        script.text = xmlhttp.responseText;
+
+                        if (script.text) {
+                            if (currentScript) {
+                                if (callbacks.beforeCallback) {
+                                    callbacks.beforeCallback();
+                                }
+                                currentScript.parentNode.insertBefore(
+                                    script,
+                                    currentScript.nextSibling
+                                );
+                                if (callbacks.afterCallback) {
+                                    callbacks.afterCallback();
+                                }
                             }
-                            currentScript.parentNode.insertBefore(
-                                script,
-                                currentScript.nextSibling
-                            );
-                            if (callbacks.afterCallback) {
-                                callbacks.afterCallback();
-                            }
+                        } else {
+                            Subclass.Error.create('Loading file "' + fileName + '" failed.');
                         }
-                    } else {
-                        Subclass.Error.create('Loading file "' + fileName + '" failed.');
-                    }
+                    }, 1000);
+
                 } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
                     Subclass.Error.create('Loading file "' + fileName + '" failed.');
                 }

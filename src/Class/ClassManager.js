@@ -132,6 +132,9 @@ Subclass.Class.ClassManager = (function()
             var moduleManager = module.getModuleManager();
             var classes = {};
 
+            Разблокировка загрузки файлов плагинов происходит до того, как плагины были добавлены
+
+
             moduleManager.eachModule(function(module) {
                 if (module == mainModule) {
                     Subclass.Tools.extend(classes, $this._classes);
@@ -212,6 +215,10 @@ Subclass.Class.ClassManager = (function()
         this._loading = true;
         this._loadingPause = false;
 
+        if (this.getModule().getName() == 'appPlugin1') {
+            console.log('started');
+        }
+
         this.processLoadStack();
     };
 
@@ -220,6 +227,9 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.pauseLoading = function()
     {
+        if (this.getModule().getName() == 'appPlugin1') {
+            console.log('stopped');
+        }
         clearTimeout(this._loadingEndTimeout);
         this._loadingPause = true;
     };
@@ -245,12 +255,33 @@ Subclass.Class.ClassManager = (function()
         clearTimeout(this._loadingEndTimeout);
         var $this = this;
 
-        if (!this.isLoadingPaused() && this.isLoadStackEmpty()) {
+        if (
+            !this.isLoadingPaused()
+            && this.isLoadStackEmpty()
+        ) {
             this._loadingEndTimeout = setTimeout(function() {
                 $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
                 $this._loading = false;
             }, 10);
         }
+
+        //if (!this.isLoadingPaused() && this.isLoadStackEmpty()) {
+        //    this._loadingEndTimeout = setTimeout(function() {
+        //        var plugins = $this.getModule().getModuleManager().getPlugins();
+        //
+        //        for (var i = 0; i < plugins.length; i++) {
+        //            var pluginClassManager = plugins[i].getClassManager();
+        //
+        //            if (!pluginClassManager.isLoadingLocked()) {
+        //                pluginClassManager.unlockLoading();
+        //            }
+        //        }
+        //        if (!$this.getModule().getModuleManager().hasLazyModules()) {
+        //            $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
+        //            $this._loading = false;
+        //        }
+        //    }, 10);
+        //}
     };
 
     /**
@@ -483,7 +514,6 @@ Subclass.Class.ClassManager = (function()
                         if (!$this.issetClass(className)) {
                             Subclass.Error.create('Loading class "' + className + '" failed.');
                         }
-
                         if (callback) {
                             callback($this.getClass(className));
                         }

@@ -495,16 +495,26 @@ Subclass.Module.Module = (function()
         if (this.isReady()) {
             return;
         }
+
         if (this.getClassManager().isLoadStackEmpty() && this.isPluginsReady()) {
             this._ready = true;
 
             if (this.isPlugin() && this.hasParent() && !this.getRoot().isReady()) {
+                var rootModule = this.getRoot();
+                var rootModuleManager = rootModule.getModuleManager();
+
+                if (rootModuleManager.issetLazyModule(this.getName())) {
+                    rootModuleManager.resolveLazyModule(this.getName());
+                    rootModule.getClassManager().startLoading();
+                    rootModule.getClassManager().completeLoading();
+                }
                 this.getRoot().setReady();
                 return;
             }
             if ((
                     this.isRoot()
                     && this.getConfigManager().isOnReadyAutoCall()
+                    && !this.getModuleManager().hasLazyModules()
                 ) || (
                     this.isPlugin()
                     && this.hasParent()
@@ -616,6 +626,11 @@ Subclass.Module.Module = (function()
             );
         }
         if (moduleFile) {
+            var classManager = this.getClassManager();
+
+            if (classManager.isLoading()) {
+                classManager.pauseLoading();
+            }
             Subclass.Tools.loadJS(moduleFile, function loadCallback() {
                 if (callback) {
                     var module = Subclass.getModule(moduleName).getModule();
@@ -632,6 +647,8 @@ Subclass.Module.Module = (function()
 
         var moduleManager = this.getModuleManager();
             moduleManager.addPlugin(moduleName);
+
+        //Subclass.getModule(moduleName).getClassManager().unlockLoading();
 
         if (this.isReady()) {
             var eventManager = this.getEventManager();

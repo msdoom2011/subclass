@@ -69,7 +69,9 @@ Subclass.Error = (function()
      */
     Exception.prototype.apply = function()
     {
-        this.constructor.$parent.validateRequiredOptions(this);
+        if (this.constructor.$parent) {
+            this.constructor.$parent.validateRequiredOptions(this);
+        }
         var message = this.message();
 
         throw new Error(message);

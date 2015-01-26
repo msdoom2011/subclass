@@ -109,6 +109,10 @@ module.exports = function(grunt) {
             }
         },
 
+        minimize: {
+            release: '<%= uglify.release.files %>'
+        },
+
         index: {
             build: {
                 indexTarget: "<%= config.demo.dir.build %>/<%= config.demo.index %>",
@@ -132,11 +136,11 @@ module.exports = function(grunt) {
 
     grunt.registerTask("release", [
         "clean:release",
-        //"copy:release_lib",
         "copy:release_demo",
         "copy:release_readme",
         "concat:release",
         "uglify:release",
+        //'minimize:release',
         "index:release"
     ]);
 
@@ -187,5 +191,22 @@ module.exports = function(grunt) {
         }
         content += this.data.options.footer;
         grunt.file.write(this.data.dest, content);
+    });
+
+    grunt.registerMultiTask("minimize", "Minimizing uglified js file", function() {
+        var files = this.data;
+        var fileName = grunt.template.process(Object.keys(files)[0]);
+        var fileContent = grunt.file.read(fileName);
+
+        fileContent = fileContent.replace(/window\.Subclass/i, "var ___;___");
+        fileContent = fileContent.replace(/Subclass\./ig, '___.');
+        fileContent = fileContent.replace(/([\\'\\"][a-z\/ ]*)___([a-z\/ ]*[^\\'\\"])/ig, '$1Subclass$2');
+        fileContent = fileContent.replace(/___/g, '$$');
+        fileContent = fileContent.replace(fileContent.slice(-4), ";window.Subclass=$" + fileContent.slice(-4));
+
+        grunt.file.write(fileName, fileContent, {
+            encoding: 'UTF-8'
+        })
+
     });
 };

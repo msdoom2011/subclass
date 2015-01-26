@@ -43,11 +43,11 @@ Subclass.Module.ModuleManager = (function()
 
         // Selecting lazy modules
 
-        var lazyModuleNames = [];
+        var lazyModuleNames = {};
 
-        for (var i = 0; i < pluginModuleNames.length; i++) {
-            if (typeof pluginModuleNames == 'object') {
-                lazyModuleNames.push(pluginModuleNames[i].name);
+        for (var i = 0, j = 0; i < pluginModuleNames.length; i++, j++) {
+            if (typeof pluginModuleNames[i] == 'object') {
+                lazyModuleNames[pluginModuleNames[i].name] = j;
                 pluginModuleNames.splice(i, 1);
                 i--;
             }
@@ -127,7 +127,7 @@ Subclass.Module.ModuleManager = (function()
      */
     ModuleManager.prototype.issetLazyModule = function(moduleName)
     {
-        return this.getLazyModules().indexOf(moduleName) >= 0;
+        return !!this.getLazyModules().hasOwnProperty(moduleName);
     };
 
     /**
@@ -137,7 +137,7 @@ Subclass.Module.ModuleManager = (function()
      */
     ModuleManager.prototype.hasLazyModules = function()
     {
-        return !!this.getLazyModules().length;
+        return !!Object.keys(this.getLazyModules()).length;
     };
 
     ModuleManager.prototype.resolveLazyModule = function(moduleName)
@@ -145,10 +145,7 @@ Subclass.Module.ModuleManager = (function()
         if (!this.issetLazyModule(moduleName)) {
             return;
         }
-        var lazyModules = this.getLazyModules();
-        var lazyModuleIndex = lazyModules.indexOf(moduleName);
-
-        this.getLazyModules().splice(lazyModuleIndex, 1);
+        delete this.getLazyModules()[moduleName];
     };
 
     /**
@@ -196,8 +193,15 @@ Subclass.Module.ModuleManager = (function()
      */
     ModuleManager.prototype.addPlugin = function(moduleName)
     {
-        var processedModule = this._processModules([moduleName]);
-        this._modules.push(processedModule[0]);
+        var processedModule = this._processModules([moduleName])[0];
+
+        if (this.issetLazyModule(moduleName)) {
+            var lazyModuleIndex = parseInt(this.getLazyModules()[moduleName]) + 1;
+            this._modules.splice(lazyModuleIndex, 0, processedModule)
+
+        } else {
+            this._modules.push(processedModule);
+        }
     };
 
     /**

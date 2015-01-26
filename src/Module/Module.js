@@ -136,7 +136,7 @@ Subclass.Module.Module = (function()
         // Registering events
 
         this.getEventManager()
-            .registerEvent('onInit')
+            .registerEvent('onModuleInit')
             .registerEvent('onReady')
             .registerEvent('onReadyBefore')
             .registerEvent('onReadyAfter')
@@ -166,7 +166,7 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._classManager = new Subclass.Class.ClassManager(this);
-        this._classManager.initialize();
+        //this._classManager.initialize();
 
         /**
          * Service manager instance
@@ -191,7 +191,14 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._configManager = new Subclass.Module.ModuleConfigs(this);
-        this.setConfigs(moduleConfigs);
+
+        /**
+         * Checks whether module is prepared for ready
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._prepared = false;
 
         /**
          * Tells that module is ready
@@ -210,15 +217,21 @@ Subclass.Module.Module = (function()
         this._onReadyTriggered = false;
 
 
-        // Adding event listeners
+        // Initializing module
+
+        this.setConfigs(moduleConfigs);
+        this.getClassManager().initialize();
+        this.getServiceManager().initialize();
 
         var eventManager = this.getEventManager();
+        eventManager.getEvent('onModuleInit').triggerPrivate();
 
-        eventManager.getEvent('onInit').triggerPrivate();
-
-        eventManager.getEvent('onLoadingEnd').addListener(function() {
-            $this.setReady();
-        });
+        // Calling onReady callback
+        eventManager.getEvent('onLoadingEnd')
+            .addListener(function() {
+                $this.setReady();
+            }
+        );
     }
 
     /**
@@ -484,6 +497,19 @@ Subclass.Module.Module = (function()
     };
 
     /**
+     * Sets that module is prepared
+     */
+    Module.prototype.setPrepared = function()
+    {
+        this._prepared = true;
+    };
+
+    Module.prototype.isPrepared = function()
+    {
+        return this._prepared;
+    };
+
+    /**
      * Brings module to ready state and invokes registered onReady callback functions.
      * It can be invoked only once otherwise nothing will happen.
      *
@@ -496,25 +522,32 @@ Subclass.Module.Module = (function()
             return;
         }
 
-        if (this.getClassManager().isLoadStackEmpty() && this.isPluginsReady()) {
+        var classManager = this.getClassManager();
+        var configManager = this.getConfigManager();
+        this.setPrepared();
+
+        if (
+            !classManager.isLoadingLocked()
+            && classManager.isLoadStackEmpty()
+            && this.isPluginsReady()
+        ) {
             this._ready = true;
 
-            if (this.isPlugin() && this.hasParent() && !this.getRoot().isReady()) {
+            if (this.isPlugin() && this.hasParent()) {
                 var rootModule = this.getRoot();
                 var rootModuleManager = rootModule.getModuleManager();
 
                 if (rootModuleManager.issetLazyModule(this.getName())) {
                     rootModuleManager.resolveLazyModule(this.getName());
-                    rootModule.getClassManager().startLoading();
-                    rootModule.getClassManager().completeLoading();
                 }
-                this.getRoot().setReady();
-                return;
+                if (!rootModule.isReady()) {
+                    return rootModule.setReady();
+                }
             }
+
             if ((
                     this.isRoot()
-                    && this.getConfigManager().isOnReadyAutoCall()
-                    && !this.getModuleManager().hasLazyModules()
+                    && configManager.isOnReadyAutoCall()
                 ) || (
                     this.isPlugin()
                     && this.hasParent()
@@ -543,14 +576,19 @@ Subclass.Module.Module = (function()
 
     Module.prototype.isPluginsReady = function()
     {
-        var plugins = this.getModuleManager().getPlugins();
+        var moduleManager = this.getModuleManager();
+        var plugins = moduleManager.getPlugins();
         var result = true;
+
+        if (moduleManager.hasLazyModules()) {
+            return false;
+        }
 
         for (var i = 0; i < plugins.length; i++) {
             if (
                 result
                 && (
-                    !plugins[i].isReady()
+                    !plugins[i].isPrepared()
                     || !plugins[i].isPluginsReady()
                 )
             ) {
@@ -584,6 +622,7 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.addPlugin = function(moduleName, moduleFile, callback)
     {
+        var classManager = this.getClassManager();
         var $this = this;
 
         if (!moduleName || typeof moduleName != 'string') {
@@ -593,7 +632,6 @@ Subclass.Module.Module = (function()
                 .expected("a string")
                 .apply()
             ;
-
         } else if (
             Subclass.issetModule(moduleName)
             && Subclass.getModule(moduleName).getParentModule()
@@ -626,8 +664,6 @@ Subclass.Module.Module = (function()
             );
         }
         if (moduleFile) {
-            var classManager = this.getClassManager();
-
             if (classManager.isLoading()) {
                 classManager.pauseLoading();
             }
@@ -645,17 +681,24 @@ Subclass.Module.Module = (function()
             return;
         }
 
+        var eventManager = this.getEventManager();
         var moduleManager = this.getModuleManager();
             moduleManager.addPlugin(moduleName);
 
-        //Subclass.getModule(moduleName).getClassManager().unlockLoading();
-
-        if (this.isReady()) {
-            var eventManager = this.getEventManager();
+        if (this.isPrepared()) {
             var pluginModule = Subclass.getModule(moduleName).getModule();
-                pluginModule.getClassManager().unlockLoading();
+            var pluginClassManager = pluginModule.getClassManager();
+            var pluginEventManager = pluginModule.getEventManager();
 
-            eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
+            pluginClassManager.unlockLoading();
+
+            if (pluginModule.isPrepared()) {
+                eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
+            } else {
+                pluginEventManager.getEvent('onLoadingEnd').addListener(100000, function () {
+                    eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
+                });
+            }
         }
     };
 

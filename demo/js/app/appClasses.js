@@ -1,6 +1,4 @@
 
-console.trace();
-
 app.registerAbstractClass("AbstractClassBase", {
 
     $_abstract: {

@@ -50,24 +50,25 @@ Subclass.Service.ServiceManager = (function()
          * @private
          */
         this._services = {};
+    }
 
-
-        // Initializing
-
+    /**
+     * Initializing service manager
+     */
+    ServiceManager.prototype.initialize = function()
+    {
         var eventManager = this.getModule().getEventManager();
         var $this = this;
 
-        eventManager.getEvent('onLoadingEnd').addListener(100000, function() {
+        eventManager.getEvent('onReadyBefore').addListener(function() {
             if ($this.getModule().isRoot()) {
                 $this.normalizeServices();
             }
         });
         eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
-            if ($this.getModule().getRoot().isReady()) {
-                $this.normalizeServices();
-            }
+            $this.normalizeServices();
         });
-    }
+    };
 
     /**
      * Returns module instance

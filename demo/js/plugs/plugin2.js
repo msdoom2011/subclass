@@ -46,22 +46,22 @@ appPlugin2.setConfigs({
 
 appPlugin2.getModule().getParameterManager().getParameter('mode');
 
-appPlugin2.registerClass("Bug2Changed", {
-
-    $_extends: "Logger/BugAbstract",
-
-    _name: "bug2changed",
-
-    _message: "Bug 2 changed happens."
-
-});
-
-appPlugin2.registerClass("Bug4", {
-
-    $_extends: "Logger/BugAbstract",
-
-    _name: "bug4",
-
-    _message: "Bug 4 happens."
-
-});
+//appPlugin2.registerClass("Bug2Changed", {
+//
+//    $_extends: "Logger/BugAbstract",
+//
+//    _name: "bug2changed",
+//
+//    _message: "Bug 2 changed happens."
+//
+//});
+//
+//appPlugin2.registerClass("Bug4", {
+//
+//    $_extends: "Logger/BugAbstract",
+//
+//    _name: "bug4",
+//
+//    _message: "Bug 4 happens."
+//
+//});

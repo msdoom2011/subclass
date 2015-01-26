@@ -140,7 +140,7 @@ module.exports = function(grunt) {
         "copy:release_readme",
         "concat:release",
         "uglify:release",
-        //'minimize:release',
+        'minimize:release',
         "index:release"
     ]);
 

@@ -41,10 +41,8 @@ Subclass.Tools.LoadingTools = (function()
 
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    setTimeout(function()
-                    {
-                        console.log('-skldjflksfjkldsjfksjfkljskdljflsjdfkljsdkfjsdklflksjflksdjf');
-
+                    //setTimeout(function()
+                    //{
                         var script = document.createElement('script');
                         script.setAttribute("type", "text/javascript");
                         script.text = xmlhttp.responseText;
@@ -65,7 +63,7 @@ Subclass.Tools.LoadingTools = (function()
                         } else {
                             Subclass.Error.create('Loading file "' + fileName + '" failed.');
                         }
-                    }, 1000);
+                    //}, 1000);
 
                 } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
                     Subclass.Error.create('Loading file "' + fileName + '" failed.');

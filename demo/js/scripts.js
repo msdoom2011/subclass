@@ -35,7 +35,7 @@ app.onReady(function() {
     // If plugin2 was preloaded to the page document
 
     //app.addPlugin('appPlugin2');
-    //
+
     var logger = app.getService('logger');
     var loggerElse = app.getService('logger');
     var loggerPsix = app.getService('psix');

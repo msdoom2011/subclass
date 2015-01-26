@@ -60,11 +60,20 @@ Subclass.Module.ModuleConfigs = (function()
         this._rootPath = null;
 
         /**
+         * Reports whtether the onReady callback will be called automatically
          *
          * @type {boolean}
          * @private
          */
         this._onReadyCall = true;
+
+        /**
+         * A list of files
+         *
+         * @type {Array}
+         * @private
+         */
+        this._files = [];
     }
 
     /**
@@ -444,16 +453,16 @@ Subclass.Module.ModuleConfigs = (function()
         }
 
         var classManager = this.getModule().getClassManager();
+        var $this = this;
 
         if (this.isAutoloadEnabled()) {
-            classManager.pauseLoading();
+            this._files = Subclass.Tools.extend([], files);
 
             Subclass.Tools.loadJS(files.shift(), function loadCallback() {
-                classManager.pauseLoading();
+                $this._files.shift();
 
                 if (Subclass.Tools.isEmpty(files)) {
-                    classManager.startLoading();
-                    classManager.completeLoading();
+                    classManager.unlockLoading();
                     return callback();
 
                 } else {
@@ -464,6 +473,16 @@ Subclass.Module.ModuleConfigs = (function()
                 }
             });
         }
+    };
+
+    /**
+     * Reports whether current module loads some files
+     *
+     * @returns {boolean}
+     */
+    ModuleConfigs.prototype.hasFiles = function()
+    {
+        return !!this._files.length;
     };
 
     /**
@@ -791,7 +810,7 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (
             triggerable
-            && !module.isReady()
+            && module.isPrepared()
             && !classManager.isEmpty()
             && !classManager.isLoading()
         ) {

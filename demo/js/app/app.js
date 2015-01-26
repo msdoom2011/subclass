@@ -1,12 +1,15 @@
 
-//var app = Subclass.createModule('app', /*['appPlugin1', 'appPlugin2'],*/ {
+//var app = Subclass.createModule('app', /*['appPlugin1',*/ ['appPlugin2'], {
 var app = Subclass.createModule('app', [{
         name: 'appPlugin1',
         file: "/SubclassJS/build/demo/js/plugs/plugin1"
-    }, {
+    },
+    //,'appPlugin2'
+    {
         name: 'appPlugin2',
         file: "/SubclassJS/build/demo/js/plugs/plugin2"
-    }], {
+    }
+], {
 
     autoload: true,
     rootPath: "/SubclassJS/build/demo/js/app/",

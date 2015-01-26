@@ -10,8 +10,6 @@ var app = Subclass.createModule('app', [{
         file: "/SubclassJS/build/demo/js/plugs/plugin2"
     }
 ], {
-
-    autoload: true,
     rootPath: "/SubclassJS/build/demo/js/app/",
     files: ["appClasses.js"],
     onReadyCall: true,

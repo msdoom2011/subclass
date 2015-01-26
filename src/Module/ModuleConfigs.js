@@ -44,14 +44,6 @@ Subclass.Module.ModuleConfigs = (function()
         this._pluginOf = null;
 
         /**
-         * Checks whether autoload classes enabled
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._autoload = true;
-
-        /**
          * Root path of the project
          *
          * @type {(string|null)}
@@ -301,57 +293,6 @@ Subclass.Module.ModuleConfigs = (function()
     };
 
     /**
-     * Sets autoload config parameter which tells whether will be used class autoloading
-     *
-     * @method setAutoload
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - specified not boolean argument value
-     *
-     * @param {boolean} autoload
-     *      Should be used class autoload or not
-     */
-    ModuleConfigs.prototype.setAutoload = function(autoload)
-    {
-        this._checkModuleIsReady();
-
-        if (typeof autoload != 'boolean') {
-            Subclass.Error.create('InvalidModuleOption')
-                .option('autoload')
-                .module(this.getModule().getName())
-                .received(autoload)
-                .expected('a boolean')
-                .apply()
-            ;
-        }
-        this._autoload = autoload;
-    };
-
-    /**
-     * Reports whether class autoload function is turned on
-     *
-     * @method getAutoload
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     * @returns {boolean}
-     */
-    ModuleConfigs.prototype.getAutoload = function()
-    {
-        return this._autoload;
-    };
-
-    /**
-     * Alias of method {@link Subclass.Module.ModuleConfigs#getAutoload}
-     *
-     * @method isAutoloadEnabled
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     * @alias Subclass.Module.ModuleConfigs#getAutoload
-     */
-    ModuleConfigs.prototype.isAutoloadEnabled = ModuleConfigs.prototype.getAutoload;
-
-    /**
      * Sets root directory path of the project.
      * It's required if autoload configuration parameter is turned on.
      *
@@ -455,24 +396,22 @@ Subclass.Module.ModuleConfigs = (function()
         var classManager = this.getModule().getClassManager();
         var $this = this;
 
-        if (this.isAutoloadEnabled()) {
-            this._files = Subclass.Tools.extend([], files);
+        this._files = Subclass.Tools.extend([], files);
 
-            Subclass.Tools.loadJS(files.shift(), function loadCallback() {
-                $this._files.shift();
+        Subclass.Tools.loadJS(files.shift(), function loadCallback() {
+            $this._files.shift();
 
-                if (Subclass.Tools.isEmpty(files)) {
-                    classManager.unlockLoading();
-                    return callback();
+            if (Subclass.Tools.isEmpty(files)) {
+                classManager.unlockLoading();
+                return callback();
 
-                } else {
-                    return Subclass.Tools.loadJS(
-                        files.shift(),
-                        loadCallback
-                    );
-                }
-            });
-        }
+            } else {
+                return Subclass.Tools.loadJS(
+                    files.shift(),
+                    loadCallback
+                );
+            }
+        });
     };
 
     /**

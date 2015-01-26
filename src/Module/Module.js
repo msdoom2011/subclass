@@ -38,24 +38,17 @@ Subclass.Module.Error = {};
  *                                       a plugin and its onReady callback
  *                                       will be called only after this
  *                                       module will be included in main
- *                                       module. If "plugin" is true the
- *                                       "autoload" option automatically
- *                                       sets in false and can't be changed.
+ *                                       module.
  *
  * pluginOf     {string}    opt          Specifies parent module to which
  *                                       current one belongs to. If its sets
  *                                       in true the "plugin" option will
  *                                       atomatically sets in true.
  *
- * autoload     {boolean}   opt   true   Enables class autoload or not.
- *                                       It's true by default
- *
  * rootPath     {string}    opt          The path to root directory of the
- *                                       project. It's required if autoload
- *                                       parameter value is true.
+ *                                       project.
  *
- * files        {string[]}  opt          Array of JS file names. It's actual
- *                                       if "autoload" option is switched on.
+ * files        {string[]}  opt          Array of JS file names.
  *
  * dataTypes    {Object}    opt          Object, which keys will be type
  *                                       names (alias) and value will

@@ -1,6 +1,5 @@
 var appPlugin1 = Subclass.createModule('appPlugin1', {
     //plugin: true,
-    //autoload: false,
     pluginOf: "app",
     rootPath: "/SubclassJS/build/demo/js/plugs/",
     dataTypes: {

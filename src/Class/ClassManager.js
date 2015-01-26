@@ -282,10 +282,7 @@ Subclass.Class.ClassManager = (function()
         var moduleConfigs = this.getModule().getConfigManager();
         var $this = this;
 
-        if (!moduleConfigs.isAutoloadEnabled() || this.isInLoadStack(className)) {
-            return;
-        }
-        if (this.issetClass(className)) {
+        if (this.isInLoadStack(className) || this.issetClass(className)) {
             return;
         }
         this._loadStack[className] = true;

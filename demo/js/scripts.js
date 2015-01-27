@@ -96,6 +96,10 @@ app.onReady(function() {
     console.log(inst.isInstanceOf('Class3'));
     console.log(inst.isInstanceOf('Class43'));
 
+    console.log('built class3 method', inst.extraTraitMethod());
+    inst.megaBaseMethod();
+    inst.megaBaseAbstractMethod();
+
     console.log('');
     console.log('============= Config Class ===============');
 

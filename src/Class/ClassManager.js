@@ -690,7 +690,13 @@ Subclass.Class.ClassManager = (function()
         var createInstance = true;
 
         if (!arguments[2]) {
-            if (className && this.issetClass(className)) {
+            if (className && !this.issetClass(className)) {
+                Subclass.Error.create(
+                    'Can\'t alter definition of class "' + className + '". ' +
+                    'It does not exists.'
+                );
+            }
+            if (className) {
                 classBuilderConstructor = this.getClass(className).constructor.getBuilderClass();
             } else {
                 classBuilderConstructor = Subclass.Class.ClassManager.getClassType(classType).getBuilderClass();

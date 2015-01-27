@@ -285,33 +285,72 @@ app.registerClass("Class3", {
     getTypedMap: function()
     {
         return this.getParent().getTypedMap.call(this);
+    },
+
+    megaBaseAbstractMethod: function()
+    {
+
     }
 });
 
-var class3Inst = app.alterClass("Class2")
+app.registerTrait("extraTrait", {
+
+    extraTraitMethod: function()
+    {
+        console.log('extra trait method call from ');
+    }
+});
+
+var class3Inst = app.alterClass("AbstractClass")
 //            .setClassName("firstBuiltClass")
 //            .setClassParent('AbstractClass')
-        .addInterfaces(["InterfaceExtra"])
-        .addAbstractMethods({
-            newAbstractMethod: function() {}
-        })
-        .addToBody({
+//    .addInterfaces(["InterfaceExtra"])
+//    .addTraits(["extraTrait"])
+    .addAbstractMethods({
+        newAbstractMethod: function() {}
+    })
+    .addToBody({
 
-            psix: function()
-            {
-                alert('PSIX!!!!!!');
-            },
+        psix: function()
+        {
+            alert('PSIX!!!!!!');
+        },
 
-            extraAbstract: function()
-            {
+        extraAbstract: function()
+        {
 
-            }
+        }
 
-        })
-        .save()
-    ;
+    })
+    .save()
+;
 
 console.log(class3Inst);
+
+app.registerAbstractClass("MegaBaseAbstract", {
+
+    $_implements: ["InterfaceExtra"],
+
+    $_traits: ['extraTrait'],
+
+    $_abstract: {
+
+        megaBaseAbstractMethod: function() {}
+
+    },
+
+    megaBaseMethod: function()
+    {
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('megaBaseMethod!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    }
+
+});
+
+app.alterClass("AbstractClassBase")
+    .setParent('MegaBaseAbstract')
+    .save();
 
 
 // ====================== CONFIGS =======================

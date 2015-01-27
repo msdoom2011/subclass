@@ -164,10 +164,10 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
             if (index > key) {
                 var newName = String(index - 1);
                 var context = manager.getItems();
-                var itemProto = manager.getItemProp(index);
+                var itemProp = manager.getItemProp(index);
 
-                itemProto.rename(newName, context);
-                manager.getItemProps()[newName] = itemProto;
+                itemProp.rename(newName, context);
+                manager.getItemProps()[newName] = itemProp;
             }
         });
 
@@ -193,14 +193,144 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
-    ArrayCollection.prototype.indexOf = function(value)
+    ArrayCollection.prototype.indexOf = function(value, reverse)
     {
-        var key = ArrayCollection.$parent.prototype.indexOf.call(this, value);
+        var key = ArrayCollection.$parent.prototype.indexOf.call(this, value, reverse);
 
         if (key === false) {
             return key;
         }
         return parseInt(key);
+    };
+
+    /**
+     * Searches item from the end of collection
+     *
+     * @param {*} value
+     * @returns {(number|boolean)}
+     */
+    ArrayCollection.prototype.lastIndexOf = function(value)
+    {
+        this.indexOf(value, true);
+    };
+
+    /**
+     * Joins the elements of array collection into a string
+     *
+     * @param {string} separator
+     * @returns {(*|string)}
+     */
+    ArrayCollection.prototype.join = function(separator)
+    {
+        var items = this.getData();
+
+        return items.join.apply(items, arguments);
+    };
+
+    /**
+     * Swaps collection items
+     *
+     * @param {number} index1
+     * @param {number} index2
+     */
+    ArrayCollection.prototype.swapItems = function(index1, index2)
+    {
+        var extraIndex = this.getLength();
+        var manager = this.getManager();
+        var items = manager.getItems();
+        var itemProps = manager.getItemProps();
+
+        // Renaming item with index1 to extraIndex
+
+        var itemProp1 = manager.getItemProp(index1);
+        itemProp1.rename(String(extraIndex), items);
+        itemProps[extraIndex] = itemProp1;
+
+        // Renaming item with index2 to index1
+
+        var itemProp2 = manager.getItemProp(index2);
+        itemProp2.rename(String(index1), items);
+        itemProps[index1] = itemProp2;
+
+        // Renaming item with extraIndex to index2
+
+        var itemPropExtra = manager.getItemProp(extraIndex);
+        itemPropExtra.rename(String(index2), items);
+        itemProps[index2] = itemPropExtra;
+
+        // Removing collection item with extraIndex
+
+        ArrayCollection.$parent.prototype.removeItem.call(this, extraIndex);
+    };
+
+    /**
+     * Changes the order of array collection items to opposite
+     */
+    ArrayCollection.prototype.reverse = function()
+    {
+        var length = this.getLength();
+        var lengthHalf = Math.ceil(length / 2);
+        var $this = this;
+
+        this.eachItem(function(item, index) {
+            if (index >= lengthHalf) {
+                return false;
+            }
+            var oppositeIndex = length - index - 1;
+            $this.swapItems(index, oppositeIndex);
+        });
+    };
+
+    /**
+     * Sorts items
+     *
+     * @param {Function} compareFn
+     */
+    ArrayCollection.prototype.sort = function(compareFn)
+    {
+        var items = [];
+        var itemsOrder = [];
+        var orderedIndexes = [];
+
+        this.eachItem(function(item, index) {
+            items[index] = item;
+            itemsOrder[index] = item;
+        });
+
+        items.sort.apply(items, arguments);
+
+        for (var i = 0; i < items.length; i++) {
+            var newIndex = i;
+            var oldIndex = itemsOrder.indexOf(items[i]);
+
+            if (
+                orderedIndexes.indexOf(newIndex) >= 0
+                || orderedIndexes.indexOf(oldIndex) >= 0
+            ) {
+                continue;
+            }
+            orderedIndexes.push(newIndex);
+            orderedIndexes.push(oldIndex);
+            this.swapItems(newIndex, oldIndex);
+        }
+    };
+
+    /**
+     * Selects a part of an array, and returns the new array
+     *
+     * @param {number} start
+     * @param {number} end
+     * @returns {Array}
+     */
+    ArrayCollection.prototype.slice = function(start, end)
+    {
+        var items = [];
+
+        this.eachItem(function(item, index) {
+            items[index] = item;
+        });
+
+        return items.slice.apply(items, arguments);
     };
 
     /**

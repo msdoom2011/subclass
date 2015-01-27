@@ -383,7 +383,7 @@ app.onReady(function() {
     inst.setTypedArrayCollection(null);
     console.log(inst.getTypedArrayCollection());
 
-    inst.setTypedArrayCollection(["psixNew1", "psixNew2"]);
+    inst.setTypedArrayCollection(["psixNew1", "psixNew2", "psixNew3", "psixNew4"]);
     console.log(inst.getTypedArrayCollection().getData());
 
     arrayCollection.unshift("unshifted");
@@ -397,6 +397,29 @@ app.onReady(function() {
     console.log(arrayCollection.getData());
     console.log(arrayCollection.length);
 
+    arrayCollection.reverse();
+    console.log('reversed:', arrayCollection.getData());
+
+    arrayCollection.sort();
+    console.log('sorted:', arrayCollection.getData());
+
+    arrayCollection.sort(function(a, b) {
+        console.log(a,b);
+
+        if (a > b) {
+            return -1;
+        } else if (a < b) {
+            return 1;
+        }
+        return 0;
+    });
+
+    console.log('custom sorted:', arrayCollection.getData());
+    console.log('joined:', arrayCollection.join(", "));
+    console.log('sliced from 1 up to 3:', arrayCollection.slice(1,3));
+
+    arrayCollection.reverse();
+    console.log('reversed to start:', arrayCollection.getData());
 
 
     console.log('');

@@ -251,10 +251,14 @@ Subclass.Property.Collection.Collection = (function()
     /**
      * Sorts out all collection items using passed callback function
      *
-     * @param callback
+     * @param {Function} callback
+     *      Function that will perform each collection item
      */
     Collection.prototype.eachItem = function(callback)
     {
+        if (arguments.length == 2 && typeof arguments[1] == 'function') {
+            callback = arguments[1];
+        }
         if (typeof callback != 'function') {
             Subclass.Error.create('InvalidArgument')
                 .argument('callback')
@@ -278,21 +282,29 @@ Subclass.Property.Collection.Collection = (function()
     /**
      * Searches item in collection by the value or by the result of test function
      *
-     * @param {(function|*)} value If value will passed then searching
+     * @param {(function|*)} value
+     *      If value will passed then searching
      *      will compare specified value with value of every collection item
      *      until match is not successful.
      *
      *      If function will passed then every collection item value will
      *      tests by this testing function until it not returns true.
      *
+     * @param {boolean} reverse
+     *      If specified the searching item will start from the end of collection
+     *
      * @returns {boolean}
      */
-    Collection.prototype.indexOf = function(value)
+    Collection.prototype.indexOf = function(value, reverse)
     {
         var testCallback = typeof value == 'function' ? value : false;
         var key = false;
 
-        this.eachItem(function(itemValue, itemKey) {
+        if (reverse !== true) {
+            reverse = false;
+        }
+
+        this.eachItem(reverse, function(itemValue, itemKey) {
             if ((
                     testCallback
                     && testCallback(itemValue, itemKey) === true

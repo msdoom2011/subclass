@@ -13,6 +13,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
 
     /**
      * Validates abstract methods argument
+     *
      * @param {Object.<Function>} abstractMethods
      * @private
      */
@@ -22,7 +23,30 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
             Subclass.Error.create('InvalidArgument')
                 .argument("list of abstract methods", false)
                 .received(abstractMethods)
-                .expected("a plain object")
+                .expected("a plain object with functions")
+                .apply()
+            ;
+        }
+        for (var methodName in abstractMethods) {
+            if (abstractMethods.hasOwnProperty(methodName)) {
+                this._validateAbstractMethod(abstractMethods[methodName]);
+            }
+        }
+    };
+
+    /**
+     * Validates abstract method
+     *
+     * @param abstractMethod
+     * @private
+     */
+    AbstractClassBuilder.prototype._validateAbstractMethod = function(abstractMethod)
+    {
+        if (typeof abstractMethod != 'function') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('abstract method', false)
+                .received(abstractMethod)
+                .expected('a function')
                 .apply()
             ;
         }
@@ -62,6 +86,34 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
 
         return this;
     };
+
+    /**
+     * Adds new abstract method
+     *
+     * @param {string} methodName
+     * @param {Function} methodFunction
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    AbstractClassBuilder.prototype.addAbstractMethod = function(methodName, methodFunction)
+    {
+        this._validateAbstractMethod(methodFunction);
+
+        if (!methodName || typeof methodName != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('name of abstract method', false)
+                .received(methodName)
+                .expected('a string')
+                .apply()
+            ;
+        }
+        if (!this._getDefinition().$_abstract) {
+            this._getDefinition().$_abstract = {};
+        }
+        this._getDefinition().$_abstract[methodName] = methodFunction;
+
+        return this;
+    };
+
 
     /**
      * Returns abstract methods

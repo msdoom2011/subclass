@@ -12,27 +12,39 @@ Subclass.Class.Class.ClassBuilder = (function()
     ClassBuilder.$parent = Subclass.Class.ClassBuilder;
 
     /**
-     * Validates traits list argument
+     * Validates list of traits
      *
-     * @param {*} traitsList
+     * @param {string[]} traitsList
      * @private
      */
     ClassBuilder.prototype._validateTraits = function(traitsList)
     {
-        try {
-            if (!Array.isArray(traitsList)) {
-                throw "error";
-            }
-            for (var i = 0; i < traitsList.length; i++) {
-                if (typeof traitsList[i] != "string") {
-                    throw "error";
-                }
-            }
-        } catch (e) {
+        if (!Array.isArray(traitsList)) {
             Subclass.Error.create('InvalidArgument')
                 .argument("list of trait names", false)
                 .received(traitsList)
                 .expected("an array of strings")
+                .apply()
+            ;
+        }
+        for (var i = 0; i < traitsList.length; i++) {
+            this._validateTrait(traitsList[i]);
+        }
+    };
+
+    /**
+     * Validates trait name
+     *
+     * @param traitName
+     * @private
+     */
+    ClassBuilder.prototype._validateTrait = function(traitName)
+    {
+        if (typeof traitName != "string") {
+            Subclass.Error.create('InvalidArgument')
+                .argument("trait name", false)
+                .received(traitName)
+                .expected("a string")
                 .apply()
             ;
         }
@@ -71,6 +83,24 @@ Subclass.Class.Class.ClassBuilder = (function()
     };
 
     /**
+     * Adds new trait
+     *
+     * @param {string[]} traitName
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    ClassBuilder.prototype.addTrait = function(traitName)
+    {
+        this._validateTrait(traitName);
+
+        if (!this._getDefinition().$_traits) {
+            this._getDefinition().$_traits = [];
+        }
+        this._getDefinition().$_traits.push(traitName);
+
+        return this;
+    };
+
+    /**
      * Returns traits list
      *
      * @returns {string[]}
@@ -80,22 +110,34 @@ Subclass.Class.Class.ClassBuilder = (function()
         return this._getDefinition().$_traits || [];
     };
 
+    /**
+     * Validates list of interfaces
+     *
+     * @param {string} interfacesList
+     * @private
+     */
     ClassBuilder.prototype._validateInterfaces = function(interfacesList)
     {
-        try {
-            if (!Array.isArray(interfacesList)) {
-                throw "error";
-            }
-            for (var i = 0; i < interfacesList.length; i++) {
-                if (typeof interfacesList[i] != "string") {
-                    throw "error";
-                }
-            }
-        } catch (e) {
+        if (!Array.isArray(interfacesList)) {
             Subclass.Error.create('InvalidArgument')
                 .argument("list of interface names", false)
                 .received(interfacesList)
                 .expected("an array of strings")
+                .apply()
+            ;
+        }
+        for (var i = 0; i < interfacesList.length; i++) {
+            this._validateInterface(interfacesList[i]);
+        }
+    };
+
+    ClassBuilder.prototype._validateInterface = function(interfaceName)
+    {
+        if (typeof interfaceName != "string") {
+            Subclass.Error.create('InvalidArgument')
+                .argument("interface name", false)
+                .received(interfaceName)
+                .expected("a string")
                 .apply()
             ;
         }
@@ -129,6 +171,24 @@ Subclass.Class.Class.ClassBuilder = (function()
             this._getDefinition().$_implements = [];
         }
         this._getDefinition().$_implements = this._getDefinition().$_implements.concat(interfacesList);
+
+        return this;
+    };
+
+    /**
+     * Adds new include
+     *
+     * @param {string[]} interfaceName
+     * @returns {Subclass.Class.Config.ConfigBuilder}
+     */
+    ClassBuilder.prototype.addInterface = function(interfaceName)
+    {
+        this._validateInclude(interfaceName);
+
+        if (!this._getDefinition().$_implements) {
+            this._getDefinition().$_implements = [];
+        }
+        this._getDefinition().$_implements.push(interfaceName);
 
         return this;
     };

@@ -306,9 +306,7 @@ var class3Inst = app.alterClass("AbstractClass")
 //            .setClassParent('AbstractClass')
 //    .addInterfaces(["InterfaceExtra"])
 //    .addTraits(["extraTrait"])
-    .addAbstractMethods({
-        newAbstractMethod: function() {}
-    })
+    .addAbstractMethod('newAbstractMethod', function() {})
     .addToBody({
 
         psix: function()

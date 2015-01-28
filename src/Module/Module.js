@@ -64,10 +64,6 @@ Subclass.Module.Error = {};
  * onReady      {Function}  opt          Callback that will be invoked when
  *                                       all module classes will be loaded.
  *
- * onReadyCall  {boolean}   opt   true   Allows specify whether onReady callbacks
- *                                       should be invoked automatically
- *                                       when the module will ready
- *
  * </pre>
  */
 Subclass.Module.Module = (function()
@@ -539,7 +535,6 @@ Subclass.Module.Module = (function()
 
             if ((
                     this.isRoot()
-                    && configManager.isOnReadyAutoCall()
                 ) || (
                     this.isPlugin()
                     && this.hasParent()

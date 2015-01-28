@@ -12,7 +12,6 @@ var app = Subclass.createModule('app', [{
 ], {
     rootPath: "/SubclassJS/build/demo/js/app/",
     files: ["appClasses.js"],
-    onReadyCall: true,
     dataTypes: {
         percents: { type: "string", pattern: /^[a-z]+%$/ },
         bigNumber: { type: "number", minValue: 1000000 }

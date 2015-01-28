@@ -52,14 +52,6 @@ Subclass.Module.ModuleConfigs = (function()
         this._rootPath = "";
 
         /**
-         * Reports whtether the onReady callback will be called automatically
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._onReadyCall = true;
-
-        /**
          * A list of files
          *
          * @type {Array}
@@ -756,58 +748,6 @@ Subclass.Module.ModuleConfigs = (function()
             module.setReady();
         }
     };
-
-    /**
-     * Defines whether the module on ready callback
-     * will be invoked automatically when module will ready.
-     *
-     * @method setOnReadyCall
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - specified not boolean argument value
-     *
-     * @param {boolean} onReadyCall
-     *      Whether onReady callbacks will automatically invoked
-     */
-    ModuleConfigs.prototype.setOnReadyCall = function(onReadyCall)
-    {
-        this._checkModuleIsReady();
-
-        if (typeof onReadyCall != 'boolean') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("automatically call onReady callbacks marker", false)
-                .received(onReadyCall)
-                .expected("a boolean")
-                .apply()
-            ;
-        }
-        this._onReadyCall = onReadyCall;
-    };
-
-    /**
-     * Reports whether the module on ready callback
-     * will be invoked automatically when module will ready
-     *
-     * @method getOnReadyCall
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     * @returns {boolean}
-     */
-    ModuleConfigs.prototype.getOnReadyCall = function()
-    {
-        return this._onReadyCall;
-    };
-
-    /**
-     * The same as the method {@link Subclass.Module.ModuleConfigs#getOnReadyCall}
-     *
-     * @alias Subclass.Module.ModuleConfigs#getOnReadyCall
-     * @method isOnReadyAutoCall
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     */
-    ModuleConfigs.prototype.isOnReadyAutoCall = ModuleConfigs.prototype.getOnReadyCall;
 
     /**
      * Ensures that the module is not ready

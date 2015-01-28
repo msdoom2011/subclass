@@ -4,7 +4,7 @@
  * @description
  *
  * The class which holds and manages module configuration.
- * It can validate, set and get configuration parameters.<br><br>
+ * It can validate, set and get configuration parameters.<br /><br />
  *
  * To see the list of available configuration parameters
  * look at description of {@link Subclass.Module.Module}

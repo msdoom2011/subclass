@@ -1,8 +1,13 @@
 {
   "name": "SubclassJS",
   "version": "0.1.0",
+  "homepage": "https://github.com/msdoom2011/subclassjs",
+  "repository": "git@github.com:msdoom2011/subclassjs.git",
   "description": "A javascript framework for creating project using OOP structural elements like classes, abstract classes, interfaces, traits and config classes with ability to define typed properties in them.",
-  "author": "msdoom2011@gmail.com",
+  "author": {
+    "name": "Dmitriy Osipishin",
+    "email": "msdoom2011@gmail.com"
+  },
   "main": "Gruntfile.js",
   "devDependencies": {
     "grunt": "^0.4.5",

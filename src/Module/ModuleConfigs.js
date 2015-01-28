@@ -409,6 +409,8 @@ Subclass.Module.ModuleConfigs = (function()
     /**
      * Reports whether current module loads some files
      *
+     * @method hasFiles
+     * @memberOf Subclass.Module.ModuleConfigs.prototype
      * @returns {boolean}
      */
     ModuleConfigs.prototype.hasFiles = function()

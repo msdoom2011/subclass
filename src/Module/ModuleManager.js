@@ -103,7 +103,7 @@ Subclass.Module.ModuleManager = (function()
     };
 
     /**
-     * Returns the list of all lazy plug-in modules
+     * Returns the list of all not resolved lazy plug-in modules
      *
      * @method getLazyModules
      * @memberOf Subclass.Module.ModuleManager.prototype
@@ -131,7 +131,10 @@ Subclass.Module.ModuleManager = (function()
     };
 
     /**
-     * Reports whether current module has lazy plug-in modules
+     * Reports whether current module has not resolved lazy plug-in modules
+     *
+     * @method hasLazyModules
+     * @memberOf Subclass.Module.ModuleManager.prototype
      *
      * @returns {boolean}
      */
@@ -140,6 +143,16 @@ Subclass.Module.ModuleManager = (function()
         return !!Object.keys(this.getLazyModules()).length;
     };
 
+    /**
+     * Resolves lazy module (plug-in in this case).
+     * It means that lazy module was loaded.
+     *
+     * @method resolveLazyModule
+     * @memberOf Subclass.Module.ModuleManager.prototype
+     *
+     * @param {string} moduleName
+     *      The name of lazy plug-in module
+     */
     ModuleManager.prototype.resolveLazyModule = function(moduleName)
     {
         if (!this.issetLazyModule(moduleName)) {
@@ -186,7 +199,10 @@ Subclass.Module.ModuleManager = (function()
     };
 
     /**
-     * Adds new plugin module
+     * Adds the new plugin module
+     *
+     * @method addPlugin
+     * @memberOf Subclass.Module.ModuleManager.prototype
      *
      * @param {string} moduleName
      *      The name of plug-in module
@@ -205,7 +221,7 @@ Subclass.Module.ModuleManager = (function()
     };
 
     /**
-     * Returns all module plug-ins
+     * Returns all plug-in module instances of the current module
      *
      * @method getPlugins
      * @memberOf Subclass.Module.ModuleManager.prototype
@@ -251,8 +267,8 @@ Subclass.Module.ModuleManager = (function()
      *     // some manipulations
      *     ...
      *
-     *     if (moduleName == 'app') {  // or any other condition
-     *         return false;           // breaks sort ordering. The rest modules
+     *     if (moduleName == 'app') {  // or any other condition.
+     *         return false;           // breaks sort ordering and the rest modules
      *                                 // will not processed by this function
      *     }
      * });

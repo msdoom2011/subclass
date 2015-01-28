@@ -2,9 +2,22 @@
  * @final
  * @class
  * @extends {Subclass.Error.Error}
+ *
+ * @constructor
+ * @description
+ *
+ * The error class which indicates that was specified not valid value of
+ * option in module configuration. To see details about constructor
+ * parameters look at {@link Subclass.Error.Error} class constructor
+ *
+ * @param {string} [message]
+ *      The error message
  */
 Subclass.Module.Error.InvalidModuleOptionError = (function()
 {
+    /**
+     * @alias Subclass.Module.Error.InvalidModuleOptionError
+     */
     function InvalidModuleOptionError(message)
     {
         InvalidModuleOptionError.$parent.call(this, message);
@@ -12,6 +25,9 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
 
     /**
      * Returns the name of the error type
+     *
+     * @method getName
+     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
      *
      * @returns {string}
      * @static
@@ -23,6 +39,9 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getOptions
+     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
      */
     InvalidModuleOptionError.getOptions = function()
     {
@@ -38,6 +57,9 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getOptionsRequired
+     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
      */
     InvalidModuleOptionError.getOptionsRequired = function()
     {
@@ -51,6 +73,9 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method buildMessage
+     * @memberOf Subclass.Module.Error.InvalidModuleOptionError.prototype
      */
     InvalidModuleOptionError.prototype.buildMessage = function()
     {

@@ -324,6 +324,9 @@ Subclass.Module.ModuleAPI = (function()
 
     /**
      * The same as the {@link Subclass.Module.ModuleConfigs#setDataTypes}
+     *
+     * @method registerDataTypes
+     * @memberOf Subclass.Module.ModuleAPI.prototype
      */
     ModuleAPI.prototype.registerDataTypes = function()
     {

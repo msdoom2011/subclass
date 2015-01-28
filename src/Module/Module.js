@@ -196,14 +196,6 @@ Subclass.Module.Module = (function()
          */
         this._ready = false;
 
-        /**
-         * Tells if onReady callbacks was triggered
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._onReadyTriggered = false;
-
 
         // Initializing module
 
@@ -353,7 +345,7 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.setConfigs = function(configs)
     {
-        this.getConfigManager().setConfigs(configs);
+        return this.getConfigManager().setConfigs(configs);
     };
 
     /**
@@ -452,6 +444,9 @@ Subclass.Module.Module = (function()
      *
      * @method onReady
      * @memberOf Subclass.Module.Module.prototype
+     *
+     * @param {Function} callback
+     *      The callback function
      */
     Module.prototype.onReady = function(callback)
     {
@@ -471,27 +466,26 @@ Subclass.Module.Module = (function()
     Module.prototype.triggerOnReady = function()
     {
         this.getEventManager().getEvent('onReady').trigger();
-        this._onReadyTriggered = true;
-    };
-
-    /**
-     * Reports whether the onReady event was ever triggered in current module
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.isOnReadyTriggered = function()
-    {
-        return this._onReadyTriggered;
     };
 
     /**
      * Sets that module is prepared
+     *
+     * @method setPrepared
+     * @memberOf Subclass.Module.Module.prototype
      */
     Module.prototype.setPrepared = function()
     {
         this._prepared = true;
     };
 
+    /**
+     * Checks whether the module is prepared
+     *
+     * @method isPrepared
+     * @memberOf Subclass.Module.Module.prototype
+     * @returns {boolean}
+     */
     Module.prototype.isPrepared = function()
     {
         return this._prepared;
@@ -509,7 +503,6 @@ Subclass.Module.Module = (function()
         if (this.isReady()) {
             return;
         }
-
         var classManager = this.getClassManager();
         var configManager = this.getConfigManager();
         this.setPrepared();
@@ -561,6 +554,13 @@ Subclass.Module.Module = (function()
         return this._ready;
     };
 
+    /**
+     * Checks whether the all module plug-ins are ready
+     *
+     * @method isPluginsReady
+     * @memberOf Subclass.Module.Module.prototype
+     * @returns {boolean}
+     */
     Module.prototype.isPluginsReady = function()
     {
         var moduleManager = this.getModuleManager();

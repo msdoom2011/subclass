@@ -46,10 +46,10 @@ Subclass.Module.ModuleConfigs = (function()
         /**
          * Root path of the project
          *
-         * @type {(string|null)}
+         * @type {string}
          * @private
          */
-        this._rootPath = null;
+        this._rootPath = "";
 
         /**
          * Reports whtether the onReady callback will be called automatically

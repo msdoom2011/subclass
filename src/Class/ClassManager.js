@@ -466,10 +466,6 @@ Subclass.Class.ClassManager = (function()
         var classPath = rootPath + className + '.js';
         var $this = this;
 
-        if (!rootPath) {
-            Subclass.Error.create('The root path of the project was not specified!');
-        }
-
         var xmlhttp = new XMLHttpRequest();
         var documentScripts = document.querySelectorAll('script');
         var currentScript = documentScripts[documentScripts.length - 1];

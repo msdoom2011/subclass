@@ -159,7 +159,6 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._classManager = new Subclass.Class.ClassManager(this);
-        //this._classManager.initialize();
 
         /**
          * Service manager instance

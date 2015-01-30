@@ -1,5 +1,8 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify module name when creating an error instance.
  */
 Subclass.Error.Option.Module = (function()
 {
@@ -8,7 +11,12 @@ Subclass.Error.Option.Module = (function()
         /**
          * Sets/returns module name
          *
+         * @method module
+         * @memberOf Subclass.Error.Option.Module
+         *
          * @param {string} [module]
+         *      The name of module
+         *
          * @returns {Subclass.Error}
          */
         module: function(module)
@@ -27,6 +35,8 @@ Subclass.Error.Option.Module = (function()
         /**
          * Checks whether the module option was specified
          *
+         * @method hasModule
+         * @memberOf Subclass.Error.Option.Module
          * @returns {boolean}
          */
         hasModule: function()

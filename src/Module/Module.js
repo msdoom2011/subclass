@@ -665,6 +665,7 @@ Subclass.Module.Module = (function()
                 }
                 $this.addPlugin(moduleName);
             });
+
             return;
         }
 

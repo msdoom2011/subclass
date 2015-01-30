@@ -5,10 +5,10 @@ var app = Subclass.createModule('app', [{
         file: "/SubclassJS/build/demo/js/plugs/plugin1"
     },
     //,'appPlugin2'
-    {
-        name: 'appPlugin2',
-        file: "/SubclassJS/build/demo/js/plugs/plugin2"
-    }
+    //{
+    //    name: 'appPlugin2',
+    //    file: "/SubclassJS/build/demo/js/plugs/plugin2"
+    //}
 ], {
     rootPath: "/SubclassJS/build/demo/js/app/",
     files: ["appClasses.js"],

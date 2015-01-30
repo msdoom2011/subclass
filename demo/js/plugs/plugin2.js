@@ -65,3 +65,7 @@ appPlugin2.getModule().getParameterManager().getParameter('mode');
 //    _message: "Bug 4 happens."
 //
 //});
+
+//appPlugin2.registerClass('Logger/Logger', {
+//
+//});

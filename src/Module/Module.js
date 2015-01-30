@@ -689,6 +689,18 @@ Subclass.Module.Module = (function()
         }
     };
 
+    /**
+     * Checks whether current module has any plugins
+     *
+     * @method hasPlugins
+     * @memberOf Subclass.Module.Module.prototype
+     * @returns {boolean}
+     */
+    Module.prototype.hasPlugins = function()
+    {
+        return !!this.getModuleManager().getPlugins().length;
+    };
+
     return Module;
 
 })();

@@ -83,6 +83,12 @@ Subclass.Class.ClassManager = (function()
         this._addToLoadStackTimeout = null;
     }
 
+    /**
+     * Initializing class manager
+     *
+     * @method initialize
+     * @memberOf Subclass.Class.ClassManager.prototype
+     */
     ClassManager.prototype.initialize = function()
     {
         var module = this.getModule();
@@ -94,26 +100,28 @@ Subclass.Class.ClassManager = (function()
 
         // Registering basic classes
 
-        var defaultClasses = ClassManager.getClasses();
+        if (module.isRoot()) {
+            var defaultClasses = ClassManager.getClasses();
 
-        for (var classTypeName in defaultClasses) {
-            if (!defaultClasses.hasOwnProperty(classTypeName)) {
-                continue;
-            }
-            for (var className in defaultClasses[classTypeName]) {
-                if (
-                    !defaultClasses[classTypeName].hasOwnProperty(className)
-                    || this.issetClass(className)
-                ) {
+            for (var classTypeName in defaultClasses) {
+                if (!defaultClasses.hasOwnProperty(classTypeName)) {
                     continue;
                 }
-                var classDefinition = defaultClasses[classTypeName][className];
+                for (var className in defaultClasses[classTypeName]) {
+                    if (
+                        !defaultClasses[classTypeName].hasOwnProperty(className)
+                        || this.issetClass(className)
+                    ) {
+                        continue;
+                    }
+                    var classDefinition = defaultClasses[classTypeName][className];
 
-                this.addClass(
-                    classTypeName,
-                    className,
-                    classDefinition
-                );
+                    this.addClass(
+                        classTypeName,
+                        className,
+                        classDefinition
+                    );
+                }
             }
         }
 
@@ -128,38 +136,17 @@ Subclass.Class.ClassManager = (function()
         });
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
-            var mainModule = module;
             var moduleManager = module.getModuleManager();
-            var classes = {};
+
+            $this.checkForClones();
 
             moduleManager.eachModule(function(module) {
-                if (module == mainModule) {
-                    Subclass.Tools.extend(classes, $this._classes);
-                    return;
-                }
-                var moduleClassManager = module.getClassManager();
-                var moduleClasses = moduleClassManager.getClasses(false, false);
-
-                moduleClassManager.unlockLoading();
-
-                for (var className in moduleClasses) {
-                    if (
-                        !moduleClasses.hasOwnProperty(className)
-                        || ClassManager.issetClass(className)
-                    ) {
-                        continue;
-                    }
-                    if (classes[className]) {
-                        var classLocations = $this.getClassLocations(className);
-
-                        Subclass.Error.create(
-                            'Multiple class definition detected. Class "' + className + '" defined ' +
-                            'in modules: "' + classLocations.join('", "') + '".'
-                        );
-                    }
-                    classes[className] = 1;
-                }
+                module.getClassManager().unlockLoading();
             });
+        });
+
+        eventManager.getEvent('onAddPlugin').addListener(function() {
+            $this.checkForClones();
         });
     };
 
@@ -418,8 +405,20 @@ Subclass.Class.ClassManager = (function()
         moduleManager.eachModule(function(module) {
             var classManager = module.getClassManager();
 
-            if (classManager.issetClass(className)) {
+            if (classManager.issetClass(className, true)) {
                 locations.push(module.getName());
+            }
+            if (module.hasPlugins()) {
+                var pluginModuleManager = module.getModuleManager();
+                var plugins = pluginModuleManager.getPlugins();
+
+                for (var i = 0; i < plugins.length; i++) {
+                    var subPlugin = plugins[i];
+                    var subPluginManager = subPlugin.getClassManager();
+                    var subPluginLocations = subPluginManager.getClassLocations(className);
+
+                    locations.concat(subPluginLocations);
+                }
             }
         });
 
@@ -635,11 +634,57 @@ Subclass.Class.ClassManager = (function()
      * Checks if class with passed name was ever registered
      *
      * @param {string} className
+     * @param {boolean} [privateClasses]
      * @returns {boolean}
      */
-    ClassManager.prototype.issetClass = function(className)
+    ClassManager.prototype.issetClass = function(className, privateClasses)
     {
-        return !!this.getClasses()[className];
+        var withParentClasses = true;
+
+        if (privateClasses === true) {
+            withParentClasses = false;
+        }
+        return !!this.getClasses(privateClasses, withParentClasses)[className];
+    };
+
+    /**
+     * Validates whether there are classes with the same names in the module and its plug-ins
+     *
+     * @throws {Error}
+     */
+    ClassManager.prototype.checkForClones = function()
+    {
+        var mainModule = this.getModule();
+        var moduleManager = mainModule.getModuleManager();
+        var $this = this;
+        var classes = {};
+
+        moduleManager.eachModule(function(module) {
+            if (module == mainModule) {
+                Subclass.Tools.extend(classes, $this._classes);
+                return;
+            }
+            var moduleClassManager = module.getClassManager();
+            var moduleClasses = moduleClassManager.getClasses(false, false);
+
+            for (var className in moduleClasses) {
+                if (
+                    !moduleClasses.hasOwnProperty(className)
+                    || ClassManager.issetClass(className)
+                ) {
+                    continue;
+                }
+                if (classes[className]) {
+                    var classLocations = $this.getClassLocations(className);
+
+                    Subclass.Error.create(
+                        'Multiple class definition detected. Class "' + className + '" defined ' +
+                        'in modules: "' + classLocations.join('", "') + '".'
+                    );
+                }
+                classes[className] = 1;
+            }
+        });
     };
 
     /**

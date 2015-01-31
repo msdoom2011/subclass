@@ -2,19 +2,27 @@
  * @final
  * @class
  * @extends {Subclass.Error.Error}
+ * @constructor
+ * @description
+ *
+ * The error class which indicates that was specified invalid option value
+ * in the definition of the service
  */
 Subclass.Service.Error.InvalidServiceOptionError = (function()
 {
+    /**
+     * @alias Subclass.Service.Error.InvalidServiceOptionError
+     */
     function InvalidServiceOptionError(message)
     {
         InvalidServiceOptionError.$parent.call(this, message);
     }
 
     /**
-     * Returns the name of the error type
+     * @inheritDoc
      *
-     * @returns {string}
-     * @static
+     * @method getName
+     * @memberOf Subclass.Service.Error.InvalidServiceOptionError
      */
     InvalidServiceOptionError.getName = function()
     {
@@ -23,6 +31,9 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.InvalidServiceOptionError
      */
     InvalidServiceOptionError.getOptions = function()
     {
@@ -38,6 +49,9 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.InvalidServiceOptionError
      */
     InvalidServiceOptionError.getOptionsRequired = function()
     {
@@ -51,6 +65,9 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.InvalidServiceOptionError.prototype
      */
     InvalidServiceOptionError.prototype.buildMessage = function()
     {
@@ -65,6 +82,8 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
 
         return message;
     };
+
+    // Registering the error type class
 
     Subclass.Error.registerType(
         InvalidServiceOptionError.getName(),

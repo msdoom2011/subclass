@@ -2,7 +2,6 @@
  * @final
  * @class
  * @extends {Subclass.Error.Error}
- *
  * @constructor
  * @description
  *
@@ -24,13 +23,10 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
     }
 
     /**
-     * Returns the name of the error type
+     * @inheirtDoc
      *
      * @method getName
      * @memberOf Subclass.Module.Error.InvalidModuleOptionError
-     *
-     * @returns {string}
-     * @static
      */
     InvalidModuleOptionError.getName = function()
     {

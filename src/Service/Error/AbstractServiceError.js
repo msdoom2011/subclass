@@ -2,19 +2,30 @@
  * @final
  * @class
  * @extends {Subclass.Error.Error}
+ * @constructor
+ * @description
+ *
+ * The error class which indicates that was attempt to create instance
+ * of abstract service
+ *
+ * @param {string} [message]
+ *      The error message
  */
 Subclass.Service.Error.AbstractServiceError = (function()
 {
+    /**
+     * @alias Subclass.Service.Error.AbstractServiceError
+     */
     function AbstractServiceError(message)
     {
         AbstractServiceError.$parent.call(this, message);
     }
 
     /**
-     * Returns the name of the error type
+     * @inheritDoc
      *
-     * @returns {string}
-     * @static
+     * @method getName
+     * @memberOf Subclass.Service.Error.AbstractServiceError
      */
     AbstractServiceError.getName = function()
     {
@@ -23,6 +34,9 @@ Subclass.Service.Error.AbstractServiceError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.AbstractServiceError
      */
     AbstractServiceError.getOptions = function()
     {
@@ -35,6 +49,9 @@ Subclass.Service.Error.AbstractServiceError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.AbstractServiceError
      */
     AbstractServiceError.getOptionsRequired = function()
     {
@@ -47,6 +64,9 @@ Subclass.Service.Error.AbstractServiceError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.AbstractServiceError.prototype
      */
     AbstractServiceError.prototype.buildMessage = function()
     {
@@ -58,6 +78,8 @@ Subclass.Service.Error.AbstractServiceError = (function()
 
         return message;
     };
+
+    // Registering the error type class
 
     Subclass.Error.registerType(
         AbstractServiceError.getName(),

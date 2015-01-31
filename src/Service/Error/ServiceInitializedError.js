@@ -2,19 +2,28 @@
  * @final
  * @class
  * @extends {Subclass.Error.Error}
+ * @constructor
+ * @description
+ *
+ * The error class which indicates that trying to change the definition of service
+ * after it was initialized, i.e. was created an instance of class which was
+ * specified in the "className" option.
  */
 Subclass.Service.Error.ServiceInitializedError = (function()
 {
+    /**
+     * @alias Subclass.Service.Error.ServiceInitializedError
+     */
     function ServiceInitializedError(message)
     {
         ServiceInitializedError.$parent.call(this, message);
     }
 
     /**
-     * Returns the name of the error type
+     * @inheritDoc
      *
-     * @returns {string}
-     * @static
+     * @method getName
+     * @memberOf Subclass.Service.Error.ServiceInitializedError
      */
     ServiceInitializedError.getName = function()
     {
@@ -23,6 +32,9 @@ Subclass.Service.Error.ServiceInitializedError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.ServiceInitializedError
      */
     ServiceInitializedError.getOptions = function()
     {
@@ -35,6 +47,9 @@ Subclass.Service.Error.ServiceInitializedError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.ServiceInitializedError
      */
     ServiceInitializedError.getOptionsRequired = function()
     {
@@ -47,6 +62,9 @@ Subclass.Service.Error.ServiceInitializedError = (function()
 
     /**
      * @inheritDoc
+     *
+     * @method getName
+     * @memberOf Subclass.Service.Error.ServiceInitializedError.prototype
      */
     ServiceInitializedError.prototype.buildMessage = function()
     {
@@ -58,6 +76,8 @@ Subclass.Service.Error.ServiceInitializedError = (function()
 
         return message;
     };
+
+    // Registering the error type class
 
     Subclass.Error.registerType(
         ServiceInitializedError.getName(),

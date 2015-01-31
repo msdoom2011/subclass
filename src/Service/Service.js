@@ -11,37 +11,119 @@ Subclass.Service.Service = (function()
      *      A name of the creating service
      *
      * @param {Object} serviceDefinition
-     *      Definition of the service.
+     *      Definition of the service.<pre>
      *
-     *      Allowed options:
-     *      ----------------------------------------------------------------------------------------------
+     * Allowed options:
+     * ----------------------------------------------------------------------------------------------
      *
-     *      abstract       {boolean}    optional     If it's true that means you can't create instance
-     *                                               of class.
+     * abstract    {boolean}   opt   false   If it's true that means you can't create
+     *                                       instance of class. Also it means that
+     *                                       all options of this service definition
+     *                                       are optional (including the "className"
+     *                                       option).
      *
-     *      extends        {string}     optional     Specifies name of service which current one will extends
+     *                                       it's convenient in use to inherit
+     *                                       the definition options from abstract
+     *                                       service to others.
      *
-     *      className      {string}     required     Service class name,
+     * extends     {string}    opt           Specifies name of service which current one
+     *                                       will extends. The lacking options in services
+     *                                       that extends another service will be added
+     *                                       from the parent services
      *
-     *      arguments      {Array}      optional     Array of arguments, that will injected
-     *                                               into $_constructor function of the class
+     *                                       Example:
      *
-     *      calls          {Object}     optional     List of key/value pairs where key is a method name
-     *                                               of the service class and value is an array with
-     *                                               arguments for this method.
+     *                                       var services = {
      *
-     *                                               Example: {
-     *                                                   methodName1: [arg1, arg2, ...],
-     *                                                   methodName2: [arg1, arg2, ...],
-     *                                                   ...
-     *                                               }
+     *                                          // Extending from another service
      *
-     *      singleton      {boolean}    optional     Tells whether current service will returns
-     *                                               new instance when you trying to get it using
-     *                                               serviceManager.getService() method call.
-     *                                               It's true by default.
+     *                                          error: {
+     *                                             className: "Name/Of/BaseErrorClass",
+     *                                             arguments: ["%mode%"],
+     *                                             tags: ["errorManager"]
+     *                                          },
+     *                                          invalidArgumentError: {
+     *                                              extends: "error"
+     *                                          },
      *
-     *      tags           {Array}      optional     Array of service names.
+     *                                          ...
+     *
+     *                                          // Extending from abstract service
+     *
+     *                                          bugAbstract: {
+     *                                             abstract: true,
+     *                                             arguments: ["%mode%"],
+     *                                             tags: ["logger"]
+     *                                          },
+     *                                          bug1: {
+     *                                             extends: "bugAbstract",
+     *                                             className: "Name/Of/BugClass1"
+     *                                          },
+     *                                          bug2: {
+     *                                             extends: "bugAbstract",
+     *                                             className: "Name/Of/BugClass2"
+     *                                          },
+     *                                          ...
+     *                                       }
+     *
+     * className   {string}    req           Service class name.
+     *
+     *                                       It is always required
+     *                                       except the case when the service was
+     *                                       not marked as abstract.
+     *
+     *                                       Example:
+     *
+     *                                       var services = {
+     *                                         ...
+     *                                         bar: {
+     *                                           className: "Name/Of/BarServiceClass",
+     *                                         }
+     *                                       };
+     *
+     * arguments   {Array}     opt   []      Array of arguments, that will injected
+     *                                       into $_constructor function of the class
+     *
+     *                                       Example:
+     *
+     *                                       var services = {
+     *                                         ...
+     *                                         foo: {
+     *                                           className: "Name/Of/FooServiceClass",
+     *                                           arguments: [arg1, arg2, ...]
+     *                                         }
+     *                                       };
+     *
+     * calls       {Object}    opt   {}      List of key/value pairs where key is
+     *                                       a method name of the service class and
+     *                                       value is an array with arguments for
+     *                                       this method.
+     *
+     *                                       Example:
+     *
+     *                                       var services = {
+     *                                         ...
+     *                                         foo: {
+     *                                           className: "Name/Of/FooServiceClass",
+     *                                           calls: {
+     *                                             method1: [arg1, arg2, ...],
+     *                                             method2: [arg1, arg2, ...],
+     *                                           }
+     *                                         },
+     *                                         ...
+     *                                       };
+     *
+     * singleton   {boolean}   opt   true    Tells whether current service will returns
+     *                                       new instance every time you trying to get
+     *                                       it using serviceManager.getService()
+     *                                       method call.
+     *
+     * tags        {Array}     opt   []      An array of the service names. Uses in cases
+     *                                       when you want to mark the current service
+     *                                       belongs to another service
+     *                                       (root service in further).
+     *
+     * </pre>
      *
      * @constructor
      */

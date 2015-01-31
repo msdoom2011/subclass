@@ -54,6 +54,9 @@ Subclass.Service.ServiceManager = (function()
 
     /**
      * Initializing service manager
+     *
+     * @method initialize
+     * @memberOf Subclass.Service.ServiceManager.prototype
      */
     ServiceManager.prototype.initialize = function()
     {
@@ -73,6 +76,8 @@ Subclass.Service.ServiceManager = (function()
     /**
      * Returns module instance
      *
+     * @method getModule
+     * @memberOf Subclass.Service.ServiceManager.prototype
      * @returns {Subclass.Module.Module}
      */
     ServiceManager.prototype.getModule = function()
@@ -83,6 +88,8 @@ Subclass.Service.ServiceManager = (function()
     /**
      * Returns service factory instance
      *
+     * @method getModule
+     * @memberOf Subclass.Service.ServiceManager.prototype
      * @returns {Subclass.Service.ServiceFactory}
      */
     ServiceManager.prototype.getServiceFactory = function()
@@ -91,7 +98,51 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Normalizes services. Brings the service definitions to the one format
+     * Normalizes services.<br /><br />
+     *
+     * Converts the service definitions to the single format.
+     * It's actual in cases when in definition of the service was
+     * specified the "extends" option that links to another service.<br /><br />
+     *
+     * The lacking options in services that extends another service
+     * will be added from the parent service
+     *
+     * @example
+     * var moduleConfis = {
+     *      services: {
+     *
+     *          // Extending from another service
+     *
+     *          error: {
+     *              className: "Name/Of/BaseErrorClass",
+     *              arguments: ["%mode%"],
+     *              tags: ["errorManager"]
+     *          },
+     *          invalidArgumentError: {
+     *              extends: "error"
+     *          },
+     *
+     *          ...
+     *
+     *          // Extending from abstract service
+     *
+     *          bugAbstract: {
+     *              abstract: true,
+     *              arguments: ["%mode%"],
+     *              tags: ["logger"]
+     *          },
+     *          bug1: {
+     *              extends: "bugAbstract",
+     *              className: "Name/Of/BugClass1"
+     *          },
+     *          bug2: {
+     *              extends: "bugAbstract",
+     *              className: "Name/Of/BugClass2"
+     *          },
+     *          ...
+     *      }
+     * }
+     *
      */
     ServiceManager.prototype.normalizeServices = function()
     {

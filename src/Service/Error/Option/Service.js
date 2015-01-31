@@ -1,5 +1,8 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify the name of the service when creating an error instance
  */
 Subclass.Error.Option.Service = (function()
 {
@@ -8,7 +11,12 @@ Subclass.Error.Option.Service = (function()
         /**
          * Sets/returns service name
          *
+         * @method service
+         * @memberOf Subclass.Error.Option.Service
+         *
          * @param {string} [service]
+         *      The name of the service
+         *
          * @returns {Subclass.Error}
          */
         service: function(service)
@@ -26,6 +34,9 @@ Subclass.Error.Option.Service = (function()
 
         /**
          * Checks whether the service option was specified
+         *
+         * @method hasService
+         * @memberOf Subclass.Error.Option.Service
          *
          * @returns {boolean}
          */

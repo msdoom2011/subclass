@@ -14,7 +14,8 @@ var app = Subclass.createModule('app', [{
     files: ["appClasses.js"],
     dataTypes: {
         percents: { type: "string", pattern: /^[a-z]+%$/ },
-        bigNumber: { type: "number", minValue: 1000000 }
+        bigNumber: { type: "number", minValue: 1000000 },
+        //number: { type: "number", maxValue: -10000 }
     },
     parameters: {
         mode: "dev"

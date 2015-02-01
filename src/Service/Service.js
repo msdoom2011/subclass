@@ -1,131 +1,144 @@
 /**
  * @class
+ * @description
+ *
+ * The class of service which holds information of about service
+ * and allows to customize it whatever you need. Also it is possible
+ * to create instance of the service directly from this class.
+ *
+ * @param {Subclass.Service.ServiceManager} serviceManager
+ *      The instance of service manager
+ *
+ * @param {string} serviceName
+ *      The name of the creating service
+ *
+ * @param {Object} serviceDefinition
+ *      The definition of the service.<pre>
+ *
+ * Allowed options:
+ * -------------------------------------------------------------------------------------
+ *
+ * abstract    {boolean}   opt   false   If it's true that means you can't create
+ *                                       instance of class. Also it means that
+ *                                       all options of this service definition
+ *                                       are optional (including the "className"
+ *                                       option).
+ *
+ *                                       it's convenient in use to inherit
+ *                                       the definition options from abstract
+ *                                       service to others.
+ *
+ * extends     {string}    opt           Specifies name of service which current one
+ *                                       will extends. The lacking options in services
+ *                                       that extends another service will be added
+ *                                       from the parent services
+ *
+ *                                       Example:
+ *
+ *                                       var services = {
+ *
+ *                                          // Extending from another service
+ *
+ *                                          error: {
+ *                                             className: "Name/Of/BaseErrorClass",
+ *                                             arguments: ["%mode%"],
+ *                                             tags: ["errorManager"]
+ *                                          },
+ *                                          invalidArgumentError: {
+ *                                              extends: "error"
+ *                                          },
+ *
+ *                                          ...
+ *
+ *                                          // Extending from abstract service
+ *
+ *                                          bugAbstract: {
+ *                                             abstract: true,
+ *                                             arguments: ["%mode%"],
+ *                                             tags: ["logger"]
+ *                                          },
+ *                                          bug1: {
+ *                                             extends: "bugAbstract",
+ *                                             className: "Name/Of/BugClass1"
+ *                                          },
+ *                                          bug2: {
+ *                                             extends: "bugAbstract",
+ *                                             className: "Name/Of/BugClass2"
+ *                                          },
+ *                                          ...
+ *                                       }
+ *
+ * className   {string}    req           Service class name.
+ *
+ *                                       It is always required
+ *                                       except the case when the service was
+ *                                       not marked as abstract.
+ *
+ *                                       Example:
+ *
+ *                                       var services = {
+ *                                         ...
+ *                                         bar: {
+ *                                           className: "Name/Of/BarServiceClass",
+ *                                         }
+ *                                       };
+ *
+ * arguments   {Array}     opt   []      Array of arguments, that will injected
+ *                                       into $_constructor function of the class
+ *
+ *                                       Example:
+ *
+ *                                       var services = {
+ *                                         ...
+ *                                         foo: {
+ *                                           className: "Name/Of/FooServiceClass",
+ *                                           arguments: [arg1, arg2, ...]
+ *                                         }
+ *                                       };
+ *
+ * calls       {Object}    opt   {}      List of key/value pairs where key is
+ *                                       a method name of the service class and
+ *                                       value is an array with arguments for
+ *                                       this method.
+ *
+ *                                       Example:
+ *
+ *                                       var services = {
+ *                                         ...
+ *                                         foo: {
+ *                                           className: "Name/Of/FooServiceClass",
+ *                                           calls: {
+ *                                             method1: [arg1, arg2, ...],
+ *                                             method2: [arg1, arg2, ...],
+ *                                           }
+ *                                         },
+ *                                         ...
+ *                                       };
+ *
+ * singleton   {boolean}   opt   true    Tells whether current service will returns
+ *                                       new instance every time you trying to get
+ *                                       it using serviceManager.getService()
+ *                                       method call.
+ *
+ * tags        {Array}     opt   []      An array of the service names. Uses in cases
+ *                                       when you want to mark belonging of the one
+ *                                       service to another.
+ *
+ *                                       The service which name uses in "tags" option
+ *                                       will receive the services marked by tag with
+ *                                       its name when you try to create instance
+ *                                       of this service.
+ *
+ *                                       The such service should implement the
+ *                                       "Subclass/Service/TaggableInterface"
+ *                                       interface.
+ *
+ * </pre>
  */
 Subclass.Service.Service = (function()
 {
     /**
-     * @param {Subclass.Service.ServiceManager} serviceManager
-     *      An instance of service manager
-     *
-     * @param {string} serviceName
-     *      A name of the creating service
-     *
-     * @param {Object} serviceDefinition
-     *      Definition of the service.<pre>
-     *
-     * Allowed options:
-     * ----------------------------------------------------------------------------------------------
-     *
-     * abstract    {boolean}   opt   false   If it's true that means you can't create
-     *                                       instance of class. Also it means that
-     *                                       all options of this service definition
-     *                                       are optional (including the "className"
-     *                                       option).
-     *
-     *                                       it's convenient in use to inherit
-     *                                       the definition options from abstract
-     *                                       service to others.
-     *
-     * extends     {string}    opt           Specifies name of service which current one
-     *                                       will extends. The lacking options in services
-     *                                       that extends another service will be added
-     *                                       from the parent services
-     *
-     *                                       Example:
-     *
-     *                                       var services = {
-     *
-     *                                          // Extending from another service
-     *
-     *                                          error: {
-     *                                             className: "Name/Of/BaseErrorClass",
-     *                                             arguments: ["%mode%"],
-     *                                             tags: ["errorManager"]
-     *                                          },
-     *                                          invalidArgumentError: {
-     *                                              extends: "error"
-     *                                          },
-     *
-     *                                          ...
-     *
-     *                                          // Extending from abstract service
-     *
-     *                                          bugAbstract: {
-     *                                             abstract: true,
-     *                                             arguments: ["%mode%"],
-     *                                             tags: ["logger"]
-     *                                          },
-     *                                          bug1: {
-     *                                             extends: "bugAbstract",
-     *                                             className: "Name/Of/BugClass1"
-     *                                          },
-     *                                          bug2: {
-     *                                             extends: "bugAbstract",
-     *                                             className: "Name/Of/BugClass2"
-     *                                          },
-     *                                          ...
-     *                                       }
-     *
-     * className   {string}    req           Service class name.
-     *
-     *                                       It is always required
-     *                                       except the case when the service was
-     *                                       not marked as abstract.
-     *
-     *                                       Example:
-     *
-     *                                       var services = {
-     *                                         ...
-     *                                         bar: {
-     *                                           className: "Name/Of/BarServiceClass",
-     *                                         }
-     *                                       };
-     *
-     * arguments   {Array}     opt   []      Array of arguments, that will injected
-     *                                       into $_constructor function of the class
-     *
-     *                                       Example:
-     *
-     *                                       var services = {
-     *                                         ...
-     *                                         foo: {
-     *                                           className: "Name/Of/FooServiceClass",
-     *                                           arguments: [arg1, arg2, ...]
-     *                                         }
-     *                                       };
-     *
-     * calls       {Object}    opt   {}      List of key/value pairs where key is
-     *                                       a method name of the service class and
-     *                                       value is an array with arguments for
-     *                                       this method.
-     *
-     *                                       Example:
-     *
-     *                                       var services = {
-     *                                         ...
-     *                                         foo: {
-     *                                           className: "Name/Of/FooServiceClass",
-     *                                           calls: {
-     *                                             method1: [arg1, arg2, ...],
-     *                                             method2: [arg1, arg2, ...],
-     *                                           }
-     *                                         },
-     *                                         ...
-     *                                       };
-     *
-     * singleton   {boolean}   opt   true    Tells whether current service will returns
-     *                                       new instance every time you trying to get
-     *                                       it using serviceManager.getService()
-     *                                       method call.
-     *
-     * tags        {Array}     opt   []      An array of the service names. Uses in cases
-     *                                       when you want to mark the current service
-     *                                       belongs to another service
-     *                                       (root service in further).
-     *
-     * </pre>
-     *
-     * @constructor
+     * @alias Subclass.Service.Service
      */
     function Service(serviceManager, serviceName, serviceDefinition)
     {
@@ -187,8 +200,10 @@ Subclass.Service.Service = (function()
     }
 
     /**
-     * Returns instance of service manager
+     * Returns the instance of service manager
      *
+     * @method getServiceManager
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {Subclass.Service.ServiceManager}
      */
     Service.prototype.getServiceManager = function()
@@ -197,8 +212,10 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns name of the service
+     * Returns the name of the service
      *
+     * @method getName
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {string}
      */
     Service.prototype.getName = function()
@@ -209,9 +226,16 @@ Subclass.Service.Service = (function()
     /**
      * Sets service definition
      *
-     * @param {Object} definition
-     * @returns {Object}
+     * @method setDefinition
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @throws {Error}
+     *      Throws error specified not valid definition
+     *
+     * @param {Object} definition
+     *      The definition of the service
+     *
+     * @returns {Object}
      */
     Service.prototype.setDefinition = function(definition)
     {
@@ -229,8 +253,10 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns service definition
+     * Returns the service definition
      *
+     * @method getDefinition
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {Object}
      */
     Service.prototype.getDefinition = function()
@@ -239,7 +265,12 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Initializes service
+     * Initializes service.<br /><br />
+     * In this stage the service configuration will be validated and performed.<br />
+     * It method should be invoked once before the service instance will be created.
+     *
+     * @method initialize
+     * @memberOf Subclass.Service.Service.prototype
      */
     Service.prototype.initialize = function()
     {
@@ -250,6 +281,8 @@ Subclass.Service.Service = (function()
     /**
      * Checks whether current service was initialized
      *
+     * @method isInitialized
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {boolean}
      */
     Service.prototype.isInitialized = function()
@@ -258,8 +291,11 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Creates and returns instance of service class
+     * Creates and returns instance of service class.<br />
+     * The alias of method {@link Subclass.Service.ServiceManager#getService}
      *
+     * @method createInstance
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {Object}
      */
     Service.prototype.createInstance = function()
@@ -271,8 +307,13 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets service class instance
+     * Sets service class instance after it was created.<br /><br />
      *
+     * If the service was configured as singleton then this set instance
+     * will be return every time when the instance of service will be requested..
+     *
+     * @method setInstance
+     * @memberOf Subclass.Service.Service.prototype
      * @param {Object} instance
      */
     Service.prototype.setInstance = function(instance)
@@ -287,8 +328,10 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns service class instance
+     * Returns the service class instance
      *
+     * @method getInstance
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {Object}
      */
     Service.prototype.getInstance = function()
@@ -303,9 +346,17 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "abstract" attribute
+     * Validates "abstract" option value
+     *
+     * @method validateAbstract
+     * @memberOf Subclass.Service.Service.prototype
+     *
+     * @throws {Error}
+     *      Throws error when specified not valid "abstract" option value
      *
      * @param {*} isAbstract
+     *      The "abstract" option value
+     *
      * @returns {boolean}
      */
     Service.prototype.validateAbstract = function(isAbstract)
@@ -325,6 +376,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "abstract" attribute
      *
+     * @method setAbstract
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {boolean} isAbstract
      */
     Service.prototype.setAbstract = function(isAbstract)
@@ -341,6 +395,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Returns "abstract" attribute value
+     *
+     * @method getAbstract
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {string}
      */
     Service.prototype.getAbstract = function()
@@ -350,6 +407,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates "extends" attribute
+     *
+     * @method validateExtends
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {*} parentServiceName
      * @returns {boolean}
@@ -371,6 +431,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "extends" attribute
      *
+     * @method setExtends
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {string} parentServiceName
      */
     Service.prototype.setExtends = function(parentServiceName)
@@ -387,6 +450,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Returns "extends" attribute value
+     *
+     * @method getExtends
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {string}
      */
     Service.prototype.getExtends = function()
@@ -396,6 +462,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates "className" attribute
+     *
+     * @method validateClassName
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {*} className
      * @returns {boolean}
@@ -417,6 +486,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "className" attribute
      *
+     * @method setClassName
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {string} className
      */
     Service.prototype.setClassName = function(className)
@@ -433,6 +505,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Returns "className" attribute
+     *
+     * @method getClassName
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {string}
      */
     Service.prototype.getClassName = function()
@@ -442,6 +517,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates "arguments" attribute
+     *
+     * @method validateArguments
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {*} args
      * @returns {boolean}
@@ -463,6 +541,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "arguments" attribute
      *
+     * @method setArguments
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {Array} args
      */
     Service.prototype.setArguments = function(args)
@@ -479,6 +560,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Normalizes arguments
+     *
+     * @method normalizeArguments
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param args
      */
@@ -518,6 +602,9 @@ Subclass.Service.Service = (function()
     /**
      * Returns "arguments" attribute
      *
+     * @method getArguments
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @returns {Array}
      */
     Service.prototype.getArguments = function()
@@ -527,6 +614,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates "calls" attribute
+     *
+     * @method validateCalls
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {*} calls
      * @returns {boolean}
@@ -562,6 +652,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "calls" attribute
      *
+     * @method setCalls
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {Object.<Array>} calls
      */
     Service.prototype.setCalls = function(calls)
@@ -578,6 +671,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Normalizes arguments for call methods
+     *
+     * @method normalizeCalls
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {Object.<Array>} calls
      * @returns {{}}
@@ -604,6 +700,8 @@ Subclass.Service.Service = (function()
     /**
      * Returns "calls" attribute
      *
+     * @method getCalls
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {Array}
      */
     Service.prototype.getCalls = function()
@@ -613,6 +711,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates "singleton" attribute
+     *
+     * @method validateSingleton
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {*} singleton
      * @returns {boolean}
@@ -634,6 +735,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "singleton" attribute
      *
+     * @method setSingleton
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {string} singleton
      */
     Service.prototype.setSingleton = function(singleton)
@@ -651,6 +755,8 @@ Subclass.Service.Service = (function()
     /**
      * Returns "singleton" attribute
      *
+     * @method getSingleton
+     * @memberOf Subclass.Service.Service.prototype
      * @returns {string}
      */
     Service.prototype.getSingleton = Service.prototype.isSingleton = function()
@@ -660,6 +766,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates "tags" attribute
+     *
+     * @method validateTags
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @param {*} tags
      * @returns {boolean}
@@ -681,6 +790,9 @@ Subclass.Service.Service = (function()
     /**
      * Sets "tags" attribute
      *
+     * @method setTags
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @param {Array} tags
      */
     Service.prototype.setTags = function(tags)
@@ -698,6 +810,9 @@ Subclass.Service.Service = (function()
     /**
      * Returns "tags" attribute
      *
+     * @method getTags
+     * @memberOf Subclass.Service.Service.prototype
+     *
      * @returns {Array}
      */
     Service.prototype.getTags = function()
@@ -707,6 +822,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Returns base service definition
+     *
+     * @method getBaseDefinition
+     * @memberOf Subclass.Service.Service.prototype
      *
      * @returns {Object}
      */
@@ -768,6 +886,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Validates service definition
+     *
+     * @method validateDefinition
+     * @memberOf Subclass.Service.Service.prototype
      */
     Service.prototype.validateDefinition = function()
     {
@@ -822,6 +943,9 @@ Subclass.Service.Service = (function()
 
     /**
      * Processing service definition
+     *
+     * @method processDefinition
+     * @memberOf Subclass.Service.Service.prototype
      */
     Service.prototype.processDefinition = function()
     {

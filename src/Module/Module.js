@@ -48,22 +48,112 @@ Subclass.Module.Error = {};
  * rootPath     {string}    opt          The path to root directory of the
  *                                       project.
  *
- * files        {string[]}  opt          Array of JS file names.
+ * files        {string[]}  opt          Array of JS file names which you
+ *                                       want to be loaded before the
+ *                                       onReady callbacks will be called.
  *
- * dataTypes    {Object}    opt          Object, which keys will be type
- *                                       names (alias) and value will
- *                                       be its definitions.
+ *                                       By default the path of the files
+ *                                       is relative to the path specified
+ *                                       in the "rootPath" option.
+ *
+ *                                       But also you may to specify the path
+ *                                       not tied to the "rootPath" by the
+ *                                       adding the symbol "^" at the start
+ *                                       of the file name.
+ *
+ *                                       Example:
+ *
+ *                                       var moduleConfigs = {
+ *                                         rootPath: "/asserts/scripts/app/",
+ *                                         files: [
+ *
+ *                                           // path relative to rootPath
+ *                                           "app.js",
+ *
+ *                                           // absolute path
+ *                                           "^/asserts/vendors/script.js
+ *                                         ],
+ *                                         ...
+ *                                       };
+ *
+ * dataTypes    {Object}    opt          Object, which keys are the type
+ *                                       names (alias) and value are
+ *                                       its definitions.
+ *
+ *                                       It allows to create the new data
+ *                                       types based on the default data
+ *                                       types using configuration whatever
+ *                                       you need.
+ *
+ *                                       Also you may to change the
+ *                                       configuration of the default
+ *                                       data types.
+ *
+ *                                       Example:
+ *
+ *                                       var moduleConfigs = {
+ *                                         ...
+ *                                         dataTypes: {
+ *
+ *                                           // the new type
+ *                                           percents: {
+ *                                             type: "string",
+ *                                             pattern: /^[0-9]+%$/
+ *                                           },
+ *
+ *                                           // change existent type
+ *                                           number: {
+ *                                             type: "number",
+ *                                             nullable: false,
+ *                                             default: 100
+ *                                           }
+ *                                         },
+ *                                         ...
+ *                                       };
+ *
+ * onReady      {Function}  opt          Callback function that will be
+ *                                       invoked when all module classes
+ *                                       will be loaded.
  *
  * parameters   {Object}    opt          Object with parameters which can
  *                                       be used in service definitions
- *                                       or in any other places,
- *                                       i.e in classes.
+ *                                       or in any other places of the
+ *                                       module.
+ *
+ *                                       Example:
+ *
+ *                                       var moduleConfigs = {
+ *                                         ...
+ *                                         parameters: {
+ *                                           mode: "dev",
+ *                                           foo: 111,
+ *                                           bar: true,
+ *                                           ...
+ *                                         },
+ *                                         ...
+ *                                       };
  *
  * services     {Object}    opt          List of service definitions.
+ *                                       To see more about service
+ *                                       definition configuration look at
+ *                                       {@link Subclass.Service.Service}
  *
- * onReady      {Function}  opt          Callback that will be invoked when
- *                                       all module classes will be loaded.
+ *                                       Example:
  *
+ *                                       var moduleConfigs = {
+ *                                         ...
+ *                                         services: {
+ *                                           foo: {
+ *                                             className: "Path/Of/FooClass",
+ *                                             arguments: ["%mode%]
+ *                                           },
+ *                                           bar: {
+ *                                             className: "Path/Of/BarClass"
+ *                                           },
+ *                                           ...
+ *                                         },
+ *                                         ...
+ *                                       };
  * </pre>
  */
 Subclass.Module.Module = (function()

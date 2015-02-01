@@ -45,13 +45,13 @@ Subclass.Property.Number.NumberDefinition = (function()
         if (!error && minValue !== null && value < minValue) {
             Subclass.Error.create(
                 'The value of the property ' + property + ' is too small ' +
-                'and must be more or equals number ' + minValue + "."
+                'and must be more or equals the number ' + minValue + "."
             );
         }
         if (!error && maxValue !== null && value > maxValue) {
             Subclass.Error.create(
-                'The value of the property ' + property + ' is too big ' +
-                'and must be less or equals number ' + maxValue + "."
+                'The value of the property ' + property + ' is too high ' +
+                'and must be less or equals the number ' + maxValue + "."
             );
         }
         if (error) {

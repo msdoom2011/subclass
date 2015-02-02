@@ -686,6 +686,9 @@ Subclass.Class.ClassDefinition = (function()
         }
     };
 
+    /**
+     * Searches for the names of classes which are needed to be loaded
+     */
     ClassDefinition.prototype.processRelatives = function()
     {
         var classInst = this.getClass();

@@ -67,8 +67,9 @@ Subclass.Property.CustomTypesManager = (function()
                     .expected('a plain object with another plain objects')
                     .apply()
                 ;
+            } else {
+                throw e;
             }
-            throw e;
         }
     };
 

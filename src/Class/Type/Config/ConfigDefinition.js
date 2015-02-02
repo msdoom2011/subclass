@@ -90,13 +90,17 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_includes')
-                .className(this.getClass().getName())
-                .received(includes)
-                .expected('an array of strings')
-                .apply()
-            ;
+            if (e == 'error') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_includes')
+                    .className(this.getClass().getName())
+                    .received(includes)
+                    .expected('an array of strings')
+                    .apply()
+                ;
+            } else {
+                throw e;
+            }
         }
         return true;
     };
@@ -157,13 +161,17 @@ Subclass.Class.Config.ConfigDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_decorators')
-                .className(this.getClass().getName())
-                .received(decorators)
-                .expected('an array of strings')
-                .apply()
-            ;
+            if (e == 'error') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_decorators')
+                    .className(this.getClass().getName())
+                    .received(decorators)
+                    .expected('an array of strings')
+                    .apply()
+                ;
+            } else {
+                throw e;
+            }
         }
         return true;
     };

@@ -284,12 +284,16 @@ Subclass.Property.PropertyManager = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("property names", false)
-                .received(propertyNames)
-                .expected("an array of strings")
-                .apply()
-            ;
+            if (e == 'error') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("property names", false)
+                    .received(propertyNames)
+                    .expected("an array of strings")
+                    .apply()
+                ;
+            } else {
+                throw e;
+            }
         }
     };
 

@@ -133,7 +133,11 @@
  *                                       will be passed two arguments:
  *                                       the instance of service "bar"
  *                                       and the value of the parameter "mode",
- *                                       i.e. the string "dev"
+ *                                       i.e. the string "dev".
+ *
+ *                                       Also it is possible include parameter
+ *                                       value to the string literal like:
+ *                                       "some string with %param% value"
  *
  * calls       {Object}    opt   {}      List of key/value pairs where key is
  *                                       a method name of the service class and
@@ -369,7 +373,11 @@ Subclass.Service.Service = (function()
      * @method setInstance
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if was attempt to create an instance of abstract service
+     *
      * @param {Object} instance
+     *      The instance of the service class
      */
     Service.prototype.setInstance = function(instance)
     {
@@ -383,10 +391,13 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns the service class instance
+     * Returns the service class instance that was created earlier
      *
      * @method getInstance
      * @memberOf Subclass.Service.Service.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to get instance of abstract service class
      *
      * @returns {Object}
      */
@@ -430,14 +441,13 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets "abstract" option
+     * Validates and then sets the "abstract" option value
      *
      * @method setAbstract
      * @memberOf Subclass.Service.Service.prototype
      *
      * @throws {Error}
-     *      Throws error if trying to change "abstract"
-     *      option after the service was initialized.
+     *      Throws error if trying to change "abstract" option after the service was initialized.
      *
      * @param {boolean} isAbstract
      *      The "abstract" option value
@@ -455,7 +465,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "abstract" option value
+     * Returns the "abstract" option value
      *
      * @method getAbstract
      * @memberOf Subclass.Service.Service.prototype
@@ -468,7 +478,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "extends" option value
+     * Validates the "extends" option value
      *
      * @method validateExtends
      * @memberOf Subclass.Service.Service.prototype
@@ -496,14 +506,13 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets "extends" option value
+     * Validates and then sets the "extends" option value
      *
      * @method setExtends
      * @memberOf Subclass.Service.Service.prototype
      *
      * @throws {Error}
-     *      Throws error if trying to change "extends"
-     *      option after the service was initialized.
+     *      Throws error if trying to change "extends" option after the service was initialized.
      *
      * @param {string} parentServiceName
      *      The name of the parent service which the current one will extend
@@ -521,7 +530,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "extends" option value
+     * Returns the "extends" option value
      *
      * @method getExtends
      * @memberOf Subclass.Service.Service.prototype
@@ -534,7 +543,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "className" option value
+     * Validates the "className" option value
      *
      * @method validateClassName
      * @memberOf Subclass.Service.Service.prototype
@@ -562,14 +571,13 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets "className" option value
+     * Validates and then sets the "className" option value
      *
      * @method setClassName
      * @memberOf Subclass.Service.Service.prototype
      *
      * @throws {Error}
-     *      Throws error if trying to change "className"
-     *      option after the service was initialized.
+     *      Throws error if trying to change "className" option after the service was initialized.
      *
      * @param {string} className
      *      The name of service class
@@ -587,7 +595,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "className" option value
+     * Returns the "className" option value
      *
      * @method getClassName
      * @memberOf Subclass.Service.Service.prototype
@@ -600,7 +608,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "arguments" option value
+     * Validates the "arguments" option value
      *
      * @method validateArguments
      * @memberOf Subclass.Service.Service.prototype
@@ -629,7 +637,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets "arguments" option value
+     * Validates and then sets the "arguments" option value
      *
      * @method setArguments
      * @memberOf Subclass.Service.Service.prototype
@@ -655,7 +663,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Normalizes arguments.<br /><br />
+     * Normalizes the arguments array.<br /><br />
      *
      * Defining the service it is possible to specify in arguments for class constructor
      * or for methods the things different from literals.<br /><br />
@@ -704,7 +712,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "arguments" option
+     * Returns "arguments" option value
      *
      * @method getArguments
      * @memberOf Subclass.Service.Service.prototype
@@ -717,12 +725,18 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "calls" option
+     * Validates "calls" option value
      *
      * @method validateCalls
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if was specified invalid value of the "calls" service option
+     *
      * @param {*} calls
+     *      The object which keys are the method names and values are its arguments.
+     *      The rules of specifying the arguments is the same as for the "arguments" option.
+     *
      * @returns {boolean}
      */
     Service.prototype.validateCalls = function(calls)
@@ -742,24 +756,33 @@ Subclass.Service.Service = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidServiceOption')
-                .option('calls')
-                .service(this.getName())
-                .received(calls)
-                .expected('a plain object with array properties')
-                .apply()
-            ;
+            if (e == 'error') {
+                Subclass.Error.create('InvalidServiceOption')
+                    .option('calls')
+                    .service(this.getName())
+                    .received(calls)
+                    .expected('a plain object with array properties')
+                    .apply()
+                ;
+            } else {
+                throw e;
+            }
         }
         return true;
     };
 
     /**
-     * Sets "calls" option
+     * Validates and then sets "calls" option value
      *
      * @method setCalls
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if trying to change "calls" option after the service was initialized.
+     *
      * @param {Object.<Array>} calls
+     *      The object which keys are the class method name and its values are the arrays of arguments.
+     *      To see more details look at the "calls" option description in {@link Subclass.Service.Service}
      */
     Service.prototype.setCalls = function(calls)
     {
@@ -774,13 +797,18 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Normalizes arguments for call methods
+     * Normalizes arguments of methods specified in the "calls" option.<br /><br />
+     *
+     * It performs arguments array from each specified method in the same way as
+     * the method {@link Subclass.Service.Service#normalizeArguments}
      *
      * @method normalizeCalls
      * @memberOf Subclass.Service.Service.prototype
      *
      * @param {Object.<Array>} calls
-     * @returns {{}}
+     *      The object with method names and its arguments
+     *
+     * @returns {Object.<Array>}
      */
     Service.prototype.normalizeCalls = function(calls)
     {
@@ -802,10 +830,11 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "calls" option
+     * Returns the "calls" option value
      *
      * @method getCalls
      * @memberOf Subclass.Service.Service.prototype
+     *
      * @returns {Array}
      */
     Service.prototype.getCalls = function()
@@ -814,12 +843,17 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "singleton" option
+     * Validates the "singleton" option value
      *
      * @method validateSingleton
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if specified invalid not a boolean value
+     *
      * @param {*} singleton
+     *      The value of "singleton" option
+     *
      * @returns {boolean}
      */
     Service.prototype.validateSingleton = function(singleton)
@@ -837,12 +871,18 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets "singleton" option
+     * Validates and sets "singleton" option value
      *
      * @method setSingleton
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if trying to change "singleton" option after the service was initialized.
+     *
      * @param {string} singleton
+     *      The flag whether this service is singleton, i.e. always returns the same instance
+     *      once it was created (if it's true) or should return the new instance every time
+     *      when you want to receive this service.
      */
     Service.prototype.setSingleton = function(singleton)
     {
@@ -857,11 +897,12 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "singleton" option
+     * Returns the "singleton" option value
      *
      * @method getSingleton
      * @memberOf Subclass.Service.Service.prototype
-     * @returns {string}
+     *
+     * @returns {boolean}
      */
     Service.prototype.getSingleton = Service.prototype.isSingleton = function()
     {
@@ -869,12 +910,17 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates "tags" option
+     * Validates the "tags" option value
      *
      * @method validateTags
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if specified not array of strings
+     *
      * @param {*} tags
+     *      The array with names of services for which current one belongs to
+     *
      * @returns {boolean}
      */
     Service.prototype.validateTags = function(tags)
@@ -892,12 +938,16 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Sets "tags" option
+     * Validates and then sets "tags" option value
      *
      * @method setTags
      * @memberOf Subclass.Service.Service.prototype
      *
+     * @throws {Error}
+     *      Throws error if trying to change "singleton" option after the service was initialized.
+     *
      * @param {Array} tags
+     *      The array with names of services for which current one belongs to
      */
     Service.prototype.setTags = function(tags)
     {
@@ -912,12 +962,12 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns "tags" option
+     * Returns the "tags" option value
      *
      * @method getTags
      * @memberOf Subclass.Service.Service.prototype
      *
-     * @returns {Array}
+     * @returns {string[]}
      */
     Service.prototype.getTags = function()
     {
@@ -925,7 +975,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Returns base service definition
+     * Returns the base service definition with options with its default values.
      *
      * @method getBaseDefinition
      * @memberOf Subclass.Service.Service.prototype
@@ -937,28 +987,28 @@ Subclass.Service.Service = (function()
         return {
 
             /**
-             * Is abstract state
+             * The abstract service marker
              *
              * @type {boolean}
              */
             abstract: false,
 
             /**
-             * Parent service name
+             * The name of parent service
              *
              * @type {string}
              */
             extends: null,
 
             /**
-             * Name of service class
+             * The name of service class
              *
              * @type {string}
              */
             className: null,
 
             /**
-             * Array of class constructor arguments
+             * The array of service class constructor arguments
              *
              * @type {Array}
              */
@@ -973,14 +1023,14 @@ Subclass.Service.Service = (function()
             calls: {},
 
             /**
-             * Tells whether current class is singleton or not
+             * The singleton marker
              *
              * @type {boolean}
              */
             singleton: true,
 
             /**
-             * List of tags
+             * The list of tags
              *
              * @type {string[]}
              */
@@ -989,10 +1039,13 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Validates service definition
+     * Validates the definition of service
      *
      * @method validateDefinition
      * @memberOf Subclass.Service.Service.prototype
+     *
+     * @throws {Error}
+     *      Throws error if definition of service is not valid
      */
     Service.prototype.validateDefinition = function()
     {
@@ -1014,7 +1067,7 @@ Subclass.Service.Service = (function()
 
                 if (tags.indexOf(serviceName) >= 0 || serviceName == chain[0]) {
                     Subclass.Error.create(
-                        'Can\'t create instance of service "' + this.getName() + '". ' +
+                        'Can\'t create instance of service "' + $this.getName() + '". ' +
                         'Circular dependency injection was found.'
                     );
                 }
@@ -1046,7 +1099,7 @@ Subclass.Service.Service = (function()
     };
 
     /**
-     * Processing service definition
+     * Processing and initializing of service definition.
      *
      * @method processDefinition
      * @memberOf Subclass.Service.Service.prototype

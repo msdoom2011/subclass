@@ -77,7 +77,17 @@ Subclass.Class.Class.ClassDefinition = (function()
                 }
             }
         } catch (e) {
-            this._throwInvalidAttribute('$_traits', 'an array with string elements');
+            if (e == 'error') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_traits')
+                    .className(this.getClass().getName())
+                    .received(traits)
+                    .expected('an array of strings')
+                    .apply()
+                ;
+            } else {
+                throw e;
+            }
         }
         return true;
     };
@@ -140,13 +150,17 @@ Subclass.Class.Class.ClassDefinition = (function()
                 }
             }
         } catch (e) {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_implements')
-                .className(this.getClass().getName())
-                .received(interfaces)
-                .expected('an array of strings')
-                .apply()
-            ;
+            if (e == 'error') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_implements')
+                    .className(this.getClass().getName())
+                    .received(interfaces)
+                    .expected('an array of strings')
+                    .apply()
+                ;
+            } else {
+                throw e;
+            }
         }
         return true;
     };

@@ -80,7 +80,7 @@ Subclass.Property.String.StringDefinition = (function()
     StringDefinition.prototype.validatePattern = function(pattern)
     {
         if (pattern !== null && typeof pattern != 'object' && !(pattern instanceof RegExp)) {
-            Subclass.Error.creat('InvalidPropertyOption')
+            Subclass.Error.create('InvalidPropertyOption')
                 .option('pattern')
                 .received(pattern)
                 .property(this.getProperty())

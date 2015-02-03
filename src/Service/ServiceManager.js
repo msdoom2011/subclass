@@ -107,42 +107,84 @@ Subclass.Service.ServiceManager = (function()
      * The lacking options in services that extends another service
      * will be added from the parent service
      *
+     * @method normalizeServices
+     * @memberOf Subclass.Service.ServiceManager.prototype
+     *
      * @example
+     * ...
+     *
+     * // Service definitions using extending services
+     *
      * var moduleConfis = {
      *      services: {
-     *
-     *          // Extending from another service
-     *
      *          error: {
-     *              className: "Name/Of/BaseErrorClass",
+     *              abstract: true,
      *              arguments: ["%mode%"],
+     *              calls: {
+     *                  method1: [arg1, arg2, arg3],
+     *                  method2: []
+     *              },
      *              tags: ["errorManager"]
      *          },
      *          invalidArgumentError: {
-     *              extends: "error"
+     *              extends: "error",
+     *              className: "Name/Of/InvalidArgumentErrorClass"
      *          },
-     *
-     *          ...
-     *
-     *          // Extending from abstract service
-     *
-     *          bugAbstract: {
-     *              abstract: true,
-     *              arguments: ["%mode%"],
-     *              tags: ["logger"]
+     *          missedArgumentError: {
+     *              extends: "error",
+     *              className: "Name/Of/MissedArgumentErrorClass"
      *          },
-     *          bug1: {
-     *              extends: "bugAbstract",
-     *              className: "Name/Of/BugClass1"
-     *          },
-     *          bug2: {
-     *              extends: "bugAbstract",
-     *              className: "Name/Of/BugClass2"
-     *          },
-     *          ...
+     *          emptyArgumentError: {
+     *              extends: "error",
+     *              className: "Name/Of/EmptyArgumentErrorClass"
+     *          }
      *      }
      * }
+     * ...
      *
+     * // The same definitions after normalization
+     *
+     * var moduleConfis = {
+     *      services: {
+     *          error: {
+     *              abstract: true,
+     *              arguments: ["%mode%"],
+     *              calls: {
+     *                  method1: [arg1, arg2, arg3],
+     *                  method2: []
+     *              },
+     *              tags: ["errorManager"]
+     *          },
+     *          invalidArgumentError: {
+     *              className: "Name/Of/InvalidArgumentErrorClass"
+     *              arguments: ["%mode%"],
+     *              calls: {
+     *                  method1: [arg1, arg2, arg3],
+     *                  method2: []
+     *              },
+     *              tags: ["errorManager"]
+     *          },
+     *          missedArgumentError: {
+     *              className: "Name/Of/MissedArgumentErrorClass"
+     *              arguments: ["%mode%"],
+     *              calls: {
+     *                  method1: [arg1, arg2, arg3],
+     *                  method2: []
+     *              },
+     *              tags: ["errorManager"]
+     *          },
+     *          emptyArgumentError: {
+     *              className: "Name/Of/EmptyArgumentErrorClass"
+     *              arguments: ["%mode%"],
+     *              calls: {
+     *                  method1: [arg1, arg2, arg3],
+     *                  method2: []
+     *              },
+     *              tags: ["errorManager"]
+     *          }
+     *      }
+     * }
+     * ...
      */
     ServiceManager.prototype.normalizeServices = function()
     {
@@ -170,13 +212,18 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Returns all registered services
+     * Returns all registered service definitions
+     *
+     * @method getServices
+     * @memberOf Subclass.Service.ServiceManager.prototype
      *
      * @param {boolean} [privateServices = false]
      *      If passed true it returns services only from current module
      *      without services from its plug-ins.
      *
      * @returns {Object.<Subclass.Service.Service>}
+     *      Returns the plain object which keys are the service names
+     *      and values are the service definitions.
      */
     ServiceManager.prototype.getServices = function(privateServices)
     {
@@ -207,10 +254,16 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Returns all services tagged by passed tag
+     * Returns all services tagged by specified tag
+     *
+     * @method getServicesByTag
+     * @memberOf Subclass.Service.ServiceManager.prototype
      *
      * @param {string} tag
-     * @returns {Object[]}
+     *      The name of service
+     *
+     * @returns {Array.<Subclass.Service.Service>}
+     *      The array of service definitions
      */
     ServiceManager.prototype.getServicesByTag = function(tag)
     {
@@ -233,10 +286,16 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Registers new service
+     * Registers the new service
+     *
+     * @method registerService
+     * @memberOf Subclass.Service.ServiceManager.prototype
      *
      * @param {string} serviceName
+     *      The name of service
+     *
      * @param {Object} serviceDefinition
+     *      The service configuration
      */
     ServiceManager.prototype.registerService = function(serviceName, serviceDefinition)
     {
@@ -256,10 +315,19 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Returns service class instance
+     * Returns service class instance.<br /><br />
+     *
+     * Depending on singleton marker will be returned the same
+     * or the new instance every time you request the service.
+     *
+     * @method getService
+     * @memberOf Subclass.Service.ServiceManager.prototype
      *
      * @param {string} serviceName
+     *      The name of service which instance you want to get
+     *
      * @returns {Object}
+     *      Returns the instance of class specified in the "className" service option
      */
     ServiceManager.prototype.getService = function(serviceName)
     {
@@ -270,10 +338,16 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Returns service instance
+     * Returns service definition instance
+     *
+     * @method getServiceDefinition
+     * @memberOf Subclass.Service.ServiceManager.prototype
      *
      * @param {string} serviceName
+     *      The service name which definition you want to get
+     *
      * @returns {Subclass.Service.Service}
+     *      The service definition instance which contains the service configuration data
      */
     ServiceManager.prototype.getServiceDefinition = function(serviceName)
     {
@@ -286,8 +360,16 @@ Subclass.Service.ServiceManager = (function()
     /**
      * Checks whether service with specified name was ever registered
      *
-     * @param {boolean} [privateServices]
+     * @method issetService
+     * @memberOf Subclass.Service.ServiceManager.prototype
+     *
      * @param {string} serviceName
+     *      The name of the service, existence of which you want to check
+     *
+     * @param {boolean} [privateServices]
+     *      If passed true it will search in services only from current module
+     *      without services from its plug-ins.
+     *
      * @returns {boolean}
      */
     ServiceManager.prototype.issetService = function(serviceName, privateServices)

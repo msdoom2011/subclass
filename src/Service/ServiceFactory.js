@@ -1,14 +1,31 @@
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * The class which instance is the factory for the services
+ *
+ * @throws {Error}
+ *      Throws error if specified not valid service manager instance
+ *
+ * @param {Subclass.Service.ServiceManager} serviceManager
+ *      The instance of service manager
  */
 Subclass.Service.ServiceFactory = (function()
 {
     /**
-     * @param {Subclass.Service.ServiceManager} serviceManager
-     * @constructor
+     * @alias Subclass.Service.ServiceFactory
      */
     function ServiceFactory(serviceManager)
     {
+        if (!serviceManager || !(serviceManager instanceof Subclass.Service.ServiceManager)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('service manager instance', false)
+                .received(serviceManager)
+                .expected('an instance of Subclass.Service.ServiceManager')
+                .apply()
+            ;
+        }
         /**
          * Service manager instance
          *
@@ -20,6 +37,9 @@ Subclass.Service.ServiceFactory = (function()
     /**
      * Returns service manager instance
      *
+     * @method getServiceManager
+     * @memberOf Subclass.Service.ServiceManager.prototype
+     *
      * @returns {Subclass.Service.ServiceManager}
      */
     ServiceFactory.prototype.getServiceManager = function()
@@ -28,9 +48,29 @@ Subclass.Service.ServiceFactory = (function()
     };
 
     /**
-     * Returns service class instance
+     * Returns service class instance.
+     *
+     * If the passed service definition was not initialized
+     * it will be initialized and will be created and returned
+     * the new instance of the service.
+     *
+     * If the passed service definition was initialized
+     * and it is marked as singleton the early created
+     * instance will be returned without creating the new one.
+     *
+     * If the service is not singleton then every time
+     * will be returned the new instance of service.
+     *
+     * @method getService
+     * @memberOf Subclass.Service.ServiceManager.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to get instance of abstract service
      *
      * @param {Subclass.Service.Service} serviceDefinition
+     *      The instance of definition of service
+     *      (the instance of class which contains the service configuration)
+     *
      * @returns {Object}
      */
     ServiceFactory.prototype.getService = function(serviceDefinition)
@@ -64,6 +104,9 @@ Subclass.Service.ServiceFactory = (function()
 
     /**
      * Creates and returns service class instance
+     *
+     * @method createService
+     * @memberOf Subclass.Service.ServiceManager.prototype
      *
      * @param {Subclass.Service.Service} serviceDefinition
      */

@@ -89,7 +89,11 @@ Subclass.Class.Interface.Interface = (function()
      */
     Interface.prototype.getConstructorEmpty = function ()
     {
-        return function Interface(){};
+        return function Interface(){
+
+            // Hook for the grunt-contrib-uglify plugin
+            return Interface.name;
+        };
     };
 
     /**

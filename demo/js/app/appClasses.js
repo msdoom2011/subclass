@@ -298,6 +298,7 @@ app.registerTrait("extraTrait", {
     extraTraitMethod: function()
     {
         console.log('extra trait method call from ');
+        return 'extra trait method call from ';
     }
 });
 
@@ -318,7 +319,6 @@ var class3Inst = app.alterClass("AbstractClass")
         {
 
         }
-
     })
     .save()
 ;

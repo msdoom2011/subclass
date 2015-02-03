@@ -524,9 +524,9 @@ Subclass.Class.Config.ConfigDefinition = (function()
         }
     };
 
-    ConfigDefinition.prototype.processRelatives = function()
+    ConfigDefinition.prototype.processRelatedClasses = function()
     {
-        ConfigDefinition.$parent.prototype.processRelatives.call(this);
+        ConfigDefinition.$parent.prototype.processRelatedClasses.call(this);
 
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();

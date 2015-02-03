@@ -26,6 +26,14 @@ Subclass.Property.CustomTypesManager = (function()
          * @private
          */
         this._types = {};
+
+        var module = this.getPropertyManager().getModule();
+        var eventManager = module.getEventManager();
+        var $this = this;
+
+        eventManager.getEvent('onLoadingEnd').addListener(function() {
+            $this.initialize();
+        });
     }
 
     /**
@@ -83,27 +91,47 @@ Subclass.Property.CustomTypesManager = (function()
         this.validateTypeDefinitions(definitions);
 
         for (var typeName in definitions) {
-            if (!definitions.hasOwnProperty(typeName)) {
-                continue;
+            if (definitions.hasOwnProperty(typeName)) {
+                this._typeDefinitions[typeName] = definitions[typeName];
             }
-            var typeDefinition = definitions[typeName];
-
-            this._typeDefinitions[typeName] = typeDefinition;
-            this._types[typeName] = this.getPropertyManager().createProperty(
-                typeName,
-                Subclass.Tools.copy(typeDefinition)
-            );
         }
     };
 
     /**
-     * Initializing defined custom property types
-     */
+    * Initializing defined custom property types
+    */
     CustomTypesManager.prototype.initialize = function()
     {
-        var typeDefinitions = this.getTypeDefinitions(false);
+        var typeDefinitions = this.getTypeDefinitions();
+        var propertyManager = this.getPropertyManager();
+        var module = propertyManager.getModule();
+        var typeName;
 
-        for (var typeName in typeDefinitions) {
+        // Adding default data types to the root module
+
+        if (module.isRoot()) {
+            var propertyTypes = propertyManager.constructor.getPropertyTypes();
+            var defaultTypeDefinitions = {};
+
+            for (typeName in propertyTypes) {
+                if (!propertyTypes.hasOwnProperty(typeName)) {
+                    continue;
+                }
+                var defaultPropertyDefinition = propertyTypes[typeName].getEmptyDefinition();
+
+                if (defaultPropertyDefinition) {
+                    defaultTypeDefinitions[typeName] = defaultPropertyDefinition;
+                }
+            }
+            this._typeDefinitions = Subclass.Tools.extendDeep(
+                defaultTypeDefinitions,
+                this._typeDefinitions
+            );
+        }
+
+        // Initializing type definitions
+
+        for (typeName in typeDefinitions) {
             if (!typeDefinitions.hasOwnProperty(typeName)) {
                 continue;
             }

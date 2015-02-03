@@ -689,7 +689,7 @@ Subclass.Class.ClassDefinition = (function()
     /**
      * Searches for the names of classes which are needed to be loaded
      */
-    ClassDefinition.prototype.processRelatives = function()
+    ClassDefinition.prototype.processRelatedClasses = function()
     {
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
@@ -745,10 +745,10 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 var propertyType = Subclass.Property.PropertyManager.getPropertyType(propertyDefinition.type);
 
-                if (!propertyType.parseRelatives) {
+                if (!propertyType.parseRelatedClasses) {
                     continue;
                 }
-                var requiredClasses = propertyType.parseRelatives(propertyDefinition);
+                var requiredClasses = propertyType.parseRelatedClasses(propertyDefinition);
 
                 if (requiredClasses && requiredClasses.length) {
                     for (i = 0; i < requiredClasses.length; i++) {

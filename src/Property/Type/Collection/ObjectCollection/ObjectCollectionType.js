@@ -53,7 +53,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
     /**
      * @inheritDoc
      */
-    ObjectCollectionType.parseRelatives = function(propertyDefinition)
+    ObjectCollectionType.parseRelatedClasses = function(propertyDefinition)
     {
         if (
             !propertyDefinition.proto
@@ -65,10 +65,10 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
         var propDef = propertyDefinition.proto;
         var propertyType = Subclass.Property.PropertyManager.getPropertyType(propDef.type);
 
-        if (!propertyType.parseRelatives) {
+        if (!propertyType.parseRelatedClasses) {
             return;
         }
-        return propertyType.parseRelatives(propDef);
+        return propertyType.parseRelatedClasses(propDef);
     };
 
     /**
@@ -77,6 +77,14 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
     ObjectCollectionType.getDefinitionClass = function()
     {
         return Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ObjectCollectionType.getEmptyDefinition = function()
+    {
+        return false;
     };
 
     /**

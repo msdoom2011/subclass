@@ -56,6 +56,14 @@ Subclass.Property.Number.Number = (function()
         return Subclass.Property.Number.NumberDefinition;
     };
 
+    /**
+     * @inheritDoc
+     */
+    NumberType.getEmptyDefinition = function()
+    {
+        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

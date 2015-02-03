@@ -58,6 +58,14 @@ Subclass.Property.Mixed.Mixed = (function()
     };
 
     /**
+     * @inheritDoc
+     */
+    MixedType.getEmptyDefinition = function()
+    {
+        return false;
+    };
+
+    /**
      * Returns property instances according to allows parameter of property definition.
      *
      * @returns {PropertyType[]}

@@ -98,7 +98,11 @@ Subclass.Class.Trait.Trait = (function()
      */
     Trait.prototype.getConstructorEmpty = function ()
     {
-        return function Trait() {};
+        return function Trait() {
+
+            // Hook for the grunt-contrib-uglify plugin
+            return AbstractClass.name;
+        };
     };
 
     /**

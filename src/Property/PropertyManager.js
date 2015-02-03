@@ -145,6 +145,14 @@ Subclass.Property.PropertyManager = (function()
      */
     PropertyManager.prototype.createProperty = function(propertyName, propertyDefinition, contextClass, contextProperty)
     {
+        if (!Subclass.Tools.isPlainObject(propertyDefinition)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the definition of property "' + propertyName + '"', false)
+                .received(propertyDefinition)
+                .expected('a plain object with mandatory property "type"')
+                .apply()
+            ;
+        }
         var customTypesManager = this.getCustomTypesManager();
         var propertyTypeName = propertyDefinition.type;
 
@@ -239,8 +247,17 @@ Subclass.Property.PropertyManager = (function()
                 'factory "' + propertyTypeName + '".'
             );
         }
-
         return this._propertyTypes[propertyTypeName];
+    };
+
+    /**
+     * Returns all registered property types
+     *
+     * @returns {Object.<Function>}
+     */
+    PropertyManager.getPropertyTypes = function()
+    {
+        return this._propertyTypes;
     };
 
     /**
@@ -252,16 +269,6 @@ Subclass.Property.PropertyManager = (function()
     PropertyManager.issetPropertyType = function(propertyTypeName)
     {
         return !!this._propertyTypes[propertyTypeName];
-    };
-
-    /**
-     * Returns names of all registered property types
-     *
-     * @returns {string[]}
-     */
-    PropertyManager.getPropertyTypes = function()
-    {
-        return Object.keys(this._propertyTypes);
     };
 
     /**

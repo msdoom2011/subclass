@@ -78,7 +78,11 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
      */
     AbstractClass.prototype.getConstructorEmpty = function ()
     {
-        return function AbstractClass(){};
+        return function AbstractClass(){
+
+            // Hook for the grunt-contrib-uglify plugin
+            return AbstractClass.name;
+        };
     };
 
     /**

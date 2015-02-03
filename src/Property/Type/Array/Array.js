@@ -58,6 +58,14 @@ Subclass.Property.Array.Array = (function()
     /**
      * @inheritDoc
      */
+    ArrayType.getEmptyDefinition = function()
+    {
+        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+    };
+
+    /**
+     * @inheritDoc
+     */
     ArrayType.prototype.isEmpty = function(context)
     {
         var isNullable = this.getDefinition().isNullable();

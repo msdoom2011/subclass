@@ -215,6 +215,7 @@ Subclass.Module.Module = (function()
         // Registering events
 
         this.getEventManager()
+            .registerEvent('onLoadingEnd')
             .registerEvent('onModuleInit')
             .registerEvent('onReady')
             .registerEvent('onReadyBefore')

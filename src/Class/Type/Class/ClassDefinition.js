@@ -265,9 +265,9 @@ Subclass.Class.Class.ClassDefinition = (function()
         return classDefinition;
     };
 
-    ClassDefinition.prototype.processRelatives = function()
+    ClassDefinition.prototype.processRelatedClasses = function()
     {
-        ClassDefinition.$parent.prototype.processRelatives.call(this);
+        ClassDefinition.$parent.prototype.processRelatedClasses.call(this);
 
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();

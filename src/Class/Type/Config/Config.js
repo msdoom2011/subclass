@@ -99,7 +99,11 @@ Subclass.Class.Config.Config = (function()
      */
     Config.prototype.getConstructorEmpty = function ()
     {
-        return function Config() {};
+        return function Config() {
+
+            // Hook for the grunt-contrib-uglify plugin
+            return Config.name;
+        };
     };
 
     /**

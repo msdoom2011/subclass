@@ -109,7 +109,11 @@ Subclass.Class.Class.Class = (function() {
      */
     Class.prototype.getConstructorEmpty = function ()
     {
-        return function Class() {};
+        return function Class() {
+
+            // Hook for the grunt-contrib-uglify plugin
+            return Class.name;
+        };
     };
 
     /**

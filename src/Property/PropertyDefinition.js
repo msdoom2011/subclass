@@ -452,7 +452,6 @@ Subclass.Property.PropertyDefinition = (function()
             ) {
                 continue;
             }
-
             var setterMethod = "set" + attrName[0].toUpperCase() + attrName.substr(1);
 
             if (this[setterMethod]) {

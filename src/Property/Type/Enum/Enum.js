@@ -59,6 +59,14 @@ Subclass.Property.Enum.Enum = (function()
     /**
      * @inheritDoc
      */
+    EnumType.getEmptyDefinition = function()
+    {
+        return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
     EnumType.prototype.isEmpty = function(context)
     {
         return false;

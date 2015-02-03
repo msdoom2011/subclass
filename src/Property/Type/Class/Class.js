@@ -52,7 +52,7 @@ Subclass.Property.Class.Class = (function()
      * @inheritDoc
      * @throws {Error}
      */
-    ClassType.parseRelatives = function(propertyDefinition)
+    ClassType.parseRelatedClasses = function(propertyDefinition)
     {
         if (!propertyDefinition.className) {
             return;
@@ -66,6 +66,14 @@ Subclass.Property.Class.Class = (function()
     ClassType.getDefinitionClass = function()
     {
         return Subclass.Property.Class.ClassDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ClassType.getEmptyDefinition = function()
+    {
+        return false;
     };
 
 

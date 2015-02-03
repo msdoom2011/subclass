@@ -56,6 +56,14 @@ Subclass.Property.Function.Function = (function()
         return Subclass.Property.Function.FunctionDefinition;
     };
 
+    /**
+     * @inheritDoc
+     */
+    FunctionType.getEmptyDefinition = function()
+    {
+        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

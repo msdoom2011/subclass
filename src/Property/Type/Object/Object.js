@@ -56,6 +56,14 @@ Subclass.Property.Object.Object = (function()
         return Subclass.Property.Object.ObjectDefinition;
     };
 
+    /**
+     * @inheritDoc
+     */
+    ObjectType.getEmptyDefinition = function()
+    {
+        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

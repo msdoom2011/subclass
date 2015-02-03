@@ -56,6 +56,14 @@ Subclass.Property.Untyped.Untyped = (function()
         return Subclass.Property.Untyped.UntypedDefinition;
     };
 
+    /**
+     * @inheritDoc
+     */
+    UntypedType.getEmptyDefinition = function()
+    {
+        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

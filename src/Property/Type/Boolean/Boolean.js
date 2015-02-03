@@ -58,6 +58,14 @@ Subclass.Property.Boolean.Boolean = (function()
     /**
      * @inheritDoc
      */
+    BooleanType.getEmptyDefinition = function()
+    {
+        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+    };
+
+    /**
+     * @inheritDoc
+     */
     BooleanType.prototype.attachAccessors = function(context)
     {
         BooleanType.$parent.prototype.attachAccessors.call(this, context);

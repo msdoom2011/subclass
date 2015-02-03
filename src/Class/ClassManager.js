@@ -94,10 +94,6 @@ Subclass.Class.ClassManager = (function()
         var module = this.getModule();
         var $this = this;
 
-        module.getEventManager()
-            .registerEvent('onLoadingEnd', this)
-        ;
-
         // Registering basic classes
 
         if (module.isRoot()) {

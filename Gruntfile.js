@@ -88,7 +88,17 @@ module.exports = function(grunt) {
 
         uglify: {
             options: {
-                banner: '<%= meta.banner %>'
+                banner: '<%= meta.banner %>',
+                mangle: {
+                    except: [
+                        "AbstractClass",
+                        "Class",
+                        "ClassType",
+                        "Config",
+                        "Interface",
+                        "Trait"
+                    ]
+                }
             },
             release: {
                 files: {

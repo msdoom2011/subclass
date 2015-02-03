@@ -64,7 +64,7 @@ Subclass.Property.Map.Map = (function()
      * @inheritDoc
      * @throws {Error}
      */
-    MapType.parseRelatives = function(propertyDefinition)
+    MapType.parseRelatedClasses = function(propertyDefinition)
     {
         if (!propertyDefinition.schema) {
             return;
@@ -82,10 +82,10 @@ Subclass.Property.Map.Map = (function()
             var propDef = propertyDefinition.schema[propName];
             var propertyType = Subclass.Property.PropertyManager.getPropertyType(propDef.type);
 
-            if (!propertyType.parseRelatives) {
+            if (!propertyType.parseRelatedClasses) {
                 continue;
             }
-            var requiredClasses = propertyType.parseRelatives(propDef);
+            var requiredClasses = propertyType.parseRelatedClasses(propDef);
 
             if (requiredClasses && requiredClasses.length) {
                 requires = requires.concat(requiredClasses);
@@ -100,6 +100,14 @@ Subclass.Property.Map.Map = (function()
     MapType.getDefinitionClass = function()
     {
         return Subclass.Property.Map.MapDefinition;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    MapType.getEmptyDefinition = function()
+    {
+        return false;
     };
 
     /**

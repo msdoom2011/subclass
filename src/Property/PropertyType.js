@@ -111,10 +111,10 @@ Subclass.Property.PropertyType = (function()
      *
      * @param {Object} propertyDefinition
      */
-    PropertyType.parseRequires = function(propertyDefinition)
+    PropertyType.parseRelatedClasses = function(propertyDefinition)
     {
         Subclass.Error.create('NotImplementedMethod')
-            .method("parseRequires")
+            .method("parseRelatedClasses")
             .apply()
         ;
     };
@@ -127,6 +127,18 @@ Subclass.Property.PropertyType = (function()
     PropertyType.getDefinitionClass = function()
     {
         return Subclass.Property.PropertyDefinition;
+    };
+
+    /**
+     * Returns the empty definition of property
+     *
+     * @returns {(Object|boolean)}
+     */
+    PropertyType.getEmptyDefinition = function()
+    {
+        return {
+            type: this.getPropertyTypeName()
+        };
     };
 
     /**

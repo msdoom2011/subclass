@@ -157,7 +157,7 @@ Subclass.Class.ClassType = (function()
     ClassType.prototype.initialize = function()
     {
         var classDefinition = this.getDefinition();
-            classDefinition.processRelatives();
+            classDefinition.processRelatedClasses();
     };
 
     /**

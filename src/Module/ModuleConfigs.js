@@ -181,6 +181,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getModule
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {Subclass.Module.Module}
      */
     ModuleConfigs.prototype.getModule = function()
@@ -197,6 +198,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method setPlugin
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @throws {Error}
      *      Throws error if:<br />
      *      - trying to change value after the module became ready<br />
@@ -226,6 +228,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getPlugin
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {boolean}
      */
     ModuleConfigs.prototype.getPlugin = function()
@@ -277,6 +280,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getPluginOf
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {(string|null)}
      */
     ModuleConfigs.prototype.getPluginOf = function()
@@ -327,6 +331,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getRootPath
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {(string|null)}
      */
     ModuleConfigs.prototype.getRootPath = function()
@@ -411,6 +416,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method hasFiles
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {boolean}
      */
     ModuleConfigs.prototype.hasFiles = function()
@@ -464,7 +470,7 @@ Subclass.Module.ModuleConfigs = (function()
      * var testClassInst = testClass.createInstance();
      *
      * // Trying to set percentsProp property value
-     * testClass.setPercentsProp("10%"); // normal set
+     * testClass.setPercentsProp("10%"); // normally set
      * testClass.setPercentsProp("10");  // throws error
      * ...
      */
@@ -482,6 +488,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getDataTypes
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {Object.<Object>}
      */
     ModuleConfigs.prototype.getDataTypes = function()
@@ -556,6 +563,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getParameters
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {Object}
      */
     ModuleConfigs.prototype.getParameters = function()
@@ -671,6 +679,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method getServices
      * @memberOf Subclass.Module.ModuleConfigs.prototype
+     *
      * @returns {Object.<Object>}
      */
     ModuleConfigs.prototype.getServices = function()

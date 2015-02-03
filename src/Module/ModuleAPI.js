@@ -29,6 +29,7 @@ Subclass.Module.ModuleAPI = (function()
      *
      * @method getModule
      * @memberOf Subclass.Module.ModuleAPI.prototype
+     *
      * @returns {Subclass.Module.Module}
      */
     ModuleAPI.prototype.getModule = function()

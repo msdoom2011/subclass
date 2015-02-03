@@ -69,6 +69,7 @@ Subclass.Event.EventListener = (function()
      *
      * @method getPriority
      * @memberOf Subclass.Event.EventListener.prototype
+     *
      * @returns {number}
      */
     EventListener.prototype.getPriority = function()
@@ -81,6 +82,7 @@ Subclass.Event.EventListener = (function()
      *
      * @method getCallback
      * @memberOf Subclass.Event.EventListener.prototype
+     *
      * @returns {Function}
      */
     EventListener.prototype.getCallback = function()

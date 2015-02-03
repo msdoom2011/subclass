@@ -53,6 +53,7 @@ Subclass.Parameter.Parameter = (function()
      *
      * @method getName
      * @memberOf Subclass.Parameter.Parameter.prototype
+     *
      * @returns {string}
      */
     Parameter.prototype.getName = function()
@@ -65,6 +66,7 @@ Subclass.Parameter.Parameter = (function()
      *
      * @method getValue
      * @memberOf Subclass.Parameter.Parameter.prototype
+     *
      * @returns {*}
      */
     Parameter.prototype.getValue = function()

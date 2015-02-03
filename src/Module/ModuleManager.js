@@ -83,6 +83,7 @@ Subclass.Module.ModuleManager = (function()
      *
      * @method getMainModule
      * @memberOf Subclass.Module.ModuleManager.prototype
+     *
      * @returns {Subclass.Module.Module}
      */
     ModuleManager.prototype.getMainModule = function()
@@ -95,6 +96,7 @@ Subclass.Module.ModuleManager = (function()
      *
      * @method getModules
      * @memberOf Subclass.Module.ModuleManager.prototype
+     *
      * @returns {Array.<Subclass.Module.Module>}
      */
     ModuleManager.prototype.getModules = function()
@@ -107,6 +109,7 @@ Subclass.Module.ModuleManager = (function()
      *
      * @method getLazyModules
      * @memberOf Subclass.Module.ModuleManager.prototype
+     *
      * @returns {string[]}
      */
     ModuleManager.prototype.getLazyModules = function()
@@ -225,6 +228,7 @@ Subclass.Module.ModuleManager = (function()
      *
      * @method getPlugins
      * @memberOf Subclass.Module.ModuleManager.prototype
+     *
      * @returns {Array.<Subclass.Module.Module>}
      */
     ModuleManager.prototype.getPlugins = function()

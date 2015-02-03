@@ -55,6 +55,7 @@ Subclass.Parameter.ParameterManager = (function()
      *
      * @method getModule
      * @memberOf Subclass.Parameter.ParameterManager.prototype
+     *
      * @returns {Subclass.Module.Module}
      */
     ParameterManager.prototype.getModule = function()

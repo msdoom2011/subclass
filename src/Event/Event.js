@@ -90,6 +90,7 @@ Subclass.Event.Event = (function()
      *
      * @method getEventManager
      * @memberOf Subclass.Event.Event.prototype
+     *
      * @returns {Subclass.Event.EventManager}
      */
     Event.prototype.getEventManager = function()
@@ -102,6 +103,7 @@ Subclass.Event.Event = (function()
      *
      * @method getName
      * @memberOf Subclass.Event.Event.prototype
+     *
      * @returns {string}
      */
     Event.prototype.getName = function()
@@ -114,6 +116,7 @@ Subclass.Event.Event = (function()
      *
      * @method getContext
      * @memberOf Subclass.Event.Event.prototype
+     *
      * @returns {Object}
      */
     Event.prototype.getContext = function()
@@ -263,6 +266,7 @@ Subclass.Event.Event = (function()
      *
      * @method hasListeners
      * @memberOf Subclass.Event.Event.prototype
+     *
      * @return {boolean}
      */
     Event.prototype.hasListeners = function()

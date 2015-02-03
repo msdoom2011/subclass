@@ -46,6 +46,7 @@ Subclass.Event.EventManager = (function()
      *
      * @method getModule
      * @memberOf Subclass.Event.EventManager.prototype
+     *
      * @returns {Subclass.Module.Module}
      */
     EventManager.prototype.getModule = function()

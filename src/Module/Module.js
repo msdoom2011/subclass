@@ -309,6 +309,7 @@ Subclass.Module.Module = (function()
      *
      * @method getName
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {string}
      */
     Module.prototype.getName = function()
@@ -322,7 +323,9 @@ Subclass.Module.Module = (function()
      *
      * @method setParent
      * @memberOf Subclass.Module.Module.prototype
-     * @throws {Error} Throws error if was specified not valid argument
+     *
+     * @throws {Error}
+     *      Throws error if was specified not valid argument
      *
      * @param {(Subclass.Module.Module|null)} parentModule
      *      The parent module instance
@@ -345,6 +348,7 @@ Subclass.Module.Module = (function()
      *
      * @method getParent
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {(Subclass.Module.Module|null)}
      */
     Module.prototype.getParent = function()
@@ -358,6 +362,7 @@ Subclass.Module.Module = (function()
      *
      * @method hasParent
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {boolean}
      */
     Module.prototype.hasParent = function()
@@ -374,6 +379,7 @@ Subclass.Module.Module = (function()
      *
      * @method getRoot
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Module.Module}
      */
     Module.prototype.getRoot = function()
@@ -395,6 +401,7 @@ Subclass.Module.Module = (function()
      *
      * @method isRoot
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {boolean}
      */
     Module.prototype.isRoot = function()
@@ -407,6 +414,7 @@ Subclass.Module.Module = (function()
      *
      * @method isPlugin
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {*}
      */
     Module.prototype.isPlugin = function()
@@ -420,6 +428,7 @@ Subclass.Module.Module = (function()
      *
      * @method getAPI
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Module.ModuleAPI}
      */
     Module.prototype.getAPI = function()
@@ -443,6 +452,7 @@ Subclass.Module.Module = (function()
      *
      * @method getConfigManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Module.ModuleConfigs}
      */
     Module.prototype.getConfigManager = function()
@@ -456,6 +466,7 @@ Subclass.Module.Module = (function()
      *
      * @method getEventManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Event.EventManager}
      */
     Module.prototype.getEventManager = function()
@@ -470,6 +481,7 @@ Subclass.Module.Module = (function()
      *
      * @method getModuleManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Module.ModuleManager}
      */
     Module.prototype.getModuleManager = function()
@@ -483,6 +495,7 @@ Subclass.Module.Module = (function()
      *
      * @method getClassManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Class.ClassManager}
      */
     Module.prototype.getClassManager = function()
@@ -496,6 +509,7 @@ Subclass.Module.Module = (function()
      *
      * @method getPropertyManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Property.PropertyManager}
      */
     Module.prototype.getPropertyManager = function()
@@ -509,6 +523,7 @@ Subclass.Module.Module = (function()
      *
      * @method getParameterManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Parameter.ParameterManager}
      */
     Module.prototype.getParameterManager = function()
@@ -522,6 +537,7 @@ Subclass.Module.Module = (function()
      *
      * @method getServiceManager
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {Subclass.Service.ServiceManager}
      */
     Module.prototype.getServiceManager = function()
@@ -574,6 +590,7 @@ Subclass.Module.Module = (function()
      *
      * @method isPrepared
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {boolean}
      */
     Module.prototype.isPrepared = function()
@@ -637,6 +654,7 @@ Subclass.Module.Module = (function()
      *
      * @method isReady
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {boolean}
      */
     Module.prototype.isReady = function()
@@ -649,6 +667,7 @@ Subclass.Module.Module = (function()
      *
      * @method isPluginsReady
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {boolean}
      */
     Module.prototype.isPluginsReady = function()
@@ -785,6 +804,7 @@ Subclass.Module.Module = (function()
      *
      * @method hasPlugins
      * @memberOf Subclass.Module.Module.prototype
+     *
      * @returns {boolean}
      */
     Module.prototype.hasPlugins = function()

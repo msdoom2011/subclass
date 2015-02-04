@@ -43,14 +43,6 @@ Subclass.Property.Function.Function = (function()
     /**
      * @inheritDoc
      */
-    FunctionType.isAllowedValue = function(value)
-    {
-        return typeof value == 'function';
-    };
-
-    /**
-     * @inheritDoc
-     */
     FunctionType.getDefinitionClass = function()
     {
         return Subclass.Property.Function.FunctionDefinition;

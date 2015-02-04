@@ -141,7 +141,7 @@ Subclass.Property.PropertyManager = (function()
      * @param {PropertyType} [contextProperty]
      *      A Subclass.Property.PropertyType instance to witch creating property will belongs to.
      *
-     * @returns {PropertyType}
+     * @returns {Subclass.Property.PropertyType}
      */
     PropertyManager.prototype.createProperty = function(propertyName, propertyDefinition, contextClass, contextProperty)
     {

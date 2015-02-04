@@ -304,7 +304,7 @@ Subclass.Class.ClassType = (function()
     /**
      * Returns all typed properties in current class instance
      *
-     * @param {boolean} withInherited
+     * @param {boolean} [withInherited]
      * @returns {Object.<Subclass.Property.PropertyType>}
      */
     ClassType.prototype.getProperties = function(withInherited)
@@ -381,7 +381,7 @@ Subclass.Class.ClassType = (function()
         var classProperties = this.getProperties();
 
         if (!classProperties[propertyName] && this.hasParent()) {
-            return !!this.getParent().getProperty(propertyName);
+            return this.getParent().issetProperty(propertyName);
 
         } else if (!classProperties[propertyName]) {
             return false;

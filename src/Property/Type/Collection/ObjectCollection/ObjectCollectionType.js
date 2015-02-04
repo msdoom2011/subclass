@@ -45,14 +45,6 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
     /**
      * @inheritDoc
      */
-    ObjectCollectionType.isAllowedValue = function(value)
-    {
-        return Subclass.Tools.isPlainObject(value);
-    };
-
-    /**
-     * @inheritDoc
-     */
     ObjectCollectionType.parseRelatedClasses = function(propertyDefinition)
     {
         if (

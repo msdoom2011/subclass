@@ -54,14 +54,6 @@ Subclass.Property.Map.Map = (function()
 
     /**
      * @inheritDoc
-     */
-    MapType.isAllowedValue = function(value)
-    {
-        return Subclass.Tools.isPlainObject(value);
-    };
-
-    /**
-     * @inheritDoc
      * @throws {Error}
      */
     MapType.parseRelatedClasses = function(propertyDefinition)

@@ -43,14 +43,6 @@ Subclass.Property.String.String = (function()
     /**
      * @inheritDoc
      */
-    StringType.isAllowedValue = function(value)
-    {
-        return typeof value == 'string';
-    };
-
-    /**
-     * @inheritDoc
-     */
     StringType.getDefinitionClass = function()
     {
         return Subclass.Property.String.StringDefinition;

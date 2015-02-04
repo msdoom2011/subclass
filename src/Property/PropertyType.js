@@ -93,20 +93,6 @@ Subclass.Property.PropertyType = (function()
     };
 
     /**
-     * Checks if specified value can be allowed by current property type
-     *
-     * @static
-     * @returns {boolean}
-     */
-    PropertyType.isAllowedValue = function(value)
-    {
-        Subclass.Error.create('NotImplementedMethod')
-            .method("isAllowedValue")
-            .apply()
-        ;
-    };
-
-    /**
      * Parses passed property definition and returns required classes to load
      *
      * @param {Object} propertyDefinition

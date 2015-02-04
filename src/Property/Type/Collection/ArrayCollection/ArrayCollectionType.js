@@ -45,14 +45,6 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     /**
      * @inheritDoc
      */
-    ArrayCollectionType.isAllowedValue = function(value)
-    {
-        return Array.isArray(value);
-    };
-
-    /**
-     * @inheritDoc
-     */
     ArrayCollectionType.parseRelatedClasses = function(propertyDefinition)
     {
         if (

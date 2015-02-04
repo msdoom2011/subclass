@@ -42,14 +42,6 @@ Subclass.Property.Class.Class = (function()
 
     /**
      * @inheritDoc
-     */
-    ClassType.isAllowedValue = function(value)
-    {
-        return typeof value == 'string';
-    };
-
-    /**
-     * @inheritDoc
      * @throws {Error}
      */
     ClassType.parseRelatedClasses = function(propertyDefinition)

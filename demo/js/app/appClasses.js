@@ -290,7 +290,18 @@ app.registerClass("Class3", {
     megaBaseAbstractMethod: function()
     {
 
+    },
+
+    check: function(value, result)
+    {
+        value = this.value('percents', value);
+
+        console.log('!!!!!!!!!! PERFORMING VALUE OF TYPED STRING !!!!!!!!!!');
+        console.log(value);
+
+        return this.result({ type: 'number', minValue: 100 }, result);
     }
+
 });
 
 app.registerTrait("extraTrait", {

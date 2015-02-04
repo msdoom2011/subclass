@@ -42,14 +42,6 @@ Subclass.Property.Boolean.Boolean = (function()
     /**
      * @inheritDoc
      */
-    BooleanType.isAllowedValue = function(value)
-    {
-        return typeof value == 'boolean';
-    };
-
-    /**
-     * @inheritDoc
-     */
     BooleanType.getDefinitionClass = function()
     {
         return Subclass.Property.Boolean.BooleanDefinition;

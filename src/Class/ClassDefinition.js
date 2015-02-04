@@ -495,6 +495,16 @@ Subclass.Class.ClassDefinition = (function()
             },
 
             /**
+             * Returns class definition instance
+             *
+             * @returns {Subclass.Class.ClassType}
+             */
+            getClassDefinition: function()
+            {
+                return this._class;
+            },
+
+            /**
              * Returns class name
              *
              * @returns {string}
@@ -580,81 +590,6 @@ Subclass.Class.ClassDefinition = (function()
             getProperty: function(propertyName)
             {
                 return this.$_class.getProperty(propertyName).getAPI(this);
-            },
-
-            _getDataTypeProperty: function(dataType)
-            {
-                if (!dataType || typeof dataType != 'string') {
-                    Subclass.Error.create("InvalidArgument")
-                        .argument('the data type', false)
-                        .received(dataType)
-                        .expected('a string')
-                        .apply()
-                    ;
-                }
-                var classInst = this._class;
-                var property;
-
-                if (this.issetProperty(dataType)) {
-                    property = this.getProperty(dataType);
-
-                } else {
-                    var classManager = classInst.getClassManager();
-                    var propertyManager = classManager.getModule().getPropertyManager();
-                    var customDataTypesManager = propertyManager.getCustomTypesManager();
-
-                    if (customDataTypesManager.issetType(dataType)) {
-                        property = customDataTypesManager.getType(dataType);
-                    }
-                }
-                if (!property) {
-                    Subclass.Error.create(
-                        'Specified non existent or data type which ' +
-                        'can\'t be used in data type validation.'
-                    );
-                }
-                return property;
-            },
-
-            /**
-             * Validates and returns default value if the value is undefined
-             * or returns the same value as was specified if it's valid
-             *
-             * @param {(string|object)} dataType
-             * @param {*} value
-             * @param {*} [valueDefault]
-             * @returns {*}
-             */
-            value: function(dataType, value, valueDefault)
-            {
-                var property = this._getDataTypeProperty(dataType);
-
-                if (value === undefined && arguments.length == 3) {
-                    return valueDefault;
-
-                } else if (value === undefined) {
-                    return property.getDefaultValue();
-
-                } else if (property.validateValue(value)) {
-                    return value;
-                }
-
-                return value;
-            },
-
-            /**
-             * Validates and returns (if valid)
-             * @param dataType
-             * @param value
-             */
-            result: function(dataType, value)
-            {
-                var property = this._getDataTypeProperty(dataType);
-
-                if (property.validateValue(value)) {
-                    return value;
-                }
-                return value;
             }
         };
     };

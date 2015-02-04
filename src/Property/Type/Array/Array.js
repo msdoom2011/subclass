@@ -42,14 +42,6 @@ Subclass.Property.Array.Array = (function()
     /**
      * @inheritDoc
      */
-    ArrayType.isAllowedValue = function(value)
-    {
-        return Array.isArray(value);
-    };
-
-    /**
-     * @inheritDoc
-     */
     ArrayType.getDefinitionClass = function()
     {
         return Subclass.Property.Array.ArrayDefinition;

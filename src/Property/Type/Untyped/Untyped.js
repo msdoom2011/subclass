@@ -43,14 +43,6 @@ Subclass.Property.Untyped.Untyped = (function()
     /**
      * @inheritDoc
      */
-    UntypedType.isAllowedValue = function(value)
-    {
-        return true;
-    };
-
-    /**
-     * @inheritDoc
-     */
     UntypedType.getDefinitionClass = function()
     {
         return Subclass.Property.Untyped.UntypedDefinition;

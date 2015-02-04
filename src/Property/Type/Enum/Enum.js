@@ -43,14 +43,6 @@ Subclass.Property.Enum.Enum = (function()
     /**
      * @inheritDoc
      */
-    EnumType.isAllowedValue = function(value)
-    {
-        return ['boolean', 'string', 'number'].indexOf(typeof value) >= 0;
-    };
-
-    /**
-     * @inheritDoc
-     */
     EnumType.getDefinitionClass = function()
     {
         return Subclass.Property.Enum.EnumDefinition;

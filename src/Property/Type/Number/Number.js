@@ -43,14 +43,6 @@ Subclass.Property.Number.Number = (function()
     /**
      * @inheritDoc
      */
-    NumberType.isAllowedValue = function(value)
-    {
-        return typeof value == 'number';
-    };
-
-    /**
-     * @inheritDoc
-     */
     NumberType.getDefinitionClass = function()
     {
         return Subclass.Property.Number.NumberDefinition;

@@ -44,14 +44,6 @@ Subclass.Property.Mixed.Mixed = (function()
     /**
      * @inheritDoc
      */
-    MixedType.isAllowedValue = function(value)
-    {
-        return typeof value == 'boolean';
-    };
-
-    /**
-     * @inheritDoc
-     */
     MixedType.getDefinitionClass = function()
     {
         return Subclass.Property.Mixed.MixedDefinition;

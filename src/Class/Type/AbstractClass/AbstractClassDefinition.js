@@ -98,6 +98,9 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
         delete classDefinition.getCopy;
         delete classDefinition.issetProperty;
         delete classDefinition.getProperty;
+        delete classDefinition._getDataTypeProperty;
+        delete classDefinition.value;
+        delete classDefinition.result;
 
         return classDefinition;
     };

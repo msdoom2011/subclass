@@ -43,14 +43,6 @@ Subclass.Property.Object.Object = (function()
     /**
      * @inheritDoc
      */
-    ObjectType.isAllowedValue = function(value)
-    {
-        return Subclass.Tools.isPlainObject(value);
-    };
-
-    /**
-     * @inheritDoc
-     */
     ObjectType.getDefinitionClass = function()
     {
         return Subclass.Property.Object.ObjectDefinition;

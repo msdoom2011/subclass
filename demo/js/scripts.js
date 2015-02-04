@@ -149,7 +149,10 @@ app.onReady(function() {
     inst.getProperty("typedString").setValue("400%"); //"another changed string value!!!");
     console.log(inst.getProperty('typedString').getValue());
 
+    console.log('');
+    console.log('============== METHOD VALUE ===============');
 
+    console.log(inst.check("1000%", 111));
 
     console.log('');
     console.log('============= Boolean property ==============');

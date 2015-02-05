@@ -29,8 +29,9 @@ window.Subclass = (function()
          *
          * @param {Array} [modulePlugins]
          *      The names of the modules that you want to include to the current module
-         *      or if plug-in modules are not loaded at the moment it should be
+         *      or if plug-in modules are not loaded at the moment you can specify
          *      objects like: { name: "pluginModuleName", file: "file/of/module.js" }
+         *      to automatically load it during initializing module.
          *
          * @param {Object} [moduleConfigs = {}]
          *      A configuration of the creating module

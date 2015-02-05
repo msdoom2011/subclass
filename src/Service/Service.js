@@ -990,6 +990,7 @@ Subclass.Service.Service = (function()
              * The abstract service marker
              *
              * @type {boolean}
+             * @ignore
              */
             abstract: false,
 
@@ -997,6 +998,7 @@ Subclass.Service.Service = (function()
              * The name of parent service
              *
              * @type {string}
+             * @ignore
              */
             extends: null,
 
@@ -1004,6 +1006,7 @@ Subclass.Service.Service = (function()
              * The name of service class
              *
              * @type {string}
+             * @ignore
              */
             className: null,
 
@@ -1011,6 +1014,7 @@ Subclass.Service.Service = (function()
              * The array of service class constructor arguments
              *
              * @type {Array}
+             * @ignore
              */
             arguments: [],
 
@@ -1019,6 +1023,7 @@ Subclass.Service.Service = (function()
              * immediately after service class instance creation
              *
              * @type {Object}
+             * @ignore
              */
             calls: {},
 
@@ -1026,6 +1031,7 @@ Subclass.Service.Service = (function()
              * The singleton marker
              *
              * @type {boolean}
+             * @ignore
              */
             singleton: true,
 
@@ -1033,6 +1039,7 @@ Subclass.Service.Service = (function()
              * The list of tags
              *
              * @type {string[]}
+             * @ignore
              */
             tags: []
         }

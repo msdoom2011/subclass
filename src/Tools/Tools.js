@@ -1,12 +1,22 @@
+/**
+ * @class
+ * @description
+ *
+ * The class which contains static methods for solving different tasks.
+ */
 Subclass.Tools = (function()
 {
     return {
 
         /**
-         * Extends target object or array with source object or array without recursion.
+         * Extends target object or array with source object or array without recursion.<br /><br />
          *
          * Every property in the source object or array will replace
          * already existed property with the same name in the target object or array.
+         *
+         * @method extend
+         * @memberOf Subclass.Tools
+         * @static
          *
          * @param {(Object|Array)} target
          *      An object which will receive properties from source object
@@ -50,10 +60,14 @@ Subclass.Tools = (function()
         },
 
         /**
-         * Copies all properties from source to target with recursion call.
+         * Copies all properties from source to target with recursion call.<br /><br />
          *
          * Every property in the source object or array will replace
          * already existed property with the same name in the target object or array.
+         *
+         * @method extendDeep
+         * @memberOf Subclass.Tools
+         * @static
          *
          * @param {(Object|Array)} target
          *
@@ -66,16 +80,16 @@ Subclass.Tools = (function()
          * @param {(Function|boolean)} [mergeArrays=false]
          *
          *      If was passed true it means that elements from source array properties
-         *      will be added to according array properties in target.
+         *      will be added to according array properties in target.<br /><br />
          *
          *      Else if it was passed false (by default) it means that array properties from source object will
-         *      replace array properties in target object.
+         *      replace array properties in target object.<br /><br />
          *
          *      If was passed a function it means that will added all element from array property in source to
-         *      according array property in target if specified function returns true.
+         *      according array property in target if specified function returns true.<br /><br />
          *
-         *      Example: function (targetArrayPropertyElement, sourceArrayPropertyElement) {
-         *          return targetArrayPropertyElement.name != sourceArrayPropertyElement.name;
+         *      Example: function (targetArrayPropertyElement, sourceArrayPropertyElement) {<br />
+         *          return targetArrayPropertyElement.name != sourceArrayPropertyElement.name;<br />
          *      });
          *
          * @param {boolean} [withInheritedProps=false]
@@ -222,31 +236,42 @@ Subclass.Tools = (function()
         /**
          * Returns a copy of passed object or array
          *
-         * @param {(Object|Array)} object
+         * @method copy
+         * @memberOf Subclass.Tools
+         * @static
+         *
+         * @param {*} arg
+         *      The argument which you want to copy
+         *
          * @returns {*}
+         *      The copy of passed argument
          */
-        copy: function (object)
+        copy: function (arg)
         {
             var newObj;
 
             if (
-                typeof object == 'object'
+                typeof arg == 'object'
                 && (
-                object.constructor == Object
-                || Array.isArray(object)
+                arg.constructor == Object
+                    || Array.isArray(arg)
                 )
             ) {
-                newObj = Object.create(Object.getPrototypeOf(object));
-                newObj = this.extendDeep(newObj, object, true);
+                newObj = Object.create(Object.getPrototypeOf(arg));
+                newObj = this.extendDeep(newObj, arg, true);
 
             } else {
-                newObj = object;
+                newObj = arg;
             }
             return newObj;
         },
 
         /**
-         * Checks whether two arguments are equivalent
+         * Checks whether two arguments are equals
+         *
+         * @method isEqual
+         * @memberOf Subclass.Tools
+         * @static
          *
          * @param {*} arg1
          * @param {*} arg2
@@ -295,8 +320,15 @@ Subclass.Tools = (function()
         /**
          * Returns array with unique elements
          *
+         * @method unique
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {Array} array
+         *      The array which contains duplicate elements
+         *
          * @returns {Array}
+         *      Returns array which contains unique elements only.
          */
         unique: function (array)
         {

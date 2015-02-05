@@ -178,6 +178,7 @@ Subclass.Module.ModuleManager = (function()
      *
      * @returns {Array.<Subclass.Module.Module>}
      * @private
+     * @ignore
      */
     ModuleManager.prototype._processModules = function(moduleNames)
     {

@@ -765,6 +765,7 @@ Subclass.Module.ModuleConfigs = (function()
      *
      * @method _checkModuleIsReady
      * @private
+     * @ignore
      */
     ModuleConfigs.prototype._checkModuleIsReady = function()
     {

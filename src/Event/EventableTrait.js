@@ -1,5 +1,7 @@
 /**
  * @class
+ * @name Subclass.Event.EventableTrait
+ * @implements {Subclass.Event.EventableInterface}
  */
 Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
 
@@ -41,6 +43,9 @@ Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrai
     },
 
     /**
+     * @method registerEvent
+     * @memberOf Subclass.Event.EventableTrait.prototype
+     *
      * @inheritDoc
      */
     registerEvent: function(eventName)
@@ -59,6 +64,9 @@ Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrai
     },
 
     /**
+     * @method invokeEvent
+     * @memberOf Subclass.Event.EventableTrait.prototype
+     *
      * @inheritDoc
      */
     invokeEvent: function(eventName)
@@ -110,6 +118,9 @@ Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrai
     },
 
     /**
+     * @method addEventListener
+     * @memberOf Subclass.Event.EventableTrait.prototype
+     *
      * @inheritDoc
      */
     addEventListener: function(eventName, priority, listener)
@@ -144,6 +155,9 @@ Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrai
     },
 
     /**
+     * @method removeEventListener
+     * @memberOf Subclass.Event.EventableTrait.prototype
+     *
      * @inheritDoc
      */
     removeEventListener: function(eventName, listener)

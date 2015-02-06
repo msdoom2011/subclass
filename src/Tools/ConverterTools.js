@@ -5,9 +5,16 @@ Subclass.Tools.ConverterTools = (function()
         /**
          * Converting number to formatted string with thousands separator (comma by default)
          *
+         * @method convertNumberToString
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {(number|string)} number
          *      Input parameter
+         *
          * @param {string} thousandsSeparator
+         *      The thousands separator string
+         *
          * @returns {string}
          */
         convertNumberToString: function(number, thousandsSeparator)
@@ -38,8 +45,16 @@ Subclass.Tools.ConverterTools = (function()
         /**
          * Converts string to number if it is possible or returns false otherwise.
          *
+         * @method convertStringToNumber
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {string} string
+         *      The string you want convert to number
+         *
          * @returns {(number|boolean)}
+         *      It the string can be converted to number it will be returned the number.
+         *      Otherwise it will be returned false.
          */
         convertStringToNumber: function(string)
         {
@@ -70,8 +85,14 @@ Subclass.Tools.ConverterTools = (function()
         /**
          * Returns suffix that is next to parsed number in passed string.
          *
+         * @method getNumberSuffix
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {string} numeric
-         * @returns {*}
+         *      The value that contains not numbers at the end of string.
+         *
+         * @returns {string}
          */
         getNumberSuffix: function(numeric)
         {

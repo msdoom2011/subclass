@@ -29,6 +29,7 @@ Subclass.Tools = (function()
          *      inherited (from prototype) properties from source to target object
          *
          * @returns {(Object|Array)}
+         *      Returns the target object after it was extended
          */
         extend: function (target, source, withInheritedProps)
         {
@@ -70,33 +71,32 @@ Subclass.Tools = (function()
          * @static
          *
          * @param {(Object|Array)} target
-         *
          *      Target object which will extended by properties from source object
          *
          * @param {(Object|Array)} source
-         *
          *      Source object which properties will added to target object
          *
          * @param {(Function|boolean)} [mergeArrays=false]
+         * <pre>
+         * If was passed true it means that elements from source array properties
+         * will be added to according array properties in target.
          *
-         *      If was passed true it means that elements from source array properties
-         *      will be added to according array properties in target.<br /><br />
+         * Else if it was passed false (by default) it means that array properties
+         * from source object will replace array properties in target object.
          *
-         *      Else if it was passed false (by default) it means that array properties from source object will
-         *      replace array properties in target object.<br /><br />
+         * If was passed a function it means that will added all element from array
+         * property in source to according array property in target if specified
+         * function returns true.
          *
-         *      If was passed a function it means that will added all element from array property in source to
-         *      according array property in target if specified function returns true.<br /><br />
-         *
-         *      Example: function (targetArrayPropertyElement, sourceArrayPropertyElement) {<br />
-         *          return targetArrayPropertyElement.name != sourceArrayPropertyElement.name;<br />
-         *      });
-         *
+         * Example: function (targetArrayPropertyElement, sourceArrayPropertyElement) {
+         *     return targetArrayPropertyElement.name != sourceArrayPropertyElement.name;
+         * });
+         * </pre>
          * @param {boolean} [withInheritedProps=false]
-         *
-         *      Default false. Specified if there is a need to copy inherited properties.
+         *      It is needed if you want to copy inherited properties.
          *
          * @returns {*}
+         *      Returns the target object after it was extended
          */
         extendDeep: function extendDeep(target, source, mergeArrays, withInheritedProps)
         {
@@ -253,7 +253,7 @@ Subclass.Tools = (function()
             if (
                 typeof arg == 'object'
                 && (
-                arg.constructor == Object
+                    arg.constructor == Object
                     || Array.isArray(arg)
                 )
             ) {
@@ -274,8 +274,13 @@ Subclass.Tools = (function()
          * @static
          *
          * @param {*} arg1
+         *      The left side operand
+         *
          * @param {*} arg2
+         *      The right side operand
+         *
          * @returns {boolean}
+         *      Returns true if two argument are equals
          */
         isEqual: function (arg1, arg2)
         {

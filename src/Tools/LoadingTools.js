@@ -5,30 +5,37 @@ Subclass.Tools.LoadingTools = (function()
         /**
          * Loads, embeds and invoke the java script file
          *
+         * @method loadJS
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {string} fileName
          *      The path to the requested file
          *
          * @param {(Function|Object)} callback
-         *      The callback function. Can be specified in two forms:
+         * <pre>
+         * The callback function. It can be specified in two forms:
          *
-         *      1. As an object.
-         *         If specified an object it can contain two properties:
+         * 1. As an object.
+         *    It can contain two properties (either one or even two at once):
          *
-         *         before: {Function}
+         *    before: {Function}
          *
-         *         If specified "before" that means the specified callback function
-         *         will be invoked after the file will loaded but before
-         *         it will be invoked.
+         *    If specified "before" that means the specified callback function
+         *    will be invoked after the file will loaded but before
+         *    it will be invoked.
          *
-         *         after: {Function}
+         *    after: {Function}
          *
-         *         If specified "after" that means the specified callback function
-         *         will be invoked after the file will loaded and invoked.
+         *    If specified "after" that means the specified callback function
+         *    will be invoked after the file will loaded and invoked.
          *
-         *      2. As a function.
-         *         If specified function, it will be invoked immediately
-         *         after file was loaded and invoked.
-         *         The same as was specified: { "after": function() {...} }
+         * 2. As a function.
+         *    If specified function, it will be invoked immediately after
+         *    file was loaded and its contained JS was performed.
+         *
+         *    It is the same if you had specified: { "after": function() {...} }
+         * </pre>
          *
          * @returns {XMLHttpRequest}
          */
@@ -79,6 +86,10 @@ Subclass.Tools.LoadingTools = (function()
         /**
          * Loads and embeds css file
          *
+         * @method loadCSS
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {string} fileName
          *      The path to the requested file
          *
@@ -126,8 +137,17 @@ Subclass.Tools.LoadingTools = (function()
      * Processes the load file arguments and returns callback functions
      *
      * @param {string} fileName
+     *      The name of file. It is needed for generating user-friendly
+     *      error message if something went wrong.
+     *
      * @param {Function} [callback]
-     * @returns {{afterCallback: *, beforeCallback: *}}
+     *      The one ore two callback functions depending on type of
+     *      specified argument.
+     *
+     * @returns {{
+     *      afterCallback: {(Function|undefined)},
+     *      beforeCallback: {(Function|undefined)}
+     * }}
      * @private
      */
     function _processLoadArguments(fileName, callback)

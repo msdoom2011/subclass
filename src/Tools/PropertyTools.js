@@ -5,6 +5,10 @@ Subclass.Tools.PropertyTools = (function()
         /**
          * Returns name of getter function for the class property with specified name
          *
+         * @method generateGetterName
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {string} propertyName
          *      A name of the class typed property defined in $_properties parameter
          *
@@ -18,6 +22,10 @@ Subclass.Tools.PropertyTools = (function()
         /**
          * Returns name of setter function for the class property with specified name
          *
+         * @method generateSetterName
+         * @memberOf Subclass.Tools
+         * @static
+         *
          * @param {string} propertyName
          *      A name of the class typed property defined in $_properties parameter
          *
@@ -30,6 +38,10 @@ Subclass.Tools.PropertyTools = (function()
 
         /**
          * Returns name of checker function for the class property with specified name
+         *
+         * @method generateCheckerName
+         * @memberOf Subclass.Tools
+         * @static
          *
          * @param {string} propertyName
          *      A name of the class typed property defined in $_properties parameter

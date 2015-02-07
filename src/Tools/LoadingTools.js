@@ -17,7 +17,7 @@ Subclass.Tools.LoadingTools = (function()
          * The callback function. It can be specified in two forms:
          *
          * 1. As an object.
-         *    It can contain two properties (either one or even two at once):
+         *    It can contains two properties (either one or even two at once):
          *
          *    before: {Function}
          *

@@ -10,15 +10,34 @@ Subclass.Service.Error = {};
 
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * The class instance of which used to manipulate of services.<br />
+ * It allows to register new service, create and get service instances, get its definitions.
+ *
+ * @throws {Error}
+ *      Throws error if specified module is not instance of Subclass.Module.Module class
+ *
+ * @param {Subclass.Module.Module} module
+ *      The module instance
  */
 Subclass.Service.ServiceManager = (function()
 {
     /**
-     * @param {Subclass.Module.Module} module
-     * @constructor
+     * @alias Subclass.Service.ServiceManager
      */
     function ServiceManager(module)
     {
+        if (!module || !(module instanceof Subclass.Module.Module)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument("the instance of module", false)
+                .received(module)
+                .expected("an instance of Subclass.Module.Module")
+                .apply()
+            ;
+        }
+
         /**
          * Instance of module
          *
@@ -74,7 +93,7 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Returns module instance
+     * Returns the module instance
      *
      * @method getModule
      * @memberOf Subclass.Service.ServiceManager.prototype
@@ -86,7 +105,7 @@ Subclass.Service.ServiceManager = (function()
     };
 
     /**
-     * Returns service factory instance
+     * Returns the service factory instance
      *
      * @method getModule
      * @memberOf Subclass.Service.ServiceManager.prototype

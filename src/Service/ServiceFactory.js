@@ -38,7 +38,7 @@ Subclass.Service.ServiceFactory = (function()
      * Returns service manager instance
      *
      * @method getServiceManager
-     * @memberOf Subclass.Service.ServiceManager.prototype
+     * @memberOf Subclass.Service.ServiceFactory.prototype
      *
      * @returns {Subclass.Service.ServiceManager}
      */
@@ -48,21 +48,21 @@ Subclass.Service.ServiceFactory = (function()
     };
 
     /**
-     * Returns service class instance.
+     * Returns the service class instance.<br /><br />
      *
      * If the passed service definition was not initialized
      * it will be initialized and will be created and returned
-     * the new instance of the service.
+     * the new instance of the service.<br /><br />
      *
      * If the passed service definition was initialized
      * and it is marked as singleton the early created
-     * instance will be returned without creating the new one.
+     * instance will be returned without creating the new one.<br /><br />
      *
      * If the service is not singleton then every time
      * will be returned the new instance of service.
      *
      * @method getService
-     * @memberOf Subclass.Service.ServiceManager.prototype
+     * @memberOf Subclass.Service.ServiceFactory.prototype
      *
      * @throws {Error}
      *      Throws error if trying to get instance of abstract service
@@ -103,10 +103,10 @@ Subclass.Service.ServiceFactory = (function()
     };
 
     /**
-     * Creates and returns service class instance
+     * Creates and returns the service class instance
      *
      * @method createService
-     * @memberOf Subclass.Service.ServiceManager.prototype
+     * @memberOf Subclass.Service.ServiceFactory.prototype
      *
      * @param {Subclass.Service.Service} serviceDefinition
      */

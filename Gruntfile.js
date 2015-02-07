@@ -115,6 +115,7 @@ module.exports = function(grunt) {
                     '<%= config.lib.dir.src %>/Event/**/*.js',
                     '<%= config.lib.dir.src %>/Parameter/**/*.js',
                     '<%= config.lib.dir.src %>/Service/**/*.js',
+                    '<%= config.lib.dir.src %>/Error/**/*.js',
                     '<%= config.lib.dir.src %>/Tools/**/*.js'
                 ],
                 dest: '<%= config.doc_dir %>/'

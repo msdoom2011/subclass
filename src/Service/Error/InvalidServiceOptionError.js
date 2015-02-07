@@ -1,7 +1,7 @@
 /**
  * @final
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  * @constructor
  * @description
  *
@@ -53,9 +53,9 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
      * @method getName
      * @memberOf Subclass.Service.Error.InvalidServiceOptionError
      */
-    InvalidServiceOptionError.getOptionsRequired = function()
+    InvalidServiceOptionError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat([
             'service',

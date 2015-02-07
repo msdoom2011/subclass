@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  * @final
  */
 Subclass.Error.InvalidArgumentError = (function()
@@ -38,9 +38,9 @@ Subclass.Error.InvalidArgumentError = (function()
     /**
      * @inheritDoc
      */
-    InvalidArgumentError.getOptionsRequired = function()
+    InvalidArgumentError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat(['argument']);
     };

@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  */
 Subclass.Error.NotExistentMethodError = (function()
 {
@@ -36,9 +36,9 @@ Subclass.Error.NotExistentMethodError = (function()
     /**
      * @inheritDoc
      */
-    NotExistentMethodError.getOptionsRequired = function()
+    NotExistentMethodError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat([
             'className',

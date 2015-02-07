@@ -1,7 +1,7 @@
 /**
  * @final
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  */
 Subclass.Class.Error.InvalidClassOptionError = (function()
 {
@@ -39,9 +39,9 @@ Subclass.Class.Error.InvalidClassOptionError = (function()
     /**
      * @inheritDoc
      */
-    InvalidClassOptionError.getOptionsRequired = function()
+    InvalidClassOptionError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat([
             'className',

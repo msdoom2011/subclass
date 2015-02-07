@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  */
 Subclass.Error.NotImplementedMethodError = (function()
 {
@@ -36,9 +36,9 @@ Subclass.Error.NotImplementedMethodError = (function()
     /**
      * @inheritDoc
      */
-    NotImplementedMethodError.getOptionsRequired = function()
+    NotImplementedMethodError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat([
             'className',

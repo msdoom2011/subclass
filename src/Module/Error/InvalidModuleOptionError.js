@@ -1,13 +1,13 @@
 /**
  * @final
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  * @constructor
  * @description
  *
  * The error class which indicates that was specified not valid value of
  * option in module configuration. To see details about constructor
- * parameters look at {@link Subclass.Error.Error} class constructor
+ * parameters look at {@link Subclass.Error} class constructor
  *
  * @param {string} [message]
  *      The error message
@@ -57,9 +57,9 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
      * @method getOptionsRequired
      * @memberOf Subclass.Module.Error.InvalidModuleOptionError
      */
-    InvalidModuleOptionError.getOptionsRequired = function()
+    InvalidModuleOptionError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat([
             'module',

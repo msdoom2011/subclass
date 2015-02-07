@@ -1,6 +1,6 @@
 /**
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  * @final
  */
 Subclass.Error.MissedArgumentError = (function()
@@ -36,9 +36,9 @@ Subclass.Error.MissedArgumentError = (function()
     /**
      * @inheritDoc
      */
-    MissedArgumentError.getOptionsRequired = function()
+    MissedArgumentError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat(['argument']);
     };

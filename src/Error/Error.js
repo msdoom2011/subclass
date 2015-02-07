@@ -5,9 +5,19 @@ Subclass.Error = {};
 
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * The base error class
+ *
+ * @param {string} [message=undefined]
+ *      The error message
  */
 Subclass.Error = (function()
 {
+    /**
+     * @alias Subclass.Error
+     */
     function Exception(message)
     {
         if (!message) {
@@ -23,7 +33,12 @@ Subclass.Error = (function()
     }
 
     /**
-     * Builds message
+     * Builds error message.
+     * If error message was set it returns it.
+     * Otherwise the message will be built.
+     *
+     * @method buildMessage
+     * @memberOf Subclass.Error.prototype
      *
      * @returns {*}
      */
@@ -36,9 +51,16 @@ Subclass.Error = (function()
     };
 
     /**
-     * Sets/returns an error message
+     * Sets/returns an error message.<br /><br />
+     * If the message argument was specified it will be set the error message.
+     * Otherwise it builds message by the {@link Subclass.Error#buildMessage} method and returns it.
+     *
+     * @method message
+     * @memberOf Subclass.Error.prototype
      *
      * @param {string} [message]
+     *      The error message.
+     *
      * @returns {Subclass.Error}
      */
     Exception.prototype.message = function(message)
@@ -57,6 +79,9 @@ Subclass.Error = (function()
     /**
      * Checks whether the message option was specified
      *
+     * @method hasMessage
+     * @memberOf Subclass.Error.prototype
+     *
      * @returns {boolean}
      */
     Exception.prototype.hasMessage = function()
@@ -66,6 +91,10 @@ Subclass.Error = (function()
 
     /**
      * Throws error
+     *
+     * @method apply
+     * @memberOf Subclass.Error.prototype
+     * @throws {Error}
      */
     Exception.prototype.apply = function()
     {
@@ -82,10 +111,20 @@ Subclass.Error = (function()
     /************************** Static Methods ************************/
     /******************************************************************/
 
+    /**
+     * Collection with constructor functions of registered error types
+     *
+     * @type {Object.<Function>}
+     * @private
+     */
     Exception._types = {};
 
     /**
-     * Creates error.
+     * Creates error object instance.
+     *
+     * @method create
+     * @memberOf Subclass.Error
+     *
      * @param {string} type
      *      The error type. If type was not registered it will be
      *      interpreted as a message text
@@ -107,9 +146,17 @@ Subclass.Error = (function()
     };
 
     /**
-     * Creates error type constructor
+     * Creates error type constructor.<br /><br />
+     *
+     * At current stage error type constructor prototype supplements by properties and methods from
+     * its parent class (it is always {@link Subclass.Error}) and mixins specified in getOptions method.
+     *
+     * @method createConstructor
+     * @memberOf Subclass.Error
      *
      * @param {Function} construct
+     *      THe error type constructor function
+     *
      * @returns {Function}
      */
     Exception.createConstructor = function(construct)
@@ -133,8 +180,10 @@ Subclass.Error = (function()
     /**
      * Returns all available error type options
      *
+     * @method getOptions
+     * @memberOf Subclass.Error
+     *
      * @returns {Array}
-     * @private
      */
     Exception.getOptions = function()
     {
@@ -144,9 +193,12 @@ Subclass.Error = (function()
     /**
      * Returns required error fields
      *
+     * @method getRequiredOptions
+     * @memberOf Subclass.Error
+     *
      * @returns {Array}
      */
-    Exception.getOptionsRequired = function()
+    Exception.getRequiredOptions = function()
     {
         return [];
     };
@@ -154,11 +206,12 @@ Subclass.Error = (function()
     /**
      * Validates required error fields
      *
+     * @method validateRequiredOptions
      * @private
      */
     Exception.validateRequiredOptions = function(errorInst)
     {
-        var required = this.getOptionsRequired();
+        var required = this.getRequiredOptions();
         var missed = [];
 
         if (required.indexOf('message') >= 0) {
@@ -181,6 +234,9 @@ Subclass.Error = (function()
 
     /**
      * Attaches the option methods
+     *
+     * @method attachOptionMethods
+     * @private
      */
     Exception.attachOptionMethods = function()
     {
@@ -200,7 +256,10 @@ Subclass.Error = (function()
     /**
      * Attaches the option properties
      *
-     * @param {Subclass.Error.Error} errorInst
+     * @method attachOptionProperties
+     * @private
+     *
+     * @param {Subclass.Error} errorInst
      */
     Exception.attachOptionProperties = function(errorInst)
     {
@@ -213,6 +272,9 @@ Subclass.Error = (function()
 
     /**
      * Registers new error type
+     *
+     * @method registerType
+     * @memberOf Subclass.Error
      *
      * @param {string} typeName
      * @param {Function} typeConstructor
@@ -244,6 +306,9 @@ Subclass.Error = (function()
     /**
      * Returns constructor of early registered error type
      *
+     * @method getType
+     * @memberOf Subclass.Error
+     *
      * @param {string} typeName
      * @returns {Function}
      */
@@ -257,6 +322,9 @@ Subclass.Error = (function()
 
     /**
      * Checks whether the error type with specified name was registered
+     *
+     * @method issetType
+     * @memberOf Subclass.Error
      *
      * @param {string} typeName
      * @returns {boolean}

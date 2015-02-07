@@ -1,7 +1,7 @@
 /**
  * @final
  * @class
- * @extends {Subclass.Error.Error}
+ * @extends {Subclass.Error}
  */
 Subclass.Property.Error.InvalidPropertyOptionError = (function()
 {
@@ -39,9 +39,9 @@ Subclass.Property.Error.InvalidPropertyOptionError = (function()
     /**
      * @inheritDoc
      */
-    InvalidPropertyOptionError.getOptionsRequired = function()
+    InvalidPropertyOptionError.getRequiredOptions = function()
     {
-        var required = this.$parent.getOptionsRequired();
+        var required = this.$parent.getRequiredOptions();
 
         return required.concat([
             'property',

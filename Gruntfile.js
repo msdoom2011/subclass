@@ -38,6 +38,9 @@ module.exports = function(grunt) {
             },
             release: {
                 src: "<%= config.release_dir %>"
+            },
+            doc: {
+                src: "<%= config.doc_dir %>"
             }
         },
 
@@ -111,12 +114,13 @@ module.exports = function(grunt) {
             doc: {
                 src: [
                     '<%= config.lib.dir.src %>/Subclass.js',
-                    '<%= config.lib.dir.src %>/Module/**/*.js',
-                    '<%= config.lib.dir.src %>/Event/**/*.js',
-                    '<%= config.lib.dir.src %>/Parameter/**/*.js',
-                    '<%= config.lib.dir.src %>/Service/**/*.js',
-                    '<%= config.lib.dir.src %>/Error/**/*.js',
-                    '<%= config.lib.dir.src %>/Tools/**/*.js'
+                    //'<%= config.lib.dir.src %>/Module/**/*.js',
+                    //'<%= config.lib.dir.src %>/Event/**/*.js',
+                    //'<%= config.lib.dir.src %>/Parameter/**/*.js',
+                    //'<%= config.lib.dir.src %>/Service/**/*.js',
+                    //'<%= config.lib.dir.src %>/Tools/**/*.js',
+                    '<%= config.lib.dir.src %>/Error/Error.js',
+                    '<%= config.lib.dir.src %>/Error/InvalidArgumentError.js'
                 ],
                 dest: '<%= config.doc_dir %>/'
             }
@@ -155,6 +159,15 @@ module.exports = function(grunt) {
         "uglify:release",
         'minimize:release',
         "index:release"
+    ]);
+
+    grunt.registerTask("doc", [
+        "clean:doc",
+        "jsdoc:doc"
+    ]);
+
+    grunt.registerTask("default", [
+        "build", "release", "doc"
     ]);
 
     grunt.registerMultiTask("index", "Process index.html template", function() {

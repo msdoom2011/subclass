@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Class.ClassDefinition}
  */
-Subclass.Class.Interface.InterfaceDefinition = (function()
+Subclass.Class.Type.Interface.InterfaceDefinition = (function()
 {
     /**
      * @inheritDoc

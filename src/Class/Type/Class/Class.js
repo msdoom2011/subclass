@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Class.Class = {};
+Subclass.Class.Type.Class = {};
 
 /**
  * @class
  * @extends {Subclass.Class.ClassType}
  */
-Subclass.Class.Class.Class = (function() {
+Subclass.Class.Type.Class.Class = (function() {
 
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -64,7 +64,7 @@ Subclass.Class.Class.Class = (function() {
      */
     Class.getBuilderClass = function()
     {
-        return Subclass.Class.Class.ClassBuilder;
+        return Subclass.Class.Type.Class.ClassBuilder;
     };
 
     /**
@@ -72,7 +72,7 @@ Subclass.Class.Class.Class = (function() {
      */
     Class.getDefinitionClass = function()
     {
-        return Subclass.Class.Class.ClassDefinition;
+        return Subclass.Class.Type.Class.ClassDefinition;
     };
 
     /**
@@ -140,7 +140,7 @@ Subclass.Class.Class.Class = (function() {
             !Subclass.Class.ClassManager.issetClassType('AbstractClass')
             || (
                 Subclass.Class.ClassManager.issetClassType('AbstractClass')
-                && this.constructor != Subclass.Class.AbstractClass.AbstractClass
+                && this.constructor != Subclass.Class.Type.AbstractClass.AbstractClass
             )
         ) {
             for (var abstractMethodName in abstractMethods) {
@@ -252,7 +252,7 @@ Subclass.Class.Class.Class = (function() {
         var traitClassProperties = traitClass.getProperties();
         var traitProps = {};
 
-        if (traitClass.constructor != Subclass.Class.Trait.Trait) {
+        if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
             Subclass.Error.create(
                 'Trying add to "$_traits" option ' +
                 'the new class "' + traitName + '" that is not a trait.'
@@ -364,7 +364,7 @@ Subclass.Class.Class.Class = (function() {
         }
         var interfaceClass = this.getClassManager().getClass(interfaceName);
 
-        if (interfaceClass.constructor != Subclass.Class.Interface.Interface) {
+        if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
             Subclass.Error.create(
                 'Can\'t implement no interface "' + interfaceName + '" ' +
                 'in class "' + this.getName() + '".'
@@ -376,7 +376,7 @@ Subclass.Class.Class.Class = (function() {
         var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
 
-        if (interfaceClass.constructor != Subclass.Class.Interface.Interface) {
+        if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
             Subclass.Error.create(
                 'Trying add to "$_implements" option ' +
                 'the new class "' + interfaceName + '" that is not an interface.'

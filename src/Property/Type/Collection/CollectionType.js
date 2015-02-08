@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Collection = {};
+Subclass.Property.Type.Collection = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Collection.CollectionType = (function()
+Subclass.Property.Type.Collection.CollectionType = (function()
 {
     /*************************************************/
     /*        Describing property type "Map"         */
@@ -103,7 +103,7 @@ Subclass.Property.Collection.CollectionType = (function()
      */
     CollectionType.prototype.getCollectionClass = function()
     {
-        return Subclass.Property.Collection.Collection;
+        return Subclass.Property.Type.Collection.Collection;
     };
 
     /**

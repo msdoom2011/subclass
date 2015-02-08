@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Class.ClassDefinition}
  */
-Subclass.Class.Class.ClassDefinition = (function()
+Subclass.Class.Type.Class.ClassDefinition = (function()
 {
     /**
      * @inheritDoc

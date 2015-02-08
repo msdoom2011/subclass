@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Class.Trait = {};
+Subclass.Class.Type.Trait = {};
 
 /**
  * @class
  * @extends {Subclass.Class.ClassType}
  */
-Subclass.Class.Trait.Trait = (function()
+Subclass.Class.Type.Trait.Trait = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -40,7 +40,7 @@ Subclass.Class.Trait.Trait = (function()
      */
     Trait.getBuilderClass = function()
     {
-        return Subclass.Class.Trait.TraitBuilder;
+        return Subclass.Class.Type.Trait.TraitBuilder;
     };
 
     /**
@@ -48,7 +48,7 @@ Subclass.Class.Trait.Trait = (function()
      */
     Trait.getDefinitionClass = function()
     {
-        return Subclass.Class.Interface.InterfaceDefinition;
+        return Subclass.Class.Type.Trait.TraitDefinition;
     };
 
     /**

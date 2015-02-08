@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Number = {};
+Subclass.Property.Type.Number = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Number.Number = (function()
+Subclass.Property.Type.Number.Number = (function()
 {
     /*************************************************/
     /*      Describing property type "Number"        */
@@ -45,7 +45,7 @@ Subclass.Property.Number.Number = (function()
      */
     NumberType.getDefinitionClass = function()
     {
-        return Subclass.Property.Number.NumberDefinition;
+        return Subclass.Property.Type.Number.NumberDefinition;
     };
 
     /**

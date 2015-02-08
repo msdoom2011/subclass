@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Collection.CollectionDefinition = (function()
+Subclass.Property.Type.Collection.CollectionDefinition = (function()
 {
     /**
      * @param {PropertyType} property

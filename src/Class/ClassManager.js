@@ -9,6 +9,11 @@ Subclass.Class = {};
 Subclass.Class.Error = {};
 
 /**
+ * @namespace
+ */
+Subclass.Class.Type = {};
+
+/**
  * @class
  */
 Subclass.Class.ClassManager = (function()

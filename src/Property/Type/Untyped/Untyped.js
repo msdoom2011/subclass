@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Untyped = {};
+Subclass.Property.Type.Untyped = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Untyped.Untyped = (function()
+Subclass.Property.Type.Untyped.Untyped = (function()
 {
     /*************************************************/
     /*      Describing property type "Untyped"       */
@@ -45,7 +45,7 @@ Subclass.Property.Untyped.Untyped = (function()
      */
     UntypedType.getDefinitionClass = function()
     {
-        return Subclass.Property.Untyped.UntypedDefinition;
+        return Subclass.Property.Type.Untyped.UntypedDefinition;
     };
 
     /**

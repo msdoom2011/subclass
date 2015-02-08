@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Class.ClassBuilder}
  */
-Subclass.Class.Config.ConfigBuilder = (function()
+Subclass.Class.Type.Config.ConfigBuilder = (function()
 {
     function ConfigBuilder(classManager, classType, className)
     {
@@ -92,7 +92,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
      * Sets includes list
      *
      * @param {string[]} includesList
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.setIncludes = function(includesList)
     {
@@ -107,7 +107,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
      * Adds new includes
      *
      * @param {string[]} includesList
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.addIncludes = function(includesList)
     {
@@ -125,7 +125,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
      * Adds new include
      *
      * @param {string[]} include
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.addInclude = function(include)
     {
@@ -168,7 +168,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
             Subclass.Error.create('InvalidArgument')
                 .argument("list of config decorator class names", false)
                 .received(decoratorsList)
-                .expected('an array of strings or instances of "Subclass.Class.Config.Config" class')
+                .expected('an array of strings or instances of "Subclass.Class.Type.Config.Config" class')
                 .apply()
             ;
         }
@@ -191,7 +191,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
             Subclass.Error.create('InvalidArgument')
                 .argument("config decorating class name", false)
                 .received(decorator)
-                .expected('a string or instance of "Subclass.Class.Config.Config" class')
+                .expected('a string or instance of "Subclass.Class.Type.Config.Config" class')
                 .apply()
             ;
         }
@@ -230,7 +230,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
      * Sets decorators list
      *
      * @param {string[]} decoratorsList
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.setDecorators = function(decoratorsList)
     {
@@ -245,7 +245,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
      * Adds new decorators
      *
      * @param {string[]} decoratorsList
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.addDecorators = function(decoratorsList)
     {
@@ -263,7 +263,7 @@ Subclass.Class.Config.ConfigBuilder = (function()
      * Adds new decorator
      *
      * @param {string[]} decorator
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ConfigBuilder.prototype.addDecorator = function(decorator)
     {

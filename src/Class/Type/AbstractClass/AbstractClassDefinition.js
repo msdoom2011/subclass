@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.Class.Class.ClassDefinition}
+ * @extends {Subclass.Class.Type.Class.ClassDefinition}
  */
-Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
+Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
 {
     /**
      * @inheritDoc
@@ -12,7 +12,7 @@ Subclass.Class.AbstractClass.AbstractClassDefinition = (function()
         AbstractClassDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    AbstractClassDefinition.$parent = Subclass.Class.Class.ClassDefinition;
+    AbstractClassDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
     /**
      * Validates "$_abstract" attribute value

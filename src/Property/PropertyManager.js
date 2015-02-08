@@ -9,6 +9,11 @@ Subclass.Property = {};
 Subclass.Property.Error = {};
 
 /**
+ * @namespace
+ */
+Subclass.Property.Type = {};
+
+/**
  * @class
  */
 Subclass.Property.PropertyManager = (function()

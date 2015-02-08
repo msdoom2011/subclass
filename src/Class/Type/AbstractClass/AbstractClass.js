@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Class.AbstractClass = {};
+Subclass.Class.Type.AbstractClass = {};
 
 /**
  * @class
- * @extends {Subclass.Class.Class.Class}
+ * @extends {Subclass.Class.Type.Class.Class}
  */
-Subclass.Class.AbstractClass.AbstractClass = (function() {
+Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
 
     /*************************************************/
     /*     Describing class type "AbstractClass"     */
@@ -26,9 +26,9 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
     }
 
     /**
-     * @type {Subclass.Class.Class.Class}
+     * @type {Subclass.Class.Type.Class.Class}
      */
-    AbstractClass.$parent = Subclass.Class.Class.Class;
+    AbstractClass.$parent = Subclass.Class.Type.Class.Class;
 
     /**
      * @inheritDoc
@@ -43,7 +43,7 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
      */
     AbstractClass.getBuilderClass = function()
     {
-        return Subclass.Class.AbstractClass.AbstractClassBuilder;
+        return Subclass.Class.Type.AbstractClass.AbstractClassBuilder;
     };
 
     /**
@@ -51,7 +51,7 @@ Subclass.Class.AbstractClass.AbstractClass = (function() {
      */
     AbstractClass.getDefinitionClass = function()
     {
-        return Subclass.Class.AbstractClass.AbstractClassDefinition;
+        return Subclass.Class.Type.AbstractClass.AbstractClassDefinition;
     };
 
     /**

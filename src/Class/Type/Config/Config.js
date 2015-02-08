@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Class.Config = {};
+Subclass.Class.Type.Config = {};
 
 /**
  * @class
  * @extends {Subclass.Class.ClassType}
  */
-Subclass.Class.Config.Config = (function()
+Subclass.Class.Type.Config.Config = (function()
 {
     /*************************************************/
     /*        Describing class type "Class"          */
@@ -57,7 +57,7 @@ Subclass.Class.Config.Config = (function()
      */
     Config.getBuilderClass = function()
     {
-        return Subclass.Class.Config.ConfigBuilder;
+        return Subclass.Class.Type.Config.ConfigBuilder;
     };
 
     /**
@@ -65,7 +65,7 @@ Subclass.Class.Config.Config = (function()
      */
     Config.getDefinitionClass = function()
     {
-        return Subclass.Class.Config.ConfigDefinition;
+        return Subclass.Class.Type.Config.ConfigDefinition;
     };
 
     /**

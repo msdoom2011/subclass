@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Map = {};
+Subclass.Property.Type.Map = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Map.Map = (function()
+Subclass.Property.Type.Map.Map = (function()
 {
     /*************************************************/
     /*        Describing property type "Map"         */
@@ -91,7 +91,7 @@ Subclass.Property.Map.Map = (function()
      */
     MapType.getDefinitionClass = function()
     {
-        return Subclass.Property.Map.MapDefinition;
+        return Subclass.Property.Type.Map.MapDefinition;
     };
 
     /**
@@ -190,7 +190,7 @@ Subclass.Property.Map.Map = (function()
                         Subclass.Tools.isPlainObject(value[propName])
                         && value[propName].getData
                     ) || (
-                        value[propName] instanceof Subclass.Property.Collection.Collection
+                        value[propName] instanceof Subclass.Property.Type.Collection.Collection
                     )
                 ) {
                     valueClear[propName] = value[propName].getData();

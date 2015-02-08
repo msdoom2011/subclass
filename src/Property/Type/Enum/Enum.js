@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Enum = {};
+Subclass.Property.Type.Enum = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Enum.Enum = (function()
+Subclass.Property.Type.Enum.Enum = (function()
 {
     /*************************************************/
     /*       Describing property type "Enum"         */
@@ -45,7 +45,7 @@ Subclass.Property.Enum.Enum = (function()
      */
     EnumType.getDefinitionClass = function()
     {
-        return Subclass.Property.Enum.EnumDefinition;
+        return Subclass.Property.Type.Enum.EnumDefinition;
     };
 
     /**

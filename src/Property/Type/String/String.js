@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.String = {};
+Subclass.Property.Type.String = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.String.String = (function()
+Subclass.Property.Type.String.String = (function()
 {
     /*************************************************/
     /*      Describing property type "String"        */
@@ -45,7 +45,7 @@ Subclass.Property.String.String = (function()
      */
     StringType.getDefinitionClass = function()
     {
-        return Subclass.Property.String.StringDefinition;
+        return Subclass.Property.Type.String.StringDefinition;
     };
 
     /**

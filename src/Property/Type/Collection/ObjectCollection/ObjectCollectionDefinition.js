@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.Property.Collection.CollectionDefinition}
+ * @extends {Subclass.Property.Type.Collection.CollectionDefinition}
  */
-Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (function()
+Subclass.Property.Type.Collection.ObjectCollection.ObjectCollectionDefinition = (function()
 {
     /**
      * @param {PropertyType} property
@@ -14,7 +14,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition = (func
         ObjectCollectionDefinition.$parent.call(this, property, propertyDefinition);
     }
 
-    ObjectCollectionDefinition.$parent = Subclass.Property.Collection.CollectionDefinition;
+    ObjectCollectionDefinition.$parent = Subclass.Property.Type.Collection.CollectionDefinition;
 
     /**
      * @inheritDoc

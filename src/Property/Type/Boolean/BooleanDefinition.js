@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Boolean.BooleanDefinition = (function()
+Subclass.Property.Type.Boolean.BooleanDefinition = (function()
 {
     /**
      * @param {PropertyType} property

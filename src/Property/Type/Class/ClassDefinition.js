@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Class.ClassDefinition = (function()
+Subclass.Property.Type.Class.ClassDefinition = (function()
 {
     /**
      * @param {PropertyType} property

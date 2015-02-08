@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Collection.ArrayCollection = {};
+Subclass.Property.Type.Collection.ArrayCollection = {};
 
 /**
  * @class
- * @extends {Subclass.Property.Collection.CollectionType}
+ * @extends {Subclass.Property.Type.Collection.CollectionType}
  */
-Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
+Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
 {
     /*************************************************/
     /*   Describing property type "ArrayCollection"  */
@@ -32,7 +32,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         );
     }
 
-    ArrayCollectionType.$parent = Subclass.Property.Collection.CollectionType;
+    ArrayCollectionType.$parent = Subclass.Property.Type.Collection.CollectionType;
 
     /**
      * @inheritDoc
@@ -68,7 +68,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
      */
     ArrayCollectionType.getDefinitionClass = function()
     {
-        return Subclass.Property.Collection.ArrayCollection.ArrayCollectionDefinition;
+        return Subclass.Property.Type.Collection.ArrayCollection.ArrayCollectionDefinition;
     };
 
     /**
@@ -84,7 +84,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
      */
     ArrayCollectionType.prototype.getCollectionClass = function()
     {
-        return Subclass.Property.Collection.ArrayCollection.ArrayCollection;
+        return Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection;
     };
 
     /**

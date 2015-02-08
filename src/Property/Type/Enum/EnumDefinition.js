@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Enum.EnumDefinition = (function()
+Subclass.Property.Type.Enum.EnumDefinition = (function()
 {
     /**
      * @param {PropertyType} property

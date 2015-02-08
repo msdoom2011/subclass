@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Array.ArrayDefinition = (function()
+Subclass.Property.Type.Array.ArrayDefinition = (function()
 {
     /**
      * @param {PropertyType} property

@@ -1,7 +1,15 @@
 /**
+ * @final
  * @class
  * @extends {Subclass.Error}
- * @final
+ * @constructor
+ * @description
+ *
+ * The instance of this class helps to build error with message
+ * which is actual when some argument was missed.
+ *
+ * @param {string} [message]
+ *      The custom error message
  */
 Subclass.Error.MissedArgumentError = (function()
 {
@@ -11,10 +19,13 @@ Subclass.Error.MissedArgumentError = (function()
     }
 
     /**
-     * Returns the name of the error type
+     * Returns the name of error type
+     *
+     * @method getName
+     * @memberOf Subclass.Error.MissedArgumentError
+     * @static
      *
      * @returns {string}
-     * @static
      */
     MissedArgumentError.getName = function()
     {
@@ -22,7 +33,13 @@ Subclass.Error.MissedArgumentError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
+     *
+     * @method getOptions
+     * @memberOf Subclass.Error.InvalidArgumentError
+     * @static
+     *
+     * @returns {Array}
      */
     MissedArgumentError.getOptions = function()
     {
@@ -34,7 +51,13 @@ Subclass.Error.MissedArgumentError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
+     *
+     * @method getRequiredOptions
+     * @memberOf Subclass.Error.InvalidArgumentError
+     * @static
+     *
+     * @returns {Array}
      */
     MissedArgumentError.getRequiredOptions = function()
     {

@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Collection.ObjectCollection = {};
+Subclass.Property.Type.Collection.ObjectCollection = {};
 
 /**
  * @class
- * @extends {Subclass.Property.Collection.CollectionType}
+ * @extends {Subclass.Property.Type.Collection.CollectionType}
  */
-Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
+Subclass.Property.Type.Collection.ObjectCollection.ObjectCollectionType = (function()
 {
     /*************************************************/
     /*   Describing property type "ObjectCollection" */
@@ -32,7 +32,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
         );
     }
 
-    ObjectCollectionType.$parent = Subclass.Property.Collection.CollectionType;
+    ObjectCollectionType.$parent = Subclass.Property.Type.Collection.CollectionType;
 
     /**
      * @inheritDoc
@@ -68,7 +68,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
      */
     ObjectCollectionType.getDefinitionClass = function()
     {
-        return Subclass.Property.Collection.ObjectCollection.ObjectCollectionDefinition;
+        return Subclass.Property.Type.Collection.ObjectCollection.ObjectCollectionDefinition;
     };
 
     /**
@@ -84,7 +84,7 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollectionType = (function()
      */
     ObjectCollectionType.prototype.getCollectionClass = function()
     {
-        return Subclass.Property.Collection.ObjectCollection.ObjectCollection;
+        return Subclass.Property.Type.Collection.ObjectCollection.ObjectCollection;
     };
 
     /**

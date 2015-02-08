@@ -1,7 +1,7 @@
 /**
  * @class
  */
-Subclass.Property.Collection.Collection = (function()
+Subclass.Property.Type.Collection.Collection = (function()
 {
     /**
      * @param {CollectionType} property
@@ -30,7 +30,7 @@ Subclass.Property.Collection.Collection = (function()
         /**
          * Property instance
          *
-         * @type {Subclass.Property.Collection.CollectionType}
+         * @type {Subclass.Property.Type.Collection.CollectionType}
          * @private
          */
         this._property = property;
@@ -46,10 +46,10 @@ Subclass.Property.Collection.Collection = (function()
         /**
          * Instance of collection manager
          *
-         * @type {Subclass.Property.Collection.CollectionManager}
+         * @type {Subclass.Property.Type.Collection.CollectionManager}
          * @private
          */
-        this._manager = new Subclass.Property.Collection.CollectionManager(this);
+        this._manager = new Subclass.Property.Type.Collection.CollectionManager(this);
     }
 
     /**
@@ -75,7 +75,7 @@ Subclass.Property.Collection.Collection = (function()
     /**
      * Returns instance of collection manager
      *
-     * @returns {Subclass.Property.Collection.CollectionManager}
+     * @returns {Subclass.Property.Type.Collection.CollectionManager}
      */
     Collection.prototype.getManager = function()
     {

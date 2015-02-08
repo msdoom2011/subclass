@@ -2,14 +2,14 @@
  * @class
  * @extends {Subclass.Class.ClassBuilder}
  */
-Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
+Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
 {
     function AbstractClassBuilder(classManager, classType, className)
     {
         AbstractClassBuilder.$parent.call(this, classManager, classType, className);
     }
 
-    AbstractClassBuilder.$parent = Subclass.Class.Class.ClassBuilder;
+    AbstractClassBuilder.$parent = Subclass.Class.Type.Class.ClassBuilder;
 
     /**
      * Validates abstract methods argument
@@ -56,7 +56,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
      * Sets abstract methods
      *
      * @param {Object.<Function>} abstractMethods
-     * @returns {Subclass.Class.AbstractClass.AbstractClassBuilder}
+     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
      */
     AbstractClassBuilder.prototype.setAbstractMethods = function(abstractMethods)
     {
@@ -70,7 +70,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
      * Adds new abstract methods
      *
      * @param {Object.<Function>} abstractMethods
-     * @returns {Subclass.Class.AbstractClass.AbstractClassBuilder}
+     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
      */
     AbstractClassBuilder.prototype.addAbstractMethods = function(abstractMethods)
     {
@@ -92,7 +92,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
      *
      * @param {string} methodName
      * @param {Function} methodFunction
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     AbstractClassBuilder.prototype.addAbstractMethod = function(methodName, methodFunction)
     {
@@ -129,7 +129,7 @@ Subclass.Class.AbstractClass.AbstractClassBuilder = (function()
      * Removes abstract method with specified method name
      *
      * @param {string} abstractMethodName
-     * @returns {Subclass.Class.AbstractClass.AbstractClassBuilder}
+     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
      */
     AbstractClassBuilder.prototype.removeAbstractMethod = function(abstractMethodName)
     {

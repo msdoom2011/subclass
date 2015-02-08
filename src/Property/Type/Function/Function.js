@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Function = {};
+Subclass.Property.Type.Function = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Function.Function = (function()
+Subclass.Property.Type.Function.Function = (function()
 {
     /*************************************************/
     /*      Describing property type "Function"      */
@@ -45,7 +45,7 @@ Subclass.Property.Function.Function = (function()
      */
     FunctionType.getDefinitionClass = function()
     {
-        return Subclass.Property.Function.FunctionDefinition;
+        return Subclass.Property.Type.Function.FunctionDefinition;
     };
 
     /**

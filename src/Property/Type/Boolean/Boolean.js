@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Boolean = {};
+Subclass.Property.Type.Boolean = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Boolean.Boolean = (function()
+Subclass.Property.Type.Boolean.Boolean = (function()
 {
     /*************************************************/
     /*      Describing property type "Boolean"       */
@@ -44,7 +44,7 @@ Subclass.Property.Boolean.Boolean = (function()
      */
     BooleanType.getDefinitionClass = function()
     {
-        return Subclass.Property.Boolean.BooleanDefinition;
+        return Subclass.Property.Type.Boolean.BooleanDefinition;
     };
 
     /**

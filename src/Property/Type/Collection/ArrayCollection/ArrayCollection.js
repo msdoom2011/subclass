@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.Property.Collection.Collection}
+ * @extends {Subclass.Property.Type.Collection.Collection}
  */
-Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
+Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
 {
     /**
      * @param {CollectionType} property
@@ -14,7 +14,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
         ArrayCollection.$parent.call(this, property, context);
     }
 
-    ArrayCollection.$parent = Subclass.Property.Collection.Collection;
+    ArrayCollection.$parent = Subclass.Property.Type.Collection.Collection;
 
     /**
      * @inheritDoc
@@ -28,7 +28,7 @@ Subclass.Property.Collection.ArrayCollection.ArrayCollection = (function()
     };
 
     /**
-     * @alias Subclass.Property.Collection.ArrayCollection#addItem
+     * @alias Subclass.Property.Type.Collection.ArrayCollection#addItem
      */
     ArrayCollection.prototype.push = ArrayCollection.prototype.addItem;
 

@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Mixed = {};
+Subclass.Property.Type.Mixed = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Mixed.Mixed = (function()
+Subclass.Property.Type.Mixed.Mixed = (function()
 {
     /*************************************************/
     /*       Describing property type "Mixed"        */
@@ -46,7 +46,7 @@ Subclass.Property.Mixed.Mixed = (function()
      */
     MixedType.getDefinitionClass = function()
     {
-        return Subclass.Property.Mixed.MixedDefinition;
+        return Subclass.Property.Type.Mixed.MixedDefinition;
     };
 
     /**

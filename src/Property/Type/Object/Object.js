@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Object = {};
+Subclass.Property.Type.Object = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Object.Object = (function()
+Subclass.Property.Type.Object.Object = (function()
 {
     /*************************************************/
     /*      Describing property type "Object"        */
@@ -45,7 +45,7 @@ Subclass.Property.Object.Object = (function()
      */
     ObjectType.getDefinitionClass = function()
     {
-        return Subclass.Property.Object.ObjectDefinition;
+        return Subclass.Property.Type.Object.ObjectDefinition;
     };
 
     /**

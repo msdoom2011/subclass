@@ -122,8 +122,8 @@ Subclass.Class.ClassType = (function()
      * Returns class builder constructor for specific class of current class type.
      *
      * @example Example:
-     *      Subclass.Class.AbstractClass.AbstractClass.getBuilderClass();
-     *      // returns Subclass.Class.AbstractClass.AbstractClassBuilder class constructor
+     *      Subclass.Class.Type.AbstractClass.AbstractClass.getBuilderClass();
+     *      // returns Subclass.Class.Type.AbstractClass.AbstractClassBuilder class constructor
      *
      * @returns {Function}
      */
@@ -138,11 +138,8 @@ Subclass.Class.ClassType = (function()
     /**
      * Returns constructor for creating class definition instance
      *
-     * @example Example:
-     *      Subclass.Class.Class.Class.getDefinitionClass();
-     *      // returns Subclass.Class.Class.ClassDefinition class constructor
-     *
      * @returns {Function}
+     *      Returns class type definition constructor function
      */
     ClassType.getDefinitionClass = function()
     {

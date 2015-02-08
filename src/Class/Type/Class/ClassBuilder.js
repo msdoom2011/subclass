@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Class.ClassBuilder}
  */
-Subclass.Class.Class.ClassBuilder = (function()
+Subclass.Class.Type.Class.ClassBuilder = (function()
 {
     function ClassBuilder(classManager, classType, className)
     {
@@ -54,7 +54,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      * Sets traits list
      *
      * @param {string[]} traitsList
-     * @returns {Subclass.Class.Class.ClassBuilder}
+     * @returns {Subclass.Class.Type.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setTraits = function(traitsList)
     {
@@ -68,7 +68,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      * Adds new traits
      *
      * @param {string} traitsList
-     * @returns {Subclass.Class.Class.ClassBuilder}
+     * @returns {Subclass.Class.Type.Class.ClassBuilder}
      */
     ClassBuilder.prototype.addTraits = function(traitsList)
     {
@@ -86,7 +86,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      * Adds new trait
      *
      * @param {string[]} traitName
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ClassBuilder.prototype.addTrait = function(traitName)
     {
@@ -147,7 +147,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      * Sets interfaces list
      *
      * @param {string[]} interfacesList
-     * @returns {Subclass.Class.Class.ClassBuilder}
+     * @returns {Subclass.Class.Type.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setInterfaces = function(interfacesList)
     {
@@ -161,7 +161,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      * Adds new interfaces
      *
      * @param {string} interfacesList
-     * @returns {Subclass.Class.Class.ClassBuilder}
+     * @returns {Subclass.Class.Type.Class.ClassBuilder}
      */
     ClassBuilder.prototype.addInterfaces = function(interfacesList)
     {
@@ -179,7 +179,7 @@ Subclass.Class.Class.ClassBuilder = (function()
      * Adds new include
      *
      * @param {string[]} interfaceName
-     * @returns {Subclass.Class.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
      */
     ClassBuilder.prototype.addInterface = function(interfaceName)
     {

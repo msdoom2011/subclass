@@ -10,7 +10,7 @@ Subclass.Error = {};
  *
  * The base error class
  *
- * @param {string} [message=undefined]
+ * @param {string} [message]
  *      The error message
  */
 Subclass.Error = (function()
@@ -40,7 +40,7 @@ Subclass.Error = (function()
      * @method buildMessage
      * @memberOf Subclass.Error.prototype
      *
-     * @returns {*}
+     * @returns {string}
      */
     Exception.prototype.buildMessage = function()
     {
@@ -51,7 +51,8 @@ Subclass.Error = (function()
     };
 
     /**
-     * Sets/returns an error message.<br /><br />
+     * Sets/returns an error message.
+     *
      * If the message argument was specified it will be set the error message.
      * Otherwise it builds message by the {@link Subclass.Error#buildMessage} method and returns it.
      *
@@ -114,16 +115,31 @@ Subclass.Error = (function()
     /**
      * Collection with constructor functions of registered error types
      *
-     * @type {Object.<Function>}
-     * @private
+     * @memberOf Subclass.Error
+     * @type {Object}
      */
     Exception._types = {};
+
+    /**
+     * Returns the name of error type
+     *
+     * @method getName
+     * @memberOf Subclass.Error
+     * @static
+     *
+     * @returns {string}
+     */
+    Exception.getName = function()
+    {
+        throw new Error('Not implemented method "getName".');
+    };
 
     /**
      * Creates error object instance.
      *
      * @method create
      * @memberOf Subclass.Error
+     * @static
      *
      * @param {string} type
      *      The error type. If type was not registered it will be
@@ -146,13 +162,14 @@ Subclass.Error = (function()
     };
 
     /**
-     * Creates error type constructor.<br /><br />
+     * Creates error type constructor.
      *
      * At current stage error type constructor prototype supplements by properties and methods from
      * its parent class (it is always {@link Subclass.Error}) and mixins specified in getOptions method.
      *
      * @method createConstructor
-     * @memberOf Subclass.Error
+     * @private
+     * @ignore
      *
      * @param {Function} construct
      *      THe error type constructor function
@@ -182,6 +199,7 @@ Subclass.Error = (function()
      *
      * @method getOptions
      * @memberOf Subclass.Error
+     * @static
      *
      * @returns {Array}
      */
@@ -195,6 +213,7 @@ Subclass.Error = (function()
      *
      * @method getRequiredOptions
      * @memberOf Subclass.Error
+     * @static
      *
      * @returns {Array}
      */
@@ -208,6 +227,7 @@ Subclass.Error = (function()
      *
      * @method validateRequiredOptions
      * @private
+     * @ignore
      */
     Exception.validateRequiredOptions = function(errorInst)
     {
@@ -237,6 +257,7 @@ Subclass.Error = (function()
      *
      * @method attachOptionMethods
      * @private
+     * @ignore
      */
     Exception.attachOptionMethods = function()
     {
@@ -258,8 +279,10 @@ Subclass.Error = (function()
      *
      * @method attachOptionProperties
      * @private
+     * @ignore
      *
      * @param {Subclass.Error} errorInst
+     *      The instance of Subclass.Error class
      */
     Exception.attachOptionProperties = function(errorInst)
     {
@@ -275,9 +298,13 @@ Subclass.Error = (function()
      *
      * @method registerType
      * @memberOf Subclass.Error
+     * @static
      *
      * @param {string} typeName
+     *      The name of error type
+     *
      * @param {Function} typeConstructor
+     *      The constructor function of error type
      */
     Exception.registerType = function(typeName, typeConstructor)
     {
@@ -308,9 +335,13 @@ Subclass.Error = (function()
      *
      * @method getType
      * @memberOf Subclass.Error
+     * @static
      *
      * @param {string} typeName
+     *      The name of error type
+     *
      * @returns {Function}
+     *      The error type constructor function
      */
     Exception.getType = function(typeName)
     {
@@ -325,8 +356,11 @@ Subclass.Error = (function()
      *
      * @method issetType
      * @memberOf Subclass.Error
+     * @static
      *
      * @param {string} typeName
+     *      The name of error type
+     *
      * @returns {boolean}
      */
     Exception.issetType = function(typeName)
@@ -337,7 +371,6 @@ Subclass.Error = (function()
     return Exception;
 
 })();
-
 
 /**
  * @namespace

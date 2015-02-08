@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Class.Interface = {};
+Subclass.Class.Type.Interface = {};
 
 /**
  * @class
  * @extends {Subclass.Class.ClassType}
  */
-Subclass.Class.Interface.Interface = (function()
+Subclass.Class.Type.Interface.Interface = (function()
 {
     /*************************************************/
     /*       Describing class type "Interface"       */
@@ -40,7 +40,7 @@ Subclass.Class.Interface.Interface = (function()
      */
     Interface.getBuilderClass = function()
     {
-        return Subclass.Class.Interface.InterfaceBuilder;
+        return Subclass.Class.Type.Interface.InterfaceBuilder;
     };
 
     /**
@@ -48,7 +48,7 @@ Subclass.Class.Interface.Interface = (function()
      */
     Interface.getDefinitionClass = function()
     {
-        return Subclass.Class.Interface.InterfaceDefinition;
+        return Subclass.Class.Type.Interface.InterfaceDefinition;
     };
 
     /**

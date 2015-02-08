@@ -1,15 +1,15 @@
 /**
  * @class
  */
-Subclass.Property.Collection.CollectionManager = (function()
+Subclass.Property.Type.Collection.CollectionManager = (function()
 {
     function CollectionManager(collection)
     {
-        if (!collection || !(collection instanceof Subclass.Property.Collection.Collection)) {
+        if (!collection || !(collection instanceof Subclass.Property.Type.Collection.Collection)) {
             Subclass.Error.create('InvalidArgument')
                 .argument('collection instance', false)
                 .received(collection)
-                .expected('an instance of "Subclass.Property.Collection.Collection"')
+                .expected('an instance of "Subclass.Property.Type.Collection.Collection"')
                 .apply()
             ;
         }
@@ -17,7 +17,7 @@ Subclass.Property.Collection.CollectionManager = (function()
         /**
          * Instance of collection
          *
-         * @type {Subclass.Property.Collection.Collection}
+         * @type {Subclass.Property.Type.Collection.Collection}
          */
         this._collection = collection;
 
@@ -42,7 +42,7 @@ Subclass.Property.Collection.CollectionManager = (function()
     /**
      * Returns collection instance
      *
-     * @returns {Subclass.Property.Collection.Collection}
+     * @returns {Subclass.Property.Type.Collection.Collection}
      */
     CollectionManager.prototype.getCollection = function()
     {

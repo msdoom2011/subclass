@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Map.MapDefinition = (function()
+Subclass.Property.Type.Map.MapDefinition = (function()
 {
     /**
      * @param {PropertyType} property

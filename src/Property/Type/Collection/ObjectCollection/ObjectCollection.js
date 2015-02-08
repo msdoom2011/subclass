@@ -1,8 +1,8 @@
 /**
  * @class
- * @extends {Subclass.Property.Collection.Collection}
+ * @extends {Subclass.Property.Type.Collection.Collection}
  */
-Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
+Subclass.Property.Type.Collection.ObjectCollection.ObjectCollection = (function()
 {
     /**
      * @param {CollectionType} property
@@ -14,12 +14,12 @@ Subclass.Property.Collection.ObjectCollection.ObjectCollection = (function()
         ObjectCollection.$parent.call(this, property, context);
     }
 
-    ObjectCollection.$parent = Subclass.Property.Collection.Collection;
+    ObjectCollection.$parent = Subclass.Property.Type.Collection.Collection;
 
     /**
      * @inheritDoc
      *
-     * @returns {Subclass.Property.Collection.ObjectCollection.ObjectCollection}
+     * @returns {Subclass.Property.Type.Collection.ObjectCollection.ObjectCollection}
      */
     ObjectCollection.prototype.normalizeItem = function(itemName)
     {

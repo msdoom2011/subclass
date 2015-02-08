@@ -1,7 +1,15 @@
 /**
+ * @final
  * @class
  * @extends {Subclass.Error}
- * @final
+ * @constructor
+ * @description
+ *
+ * The instance of this class helps to build error with message which
+ * is actual when was specified some invalid argument
+ *
+ * @param {string} [message]
+ *      The custom error message
  */
 Subclass.Error.InvalidArgumentError = (function()
 {
@@ -11,10 +19,13 @@ Subclass.Error.InvalidArgumentError = (function()
     }
 
     /**
-     * Returns the name of the error type
+     * Returns the name of error type
+     *
+     * @method getName
+     * @memberOf Subclass.Error.InvalidArgumentError
+     * @static
      *
      * @returns {string}
-     * @static
      */
     InvalidArgumentError.getName = function()
     {
@@ -22,7 +33,13 @@ Subclass.Error.InvalidArgumentError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
+     *
+     * @method getOptions
+     * @memberOf Subclass.Error.InvalidArgumentError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidArgumentError.getOptions = function()
     {
@@ -36,7 +53,13 @@ Subclass.Error.InvalidArgumentError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
+     *
+     * @method getRequiredOptions
+     * @memberOf Subclass.Error.InvalidArgumentError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidArgumentError.getRequiredOptions = function()
     {
@@ -67,4 +90,5 @@ Subclass.Error.InvalidArgumentError = (function()
     );
 
     return InvalidArgumentError;
+
 })();

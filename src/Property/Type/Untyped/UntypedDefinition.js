@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Untyped.UntypedDefinition = (function()
+Subclass.Property.Type.Untyped.UntypedDefinition = (function()
 {
     /**
      * @param {PropertyType} property

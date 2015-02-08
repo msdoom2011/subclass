@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Class.ClassBuilder}
  */
-Subclass.Class.Trait.TraitBuilder = (function()
+Subclass.Class.Type.Trait.TraitBuilder = (function()
 {
     function TraitBuilder(classManager, classType, className)
     {

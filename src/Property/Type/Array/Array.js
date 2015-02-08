@@ -1,13 +1,13 @@
 /**
  * @namespace
  */
-Subclass.Property.Array = {};
+Subclass.Property.Type.Array = {};
 
 /**
  * @class
  * @extends {Subclass.Property.PropertyType}
  */
-Subclass.Property.Array.Array = (function()
+Subclass.Property.Type.Array.Array = (function()
 {
     /*************************************************/
     /*       Describing property type "Array"        */
@@ -44,7 +44,7 @@ Subclass.Property.Array.Array = (function()
      */
     ArrayType.getDefinitionClass = function()
     {
-        return Subclass.Property.Array.ArrayDefinition;
+        return Subclass.Property.Type.Array.ArrayDefinition;
     };
 
     /**

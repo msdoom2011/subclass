@@ -2,7 +2,7 @@
  * @class
  * @extends {Subclass.Property.PropertyDefinition}
  */
-Subclass.Property.Mixed.MixedDefinition = (function()
+Subclass.Property.Type.Mixed.MixedDefinition = (function()
 {
     /**
      * @param {PropertyType} property

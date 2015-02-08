@@ -1,19 +1,33 @@
 /**
+ * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.ClassName
+ * @mixes Subclass.Error.Option.Method
+ * @constructor
+ * @description
+ *
+ * The instance of this class helps to build error with message
+ * which is actual when the some method was not implemented.
+ *
+ * @param {string} [message]
+ *      The custom error message
  */
 Subclass.Error.NotImplementedMethodError = (function()
 {
     function NotImplementedMethodError(message)
     {
-        NotImplementedMethodError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
-     * Returns the name of the error type
+     * Returns the name of error type
+     *
+     * @method getName
+     * @memberOf Subclass.Error.NotImplementedMethodError
+     * @static
      *
      * @returns {string}
-     * @static
      */
     NotImplementedMethodError.getName = function()
     {
@@ -21,11 +35,17 @@ Subclass.Error.NotImplementedMethodError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
+     *
+     * @method getOptions
+     * @memberOf Subclass.Error.NotImplementedMethodError
+     * @static
+     *
+     * @returns {Array}
      */
     NotImplementedMethodError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'className',
@@ -34,11 +54,17 @@ Subclass.Error.NotImplementedMethodError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
+     *
+     * @method getRequiredOptions
+     * @memberOf Subclass.Error.NotImplementedMethodError
+     * @static
+     *
+     * @returns {Array}
      */
     NotImplementedMethodError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
             'className',
@@ -51,7 +77,7 @@ Subclass.Error.NotImplementedMethodError = (function()
      */
     NotImplementedMethodError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'The method "' + this.className() + '#' + this.method() + '" ';

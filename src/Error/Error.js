@@ -99,12 +99,8 @@ Subclass.Error = (function()
      */
     Exception.prototype.apply = function()
     {
-        if (this.constructor.$parent) {
-            this.constructor.$parent.validateRequiredOptions(this);
-        }
-        var message = this.message();
-
-        throw new Error(message);
+        Subclass.Error.validateRequiredOptions(this);
+        throw new Error(this.message());
     };
 
 
@@ -187,7 +183,6 @@ Subclass.Error = (function()
 
         construct.prototype = constructProto;
         construct.prototype.constructor = construct;
-        construct.prototype.constructor.$parent = Exception;
 
         this.attachOptionMethods.call(construct);
 

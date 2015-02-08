@@ -9,7 +9,7 @@ Subclass.Error.Option.Module = (function()
     return {
 
         /**
-         * Sets/returns module name
+         * Sets/returns the module name
          *
          * @method module
          * @memberOf Subclass.Error.Option.Module
@@ -17,7 +17,7 @@ Subclass.Error.Option.Module = (function()
          * @param {string} [module]
          *      The name of module
          *
-         * @returns {Subclass.Error}
+         * @returns {(Subclass.Error|string)}
          */
         module: function(module)
         {
@@ -37,6 +37,7 @@ Subclass.Error.Option.Module = (function()
          *
          * @method hasModule
          * @memberOf Subclass.Error.Option.Module
+         *
          * @returns {boolean}
          */
         hasModule: function()

@@ -7,7 +7,7 @@ Subclass.Property.Error.InvalidPropertyOptionError = (function()
 {
     function InvalidPropertyOptionError(message)
     {
-        InvalidPropertyOptionError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -26,7 +26,7 @@ Subclass.Property.Error.InvalidPropertyOptionError = (function()
      */
     InvalidPropertyOptionError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'property',
@@ -41,7 +41,7 @@ Subclass.Property.Error.InvalidPropertyOptionError = (function()
      */
     InvalidPropertyOptionError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
             'property',
@@ -54,7 +54,7 @@ Subclass.Property.Error.InvalidPropertyOptionError = (function()
      */
     InvalidPropertyOptionError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Invalid value of option "' + this.option() + '" ';

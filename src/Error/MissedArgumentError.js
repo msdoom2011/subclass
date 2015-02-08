@@ -2,6 +2,7 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.Argument
  * @constructor
  * @description
  *
@@ -15,7 +16,7 @@ Subclass.Error.MissedArgumentError = (function()
 {
     function MissedArgumentError(message)
     {
-        MissedArgumentError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -43,7 +44,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'argument'
@@ -61,7 +62,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat(['argument']);
     };
@@ -71,7 +72,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'The ' + this.argument() + ' argument is required but was missed.';

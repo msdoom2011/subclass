@@ -2,6 +2,9 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.Argument
+ * @mixes Subclass.Error.Option.Expected
+ * @mixes Subclass.Error.Option.Received
  * @constructor
  * @description
  *
@@ -15,7 +18,7 @@ Subclass.Error.InvalidArgumentError = (function()
 {
     function InvalidArgumentError(message)
     {
-        InvalidArgumentError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -43,7 +46,7 @@ Subclass.Error.InvalidArgumentError = (function()
      */
     InvalidArgumentError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'argument',
@@ -63,7 +66,7 @@ Subclass.Error.InvalidArgumentError = (function()
      */
     InvalidArgumentError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat(['argument']);
     };
@@ -73,7 +76,7 @@ Subclass.Error.InvalidArgumentError = (function()
      */
     InvalidArgumentError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Specified invalid value of ' + this.argument() + '. ';

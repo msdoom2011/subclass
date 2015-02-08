@@ -18,7 +18,7 @@ Subclass.Service.Error.AbstractServiceError = (function()
      */
     function AbstractServiceError(message)
     {
-        AbstractServiceError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -40,7 +40,7 @@ Subclass.Service.Error.AbstractServiceError = (function()
      */
     AbstractServiceError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'service'
@@ -55,7 +55,7 @@ Subclass.Service.Error.AbstractServiceError = (function()
      */
     AbstractServiceError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
             'service'
@@ -70,7 +70,7 @@ Subclass.Service.Error.AbstractServiceError = (function()
      */
     AbstractServiceError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'You can\'t get/create instance of abstract service "' + this.service() + '".';

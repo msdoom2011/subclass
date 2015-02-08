@@ -16,7 +16,7 @@ Subclass.Service.Error.ServiceInitializedError = (function()
      */
     function ServiceInitializedError(message)
     {
-        ServiceInitializedError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -38,7 +38,7 @@ Subclass.Service.Error.ServiceInitializedError = (function()
      */
     ServiceInitializedError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'service'
@@ -53,7 +53,7 @@ Subclass.Service.Error.ServiceInitializedError = (function()
      */
     ServiceInitializedError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
             'service'
@@ -68,7 +68,7 @@ Subclass.Service.Error.ServiceInitializedError = (function()
      */
     ServiceInitializedError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'You can\'t modify definition of the service "' + this.service() + '" after it was created.';

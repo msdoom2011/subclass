@@ -7,7 +7,7 @@ Subclass.Property.Error.InvalidPropertyValueError = (function()
 {
     function InvalidPropertyValueError(message)
     {
-        InvalidPropertyValueError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -26,7 +26,7 @@ Subclass.Property.Error.InvalidPropertyValueError = (function()
      */
     InvalidPropertyValueError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'property',
@@ -40,7 +40,7 @@ Subclass.Property.Error.InvalidPropertyValueError = (function()
      */
     InvalidPropertyValueError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
             'property'
@@ -52,7 +52,7 @@ Subclass.Property.Error.InvalidPropertyValueError = (function()
      */
     InvalidPropertyValueError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Specified invalid value of property ' + this.property() + '. ';

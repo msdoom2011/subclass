@@ -15,7 +15,7 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
      */
     function InvalidServiceOptionError(message)
     {
-        InvalidServiceOptionError.$parent.call(this, message);
+        Subclass.Error.call(this, message);
     }
 
     /**
@@ -37,7 +37,7 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
      */
     InvalidServiceOptionError.getOptions = function()
     {
-        var options = this.$parent.getOptions();
+        var options = Subclass.Error.getOptions();
 
         return options.concat([
             'option',
@@ -55,7 +55,7 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
      */
     InvalidServiceOptionError.getRequiredOptions = function()
     {
-        var required = this.$parent.getRequiredOptions();
+        var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
             'service',
@@ -71,7 +71,7 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
      */
     InvalidServiceOptionError.prototype.buildMessage = function()
     {
-        var message = this.constructor.$parent.prototype.buildMessage.call(this);
+        var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Invalid value of option "' + this.option() + '" ';

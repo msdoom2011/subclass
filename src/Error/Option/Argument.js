@@ -1,16 +1,26 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify the argument name when creating an error instance.
  */
 Subclass.Error.Option.Argument = (function()
 {
     return {
 
         /**
-         * Sets/returns arguments name
+         * Sets/returns the arguments name
+         *
+         * @method argument
+         * @memberOf Subclass.Error.Option.Argument
          *
          * @param {string} [argName]
+         *      The name of argument
+         *
          * @param {boolean} [quotes]
-         * @returns {Subclass.Error}
+         *      Should the argument name be wrapped in quotes
+         *
+         * @returns {(Subclass.Error|string)}
          */
         argument: function(argName, quotes)
         {
@@ -36,6 +46,9 @@ Subclass.Error.Option.Argument = (function()
 
         /**
          * Checks whether the argument option was specified
+         *
+         * @method hasArgument
+         * @memberOf Subclass.Error.Option.Argument
          *
          * @returns {boolean}
          */

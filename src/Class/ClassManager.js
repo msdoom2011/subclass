@@ -18,6 +18,8 @@ Subclass.Class.Type = {};
  * @constructor
  * @description
  *
+ * Allows to manipulate by classes: register new, load and get already registered classes.
+ *
  * @throws {Error}
  *      Throws error if specified invalid module instance
  *
@@ -26,9 +28,6 @@ Subclass.Class.Type = {};
  */
 Subclass.Class.ClassManager = (function()
 {
-    /**
-     * @alias Subclass.Class.ClassManager
-     */
     function ClassManager(module)
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
@@ -91,7 +90,7 @@ Subclass.Class.ClassManager = (function()
         /**
          * The timeout after which the ready callback will be called
          *
-         * @type {null}
+         * @type {(*|null)}
          * @private
          */
         this._loadingEndTimeout = null;
@@ -99,7 +98,7 @@ Subclass.Class.ClassManager = (function()
         /**
          * The timeout after which the classes in load stack will start loading
          *
-         * @type {null}
+         * @type {(*|null)}
          * @private
          */
         this._addToLoadStackTimeout = null;
@@ -178,9 +177,13 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Returns module instance
+     * Returns the module instance
+     *
+     * @method getModule
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @returns {Subclass.Module.Module}
+     *      The module instance
      */
     ClassManager.prototype.getModule = function()
     {
@@ -188,7 +191,10 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Locks loading process
+     * Locks the process of loading files with new classes
+     *
+     * @method lockLoading
+     * @memberOf Subclass.Class.ClassManager.prototype
      */
     ClassManager.prototype.lockLoading = function()
     {
@@ -196,7 +202,10 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Unlocks loading process
+     * Unlocks and starts the process of loading files with new classes
+     *
+     * @method unlockLoading
+     * @memberOf Subclass.Class.ClassManager.prototype
      */
     ClassManager.prototype.unlockLoading = function()
     {
@@ -212,9 +221,12 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Reports whether the loading process is locked
+     * Reports whether the process of loading files with new classes is locked
      *
-     * @returns {boolean|*}
+     * @method isLoadingLocked
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
+     * @returns {boolean}
      */
     ClassManager.prototype.isLoadingLocked = function()
     {
@@ -222,7 +234,10 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Sets loading process start
+     * Starts the process of loading files with new classes
+     *
+     * @method startLoading
+     * @memberOf Subclass.Class.ClassManager.prototype
      */
     ClassManager.prototype.startLoading = function()
     {
@@ -236,7 +251,10 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Clears loading end timeout
+     * Pauses the process of loading files with new classes
+     *
+     * @method pauseLoading
+     * @memberOf Subclass.Class.ClassManager.prototype
      */
     ClassManager.prototype.pauseLoading = function()
     {
@@ -245,9 +263,12 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Reports that class loading was paused
+     * Reports whether the process of loading files with new classes was paused
      *
-     * @returns {boolean|*}
+     * @method isLoadingPaused
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
+     * @returns {boolean}
      */
     ClassManager.prototype.isLoadingPaused = function()
     {
@@ -255,7 +276,11 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Sets loading process complete
+     * Tries to complete the process of loading files with new classes.
+     * If it was completed then will be triggered the appropriate event.
+     *
+     * @method completeLoading
+     * @memberOf Subclass.Class.ClassManager.prototype
      */
     ClassManager.prototype.completeLoading = function()
     {
@@ -279,6 +304,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Checks whether the loading process continues
      *
+     * @method isLoading
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @returns {boolean}
      */
     ClassManager.prototype.isLoading = function()
@@ -287,9 +315,14 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Adds specified class to load stack
+     * Adds the new class to load stack
+     *
+     * @method addToLoadStack
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @param {string} className
+     *      The name of class. It should be compatible with the file path where
+     *      it is located relative to "rootPath" configuration option of module.
      */
     ClassManager.prototype.addToLoadStack = function(className)
     {
@@ -309,6 +342,12 @@ Subclass.Class.ClassManager = (function()
         }, 10);
     };
 
+    /**
+     * Processes the classes from load stack
+     *
+     * @method processLoadStack
+     * @memberOf Subclass.Class.ClassManager.prototype
+     */
     ClassManager.prototype.processLoadStack = function()
     {
         for (var className in this._loadStack) {
@@ -331,9 +370,13 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Removes specified class from load stack
+     * Removes specified class from the load stack
+     *
+     * @method removeFromLoadStack
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @param {string} className
+     *      The name of class
      */
     ClassManager.prototype.removeFromLoadStack = function(className)
     {
@@ -347,9 +390,14 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Checks if specified class is in load stack
+     * Checks whether the specified class is in load stack
+     *
+     * @method isInLoadStack
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @param {string} className
+     *      The name of class
+     *
      * @returns {boolean}
      */
     ClassManager.prototype.isInLoadStack = function(className)
@@ -358,7 +406,10 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Checks if load stack is empty
+     * Checks whether the load stack is empty
+     *
+     * @method isLoadStackEmpty
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @returns {boolean}
      */
@@ -370,11 +421,16 @@ Subclass.Class.ClassManager = (function()
     /**
      * Return all registered classes
      *
+     * @method getClasses
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {boolean} [privateClasses = false]
-     *      If passed true it returns classes only from current module
+     *      If it's true it returns classes only from current module
      *      without classes from its plug-ins
      *
      * @param {boolean} [withParentClasses = true]
+     *      Should or not will be returned the classes from the parent
+     *      modules (it is actual if the current module is a plug-in)
      *
      * @returns {Object.<Subclass.Class.ClassType>}
      */
@@ -421,6 +477,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Returns module names where defined class with specified name
      *
+     * @method getClassLocations
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {string} className
      * @returns {string[]}
      */
@@ -454,6 +513,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Loads new class by its name
+     *
+     * @method loadClass
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @throws {Error}
      * @param {string} className
@@ -532,6 +594,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Creates class instance
      *
+     * @method createClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {(ClassType|function)} classConstructor
      *      Class constructor of specific class type
      *
@@ -587,6 +652,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Adds a new class
      *
+     * @method addClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {string} classTypeName
      * @param {string} className
      * @param {object} classDefinition
@@ -640,6 +708,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Returns class
      *
+     * @method getClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {string} className
      * @returns {Subclass.Class.ClassType}
      */
@@ -660,6 +731,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Checks if class with passed name was ever registered
      *
+     * @method issetClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {string} className
      * @param {boolean} [privateClasses]
      * @returns {boolean}
@@ -676,6 +750,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Validates whether there are classes with the same names in the module and its plug-ins
+     *
+     * @method checkForClones
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @throws {Error}
      */
@@ -717,6 +794,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Checks whether class manager contains any class
      *
+     * @method isEmpty
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @returns {boolean}
      */
     ClassManager.prototype.isEmpty = function()
@@ -726,6 +806,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Builds new class of specified class type
+     *
+     * @method buildClass
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @param {string} classType Type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
      * @returns {Subclass.Class.ClassType}
@@ -738,6 +821,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Modifies existed class definition
      *
+     * @method alterClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
      * @param {string} className A name of the class
      * @returns {Subclass.Class.ClassType}
      */
@@ -748,6 +834,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Creates instance of class builder
+     *
+     * @method createClassBuilder
+     * @memberOf Subclass.Class.ClassManager.prototype
      *
      * @param {string} classType It can be name of class type or name of class which you want to alter.
      * @param {string} [className]
@@ -815,6 +904,7 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Classes that will be added to class manager instance immediately after its creation
+     *
      * @type {Object.<Object>}
      * @private
      */
@@ -829,6 +919,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Returns all registered default classes
      *
+     * @method getClasses
+     * @memberOf Subclass.Class.ClassManager
+     *
      * @returns {Object.<Object>}
      */
     ClassManager.getClasses = function()
@@ -838,6 +931,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Registers new class
+     *
+     * @method registerClass
+     * @memberOf Subclass.Class.ClassManager
      *
      * @param {string} classTypeName
      * @param {string} className
@@ -857,6 +953,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Checks whether class with passed name was ever registered
      *
+     * @method issetClass
+     * @memberOf Subclass.Class.ClassManager
+     *
      * @param {string} className
      * @returns {boolean}
      */
@@ -875,6 +974,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Registers new type of classes
+     *
+     * @method registerClassType
+     * @memberOf Subclass.Class.ClassManager
      *
      * @param {function} classTypeConstructor
      */
@@ -903,6 +1005,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Returns class type constructor
      *
+     * @method getClassType
+     * @memberOf Subclass.Class.ClassManager
+     *
      * @param classTypeName
      * @returns {Function}
      */
@@ -917,6 +1022,9 @@ Subclass.Class.ClassManager = (function()
     /**
      * Checks if exists specified class type
      *
+     * @method issetClassType
+     * @memberOf Subclass.Class.ClassManager
+     *
      * @param {string} classTypeName
      * @returns {boolean}
      */
@@ -927,6 +1035,9 @@ Subclass.Class.ClassManager = (function()
 
     /**
      * Return names of all registered class types
+     *
+     * @method getClassType
+     * @memberOf Subclass.Class.ClassManager
      *
      * @returns {Array}
      */

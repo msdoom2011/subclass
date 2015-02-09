@@ -3,7 +3,6 @@
   "src_dir": "src",
   "build_dir": "build",
   "release_dir": "release",
-  "doc_dir": "doc/api",
   "lib": {
     "dir": {
       "src": "<%= config.src_dir %>",
@@ -120,5 +119,17 @@
     },
     "index": "index.html",
     "files": "/**/*"
+  },
+  "doc": {
+    "dir": "doc/api",
+    "files": [
+      "<%= config.lib.dir.src %>/Subclass.js",
+      "<%= config.lib.dir.src %>/Module/**/*.js",
+      "<%= config.lib.dir.src %>/Event/**/*.js",
+      "<%= config.lib.dir.src %>/Parameter/**/*.js",
+      "<%= config.lib.dir.src %>/Service/**/*.js",
+      "<%= config.lib.dir.src %>/Tools/**/*.js",
+      "<%= config.lib.dir.src %>/Error/**/*.js"
+    ]
   }
 }

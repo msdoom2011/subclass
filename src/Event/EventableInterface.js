@@ -1,17 +1,20 @@
 /**
  * @interface
+ * @constructor
  * @name Subclass.Event.EventableInterface
  */
 Subclass.Class.ClassManager.registerClass('Interface', 'Subclass/Event/EventableInterface',
 {
     /**
-     * Registers new event
+     * Registers the new event
      *
      * @method registerEvent
      * @memberOf Subclass.Event.EventableInterface.prototype
      *
      * @param {string} eventName
-     * @returns {*}
+     *      The event name
+     *
+     * @returns {Subclass.Event.EventableInterface}
      */
     registerEvent: function(eventName) {},
 
@@ -22,8 +25,13 @@ Subclass.Class.ClassManager.registerClass('Interface', 'Subclass/Event/Eventable
      * @memberOf Subclass.Event.EventableInterface.prototype
      *
      * @param {string} eventName
+     *      The event name
+     *
      * @param [arguments]
-     * @return self
+     *      Any number arguments you need the event listeners
+     *      will receive when the event will be triggered
+     *
+     * @returns {Subclass.Event.EventableInterface}
      */
     invokeEvent: function(eventName) {},
 
@@ -34,9 +42,16 @@ Subclass.Class.ClassManager.registerClass('Interface', 'Subclass/Event/Eventable
      * @memberOf Subclass.Event.EventableInterface.prototype
      *
      * @param {string} eventName
-     * @param {Function} listener
+     *      The event name
+     *
      * @param {number} [priority]
-     * @returns self
+     *      The priority of event listener.
+     *      The more higher priority - the more earlier current listener callback function will be invoked.
+     *
+     * @param {Function} listener
+     *      The callback function which will be invoked when the event triggers
+     *
+     * @returns {Subclass.Event.EventableInterface}
      */
     addEventListener: function(eventName, priority, listener) {},
 
@@ -47,7 +62,12 @@ Subclass.Class.ClassManager.registerClass('Interface', 'Subclass/Event/Eventable
      * @memberOf Subclass.Event.EventableInterface.prototype
      *
      * @param {string} eventName
+     *      The event name
+     *
      * @param {function} listener
+     *      The listener callback function which was subscribed to the event
+     *
+     * @returns {Subclass.Event.EventableInterface}
      */
     removeEventListener: function(eventName, listener) {}
 });

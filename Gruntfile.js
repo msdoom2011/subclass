@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                 src: "<%= config.release_dir %>"
             },
             doc: {
-                src: "<%= config.doc_dir %>"
+                src: "<%= config.doc.dir %>"
             }
         },
 
@@ -112,16 +112,8 @@ module.exports = function(grunt) {
 
         jsdoc: {
             doc: {
-                src: [
-                    '<%= config.lib.dir.src %>/Subclass.js',
-                    //'<%= config.lib.dir.src %>/Module/**/*.js',
-                    //'<%= config.lib.dir.src %>/Event/**/*.js',
-                    //'<%= config.lib.dir.src %>/Parameter/**/*.js',
-                    //'<%= config.lib.dir.src %>/Service/**/*.js',
-                    //'<%= config.lib.dir.src %>/Tools/**/*.js',
-                    '<%= config.lib.dir.src %>/Error/**/*.js'
-                ],
-                dest: '<%= config.doc_dir %>/'
+                src: "<%= config.doc.files %>",
+                dest: "<%= config.doc.dir %>/"
             }
         },
 

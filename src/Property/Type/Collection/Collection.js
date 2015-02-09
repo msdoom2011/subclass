@@ -12,7 +12,7 @@ Subclass.Property.Type.Collection.Collection = (function()
     {
         if (!property || !(property instanceof Subclass.Property.PropertyType)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('property instance', false)
+                .argument('the property instance', false)
                 .received(property)
                 .expected('an instance of "Subclass.Property.PropertyType" class')
                 .apply()
@@ -20,7 +20,7 @@ Subclass.Property.Type.Collection.Collection = (function()
         }
         if (!context || typeof context != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument('context object', false)
+                .argument('the context object', false)
                 .received(context)
                 .expected('an object')
                 .apply()
@@ -133,7 +133,7 @@ Subclass.Property.Type.Collection.Collection = (function()
     {
         if (!Subclass.Tools.isPlainObject(items)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('items in object collection "' + this.getProperty() + '"', false)
+                .argument('the items in object collection "' + this.getProperty() + '"', false)
                 .received(items)
                 .expected('a plain object')
                 .apply()
@@ -179,7 +179,7 @@ Subclass.Property.Type.Collection.Collection = (function()
     {
         if (!Subclass.Tools.isPlainObject(items)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('items in object collection "' + this.getProperty() + '"', false)
+                .argument('the items in object collection "' + this.getProperty() + '"', false)
                 .received(items)
                 .expected('a plain object')
                 .apply()
@@ -261,7 +261,7 @@ Subclass.Property.Type.Collection.Collection = (function()
         }
         if (typeof callback != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument('callback')
+                .argument('the callback', false)
                 .received(callback)
                 .expected('a function')
                 .apply()
@@ -331,7 +331,7 @@ Subclass.Property.Type.Collection.Collection = (function()
     {
         if (!testCallback || typeof testCallback !== 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument('testing callback', false)
+                .argument('the testing callback', false)
                 .received(testCallback)
                 .expected('a function')
                 .apply()

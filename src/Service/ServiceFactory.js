@@ -20,7 +20,7 @@ Subclass.Service.ServiceFactory = (function()
     {
         if (!serviceManager || !(serviceManager instanceof Subclass.Service.ServiceManager)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('service manager instance', false)
+                .argument('the service manager instance', false)
                 .received(serviceManager)
                 .expected('an instance of Subclass.Service.ServiceManager')
                 .apply()

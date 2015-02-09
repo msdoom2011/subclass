@@ -31,7 +31,7 @@ Subclass.Event.EventListener = (function()
         }
         if (typeof priority != 'number') {
             Subclass.Error.create('InvalidArgument')
-                .argument("event callback priority", false)
+                .argument("the priority of event listener", false)
                 .received(priority)
                 .expected('a number')
                 .apply()
@@ -39,7 +39,7 @@ Subclass.Event.EventListener = (function()
         }
         if (typeof callback != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument("callback")
+                .argument("the callback", false)
                 .received(callback)
                 .expected('a function')
                 .apply()

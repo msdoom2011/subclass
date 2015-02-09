@@ -48,29 +48,26 @@ Subclass.Tools.LoadingTools = (function()
 
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    //setTimeout(function()
-                    //{
-                        var script = document.createElement('script');
-                        script.setAttribute("type", "text/javascript");
-                        script.text = xmlhttp.responseText;
+                    var script = document.createElement('script');
+                    script.setAttribute("type", "text/javascript");
+                    script.text = xmlhttp.responseText;
 
-                        if (script.text) {
-                            if (currentScript) {
-                                if (callbacks.beforeCallback) {
-                                    callbacks.beforeCallback();
-                                }
-                                currentScript.parentNode.insertBefore(
-                                    script,
-                                    currentScript.nextSibling
-                                );
-                                if (callbacks.afterCallback) {
-                                    callbacks.afterCallback();
-                                }
+                    if (script.text) {
+                        if (currentScript) {
+                            if (callbacks.beforeCallback) {
+                                callbacks.beforeCallback();
                             }
-                        } else {
-                            Subclass.Error.create('Loading file "' + fileName + '" failed.');
+                            currentScript.parentNode.insertBefore(
+                                script,
+                                currentScript.nextSibling
+                            );
+                            if (callbacks.afterCallback) {
+                                callbacks.afterCallback();
+                            }
                         }
-                    //}, 1000);
+                    } else {
+                        Subclass.Error.create('Loading file "' + fileName + '" failed.');
+                    }
 
                 } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
                     Subclass.Error.create('Loading file "' + fileName + '" failed.');
@@ -154,7 +151,7 @@ Subclass.Tools.LoadingTools = (function()
     {
         if (!fileName || typeof fileName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument('name of file')
+                .argument('the name of file')
                 .received(fileName)
                 .expected('a string')
                 .apply()
@@ -166,7 +163,7 @@ Subclass.Tools.LoadingTools = (function()
             && !this.isPlainObject(callback)
         ) {
             Subclass.Error.create('InvalidArgument')
-                .argument('callback when trying to load file "' + fileName + '"', false)
+                .argument('the callback when trying to load file "' + fileName + '"', false)
                 .received(callback)
                 .expected('a function')
                 .apply()

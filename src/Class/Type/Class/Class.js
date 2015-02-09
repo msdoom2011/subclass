@@ -241,7 +241,7 @@ Subclass.Class.Type.Class.Class = (function() {
         }
         if (!traitName || typeof traitName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of trait", false)
+                .argument("the name of trait", false)
                 .received(traitName)
                 .expected("a string")
                 .apply()
@@ -300,7 +300,7 @@ Subclass.Class.Type.Class.Class = (function() {
         }
         if (!traitName || typeof traitName != "string") {
             Subclass.Error.create('InvalidArgument')
-                .argument('name of trait', false)
+                .argument('the name of trait', false)
                 .received(traitName)
                 .expected('a string')
                 .apply()
@@ -356,7 +356,7 @@ Subclass.Class.Type.Class.Class = (function() {
         }
         if (!interfaceName || typeof interfaceName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of interface", false)
+                .argument("the name of interface", false)
                 .received(interfaceName)
                 .expected("a string")
                 .apply()
@@ -435,7 +435,7 @@ Subclass.Class.Type.Class.Class = (function() {
         }
         if (!interfaceName || typeof interfaceName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of interface", false)
+                .argument("the name of interface", false)
                 .received(interfaceName)
                 .expected("a string")
                 .apply()

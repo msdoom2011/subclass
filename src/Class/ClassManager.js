@@ -438,7 +438,7 @@ Subclass.Class.ClassManager = (function()
     {
         if (className && typeof className != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of class", false)
+                .argument("the name of class", false)
                 .received(className)
                 .expected("a string")
                 .apply()
@@ -446,7 +446,7 @@ Subclass.Class.ClassManager = (function()
         }
         if (callback && typeof callback != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument("callback")
+                .argument("the callback", false)
                 .received(callback)
                 .expected("a function")
                 .apply()

@@ -21,7 +21,7 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
     {
         if (!Subclass.Tools.isPlainObject(abstractMethods)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("list of abstract methods", false)
+                .argument("the list of abstract methods", false)
                 .received(abstractMethods)
                 .expected("a plain object with functions")
                 .apply()
@@ -44,7 +44,7 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
     {
         if (typeof abstractMethod != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument('abstract method', false)
+                .argument('the name of abstract method', false)
                 .received(abstractMethod)
                 .expected('a function')
                 .apply()
@@ -100,7 +100,7 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
 
         if (!methodName || typeof methodName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument('name of abstract method', false)
+                .argument('the name of abstract method', false)
                 .received(methodName)
                 .expected('a string')
                 .apply()

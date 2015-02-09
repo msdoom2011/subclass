@@ -244,7 +244,7 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
         {
             if (!values || !Subclass.Tools.isPlainObject(values)) {
                 Subclass.Error.create('InvalidArgument')
-                    .argument("values")
+                    .argument("the config class values", false)
                     .received(values)
                     .expected('a plain object')
                     .apply()

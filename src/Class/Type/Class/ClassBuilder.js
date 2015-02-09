@@ -21,7 +21,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         if (!Array.isArray(traitsList)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("list of trait names", false)
+                .argument("the list of trait names", false)
                 .received(traitsList)
                 .expected("an array of strings")
                 .apply()
@@ -42,7 +42,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         if (typeof traitName != "string") {
             Subclass.Error.create('InvalidArgument')
-                .argument("trait name", false)
+                .argument("the trait name", false)
                 .received(traitName)
                 .expected("a string")
                 .apply()
@@ -120,7 +120,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         if (!Array.isArray(interfacesList)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("list of interface names", false)
+                .argument("the list of interface names", false)
                 .received(interfacesList)
                 .expected("an array of strings")
                 .apply()
@@ -135,7 +135,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         if (typeof interfaceName != "string") {
             Subclass.Error.create('InvalidArgument')
-                .argument("interface name", false)
+                .argument("the interface name", false)
                 .received(interfaceName)
                 .expected("a string")
                 .apply()

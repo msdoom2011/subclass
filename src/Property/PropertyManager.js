@@ -298,7 +298,7 @@ Subclass.Property.PropertyManager = (function()
         } catch (e) {
             if (e == 'error') {
                 Subclass.Error.create('InvalidArgument')
-                    .argument("property names", false)
+                    .argument("the not allowed names of property", false)
                     .received(propertyNames)
                     .expected("an array of strings")
                     .apply()

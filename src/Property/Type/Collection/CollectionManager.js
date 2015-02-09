@@ -7,7 +7,7 @@ Subclass.Property.Type.Collection.CollectionManager = (function()
     {
         if (!collection || !(collection instanceof Subclass.Property.Type.Collection.Collection)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('collection instance', false)
+                .argument('the collection instance', false)
                 .received(collection)
                 .expected('an instance of "Subclass.Property.Type.Collection.Collection"')
                 .apply()

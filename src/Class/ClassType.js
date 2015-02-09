@@ -22,7 +22,7 @@ Subclass.Class.ClassType = (function()
     {
         if (!classManager) {
             Subclass.Error.create('InvalidArgument')
-                .argument("class manager", false)
+                .argument("the class manager instance", false)
                 .received(classManager)
                 .expected("an instance of Subclass.Class.ClassManager class")
                 .apply()
@@ -30,7 +30,7 @@ Subclass.Class.ClassType = (function()
         }
         if (!className || typeof className != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of class", false)
+                .argument("the name of class", false)
                 .received(className)
                 .expected("a string")
                 .apply()
@@ -38,7 +38,7 @@ Subclass.Class.ClassType = (function()
         }
         if (!classDefinition && typeof classDefinition != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("definition of class", false)
+                .argument("the definition of class", false)
                 .received(classDefinition)
                 .expected("a plain object")
                 .apply()
@@ -270,7 +270,7 @@ Subclass.Class.ClassType = (function()
 
         } else {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of parent class", false)
+                .argument("the name of parent class", false)
                 .received(parentClassName)
                 .expected('a name of parent class or null in class "' + this.getName() + '"')
                 .apply()
@@ -604,7 +604,7 @@ Subclass.Class.ClassType = (function()
     {
         if (!className || typeof className != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of class", false)
+                .argument("the name of class", false)
                 .received(className)
                 .expected("a string")
                 .apply()

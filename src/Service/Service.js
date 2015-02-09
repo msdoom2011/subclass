@@ -196,7 +196,7 @@ Subclass.Service.Service = (function()
     {
         if (!serviceManager || !(serviceManager instanceof Subclass.Service.ServiceManager)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('service manager', false)
+                .argument('the service manager', false)
                 .received(serviceManager)
                 .expected('instance of "Subclass.Service.ServiceManager" class')
                 .apply()
@@ -204,7 +204,7 @@ Subclass.Service.Service = (function()
         }
         if (!serviceName || typeof serviceName != 'string' || !serviceName.match(/^[0-9_a-z]+$/i)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('name of service', false)
+                .argument('the name of service', false)
                 .received(serviceName)
                 .expected('a string')
                 .apply()
@@ -296,7 +296,7 @@ Subclass.Service.Service = (function()
     {
         if (!definition || !Subclass.Tools.isPlainObject(definition)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('definition of service', false)
+                .argument('the definition of service', false)
                 .received(definition)
                 .expected('a plain object')
                 .apply()

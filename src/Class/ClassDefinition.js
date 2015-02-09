@@ -7,7 +7,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (!classInst || !(classInst instanceof Subclass.Class.ClassType)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("class instance", false)
+                .argument("the class instance", false)
                 .received(classInst)
                 .expected('an instance of "Subclass.Class.ClassType"')
                 .apply()
@@ -15,7 +15,7 @@ Subclass.Class.ClassDefinition = (function()
         }
         if (!classDefinition || typeof classDefinition != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("definition of class", false)
+                .argument("the definition of class", false)
                 .received(classDefinition)
                 .expected('a plain object')
                 .apply()
@@ -56,7 +56,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (!data || typeof data != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("definition data", false)
+                .argument("the definition data", false)
                 .received(data)
                 .expected("a plain object")
                 .apply()

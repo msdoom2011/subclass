@@ -2,6 +2,18 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.ClassName
+ * @mixes Subclass.Error.Option.Expected
+ * @mixes Subclass.Error.Option.Received
+ * @mixes Subclass.Error.Option.Option
+ * @constructor
+ * @description
+ *
+ * The instance of this class helps to build error with specific message
+ * when some class definition option is invalid
+ *
+ * @param {string} [message]
+ *      The custom error message
  */
 Subclass.Class.Error.InvalidClassOptionError = (function()
 {
@@ -11,10 +23,13 @@ Subclass.Class.Error.InvalidClassOptionError = (function()
     }
 
     /**
-     * Returns the name of the error type
+     * Returns the name of error type
+     *
+     * @method getName
+     * @memberOf Subclass.Class.Error.InvalidClassOptionError
+     * @static
      *
      * @returns {string}
-     * @static
      */
     InvalidClassOptionError.getName = function()
     {
@@ -22,7 +37,13 @@ Subclass.Class.Error.InvalidClassOptionError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
+     *
+     * @method getOptions
+     * @memberOf Subclass.Class.Error.InvalidClassOptionError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidClassOptionError.getOptions = function()
     {
@@ -37,7 +58,13 @@ Subclass.Class.Error.InvalidClassOptionError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
+     *
+     * @method getRequiredOptions
+     * @memberOf Subclass.Class.Error.InvalidClassOptionError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidClassOptionError.getRequiredOptions = function()
     {

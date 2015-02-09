@@ -96,7 +96,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("classDefinition")
+                .argument("the definition of class", false)
                 .received(classDefinition)
                 .expected("a plain object")
                 .apply()
@@ -128,7 +128,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (typeof classType !== 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("classType")
+                .argument("the type of class", false)
                 .received(classType)
                 .expected("a string")
                 .apply()
@@ -274,7 +274,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (typeof propertyName !== 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("property name", false)
+                .argument("the name of property", false)
                 .received(propertyName)
                 .expected("a string")
                 .apply()
@@ -295,7 +295,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("static properties", false)
+                .argument("the static properties", false)
                 .received(staticProperties)
                 .expected("a plain object")
                 .apply()
@@ -327,7 +327,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (typeof staticPropertyName !== 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of static property", false)
+                .argument("the name of static property", false)
                 .received(staticPropertyName)
                 .expected("a string")
                 .apply()
@@ -348,7 +348,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (typeof staticPropertyName !== 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of static property", false)
+                .argument("the name of static property", false)
                 .received(staticPropertyName)
                 .expected("a string")
                 .apply()
@@ -370,7 +370,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         if (!classBody || typeof classBody != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("class body", false)
+                .argument("the class body", false)
                 .received(classBody)
                 .expected("a plain object")
                 .apply()

@@ -33,7 +33,7 @@ Subclass.Event.Event = (function()
     {
         if (!eventManager || !(eventManager instanceof Subclass.Event.EventManager)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("event manager", false)
+                .argument("the event manager instance", false)
                 .received(eventManager)
                 .expected('an instance of "Subclass.Event.EventManager"')
                 .apply()
@@ -41,7 +41,7 @@ Subclass.Event.Event = (function()
         }
         if (!eventName || typeof eventName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of event", false)
+                .argument("the name of event", false)
                 .received(eventName)
                 .expected('a string')
                 .apply()
@@ -194,7 +194,7 @@ Subclass.Event.Event = (function()
     {
         if (!callback || typeof callback != 'Function') {
             Subclass.Error.create('InvalidArgument')
-                .argument("callback")
+                .argument("the callback", false)
                 .received(callback)
                 .expected('a function')
                 .apply()

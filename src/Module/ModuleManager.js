@@ -24,7 +24,7 @@ Subclass.Module.ModuleManager = (function()
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("module", false)
+                .argument("the module instance", false)
                 .received(module)
                 .expected('an instance of "Subclass.Module.Module"')
                 .apply()
@@ -32,7 +32,7 @@ Subclass.Module.ModuleManager = (function()
         }
         if (pluginModuleNames && !Array.isArray(pluginModuleNames)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("list of plug-in module names", false)
+                .argument("the list of plug-in module names", false)
                 .received(pluginModuleNames)
                 .expected('an array of plug-in module names')
                 .apply()

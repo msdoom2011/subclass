@@ -28,7 +28,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
             }
         } catch (e) {
             Subclass.Error.create('InvalidArgument')
-                .argument("list of config including class names", false)
+                .argument("the list of config including class names", false)
                 .received(includesList)
                 .expected("an array of strings")
                 .apply()
@@ -51,7 +51,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
             && include.getClassTypeName() !== "Config"
         ) {
             Subclass.Error.create('InvalidArgument')
-                .argument('include')
+                .argument('the name of including config class', false)
                 .expected('an instance of config class or a string')
                 .received(include)
                 .apply()
@@ -166,7 +166,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
             }
         } catch (e) {
             Subclass.Error.create('InvalidArgument')
-                .argument("list of config decorator class names", false)
+                .argument("the list of config decorator class names", false)
                 .received(decoratorsList)
                 .expected('an array of strings or instances of "Subclass.Class.Type.Config.Config" class')
                 .apply()
@@ -189,7 +189,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
             && decorator.getClassTypeName() !== "Config"
         ) {
             Subclass.Error.create('InvalidArgument')
-                .argument("config decorating class name", false)
+                .argument("the name of config decorating class", false)
                 .received(decorator)
                 .expected('a string or instance of "Subclass.Class.Type.Config.Config" class')
                 .apply()

@@ -167,7 +167,7 @@ Subclass.Module.Module = (function()
 
         if (!moduleName || typeof moduleName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of module", false)
+                .argument("the name of module", false)
                 .received(moduleName)
                 .expected('a string')
                 .apply()
@@ -335,7 +335,7 @@ Subclass.Module.Module = (function()
     {
         if (parentModule !== null && !(parentModule instanceof Subclass.Module.Module)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("parent module instance", false)
+                .argument("the parent module instance", false)
                 .received(parentModule)
                 .expected('an instance of "Subclass.Module.Module"')
                 .apply()
@@ -724,7 +724,7 @@ Subclass.Module.Module = (function()
 
         if (!moduleName || typeof moduleName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of module", false)
+                .argument("the name of module", false)
                 .received(moduleName)
                 .expected("a string")
                 .apply()
@@ -740,7 +740,7 @@ Subclass.Module.Module = (function()
         }
         if (moduleFile && typeof moduleFile != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of module", false)
+                .argument("the name of module", false)
                 .received(moduleFile)
                 .expected("a string or be omitted")
                 .apply()
@@ -748,7 +748,7 @@ Subclass.Module.Module = (function()
         }
         if (callback && typeof callback != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument("callback")
+                .argument("the callback", false)
                 .received(callback)
                 .expected("a function")
                 .apply()

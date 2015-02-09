@@ -24,7 +24,7 @@ Subclass.Parameter.Parameter = (function()
     {
         if (!parameterName || typeof parameterName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of parameter", false)
+                .argument("the name of parameter", false)
                 .received(parameterName)
                 .expected('a string')
                 .apply()

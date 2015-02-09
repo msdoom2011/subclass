@@ -315,7 +315,7 @@ Subclass.Property.PropertyType = (function()
     {
         if (typeof isModified != 'boolean') {
             Subclass.Error.create('InvalidArgument')
-                .argument("isModified")
+                .argument("the property modified marker value", false)
                 .received(isModified)
                 .expected("a boolean")
                 .apply()
@@ -353,7 +353,7 @@ Subclass.Property.PropertyType = (function()
             )
         ) {
             Subclass.Error.create('InvalidArgument')
-                .argument("context class instance", false)
+                .argument("the context class instance", false)
                 .received(contextClass)
                 .expected('an instance of class "Subclass.Class.ClassType"')
                 .apply()
@@ -388,7 +388,7 @@ Subclass.Property.PropertyType = (function()
             )
         ) {
             Subclass.Error.create('InvalidArgument')
-                .argument("context property instance", false)
+                .argument("the context property instance", false)
                 .received(contextProperty)
                 .expected('an instance of "Subclass.Property.PropertyType" class')
                 .apply()
@@ -432,7 +432,7 @@ Subclass.Property.PropertyType = (function()
     {
         if (typeof callback != "function") {
             Subclass.Error.create('InvalidArgument')
-                .argument("callback")
+                .argument("the callback", false)
                 .received(callback)
                 .expected("a function")
                 .apply()
@@ -487,7 +487,7 @@ Subclass.Property.PropertyType = (function()
     {
         if (typeof context != "object" || Array.isArray(context)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("context object", false)
+                .argument("the context object", false)
                 .received(context)
                 .expected("an object")
                 .apply()
@@ -676,7 +676,7 @@ Subclass.Property.PropertyType = (function()
     {
         if (!context || typeof context != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("context object", false)
+                .argument("the context object", false)
                 .received(context)
                 .expected("an object")
                 .apply()
@@ -717,7 +717,7 @@ Subclass.Property.PropertyType = (function()
     {
         if (!context || typeof context != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("context object", false)
+                .argument("the context object", false)
                 .received(context)
                 .expected("an object")
                 .apply()
@@ -762,7 +762,7 @@ Subclass.Property.PropertyType = (function()
     {
         if (!context || typeof context != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("context object", false)
+                .argument("the context object", false)
                 .received(context)
                 .expected("an object")
                 .apply()

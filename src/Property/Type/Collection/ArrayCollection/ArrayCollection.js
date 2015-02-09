@@ -90,7 +90,7 @@ Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
     {
         if (!Array.isArray(items)) {
             Subclass.Error.create('InvalidArgument')
-                .argument('items for array collection in property ' + this.getProperty(), false)
+                .argument('the items for array collection in property ' + this.getProperty(), false)
                 .received(items)
                 .expected('an array')
                 .apply()
@@ -119,7 +119,7 @@ Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
     {
         if (isNaN(parseInt(key))) {
             Subclass.Error.create('InvalidArgument')
-                .argument('index of array collection item', false)
+                .argument('the index of array collection item', false)
                 .received(key)
                 .expected('a number')
                 .apply()
@@ -181,7 +181,7 @@ Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
     {
         if (isNaN(parseInt(key))) {
             Subclass.Error.create('InvalidArgument')
-                .argument('index of array collection item', false)
+                .argument('the index of array collection item', false)
                 .received(key)
                 .expected('a number')
                 .apply()
@@ -343,7 +343,7 @@ Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
     {
         if (!testCallback || typeof testCallback !== 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument('testing callback', false)
+                .argument('the testing callback', false)
                 .received(testCallback)
                 .expected('a function')
                 .apply()
@@ -373,7 +373,7 @@ Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
         }
         if (typeof callback != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument('callback')
+                .argument('the callback', false)
                 .received(callback)
                 .expected('a function')
                 .apply()

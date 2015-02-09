@@ -121,7 +121,7 @@ Subclass.Module.ModuleConfigs = (function()
         }
         if (moduleConfigs && !Subclass.Tools.isPlainObject(moduleConfigs)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("module configuration", false)
+                .argument("the module configuration", false)
                 .received(moduleConfigs)
                 .expected("a plain object")
                 .apply()
@@ -726,7 +726,7 @@ Subclass.Module.ModuleConfigs = (function()
 
         if (typeof callback != "function") {
             Subclass.Error.create('InvalidArgument')
-                .argument('callback')
+                .argument('the callback', false)
                 .received(callback)
                 .expected('a function')
                 .apply()

@@ -26,7 +26,7 @@ Subclass.Parameter.ParameterManager = (function()
     {
         if (!module || !(module instanceof Subclass.Module.Module)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("module instance", false)
+                .argument("the module instance", false)
                 .received(module)
                 .expected('an instance of "Subclass.Module.Module" class')
                 .apply()

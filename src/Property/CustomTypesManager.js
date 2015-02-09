@@ -70,7 +70,7 @@ Subclass.Property.CustomTypesManager = (function()
         } catch (e) {
             if (e == 'error') {
                 Subclass.Error.create('InvalidArgument')
-                    .argument("definitions of data types", false)
+                    .argument("the data type definitions", false)
                     .received(definitions)
                     .expected('a plain object with another plain objects')
                     .apply()

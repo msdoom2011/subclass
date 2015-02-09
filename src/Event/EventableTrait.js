@@ -50,7 +50,7 @@ Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrai
     {
         if (!eventName || typeof eventName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument('event name', false)
+                .argument('name of event', false)
                 .received(eventName)
                 .expected('a string')
                 .apply()
@@ -123,7 +123,7 @@ Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrai
         }
         if (!listener || typeof listener != 'function') {
             Subclass.Error.create('InvalidArgument')
-                .argument('listener in event "' + eventName + '"', false)
+                .argument('the listener in event "' + eventName + '"', false)
                 .received(listener)
                 .expected('a function')
                 .apply()

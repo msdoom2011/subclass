@@ -12,7 +12,7 @@ Subclass.Property.PropertyDefinition = (function()
     {
         if (!property || !(property instanceof Subclass.Property.PropertyType)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("property instance", false)
+                .argument("the property instance", false)
                 .received(property)
                 .expected('an instance of "Subclass.Property.PropertyType"')
                 .apply()
@@ -20,7 +20,7 @@ Subclass.Property.PropertyDefinition = (function()
         }
         if (!propertyDefinition || typeof propertyDefinition != 'object') {
             Subclass.Error.create('InvalidArgument')
-                .argument("definition of property", false)
+                .argument("the definition of property " + property, false)
                 .received(propertyDefinition)
                 .expected('a plain object')
                 .apply()

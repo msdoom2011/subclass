@@ -125,7 +125,7 @@ Subclass.Class.Type.Config.Config = (function()
     {
         if (!className || typeof className != "string") {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of including class", false)
+                .argument("the name of including class", false)
                 .received(className)
                 .expected("a name of existent config class")
                 .apply()
@@ -152,7 +152,7 @@ Subclass.Class.Type.Config.Config = (function()
     {
         if (!className || typeof className != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of included class", false)
+                .argument("the name of included class", false)
                 .received(className)
                 .expected("a string")
                 .apply()
@@ -194,7 +194,7 @@ Subclass.Class.Type.Config.Config = (function()
     {
         if (!className || typeof className != "string") {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of config decorator class", false)
+                .argument("the name of config decorator class", false)
                 .received(className)
                 .expected("a name of existent config class")
                 .apply()
@@ -221,7 +221,7 @@ Subclass.Class.Type.Config.Config = (function()
     {
         if (!className || typeof className != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("name of config decorator class", false)
+                .argument("the name of config decorator class", false)
                 .received(className)
                 .expected("a string")
                 .apply()

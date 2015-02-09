@@ -2,6 +2,10 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.Option
+ * @mixes Subclass.Error.Option.Module
+ * @mixes Subclass.Error.Option.Expected
+ * @mixes Subclass.Error.Option.Received
  * @constructor
  * @description
  *
@@ -14,19 +18,19 @@
  */
 Subclass.Module.Error.InvalidModuleOptionError = (function()
 {
-    /**
-     * @alias Subclass.Module.Error.InvalidModuleOptionError
-     */
     function InvalidModuleOptionError(message)
     {
         Subclass.Error.call(this, message);
     }
 
     /**
-     * @inheirtDoc
+     * Returns the name of error type
      *
      * @method getName
      * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+     * @static
+     *
+     * @returns {string}
      */
     InvalidModuleOptionError.getName = function()
     {
@@ -34,10 +38,13 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
      *
      * @method getOptions
      * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidModuleOptionError.getOptions = function()
     {
@@ -52,10 +59,13 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
      *
-     * @method getOptionsRequired
+     * @method getRequiredOptions
      * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidModuleOptionError.getRequiredOptions = function()
     {
@@ -69,9 +79,6 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
 
     /**
      * @inheritDoc
-     *
-     * @method buildMessage
-     * @memberOf Subclass.Module.Error.InvalidModuleOptionError.prototype
      */
     InvalidModuleOptionError.prototype.buildMessage = function()
     {

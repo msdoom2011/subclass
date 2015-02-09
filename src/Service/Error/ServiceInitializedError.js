@@ -2,28 +2,32 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.Service
  * @constructor
  * @description
  *
  * The error class which indicates that trying to change the definition of service
  * after it was initialized, i.e. was created an instance of class which was
  * specified in the "className" option.
+ *
+ * @param {string} [message]
+ *      The error message
  */
 Subclass.Service.Error.ServiceInitializedError = (function()
 {
-    /**
-     * @alias Subclass.Service.Error.ServiceInitializedError
-     */
     function ServiceInitializedError(message)
     {
         Subclass.Error.call(this, message);
     }
 
     /**
-     * @inheritDoc
+     * Returns the name of error type
      *
      * @method getName
      * @memberOf Subclass.Service.Error.ServiceInitializedError
+     * @static
+     *
+     * @returns {string}
      */
     ServiceInitializedError.getName = function()
     {
@@ -31,10 +35,13 @@ Subclass.Service.Error.ServiceInitializedError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
      *
-     * @method getName
+     * @method getOptions
      * @memberOf Subclass.Service.Error.ServiceInitializedError
+     * @static
+     *
+     * @returns {Array}
      */
     ServiceInitializedError.getOptions = function()
     {
@@ -46,10 +53,13 @@ Subclass.Service.Error.ServiceInitializedError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
      *
-     * @method getName
+     * @method getRequiredOptions
      * @memberOf Subclass.Service.Error.ServiceInitializedError
+     * @static
+     *
+     * @returns {Array}
      */
     ServiceInitializedError.getRequiredOptions = function()
     {
@@ -62,9 +72,6 @@ Subclass.Service.Error.ServiceInitializedError = (function()
 
     /**
      * @inheritDoc
-     *
-     * @method getName
-     * @memberOf Subclass.Service.Error.ServiceInitializedError.prototype
      */
     ServiceInitializedError.prototype.buildMessage = function()
     {

@@ -2,27 +2,34 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.Option
+ * @mixes Subclass.Error.Option.Service
+ * @mixes Subclass.Error.Option.Expected
+ * @mixes Subclass.Error.Option.Received
  * @constructor
  * @description
  *
  * The error class which indicates that was specified invalid option value
  * in the definition of the service
+ *
+ * @param {string} [message]
+ *      The error message
  */
 Subclass.Service.Error.InvalidServiceOptionError = (function()
 {
-    /**
-     * @alias Subclass.Service.Error.InvalidServiceOptionError
-     */
     function InvalidServiceOptionError(message)
     {
         Subclass.Error.call(this, message);
     }
 
     /**
-     * @inheritDoc
+     * Returns the name of error type
      *
      * @method getName
      * @memberOf Subclass.Service.Error.InvalidServiceOptionError
+     * @static
+     *
+     * @returns {string}
      */
     InvalidServiceOptionError.getName = function()
     {
@@ -30,10 +37,13 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
      *
-     * @method getName
+     * @method getOptions
      * @memberOf Subclass.Service.Error.InvalidServiceOptionError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidServiceOptionError.getOptions = function()
     {
@@ -48,10 +58,13 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
      *
-     * @method getName
+     * @method getRequiredOptions
      * @memberOf Subclass.Service.Error.InvalidServiceOptionError
+     * @static
+     *
+     * @returns {Array}
      */
     InvalidServiceOptionError.getRequiredOptions = function()
     {
@@ -65,9 +78,6 @@ Subclass.Service.Error.InvalidServiceOptionError = (function()
 
     /**
      * @inheritDoc
-     *
-     * @method getName
-     * @memberOf Subclass.Service.Error.InvalidServiceOptionError.prototype
      */
     InvalidServiceOptionError.prototype.buildMessage = function()
     {

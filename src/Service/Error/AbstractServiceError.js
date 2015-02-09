@@ -2,6 +2,7 @@
  * @final
  * @class
  * @extends {Subclass.Error}
+ * @mixes Subclass.Error.Option.Service
  * @constructor
  * @description
  *
@@ -13,19 +14,19 @@
  */
 Subclass.Service.Error.AbstractServiceError = (function()
 {
-    /**
-     * @alias Subclass.Service.Error.AbstractServiceError
-     */
     function AbstractServiceError(message)
     {
         Subclass.Error.call(this, message);
     }
 
     /**
-     * @inheritDoc
+     * Returns the name of error type
      *
      * @method getName
      * @memberOf Subclass.Service.Error.AbstractServiceError
+     * @static
+     *
+     * @returns {string}
      */
     AbstractServiceError.getName = function()
     {
@@ -33,10 +34,13 @@ Subclass.Service.Error.AbstractServiceError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns all available error type options
      *
-     * @method getName
+     * @method getOptions
      * @memberOf Subclass.Service.Error.AbstractServiceError
+     * @static
+     *
+     * @returns {Array}
      */
     AbstractServiceError.getOptions = function()
     {
@@ -48,10 +52,13 @@ Subclass.Service.Error.AbstractServiceError = (function()
     };
 
     /**
-     * @inheritDoc
+     * Returns required error fields
      *
-     * @method getName
+     * @method getRequiredOptions
      * @memberOf Subclass.Service.Error.AbstractServiceError
+     * @static
+     *
+     * @returns {Array}
      */
     AbstractServiceError.getRequiredOptions = function()
     {
@@ -64,9 +71,6 @@ Subclass.Service.Error.AbstractServiceError = (function()
 
     /**
      * @inheritDoc
-     *
-     * @method getName
-     * @memberOf Subclass.Service.Error.AbstractServiceError.prototype
      */
     AbstractServiceError.prototype.buildMessage = function()
     {

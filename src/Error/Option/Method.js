@@ -1,14 +1,25 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify the method name when creating an error instance
  */
 Subclass.Error.Option.Method = (function()
 {
     return {
 
         /**
-         * Sets/returns method option
+         * Sets/returns method name option
+         *
+         * @method method
+         * @memberOf Subclass.Error.Option.Method.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid name of method
          *
          * @param {string} [method]
+         *      The name of method
+         *
          * @returns {Subclass.Error}
          */
         method: function(method)
@@ -26,6 +37,9 @@ Subclass.Error.Option.Method = (function()
 
         /**
          * Checks whether the method option was specified
+         *
+         * @method hasMethod
+         * @memberOf Subclass.Error.Option.Method.prototype
          *
          * @returns {boolean}
          */

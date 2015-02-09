@@ -1,15 +1,28 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify the option name when creating an error instance
  */
 Subclass.Error.Option.Option = (function()
 {
     return {
 
         /**
-         * Sets/returns options name
+         * Sets/returns option name
+         *
+         * @method option
+         * @memberOf Subclass.Error.Option.Option.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid option name
          *
          * @param {string} [option]
+         *      The name of option
+         *
          * @param {boolean} [quotes]
+         *      whether it is needed wrap to quotes
+         *
          * @returns {Subclass.Error}
          */
         option: function(option, quotes)
@@ -36,6 +49,9 @@ Subclass.Error.Option.Option = (function()
 
         /**
          * Checks whether the argument option was specified
+         *
+         * @method hasOption
+         * @memberOf Subclass.Error.Option.Option.prototype
          *
          * @returns {boolean}
          */

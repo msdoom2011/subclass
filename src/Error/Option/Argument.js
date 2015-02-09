@@ -12,7 +12,10 @@ Subclass.Error.Option.Argument = (function()
          * Sets/returns the arguments name
          *
          * @method argument
-         * @memberOf Subclass.Error.Option.Argument
+         * @memberOf Subclass.Error.Option.Argument.prototype
+         *
+         * @throws {Error}
+         *      Throws error specified invalid name of argument
          *
          * @param {string} [argName]
          *      The name of argument
@@ -48,7 +51,7 @@ Subclass.Error.Option.Argument = (function()
          * Checks whether the argument option was specified
          *
          * @method hasArgument
-         * @memberOf Subclass.Error.Option.Argument
+         * @memberOf Subclass.Error.Option.Argument.prototype
          *
          * @returns {boolean}
          */

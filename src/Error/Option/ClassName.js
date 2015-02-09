@@ -1,5 +1,8 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify class name when creating an error instance.
  */
 Subclass.Error.Option.ClassName = (function()
 {
@@ -8,8 +11,16 @@ Subclass.Error.Option.ClassName = (function()
         /**
          * Sets/returns class name
          *
+         * @method className
+         * @memberOf Subclass.Error.Option.ClassName.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid class name argument
+         *
          * @param {string} [className]
-         * @returns {Subclass.Error}
+         *      The name of class
+         *
+         * @returns {(Subclass.Error|string)}
          */
         className: function(className)
         {
@@ -26,6 +37,9 @@ Subclass.Error.Option.ClassName = (function()
 
         /**
          * Checks whether the className option was specified
+         *
+         * @method hasClassName
+         * @memberOf Subclass.Error.Option.ClassName.prototype
          *
          * @returns {boolean}
          */

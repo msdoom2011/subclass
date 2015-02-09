@@ -1,5 +1,8 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify what was expected instead what was received
  */
 Subclass.Error.Option.Expected = (function()
 {
@@ -8,8 +11,15 @@ Subclass.Error.Option.Expected = (function()
         /**
          * Sets/returns expected arguments value
          *
+         * @method expected
+         * @memberOf Subclass.Error.Option.Expected.prototype
+         *
          * @throws {Error}
+         *      Throws error if specified invalid string of what expected
+         *
          * @param {string} [expectedValue]
+         *      The string of what expected
+         *
          * @returns {Subclass.Error}
          */
         expected: function(expectedValue)
@@ -27,6 +37,9 @@ Subclass.Error.Option.Expected = (function()
 
         /**
          * Checks whether the expected option was specified
+         *
+         * @method hasExpected
+         * @memberOf Subclass.Error.Option.Expected.prototype
          *
          * @returns {boolean}
          */

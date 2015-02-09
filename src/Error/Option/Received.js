@@ -1,17 +1,25 @@
 /**
  * @mixin
+ * @description
+ *
+ * Mixin which allows to specify what was received when creating an error instance
  */
 Subclass.Error.Option.Received = (function()
 {
     return {
 
         /**
-         * Sets received arguments value and returns a part of error message included received value.
+         * Sets received argument value and returns a part of error message included received value.
          *
-         * @param {*} [argValue]
-         * @returns {Subclass.Error}
+         * @method received
+         * @memberOf Subclass.Error.Option.Received.prototype
+         *
+         * @param {string} [received]
+         *      What was received
+         *
+         * @returns {(Subclass.Error|string)}
          */
-        received: function(argValue)
+        received: function(received)
         {
             if (!arguments.length) {
                 var value = this._received;
@@ -29,13 +37,16 @@ Subclass.Error.Option.Received = (function()
                 return message;
             }
 
-            this._received = argValue;
+            this._received = received;
 
             return this;
         },
 
         /**
          * Checks whether received option was specified
+         *
+         * @method hasReceived
+         * @memberOf Subclass.Error.Option.Received.prototype
          *
          * @returns {boolean}
          */

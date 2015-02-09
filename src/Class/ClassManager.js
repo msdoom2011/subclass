@@ -15,19 +15,36 @@ Subclass.Class.Type = {};
 
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * @throws {Error}
+ *      Throws error if specified invalid module instance
+ *
+ * @param {Subclass.Module.Module} module
+ *      The module instance
  */
 Subclass.Class.ClassManager = (function()
 {
     /**
-     * @param {Subclass.Module.Module} module
-     * @constructor
+     * @alias Subclass.Class.ClassManager
      */
     function ClassManager(module)
     {
+        if (!module || !(module instanceof Subclass.Module.Module)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the module instance')
+                .received(module)
+                .expected('an instance of Subclass.Module.Module class')
+                .apply()
+            ;
+        }
+
         /**
          * Instance of Subclass module
          *
          * @type {Subclass.Module.Module}
+         * @private
          */
         this._module = module;
 
@@ -89,7 +106,7 @@ Subclass.Class.ClassManager = (function()
     }
 
     /**
-     * Initializing class manager
+     * Initializes class manager
      *
      * @method initialize
      * @memberOf Subclass.Class.ClassManager.prototype
@@ -99,7 +116,7 @@ Subclass.Class.ClassManager = (function()
         var module = this.getModule();
         var $this = this;
 
-        // Registering basic classes
+        // Registering basic classes for the root module
 
         if (module.isRoot()) {
             var defaultClasses = ClassManager.getClasses();
@@ -130,11 +147,17 @@ Subclass.Class.ClassManager = (function()
 
         var eventManager = module.getEventManager();
 
+        // Unlock loading of module files after the module was created
+
         eventManager.getEvent('onModuleInit').addListener(function() {
             if ($this.getModule().isRoot()) {
                 $this.unlockLoading();
             }
         });
+
+        // Checking for classes with the same name in module (and its plug-ins)
+        // and unlocking loading files of plug-in modules after the files
+        // of current module (to which the current one instance of class manager belongs) were fully loaded
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
             var moduleManager = module.getModuleManager();
@@ -145,6 +168,9 @@ Subclass.Class.ClassManager = (function()
                 module.getClassManager().unlockLoading();
             });
         });
+
+        // Checking for classes with the same name in module (and its plug-ins)
+        // after the new plug-in module was added
 
         eventManager.getEvent('onAddPlugin').addListener(function() {
             $this.checkForClones();

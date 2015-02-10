@@ -424,11 +424,11 @@ Subclass.Class.ClassManager = (function()
      * @method getClasses
      * @memberOf Subclass.Class.ClassManager.prototype
      *
-     * @param {boolean} [privateClasses = false]
+     * @param {boolean} [privateClasses=false]
      *      If it's true it returns classes only from current module
      *      without classes from its plug-ins
      *
-     * @param {boolean} [withParentClasses = true]
+     * @param {boolean} [withParentClasses=true]
      *      Should or not will be returned the classes from the parent
      *      modules (it is actual if the current module is a plug-in)
      *
@@ -447,6 +447,10 @@ Subclass.Class.ClassManager = (function()
         if (withParentClasses !== false) {
             withParentClasses = true;
         }
+
+        // Returning classes from current module (without its plug-ins)
+        // with classes from its parent modules
+
         if (privateClasses && withParentClasses) {
             if (mainModule.hasParent()) {
                 var parentModule = mainModule.getParent();
@@ -456,9 +460,13 @@ Subclass.Class.ClassManager = (function()
             }
             return Subclass.Tools.extend(classes, this._classes);
 
+        // Returning classes from current module (without its plug-ins)
+
         } else if (privateClasses) {
             return this._classes;
         }
+
+        // Adding classes from plug-in modules to result of searching
 
         moduleManager.eachModule(function(module) {
             if (module == mainModule) {
@@ -475,7 +483,11 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Returns module names where defined class with specified name
+     * Returns module names where is defined class with specified name.<br /><br />
+     *
+     * It is especially actual if class with specified name is defined
+     * at once in several modules. So it's convenient to use for searching
+     * classes with the same name defined in multiple modules.
      *
      * @method getClassLocations
      * @memberOf Subclass.Class.ClassManager.prototype
@@ -512,7 +524,7 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Loads new class by its name
+     * Loads the new class by its name
      *
      * @method loadClass
      * @memberOf Subclass.Class.ClassManager.prototype
@@ -554,41 +566,14 @@ Subclass.Class.ClassManager = (function()
         var classPath = rootPath + className + '.js';
         var $this = this;
 
-        var xmlhttp = new XMLHttpRequest();
-        var documentScripts = document.querySelectorAll('script');
-        var currentScript = documentScripts[documentScripts.length - 1];
-
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                var script = document.createElement('script');
-                script.setAttribute("type", "text/javascript");
-                script.text = xmlhttp.responseText;
-
-                if (script.text) {
-                    if (currentScript) {
-                        currentScript.parentNode.insertBefore(
-                            script,
-                            currentScript.nextSibling
-                        );
-                        if (!$this.issetClass(className)) {
-                            Subclass.Error.create('Loading class "' + className + '" failed.');
-                        }
-                        if (callback) {
-                            callback($this.getClass(className));
-                        }
-                    }
-                } else {
-                    Subclass.Error.create('Loading class "' + className + '" failed.');
-                }
-            } else if (xmlhttp.status !== 200 && xmlhttp.status !== 0) {
-                Subclass.Error.create('Loading class "' + className + '" failed.');
+        return Subclass.Tools.loadJS(classPath, function() {
+            if (!$this.issetClass(className)) {
+                Subclass.Error.create('The class "' + className + '" was not loaded.');
             }
-        };
-
-        xmlhttp.open("GET", classPath, true);
-        xmlhttp.send();
-
-        return xmlhttp;
+            if (callback) {
+                callback($this.getClass(className));
+            }
+        });
     };
 
     /**

@@ -129,15 +129,6 @@ Subclass.Module.ConfigManager = (function()
         }
 
         function setOtherConfigs() {
-            if (moduleConfigs.hasOwnProperty('parameters')) {
-                $this.setParameters(moduleConfigs.parameters);
-            }
-            if (moduleConfigs.hasOwnProperty('services')) {
-                $this.setServices(moduleConfigs.services);
-            }
-            if (moduleConfigs.hasOwnProperty('onReady')) {
-                $this.setOnReady(moduleConfigs.onReady);
-            }
         }
 
         if (moduleConfigs) {
@@ -168,10 +159,16 @@ Subclass.Module.ConfigManager = (function()
                 this.setPluginOf(moduleConfigs.pluginOf);
             }
             if (moduleConfigs.hasOwnProperty('files')) {
-                this.setFiles(moduleConfigs.files, setOtherConfigs);
-
-            } else {
-                setOtherConfigs();
+                this.setFiles(moduleConfigs.files);
+            }
+            if (moduleConfigs.hasOwnProperty('parameters')) {
+                $this.setParameters(moduleConfigs.parameters);
+            }
+            if (moduleConfigs.hasOwnProperty('services')) {
+                $this.setServices(moduleConfigs.services);
+            }
+            if (moduleConfigs.hasOwnProperty('onReady')) {
+                $this.setOnReady(moduleConfigs.onReady);
             }
         }
     };
@@ -365,50 +362,19 @@ Subclass.Module.ConfigManager = (function()
     {
         this._checkModuleIsReady();
 
-        function throwInvalidArgument() {
+        if (!files || !Array.isArray(files)) {
             Subclass.Error.create(
                 "Trying to set invalid files array in module configuration set. " +
                 "It must contain the names of files."
             );
         }
 
-        if (!files || !Array.isArray(files)) {
-            throwInvalidArgument();
-        }
-        if (Subclass.Tools.isEmpty(files)) {
-            callback();
-        }
+        var module = this.getModule();
+        var loadManager = module.getLoadManager();
+
         for (var i = 0; i < files.length; i++) {
-            if (typeof files[i] != 'string') {
-                throwInvalidArgument();
-            }
-            if (!files[i].match(/^\^/i)) {
-                files[i] = this.getRootPath() + files[i];
-
-            } else {
-                files[i] = files[i].substr(1);
-            }
+            loadManager.load(files[i]);
         }
-
-        var loadManager = this.getModule().getLoadManager();
-        var $this = this;
-
-        this._files = Subclass.Tools.extend([], files);
-
-        Subclass.Tools.loadJS(files.shift(), function loadCallback() {
-            $this._files.shift();
-
-            if (Subclass.Tools.isEmpty(files)) {
-                loadManager.unlockLoading();
-                return callback();
-
-            } else {
-                return Subclass.Tools.loadJS(
-                    files.shift(),
-                    loadCallback
-                );
-            }
-        });
     };
 
     /**

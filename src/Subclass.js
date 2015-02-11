@@ -142,21 +142,21 @@ window.Subclass = (function()
             _modules.push(module);
 
             if (lazyPlugins.length) {
-                var lazyPluginsLength = lazyPlugins.length;
-                var lazyPluginsOrder = Subclass.Tools.copy(lazyPlugins);
+                var loadManager = module.getLoadManager();
 
-                Subclass.Tools.loadJS(lazyPlugins.shift().file, function loadCallback() {
-                    if (Subclass.Tools.isEmpty(lazyPlugins)) {
-                        for (var i = 0; i < lazyPluginsLength; i++) {
-                            module.addPlugin(lazyPluginsOrder[i].name);
-                        }
-                    } else {
-                        return Subclass.Tools.loadJS(
-                            lazyPlugins.shift().file,
-                            loadCallback
-                        );
+                for (i = 0; i < lazyPlugins.length; i++) {
+                    var pluginName = lazyPlugins[i].name;
+                    var fileName = lazyPlugins[i].file;
+
+                    if (!fileName.match(/^\^/)) {
+                        fileName = "^" + fileName;
                     }
-                });
+                    (function(fileName, pluginName) {
+                        loadManager.load(fileName, function () {
+                            module.addPlugin(pluginName);
+                        });
+                    })(fileName, pluginName);
+                }
             }
 
             return module.getAPI();

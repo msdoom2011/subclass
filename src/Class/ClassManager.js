@@ -46,38 +46,6 @@ Subclass.Class.ClassManager = (function()
          * @private
          */
         this._module = module;
-        //
-        ///**
-        // * Stack of classes that are loading at the moment
-        // *
-        // * @type {Array}
-        // * @private
-        // */
-        //this._loadStack = {};
-        //
-        ///**
-        // * Checks whether the loading process continues
-        // *
-        // * @type {boolean}
-        // * @private
-        // */
-        //this._loading = false;
-        //
-        ///**
-        // * Reports that loading was paused
-        // *
-        // * @type {boolean}
-        // * @private
-        // */
-        //this._loadingPause = false;
-        //
-        ///**
-        // * Reports that loading is locked
-        // *
-        // * @type {boolean}
-        // * @private
-        // */
-        //this._loadingLocked = true;
 
         /**
          * Collection of registered classes
@@ -86,23 +54,13 @@ Subclass.Class.ClassManager = (function()
          * @private
          */
         this._classes = {};
-        //
-        ///**
-        // * The timeout after which the ready callback will be called
-        // *
-        // * @type {(*|null)}
-        // * @private
-        // */
-        //this._loadingEndTimeout = null;
-        //
-        ///**
-        // * The timeout after which the classes in load stack will start loading
-        // *
-        // * @type {(*|null)}
-        // * @private
-        // */
-        //this._addToLoadStackTimeout = null;
 
+        /**
+         * The instance of class load manager
+         *
+         * @type {Subclass.Class.ClassLoader}
+         * @private
+         */
         this._loader = new Subclass.Class.ClassLoader(this);
     }
 
@@ -148,26 +106,10 @@ Subclass.Class.ClassManager = (function()
 
         var eventManager = module.getEventManager();
 
-        //// Unlock loading of module files after the module was created
-        //
-        //eventManager.getEvent('onModuleInit').addListener(function() {
-        //    if ($this.getModule().isRoot()) {
-        //        $this.unlockLoading();
-        //    }
-        //});
-
         // Checking for classes with the same name in module (and its plug-ins)
-        //// and unlocking loading files of plug-in modules after the files
-        //// of current module (to which the current one instance of class manager belongs) were fully loaded
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
-            //var moduleManager = module.getModuleManager();
-
             $this.checkForClones();
-
-            //moduleManager.eachModule(function(module) {
-            //    module.getClassManager().unlockLoading();
-            //});
         });
 
         // Checking for classes with the same name in module (and its plug-ins)
@@ -204,234 +146,6 @@ Subclass.Class.ClassManager = (function()
     {
         return this._loader;
     };
-
-    ///**
-    // * Locks the process of loading files with new classes
-    // *
-    // * @method lockLoading
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // */
-    //ClassManager.prototype.lockLoading = function()
-    //{
-    //    this._loadingLocked = true;
-    //};
-    //
-    ///**
-    // * Unlocks and starts the process of loading files with new classes
-    // *
-    // * @method unlockLoading
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // */
-    //ClassManager.prototype.unlockLoading = function()
-    //{
-    //    if (this.getModule().getConfigManager().hasFiles()) {
-    //        return;
-    //    }
-    //    if (!this.isLoadingLocked()) {
-    //        return;
-    //    }
-    //    this._loadingLocked = false;
-    //    this.startLoading();
-    //    this.completeLoading();
-    //};
-    //
-    ///**
-    // * Reports whether the process of loading files with new classes is locked
-    // *
-    // * @method isLoadingLocked
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @returns {boolean}
-    // */
-    //ClassManager.prototype.isLoadingLocked = function()
-    //{
-    //    return this._loadingLocked;
-    //};
-    //
-    ///**
-    // * Starts the process of loading files with new classes
-    // *
-    // * @method startLoading
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // */
-    //ClassManager.prototype.startLoading = function()
-    //{
-    //    if (this.isLoadingLocked()) {
-    //        return;
-    //    }
-    //    this._loading = true;
-    //    this._loadingPause = false;
-    //
-    //    this.processLoadStack();
-    //};
-    //
-    ///**
-    // * Pauses the process of loading files with new classes
-    // *
-    // * @method pauseLoading
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // */
-    //ClassManager.prototype.pauseLoading = function()
-    //{
-    //    clearTimeout(this._loadingEndTimeout);
-    //    this._loadingPause = true;
-    //};
-    //
-    ///**
-    // * Reports whether the process of loading files with new classes was paused
-    // *
-    // * @method isLoadingPaused
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @returns {boolean}
-    // */
-    //ClassManager.prototype.isLoadingPaused = function()
-    //{
-    //    return this._loadingPause;
-    //};
-    //
-    ///**
-    // * Tries to complete the process of loading files with new classes.
-    // * If it was completed then will be triggered the appropriate event.
-    // *
-    // * @method completeLoading
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // */
-    //ClassManager.prototype.completeLoading = function()
-    //{
-    //    if (!this.isLoading()) {
-    //        return;
-    //    }
-    //    clearTimeout(this._loadingEndTimeout);
-    //    var $this = this;
-    //
-    //    if (
-    //        !this.isLoadingPaused()
-    //        && this.isLoadStackEmpty()
-    //    ) {
-    //        this._loadingEndTimeout = setTimeout(function() {
-    //            $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
-    //            $this._loading = false;
-    //        }, 10);
-    //    }
-    //};
-    //
-    ///**
-    // * Checks whether the loading process continues
-    // *
-    // * @method isLoading
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @returns {boolean}
-    // */
-    //ClassManager.prototype.isLoading = function()
-    //{
-    //    return this._loading;
-    //};
-    //
-    ///**
-    // * Adds the new class to load stack
-    // *
-    // * @method addToLoadStack
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @param {string} className
-    // *      The name of class. It should be compatible with the file path where
-    // *      it is located relative to "rootPath" configuration option of module.
-    // */
-    //ClassManager.prototype.addToLoadStack = function(className)
-    //{
-    //    var moduleConfigs = this.getModule().getConfigManager();
-    //    var $this = this;
-    //
-    //    if (this.isInLoadStack(className) || this.issetClass(className)) {
-    //        return;
-    //    }
-    //    this._loadStack[className] = true;
-    //    clearTimeout(this._addToLoadStackTimeout);
-    //
-    //    this._addToLoadStackTimeout = setTimeout(function() {
-    //        if (!$this.isLoadingLocked()) {
-    //            $this.startLoading();
-    //        }
-    //    }, 10);
-    //};
-    //
-    ///**
-    // * Processes the classes from load stack
-    // *
-    // * @method processLoadStack
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // */
-    //ClassManager.prototype.processLoadStack = function()
-    //{
-    //    for (var className in this._loadStack) {
-    //        if (
-    //            !this._loadStack.hasOwnProperty(className)
-    //            || typeof this._loadStack[className] != 'boolean'
-    //        ) {
-    //            continue;
-    //        }
-    //        if (this.issetClass(className)) {
-    //            this.removeFromLoadStack(className);
-    //        }
-    //
-    //        var xmlhttp = this.loadClass(className);
-    //
-    //        if (xmlhttp) {
-    //            this._loadStack[className] = xmlhttp;
-    //        }
-    //    }
-    //};
-    //
-    ///**
-    // * Removes specified class from the load stack
-    // *
-    // * @method removeFromLoadStack
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @param {string} className
-    // *      The name of class
-    // */
-    //ClassManager.prototype.removeFromLoadStack = function(className)
-    //{
-    //    if (!this._loadStack.hasOwnProperty(className)) {
-    //        return;
-    //    }
-    //    if (typeof this._loadStack[className] != 'boolean') {
-    //        this._loadStack[className].abort();
-    //    }
-    //    delete this._loadStack[className];
-    //};
-    //
-    ///**
-    // * Checks whether the specified class is in load stack
-    // *
-    // * @method isInLoadStack
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @param {string} className
-    // *      The name of class
-    // *
-    // * @returns {boolean}
-    // */
-    //ClassManager.prototype.isInLoadStack = function(className)
-    //{
-    //    return this._loadStack[className] && typeof this._loadStack[className] != 'boolean';
-    //};
-    //
-    ///**
-    // * Checks whether the load stack is empty
-    // *
-    // * @method isLoadStackEmpty
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @returns {boolean}
-    // */
-    //ClassManager.prototype.isLoadStackEmpty = function()
-    //{
-    //    return !Object.keys(this._loadStack).length;
-    //};
 
     /**
      * Return all registered classes
@@ -548,59 +262,6 @@ Subclass.Class.ClassManager = (function()
         classLoader.loadClass.apply(classLoader, arguments);
     };
 
-    ///**
-    // * Loads the new class by its name
-    // *
-    // * @method loadClass
-    // * @memberOf Subclass.Class.ClassManager.prototype
-    // *
-    // * @throws {Error}
-    // * @param {string} className
-    // * @param {Function} [callback]
-    // * @returns {(XMLHttpRequest|null)}
-    // */
-    //ClassManager.prototype.loadClass = function(className, callback)
-    //{
-    //    if (className && typeof className != 'string') {
-    //        Subclass.Error.create('InvalidArgument')
-    //            .argument("the name of class", false)
-    //            .received(className)
-    //            .expected("a string")
-    //            .apply()
-    //        ;
-    //    }
-    //    if (callback && typeof callback != 'function') {
-    //        Subclass.Error.create('InvalidArgument')
-    //            .argument("the callback", false)
-    //            .received(callback)
-    //            .expected("a function")
-    //            .apply()
-    //        ;
-    //    }
-    //    if (this.issetClass(className)) {
-    //        return null;
-    //    }
-    //    if (this.isInLoadStack(className)) {
-    //        return null;
-    //    }
-    //
-    //    this.pauseLoading();
-    //
-    //    var moduleConfigs = this.getModule().getConfigManager();
-    //    var rootPath = moduleConfigs.getRootPath();
-    //    var classPath = rootPath + className + '.js';
-    //    var $this = this;
-    //
-    //    return Subclass.Tools.loadJS(classPath, function() {
-    //        if (!$this.issetClass(className)) {
-    //            Subclass.Error.create('The class "' + className + '" was not loaded.');
-    //        }
-    //        if (callback) {
-    //            callback($this.getClass(className));
-    //        }
-    //    });
-    //};
-
     /**
      * Creates class instance
      *
@@ -703,15 +364,9 @@ Subclass.Class.ClassManager = (function()
 
         var classTypeConstructor = Subclass.Class.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
-        var loadManager = this.getModule().getLoadManager();
 
         this._classes[className] = classInstance;
         this.getLoader().setClassLoaded(className);
-
-        if (loadManager.isStackEmpty()) {
-            loadManager.startLoading();
-            //this.completeLoading();
-        }
 
         return classInstance;
     };

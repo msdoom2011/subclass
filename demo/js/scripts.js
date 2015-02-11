@@ -14,7 +14,7 @@ app.onReady(function() {
 
     // If plugin2 was not loaded to the page document
 
-    app.addPlugin('appPlugin2', '/SubclassJS/build/demo/js/plugs/plugin2.js', function() {
+    app.addPlugin('appPlugin2', '^/SubclassJS/build/demo/js/plugs/plugin2.js', function() {
         var logger = app.getService('logger');
         var loggerElse = app.getService('logger');
         var loggerPsix = app.getService('psix');

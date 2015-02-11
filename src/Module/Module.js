@@ -632,13 +632,12 @@ Subclass.Module.Module = (function()
         if (this.isReady()) {
             return;
         }
-        var classManager = this.getClassManager();
-        var configManager = this.getConfigManager();
+        var loadManager = this.getLoadManager();
         this.setPrepared();
 
         if (
-            !classManager.isLoadingLocked()
-            && classManager.isLoadStackEmpty()
+            !loadManager.isLoadingLocked()
+            && loadManager.isStackEmpty()
             && this.isPluginsReady()
         ) {
             this._ready = true;
@@ -740,7 +739,6 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.addPlugin = function(moduleName, moduleFile, callback)
     {
-        //var classManager = this.getClassManager();
         var loadManager = this.getLoadManager();
         var $this = this;
 
@@ -783,10 +781,7 @@ Subclass.Module.Module = (function()
             );
         }
         if (moduleFile) {
-            if (loadManager.isLoading()) {
-                loadManager.pauseLoading();
-            }
-            Subclass.Tools.loadJS(moduleFile, function loadCallback() {
+            loadManager.load(moduleFile, function() {
                 if (callback) {
                     var module = Subclass.getModule(moduleName).getModule();
                     var moduleEventManager = module.getEventManager();

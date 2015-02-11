@@ -123,11 +123,33 @@ Subclass.Class.ClassLoader = (function()
      */
     ClassLoader.prototype.setClassLoaded = function(className)
     {
-        var classManager = this.getClassManager();
         var loadManager = this.getLoadManager();
         var fileName = className + '.js';
 
+        //console.log(1, className);
+        //
+        //for (var i = 0; i < loadManager._stack.length; i++) {
+        //    console.log((i + 1) + '.', loadManager._stack[i].file, loadManager._stack[i].fileFull);
+        //}
+        ////console.log(fileName);
+        ////console.log('---------');
+        //
+        //console.log(loadManager.getStackItem(fileName));
+        //console.log(this.getClassManager().issetClass(className));
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        //console.log('-----------------------');
+
         loadManager.removeFromStack(fileName);
+
+        if (loadManager.isStackEmpty()) {
+            loadManager.completeLoading();
+        }
     };
 
     return ClassLoader;

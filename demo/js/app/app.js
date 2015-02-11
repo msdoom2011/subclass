@@ -1,10 +1,12 @@
 
 //var app = Subclass.createModule('app', /*['appPlugin1',*/ ['appPlugin2'], {
-var app = Subclass.createModule('app', [{
+var app = Subclass.createModule('app', [
+    {
         name: 'appPlugin1',
         file: "/SubclassJS/build/demo/js/plugs/plugin1"
     },
-    //,'appPlugin2'
+    //'appPlugin1',
+    //'appPlugin2',
     //{
     //    name: 'appPlugin2',
     //    file: "/SubclassJS/build/demo/js/plugs/plugin2"

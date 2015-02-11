@@ -35,10 +35,18 @@ Subclass.Module.LoadManager = (function()
         /**
          * Stack of files that are loading at the moment
          *
-         * @type {Array}
+         * @type {Array.<Object>}
          * @private
          */
         this._stack = [];
+
+        /**
+         * Portion of files in order to load
+         *
+         * @type {Array.<string>}
+         * @private
+         */
+        this._stackPortion = [];
 
         /**
          * Checks whether the loading process continues
@@ -63,14 +71,6 @@ Subclass.Module.LoadManager = (function()
          * @private
          */
         this._loadingLocked = true;
-
-        /**
-         * The timeout after which the loading will be started
-         *
-         * @type {(*|null)}
-         * @private
-         */
-        this._loadingStartTimeout = null;
 
         /**
          * The timeout after which the ready callback will be called
@@ -122,7 +122,9 @@ Subclass.Module.LoadManager = (function()
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
             module.getModuleManager().eachModule(function(module) {
-                module.getLoadManager().unlockLoading();
+                if (module != $this.getModule()) {
+                    module.getLoadManager().unlockLoading();
+                }
             });
         });
     };
@@ -191,24 +193,21 @@ Subclass.Module.LoadManager = (function()
      */
     LoadManager.prototype.startLoading = function()
     {
-        clearTimeout(this._loadingStartTimeout);
         var $this = this;
 
         if (this.isLoadingLocked()) {
             return;
         }
 
-        this._loadingStartTimeout = setTimeout(function() {
-            $this._loading = true;
-            $this._loadingPause = false;
-            $this.processStack();
+        $this._loading = true;
+        $this._loadingPause = false;
+        $this.processStack();
 
-            $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
+        $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
 
-            if ($this.isStackEmpty()) {
-                $this.completeLoading();
-            }
-        }, 2);
+        if ($this.isStackEmpty()) {
+            $this.completeLoading();
+        }
     };
 
     /**
@@ -303,15 +302,9 @@ Subclass.Module.LoadManager = (function()
             return;
         }
 
-        //for (var i = 0; i < this._stack.length; i++) {
-        //    console.log((i + 1) + '.', this._stack[i].file);
-        //}
-        //console.log(fileName);
-        //console.log('---------');
-
         this._stack.push({
             file: fileName,
-            fileName: null,
+            fileFull: null,
             callback: callback || function() {},
             xmlhttp: null
         });
@@ -336,6 +329,32 @@ Subclass.Module.LoadManager = (function()
      */
     LoadManager.prototype.load = LoadManager.prototype.addToStack;
 
+    LoadManager.prototype.getStackItem = function(fileName)
+    {
+        var stackItem = null;
+
+        for (var i = 0; i < this._stack.length; i++) {
+            if (this._stack[i].file == fileName) {
+                stackItem = this._stack[i];
+            }
+        }
+
+        return stackItem;
+    };
+
+    LoadManager.prototype.getStackItemIndex = function(fileName)
+    {
+        var stackItemIndex = false;
+
+        for (var i = 0; i < this._stack.length; i++) {
+            if (this._stack[i].file == fileName) {
+                stackItemIndex = i;
+            }
+        }
+
+        return stackItemIndex;
+    };
+
     /**
      * Removes specified class from the load stack
      *
@@ -347,15 +366,10 @@ Subclass.Module.LoadManager = (function()
      */
     LoadManager.prototype.removeFromStack = function(fileName)
     {
-        var stackItem;
-        var stackItemIndex;
+        var stackItem = this.getStackItem(fileName);
+        var stackItemIndex = this.getStackItemIndex(fileName);
 
-        for (var i = 0; i < this._stack.length; i++) {
-            if (this._stack[i].file == fileName) {
-                stackItem = this._stack[i];
-            }
-        }
-        if (!stackItem) {
+        if (!stackItem || stackItemIndex === false) {
             return;
         }
 
@@ -380,45 +394,54 @@ Subclass.Module.LoadManager = (function()
     {
         var moduleConfigs = this.getModule().getConfigManager();
         var rootPath = moduleConfigs.getRootPath();
+        var stackPortion = [];
         var $this = this;
 
-        if (this.isLoadingPaused()) {
+        if (!this.isStackPortionEmpty()) {
             return;
         }
 
         for (var i = 0; i < this._stack.length; i++) {
             var stackItem = this._stack[i];
+            stackPortion.push(stackItem.file);
 
             if (!stackItem.file.match(/^\^/i)) {
-                stackItem.fileName = rootPath + stackItem.file;
+                stackItem.fileFull = rootPath + stackItem.file;
 
             } else {
-                stackItem.fileName = stackItem.file.substr(1);
+                stackItem.fileFull = stackItem.file.substr(1);
             }
-
-            //if (this._stack[i].file == 'Logger/BugAbstract.js') {
-            //    debugger;
-            //}
         }
+
+        this.setStackPortion(stackPortion);
 
         this.getModule().getEventManager().getEvent('onProcessLoadStack').trigger(
             this._stack
         );
 
-        !function loadCallback(stackItem, stackLength) {
-            stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileName, function() {
+        !function loadFile(fileName) {
+            if (!fileName) {
+                return;
+            }
+            var stackItem = $this.getStackItem(fileName);
+
+            if (!stackItem) {
+                return;
+            }
+            stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileFull, function() {
+                $this.removeFromStackPortion(stackItem.file);
+                $this.removeFromStack(stackItem.file);
                 stackItem.callback();
 
-                if (stackLength) {
-                    loadCallback($this._stack.shift(), stackLength--)
+                var newFileName = $this.getStackPortion()[0];
+
+                if (newFileName) {
+                    loadFile(newFileName)
                 } else {
                     $this.startLoading();
                 }
             });
-        }(
-            this._stack.shift(),
-            this._stack.length
-        );
+        }(stackPortion[0]);
 
         if (!this.isStackEmpty()) {
             this.pauseLoading();
@@ -457,6 +480,59 @@ Subclass.Module.LoadManager = (function()
     LoadManager.prototype.isStackEmpty = function()
     {
         return !this._stack.length;
+    };
+
+    /**
+     * Sets the stack portion
+     *
+     * @param {Array.<string>} fileNames
+     */
+    LoadManager.prototype.setStackPortion = function(fileNames)
+    {
+        if (!Array.isArray(fileNames)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('list of file names', false)
+                .received(fileNames)
+                .expected('array of strings')
+                .apply()
+            ;
+        }
+        this._stackPortion = fileNames;
+    };
+
+    /**
+     * Returns the stack portion
+     *
+     * @returns {Array.<string>}
+     */
+    LoadManager.prototype.getStackPortion = function()
+    {
+        return this._stackPortion;
+    };
+
+    /**
+     * Reports whether the stack portion is empty
+     *
+     * @returns {boolean}
+     */
+    LoadManager.prototype.isStackPortionEmpty = function()
+    {
+        return !this.getStackPortion().length;
+    };
+
+    /**
+    * Removes file name from the stack portion
+    *
+    * @param {string} fileName
+    */
+    LoadManager.prototype.removeFromStackPortion = function(fileName)
+    {
+        var stackPortion = this.getStackPortion();
+        var index = stackPortion.indexOf(fileName);
+
+        if (index >= 0) {
+            stackPortion.splice(index, 1);
+        }
     };
 
     return LoadManager;

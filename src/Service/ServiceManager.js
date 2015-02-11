@@ -327,7 +327,7 @@ Subclass.Service.ServiceManager = (function()
         var classManager = this.getModule().getClassManager();
 
         if (serviceDefinition.className) {
-            classManager.addToLoadStack(serviceDefinition.className);
+            classManager.loadClass(serviceDefinition.className);
         }
 
         return service;

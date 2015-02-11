@@ -182,14 +182,14 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#getClassManager}
+     * The same as the {@link Subclass.Module.Module#getLoadManager}
      *
-     * @method getClassManager
+     * @method getLoadManager
      * @memberOf Subclass.Module.ModuleAPI.prototype
      */
-    ModuleAPI.prototype.getClassManager = function()
+    ModuleAPI.prototype.getLoadManager = function()
     {
-        return this.getModule().getClassManager.apply(this.getModule(), arguments);
+        return this.getModule().getLoadManager.apply(this.getModule(), arguments);
     };
 
     /**
@@ -201,6 +201,17 @@ Subclass.Module.ModuleAPI = (function()
     ModuleAPI.prototype.getPropertyManager = function()
     {
         return this.getModule().getPropertyManager.apply(this.getModule(), arguments);
+    };
+
+    /**
+     * The same as the {@link Subclass.Module.Module#getClassManager}
+     *
+     * @method getClassManager
+     * @memberOf Subclass.Module.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.getClassManager = function()
+    {
+        return this.getModule().getClassManager.apply(this.getModule(), arguments);
     };
 
     /**
@@ -240,7 +251,7 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.ModuleConfigs#setServices}
+     * The same as the {@link Subclass.Module.ConfigManager#setServices}
      *
      * @method registerServices
      * @memberOf Subclass.Module.ModuleAPI.prototype
@@ -282,7 +293,7 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.ModuleConfigs#setParameters}
+     * The same as the {@link Subclass.Module.ConfigManager#setParameters}
      *
      * @method registerParameters
      * @memberOf Subclass.Module.ModuleAPI.prototype
@@ -324,7 +335,7 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.ModuleConfigs#setDataTypes}
+     * The same as the {@link Subclass.Module.ConfigManager#setDataTypes}
      *
      * @method registerDataTypes
      * @memberOf Subclass.Module.ModuleAPI.prototype

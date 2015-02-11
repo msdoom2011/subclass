@@ -375,7 +375,7 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 
         if (traits && this.validateTraits(traits)) {
             for (var i = 0; i < traits.length; i++) {
-                classManager.addToLoadStack(traits[i]);
+                classManager.loadClass(traits[i]);
             }
         }
 
@@ -383,7 +383,7 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 
         if (interfaces && this.validateImplements(interfaces)) {
             for (i = 0; i < interfaces.length; i++) {
-                classManager.addToLoadStack(interfaces[i]);
+                classManager.loadClass(interfaces[i]);
             }
         }
     };

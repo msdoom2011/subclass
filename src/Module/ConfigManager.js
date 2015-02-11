@@ -13,12 +13,12 @@
  * @param {Subclass.Module.Module} module
  *      The module instance
  */
-Subclass.Module.ModuleConfigs = (function()
+Subclass.Module.ConfigManager = (function()
 {
     /**
-     * @alias Subclass.Module.ModuleConfigs
+     * @alias Subclass.Module.ConfigManager
      */
-    function ModuleConfigs(module)
+    function ConfigManager(module)
     {
         /**
          * Instance of subclass module
@@ -64,10 +64,10 @@ Subclass.Module.ModuleConfigs = (function()
      * Sets new module configs.
      *
      * New configuration parameters will rewrite earlier ones, for example,
-     * specified in module constructor or in earlier call of ModuleConfigs#setConfigs method.
+     * specified in module constructor or in earlier call of ConfigManager#setConfigs method.
      *
      * @method setConfigs
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *     Throws error when:<br />
@@ -112,7 +112,7 @@ Subclass.Module.ModuleConfigs = (function()
      * parameterManager.issetParameter('name');   // Returns true
      * ...
      */
-    ModuleConfigs.prototype.setConfigs = function (moduleConfigs)
+    ConfigManager.prototype.setConfigs = function (moduleConfigs)
     {
         var $this = this;
 
@@ -180,11 +180,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Returns module instance to which current configuration manager belongs
      *
      * @method getModule
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {Subclass.Module.Module}
      */
-    ModuleConfigs.prototype.getModule = function()
+    ConfigManager.prototype.getModule = function()
     {
         return this._module;
     };
@@ -197,7 +197,7 @@ Subclass.Module.ModuleConfigs = (function()
      * will be invoked only when the root module becomes ready.
      *
      * @method setPlugin
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -207,7 +207,7 @@ Subclass.Module.ModuleConfigs = (function()
      * @param {boolean} isPlugin
      *      Should be current module a plugin or not
      */
-    ModuleConfigs.prototype.setPlugin = function(isPlugin)
+    ConfigManager.prototype.setPlugin = function(isPlugin)
     {
         this._checkModuleIsReady();
 
@@ -227,21 +227,21 @@ Subclass.Module.ModuleConfigs = (function()
      * Reports whether the current module is a plug-in of another module or not
      *
      * @method getPlugin
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {boolean}
      */
-    ModuleConfigs.prototype.getPlugin = function()
+    ConfigManager.prototype.getPlugin = function()
     {
         return this._plugin;
     };
 
     /**
      * @method isPlugin
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
-     * @alias Subclass.Module.ModuleConfigs#getPlugin
+     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @alias Subclass.Module.ConfigManager#getPlugin
      */
-    ModuleConfigs.prototype.isPlugin = ModuleConfigs.prototype.getPlugin;
+    ConfigManager.prototype.isPlugin = ConfigManager.prototype.getPlugin;
 
     /**
      * Marks current module that it should be a plug-in of the module with specified name.
@@ -250,7 +250,7 @@ Subclass.Module.ModuleConfigs = (function()
      * "plugin" will forcibly set to true.
      *
      * @method setPluginOf
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if specified argument is not string or null
@@ -258,7 +258,7 @@ Subclass.Module.ModuleConfigs = (function()
      * @param {string} parentModuleName
      *      A name of the parent module
      */
-    ModuleConfigs.prototype.setPluginOf = function(parentModuleName)
+    ConfigManager.prototype.setPluginOf = function(parentModuleName)
     {
         this._checkModuleIsReady();
 
@@ -279,11 +279,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Returns name of the parent module if current one is a plug-in of the specified module
      *
      * @method getPluginOf
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {(string|null)}
      */
-    ModuleConfigs.prototype.getPluginOf = function()
+    ConfigManager.prototype.getPluginOf = function()
     {
         return this._pluginOf;
     };
@@ -293,7 +293,7 @@ Subclass.Module.ModuleConfigs = (function()
      * It's required if autoload configuration parameter is turned on.
      *
      * @method setRootPath
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -310,7 +310,7 @@ Subclass.Module.ModuleConfigs = (function()
      *     moduleConfigs.setRootPath("path/to/the/directory/root");
      * ...
      */
-    ModuleConfigs.prototype.setRootPath = function(rootPath)
+    ConfigManager.prototype.setRootPath = function(rootPath)
     {
         this._checkModuleIsReady();
 
@@ -330,11 +330,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Returns root directory path of the project
      *
      * @method getRootPath
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {(string|null)}
      */
-    ModuleConfigs.prototype.getRootPath = function()
+    ConfigManager.prototype.getRootPath = function()
     {
         return this._rootPath;
     };
@@ -343,7 +343,7 @@ Subclass.Module.ModuleConfigs = (function()
      * Sets and loads specified files.
      *
      * @method setFiles
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -361,7 +361,7 @@ Subclass.Module.ModuleConfigs = (function()
      *      the specified main file will loaded
      *
      */
-    ModuleConfigs.prototype.setFiles = function(files, callback)
+    ConfigManager.prototype.setFiles = function(files, callback)
     {
         this._checkModuleIsReady();
 
@@ -390,7 +390,7 @@ Subclass.Module.ModuleConfigs = (function()
             }
         }
 
-        var classManager = this.getModule().getClassManager();
+        var loadManager = this.getModule().getLoadManager();
         var $this = this;
 
         this._files = Subclass.Tools.extend([], files);
@@ -399,7 +399,7 @@ Subclass.Module.ModuleConfigs = (function()
             $this._files.shift();
 
             if (Subclass.Tools.isEmpty(files)) {
-                classManager.unlockLoading();
+                loadManager.unlockLoading();
                 return callback();
 
             } else {
@@ -415,11 +415,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Reports whether current module loads some files
      *
      * @method hasFiles
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {boolean}
      */
-    ModuleConfigs.prototype.hasFiles = function()
+    ConfigManager.prototype.hasFiles = function()
     {
         return !!this._files.length;
     };
@@ -429,7 +429,7 @@ Subclass.Module.ModuleConfigs = (function()
      * registered in Subclass.Property.PropertyManager.
      *
      * @method setDataTypes
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if trying to change value after the module became ready
@@ -474,7 +474,7 @@ Subclass.Module.ModuleConfigs = (function()
      * testClass.setPercentsProp("10");  // throws error
      * ...
      */
-    ModuleConfigs.prototype.setDataTypes = function(propertyDefinitions)
+    ConfigManager.prototype.setDataTypes = function(propertyDefinitions)
     {
         this._checkModuleIsReady();
         this.getModule()
@@ -487,11 +487,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Returns defined custom data types in the form in which they were set
      *
      * @method getDataTypes
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {Object.<Object>}
      */
-    ModuleConfigs.prototype.getDataTypes = function()
+    ConfigManager.prototype.getDataTypes = function()
     {
         return this.getModule()
             .getPropertyManager()
@@ -504,7 +504,7 @@ Subclass.Module.ModuleConfigs = (function()
      * Registers new parameters or redefines already existent with the same name.
      *
      * @method setParameters
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if trying to change value after the module became ready
@@ -532,7 +532,7 @@ Subclass.Module.ModuleConfigs = (function()
      * moduleInst.getParameter("param3"); // returns { a: 10, b: "str" }
      * ...
      */
-    ModuleConfigs.prototype.setParameters = function(parameters)
+    ConfigManager.prototype.setParameters = function(parameters)
     {
         this._checkModuleIsReady();
 
@@ -562,11 +562,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Returns all registered parameters in the form in which they were set
      *
      * @method getParameters
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {Object}
      */
-    ModuleConfigs.prototype.getParameters = function()
+    ConfigManager.prototype.getParameters = function()
     {
         var parameters = this.getModule().getParameterManager().getParameters();
         var parameterDefinitions = {};
@@ -584,7 +584,7 @@ Subclass.Module.ModuleConfigs = (function()
      * Registers new services and redefines already existent ones with the same name.
      *
      * @method setServices
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if trying to change value after the module became ready
@@ -648,7 +648,7 @@ Subclass.Module.ModuleConfigs = (function()
      * var param2 = logger._param2; // "param 2 value"
      * ...
      */
-    ModuleConfigs.prototype.setServices = function(services)
+    ConfigManager.prototype.setServices = function(services)
     {
         this._checkModuleIsReady();
 
@@ -678,11 +678,11 @@ Subclass.Module.ModuleConfigs = (function()
      * Returns all registered services in the form as they were defined
      *
      * @method getServices
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @returns {Object.<Object>}
      */
-    ModuleConfigs.prototype.getServices = function()
+    ConfigManager.prototype.getServices = function()
     {
         var services = this.getModule().getServiceManager().getServices();
         var serviceDefinitions = {};
@@ -710,7 +710,7 @@ Subclass.Module.ModuleConfigs = (function()
      * the call of current method invokes specified callback immediately.
      *
      * @method setOnReady
-     * @memberOf Subclass.Module.ModuleConfigs.prototype
+     * @memberOf Subclass.Module.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -720,7 +720,7 @@ Subclass.Module.ModuleConfigs = (function()
      * @param {Function} callback
      *      Callback function which will do some initializing manipulations
      */
-    ModuleConfigs.prototype.setOnReady = function(callback)
+    ConfigManager.prototype.setOnReady = function(callback)
     {
         this._checkModuleIsReady();
 
@@ -767,13 +767,13 @@ Subclass.Module.ModuleConfigs = (function()
      * @private
      * @ignore
      */
-    ModuleConfigs.prototype._checkModuleIsReady = function()
+    ConfigManager.prototype._checkModuleIsReady = function()
     {
         if (this.getModule().isReady()) {
             Subclass.Error.create('Can\'t change configs in ready module.');
         }
     };
 
-    return ModuleConfigs;
+    return ConfigManager;
 
 })();

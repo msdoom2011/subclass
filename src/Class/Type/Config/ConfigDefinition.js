@@ -537,7 +537,7 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
 
         if (includes && this.validateIncludes(includes)) {
             for (var i = 0; i < includes.length; i++) {
-                classManager.addToLoadStack(includes[i]);
+                classManager.loadClass(includes[i]);
             }
         }
 
@@ -545,7 +545,7 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
 
         if (decorators && this.validateDecorators(decorators)) {
             for (i = 0; i < decorators.length; i++) {
-                classManager.addToLoadStack(decorators[i]);
+                classManager.loadClass(decorators[i]);
             }
         }
     };

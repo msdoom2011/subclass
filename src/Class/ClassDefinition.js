@@ -716,12 +716,12 @@ Subclass.Class.ClassDefinition = (function()
             if (Subclass.Tools.isPlainObject(requires)) {
                 for (var alias in requires) {
                     if (requires.hasOwnProperty(alias)) {
-                        classManager.addToLoadStack(requires[alias]);
+                        classManager.loadClass(requires[alias]);
                     }
                 }
             } else if (Array.isArray(requires)) {
                 for (var i = 0; i < requires.length; i++) {
-                    classManager.addToLoadStack(requires[i]);
+                    classManager.loadClass(requires[i]);
                 }
             }
         }
@@ -729,7 +729,7 @@ Subclass.Class.ClassDefinition = (function()
         // Performing $_extends attribute
 
         if (parentClass && this.validateExtends(parentClass)) {
-            classManager.addToLoadStack(parentClass);
+            classManager.loadClass(parentClass);
         }
 
         // Performing $_properties attribute
@@ -762,7 +762,7 @@ Subclass.Class.ClassDefinition = (function()
 
                 if (requiredClasses && requiredClasses.length) {
                     for (i = 0; i < requiredClasses.length; i++) {
-                        classManager.addToLoadStack(requiredClasses[i]);
+                        classManager.loadClass(requiredClasses[i]);
                     }
                 }
             }

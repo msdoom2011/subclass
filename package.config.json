@@ -26,6 +26,7 @@
           "<%= config.lib.content.class.dir %>/ClassManagerAPI.js",
           "<%= config.lib.content.class.dir %>/ClassType.js",
           "<%= config.lib.content.class.dir %>/ClassDefinition.js",
+          "<%= config.lib.content.class.dir %>/ClassLoader.js",
           "<%= config.lib.content.class.dir %>/*.js",
           "<%= config.lib.content.class.dir %>/Type/Class/Class.js",
           "<%= config.lib.content.class.dir %>/Type/Class/**/*.js",

@@ -232,6 +232,14 @@ Subclass.Module.Module = (function()
         this._moduleManager = new Subclass.Module.ModuleManager(this, modulePlugins);
 
         /**
+         * The load manager instance
+         *
+         * @type {Subclass.Module.LoadManager}
+         * @private
+         */
+        this._loadManager = new Subclass.Module.LoadManager(this);
+
+        /**
          * Property manager instance
          *
          * @type {Subclass.Property.PropertyManager}
@@ -266,10 +274,10 @@ Subclass.Module.Module = (function()
         /**
          * Module configuration
          *
-         * @type {Subclass.Module.ModuleConfigs}
+         * @type {Subclass.Module.ConfigManager}
          * @private
          */
-        this._configManager = new Subclass.Module.ModuleConfigs(this);
+        this._configManager = new Subclass.Module.ConfigManager(this);
 
         /**
          * Checks whether module is prepared for ready
@@ -438,7 +446,7 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.ModuleConfigs#setConfigs}
+     * The same as the {@link Subclass.Module.ConfigManager#setConfigs}
      *
      * @method setConfigs
      * @memberOf Subclass.Module.Module.prototype
@@ -454,7 +462,7 @@ Subclass.Module.Module = (function()
      * @method getConfigManager
      * @memberOf Subclass.Module.Module.prototype
      *
-     * @returns {Subclass.Module.ModuleConfigs}
+     * @returns {Subclass.Module.ConfigManager}
      */
     Module.prototype.getConfigManager = function()
     {
@@ -491,17 +499,16 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * Returns class manager instance that allows to register, process, and get
-     * classes of different type: Class, AbstractClass, Interface, Trait, Config
+     * Returns the instance of load manager
      *
-     * @method getClassManager
+     * @method getLoadManager
      * @memberOf Subclass.Module.Module.prototype
      *
-     * @returns {Subclass.Class.ClassManager}
+     * @returns {Subclass.Module.LoadManager}
      */
-    Module.prototype.getClassManager = function()
+    Module.prototype.getLoadManager = function()
     {
-        return this._classManager;
+        return this._loadManager;
     };
 
     /**
@@ -516,6 +523,20 @@ Subclass.Module.Module = (function()
     Module.prototype.getPropertyManager = function()
     {
         return this._propertyManager;
+    };
+
+    /**
+     * Returns class manager instance that allows to register, process, and get
+     * classes of different type: Class, AbstractClass, Interface, Trait, Config
+     *
+     * @method getClassManager
+     * @memberOf Subclass.Module.Module.prototype
+     *
+     * @returns {Subclass.Class.ClassManager}
+     */
+    Module.prototype.getClassManager = function()
+    {
+        return this._classManager;
     };
 
     /**
@@ -547,7 +568,7 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.ModuleConfigs#setOnReady}
+     * The same as the {@link Subclass.Module.ConfigManager#setOnReady}
      *
      * @method onReady
      * @memberOf Subclass.Module.Module.prototype
@@ -719,7 +740,8 @@ Subclass.Module.Module = (function()
      */
     Module.prototype.addPlugin = function(moduleName, moduleFile, callback)
     {
-        var classManager = this.getClassManager();
+        //var classManager = this.getClassManager();
+        var loadManager = this.getLoadManager();
         var $this = this;
 
         if (!moduleName || typeof moduleName != 'string') {
@@ -761,8 +783,8 @@ Subclass.Module.Module = (function()
             );
         }
         if (moduleFile) {
-            if (classManager.isLoading()) {
-                classManager.pauseLoading();
+            if (loadManager.isLoading()) {
+                loadManager.pauseLoading();
             }
             Subclass.Tools.loadJS(moduleFile, function loadCallback() {
                 if (callback) {
@@ -785,10 +807,10 @@ Subclass.Module.Module = (function()
 
         if (this.isPrepared()) {
             var pluginModule = Subclass.getModule(moduleName).getModule();
-            var pluginClassManager = pluginModule.getClassManager();
             var pluginEventManager = pluginModule.getEventManager();
+            var pluginLoadManager = pluginModule.getLoadManager();
 
-            pluginClassManager.unlockLoading();
+            pluginLoadManager.unlockLoading();
 
             if (pluginModule.isPrepared()) {
                 eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);

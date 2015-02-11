@@ -87,6 +87,14 @@ Subclass.Module.LoadManager = (function()
          * @private
          */
         this._addToStackTimeout = null;
+
+        module.getEventManager()
+            .registerEvent('onLoadingStart')
+            .registerEvent('onLoadingEnd')
+            .registerEvent('onAddToLoadStack')
+            .registerEvent('onRemoveFromLoadStack')
+            .registerEvent('onProcessLoadStack')
+        ;
     }
 
     /**
@@ -195,6 +203,8 @@ Subclass.Module.LoadManager = (function()
             $this._loadingPause = false;
             $this.processStack();
 
+            $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
+
             if ($this.isStackEmpty()) {
                 $this.completeLoading();
             }
@@ -293,13 +303,24 @@ Subclass.Module.LoadManager = (function()
             return;
         }
 
+        //for (var i = 0; i < this._stack.length; i++) {
+        //    console.log((i + 1) + '.', this._stack[i].file);
+        //}
+        //console.log(fileName);
+        //console.log('---------');
+
         this._stack.push({
             file: fileName,
+            fileName: null,
             callback: callback || function() {},
             xmlhttp: null
         });
 
         clearTimeout(this._addToStackTimeout);
+        this.getModule().getEventManager().getEvent('onAddToLoadStack').trigger(
+            fileName,
+            callback
+        );
 
         this._addToStackTimeout = setTimeout(function() {
             if (!$this.isLoadingLocked()) {
@@ -307,6 +328,13 @@ Subclass.Module.LoadManager = (function()
             }
         }, 10);
     };
+
+    /**
+     * Alias of {@link Subclass.Module.LoadManager#addToStack}
+     *
+     * @type {Function}
+     */
+    LoadManager.prototype.load = LoadManager.prototype.addToStack;
 
     /**
      * Removes specified class from the load stack
@@ -331,6 +359,11 @@ Subclass.Module.LoadManager = (function()
             return;
         }
 
+        this.getModule().getEventManager().getEvent('onRemoveFromLoadStack').trigger(
+            stackItem,
+            stackItemIndex
+        );
+
         if (stackItem.xmlhttp) {
             stackItem.xmlhttp.abort();
         }
@@ -352,40 +385,44 @@ Subclass.Module.LoadManager = (function()
         if (this.isLoadingPaused()) {
             return;
         }
-        if (!this.isStackEmpty()) {
-            this.pauseLoading();
-        }
 
-        for (var fileName in this._stack) {
-            if (!this._stack.hasOwnProperty(fileName)) {
-                continue;
-            }
-            //if (this.issetClass(className)) {
-            //    this.removeFromStack(className);
-            //}
+        for (var i = 0; i < this._stack.length; i++) {
+            var stackItem = this._stack[i];
 
-            if (!fileName.match(/^\^/i)) {
-                fileName = rootPath + fileName;
+            if (!stackItem.file.match(/^\^/i)) {
+                stackItem.fileName = rootPath + stackItem.file;
 
             } else {
-                fileName = fileName.substr(1);
+                stackItem.fileName = stackItem.file.substr(1);
             }
+
+            //if (this._stack[i].file == 'Logger/BugAbstract.js') {
+            //    debugger;
+            //}
         }
 
-        var stackLength = this._stack.length;
+        this.getModule().getEventManager().getEvent('onProcessLoadStack').trigger(
+            this._stack
+        );
 
-        !function loadCallback(stackItem) {
-            stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.file, function() {
+        !function loadCallback(stackItem, stackLength) {
+            stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileName, function() {
                 stackItem.callback();
-                stackLength--;
 
                 if (stackLength) {
-                    loadCallback($this._stack.shift())
+                    loadCallback($this._stack.shift(), stackLength--)
                 } else {
                     $this.startLoading();
                 }
             });
-        }(this._stack.shift());
+        }(
+            this._stack.shift(),
+            this._stack.length
+        );
+
+        if (!this.isStackEmpty()) {
+            this.pauseLoading();
+        }
     };
 
     /**

@@ -27,13 +27,51 @@ Subclass.Class.ClassLoader = (function()
          * @type {Subclass.Class.ClassManager}
          */
         this._classManager = classManager;
+
+        // Adding event listeners
+
+        var eventManager = classManager.getModule().getEventManager();
+        var loadManager = classManager.getModule().getLoadManager();
+
+        eventManager.getEvent('onAddToLoadStack')
+            .addListener(function(fileName, callback) {
+                var className = fileName.replace(/\.js$/, '');
+
+                if (classManager.issetClass(className)) {
+                    loadManager.removeFromStack(fileName);
+                }
+            })
+        ;
+
+        eventManager.getEvent('onProcessLoadStack')
+            .addListener(function(stackItems) {
+                for (var i = 0; i < stackItems.length; i++) {
+                    var fileName = stackItems[i].file;
+                    var className = fileName.replace(/\.js$/, '');
+
+                    if (classManager.issetClass(className)) {
+                        loadManager.removeFromStack(fileName);
+                    }
+                }
+            })
+        ;
     }
 
+    /**
+     * Returns the instance of class manager
+     *
+     * @returns {Subclass.Class.ClassManager}
+     */
     ClassLoader.prototype.getClassManager = function()
     {
         return this._classManager;
     };
 
+    /**
+     * Returns the instance of load manager
+     *
+     * @returns {Subclass.Module.LoadManager}
+     */
     ClassLoader.prototype.getLoadManager = function()
     {
         return this.getClassManager()
@@ -60,10 +98,21 @@ Subclass.Class.ClassLoader = (function()
         if (classManager.issetClass(className)) {
             return;
         }
-
-        loadManager.addToStack(fileName, function() {
-            var classInst = classManager.getClass(className);
-            return callback(classInst);
+        if (callback && typeof callback != 'function') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the callback', false)
+                .received(callback)
+                .expected('a function')
+                .apply()
+            ;
+        }
+        loadManager.load(fileName, function() {
+            if (!classManager.issetClass(className)) {
+                Subclass.Error.create('The class "' + className + '" was not loaded.');
+            }
+            if (callback) {
+                return callback();
+            }
         });
     };
 

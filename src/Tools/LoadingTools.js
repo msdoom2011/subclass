@@ -151,7 +151,7 @@ Subclass.Tools.LoadingTools = (function()
     {
         if (!fileName || typeof fileName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument('the name of file')
+                .argument('the name of file', false)
                 .received(fileName)
                 .expected('a string')
                 .apply()

@@ -31,6 +31,9 @@ Subclass.Error.Option.Received = (function()
                 } else if (value && typeof value == 'object') {
                     message += 'The object with type "' + value.constructor.name + '" was received instead.';
 
+                } else if (value === null) {
+                    message += 'Null was received instead.';
+
                 } else {
                     message += 'The value with type "' + (typeof value) + '" was received instead.';
                 }

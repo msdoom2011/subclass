@@ -215,7 +215,6 @@ Subclass.Module.Module = (function()
         // Registering events
 
         this.getEventManager()
-            .registerEvent('onLoadingEnd')
             .registerEvent('onModuleInit')
             .registerEvent('onReady')
             .registerEvent('onReadyBefore')
@@ -224,20 +223,20 @@ Subclass.Module.Module = (function()
         ;
 
         /**
-         * Collection of modules
-         *
-         * @type {Subclass.Module.ModuleManager}
-         * @private
-         */
-        this._moduleManager = new Subclass.Module.ModuleManager(this, modulePlugins);
-
-        /**
          * The load manager instance
          *
          * @type {Subclass.Module.LoadManager}
          * @private
          */
         this._loadManager = new Subclass.Module.LoadManager(this);
+
+        /**
+         * Collection of modules
+         *
+         * @type {Subclass.Module.ModuleManager}
+         * @private
+         */
+        this._moduleManager = new Subclass.Module.ModuleManager(this, modulePlugins);
 
         /**
          * Property manager instance
@@ -300,6 +299,7 @@ Subclass.Module.Module = (function()
 
         this.setConfigs(moduleConfigs);
         this.getClassManager().initialize();
+        this.getLoadManager().initialize();
         this.getServiceManager().initialize();
 
         var eventManager = this.getEventManager();

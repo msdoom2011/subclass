@@ -307,7 +307,7 @@ Subclass.Module.Module = (function()
 
         // Calling onReady callback
         eventManager.getEvent('onLoadingEnd')
-            .addListener(function() {
+            .addListener(1000, function() {
                 $this.setReady();
             }
         );
@@ -636,8 +636,7 @@ Subclass.Module.Module = (function()
         this.setPrepared();
 
         if (
-            !loadManager.isLoadingLocked()
-            && loadManager.isStackEmpty()
+            loadManager.isStackEmpty()
             && this.isPluginsReady()
         ) {
             this._ready = true;
@@ -805,11 +804,10 @@ Subclass.Module.Module = (function()
             var pluginEventManager = pluginModule.getEventManager();
             var pluginLoadManager = pluginModule.getLoadManager();
 
-            pluginLoadManager.unlockLoading();
-
             if (pluginModule.isPrepared()) {
                 eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
             } else {
+                pluginLoadManager.startLoading();
                 pluginEventManager.getEvent('onLoadingEnd').addListener(100000, function () {
                     eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
                 });

@@ -65,14 +65,6 @@ Subclass.Module.LoadManager = (function()
         this._loadingPause = false;
 
         /**
-         * Reports that loading is locked
-         *
-         * @type {boolean}
-         * @private
-         */
-        this._loadingLocked = true;
-
-        /**
          * The timeout after which the ready callback will be called
          *
          * @type {(*|null)}
@@ -109,24 +101,17 @@ Subclass.Module.LoadManager = (function()
         var eventManager = module.getEventManager();
         var $this = this;
 
-        // Unlock loading of module files after the module was created
-
-        eventManager.getEvent('onModuleInit').addListener(function() {
-            if (module.isRoot()) {
-                $this.unlockLoading();
-            }
-        });
-
-        // Unlocking loading files of plug-in modules after the files
+        // Starting load files of plug-in modules after the files
         // of current module (to which the current one instance of load manager belongs) were fully loaded
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
             module.getModuleManager().eachModule(function(module) {
                 if (module != $this.getModule()) {
-                    module.getLoadManager().unlockLoading();
+                    module.getLoadManager().startLoading();
                 }
             });
         });
+
     };
 
     /**
@@ -143,49 +128,6 @@ Subclass.Module.LoadManager = (function()
     };
 
     /**
-     * Locks the process of loading files with new classes
-     *
-     * @method lockLoading
-     * @memberOf Subclass.Class.LoadManager.prototype
-     */
-    LoadManager.prototype.lockLoading = function()
-    {
-        this._loadingLocked = true;
-    };
-
-    /**
-     * Unlocks and starts the process of loading files with new classes
-     *
-     * @method unlockLoading
-     * @memberOf Subclass.Class.LoadManager.prototype
-     */
-    LoadManager.prototype.unlockLoading = function()
-    {
-        if (this.getModule().getConfigManager().hasFiles()) {
-            return;
-        }
-        if (!this.isLoadingLocked()) {
-            return;
-        }
-        this._loadingLocked = false;
-        this.startLoading();
-        this.completeLoading();
-    };
-
-    /**
-     * Reports whether the process of loading files with new classes is locked
-     *
-     * @method isLoadingLocked
-     * @memberOf Subclass.Class.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isLoadingLocked = function()
-    {
-        return this._loadingLocked;
-    };
-
-    /**
      * Starts the process of loading files with new classes
      *
      * @method startLoading
@@ -193,9 +135,10 @@ Subclass.Module.LoadManager = (function()
      */
     LoadManager.prototype.startLoading = function()
     {
+        var module = this.getModule();
         var $this = this;
 
-        if (this.isLoadingLocked()) {
+        if (module.isPlugin() && (!module.getParent() || !module.getRoot().isPrepared())) {
             return;
         }
 
@@ -316,9 +259,7 @@ Subclass.Module.LoadManager = (function()
         );
 
         this._addToStackTimeout = setTimeout(function() {
-            if (!$this.isLoadingLocked()) {
-                $this.startLoading();
-            }
+            $this.startLoading();
         }, 10);
     };
 

@@ -131,7 +131,7 @@ Subclass.Module.LoadManager = (function()
      * Starts the process of loading files with new classes
      *
      * @method startLoading
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      */
     LoadManager.prototype.startLoading = function()
     {
@@ -157,7 +157,7 @@ Subclass.Module.LoadManager = (function()
      * Pauses the process of loading files with new classes
      *
      * @method pauseLoading
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      */
     LoadManager.prototype.pauseLoading = function()
     {
@@ -169,7 +169,7 @@ Subclass.Module.LoadManager = (function()
      * Reports whether the process of loading files with new classes was paused
      *
      * @method isLoadingPaused
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @returns {boolean}
      */
@@ -183,7 +183,7 @@ Subclass.Module.LoadManager = (function()
      * If it was completed then will be triggered the appropriate event.
      *
      * @method completeLoading
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      */
     LoadManager.prototype.completeLoading = function()
     {
@@ -208,7 +208,7 @@ Subclass.Module.LoadManager = (function()
      * Checks whether the loading process continues
      *
      * @method isLoading
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @returns {boolean}
      */
@@ -218,13 +218,14 @@ Subclass.Module.LoadManager = (function()
     };
 
     /**
-     * Adds the new class to load stack
+     * Adds the new file to load stack
      *
      * @method addToStack
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @param {string} fileName
-     *      The name of file relative to the "rootPath" module config option. (^ - for specifying the absolute path)
+     *      The name of file relative to the "rootPath" module config option.
+     *      Also it is possible to specify an absolute path using the "^" symbol at the start of the path.
      *
      * @param {function} [callback]
      *      The callback function which will be invoked after file will be loaded
@@ -266,10 +267,23 @@ Subclass.Module.LoadManager = (function()
     /**
      * Alias of {@link Subclass.Module.LoadManager#addToStack}
      *
-     * @type {Function}
+     * @method load
+     * @memberOf Subclass.Module.LoadManager.prototype
+     * @alias Subclass.Module.LoadManager#addToStack
      */
-    LoadManager.prototype.load = LoadManager.prototype.addToStack;
+    LoadManager.prototype.loadFile = LoadManager.prototype.addToStack;
 
+    /**
+     * Returns the object of loading file from the load stack
+     *
+     * @method getStackItem
+     * @memberOf Subclass.Module.LoadManager.prototype
+     *
+     * @param fileName
+     *      The name of loading file
+     *
+     * @returns {*}
+     */
     LoadManager.prototype.getStackItem = function(fileName)
     {
         var stackItem = null;
@@ -283,6 +297,17 @@ Subclass.Module.LoadManager = (function()
         return stackItem;
     };
 
+    /**
+     * Returns the index of file name in load stack
+     *
+     * @method getStackItemIndex
+     * @memberOf Subclass.Module.LoadManager.prototype
+     *
+     * @param fileName
+     *      The name of file
+     *
+     * @returns {boolean}
+     */
     LoadManager.prototype.getStackItemIndex = function(fileName)
     {
         var stackItemIndex = false;
@@ -300,7 +325,7 @@ Subclass.Module.LoadManager = (function()
      * Removes specified class from the load stack
      *
      * @method removeFromLoadStack
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @param {string} fileName
      *      The name of class
@@ -326,10 +351,10 @@ Subclass.Module.LoadManager = (function()
     };
 
     /**
-     * Processes the classes from load stack
+     * Processes files from the load stack. Loads files from stack.
      *
      * @method processStack
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      */
     LoadManager.prototype.processStack = function()
     {
@@ -354,11 +379,18 @@ Subclass.Module.LoadManager = (function()
             }
         }
 
+        // Creating the pack of loading files.
+        // While this portion loads the new files will not start loading.
+
         this.setStackPortion(stackPortion);
+
+        // Triggering the event when processing the new portion of files
 
         this.getModule().getEventManager().getEvent('onProcessLoadStack').trigger(
             this._stack
         );
+
+        // Loading files
 
         !function loadFile(fileName) {
             if (!fileName) {
@@ -384,6 +416,9 @@ Subclass.Module.LoadManager = (function()
             });
         }(stackPortion[0]);
 
+        // If loading of files from the portion was not completed
+        // then pause the loading of new files while the portion becomes empty
+
         if (!this.isStackEmpty()) {
             this.pauseLoading();
         }
@@ -393,7 +428,7 @@ Subclass.Module.LoadManager = (function()
      * Checks whether the specified files is in load stack
      *
      * @method isInStack
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @param {string} fileName
      *      The name of file
@@ -414,7 +449,7 @@ Subclass.Module.LoadManager = (function()
      * Checks whether the load stack is empty
      *
      * @method isStackEmpty
-     * @memberOf Subclass.Class.LoadManager.prototype
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @returns {boolean}
      */
@@ -424,9 +459,17 @@ Subclass.Module.LoadManager = (function()
     };
 
     /**
-     * Sets the stack portion
+     * Sets the stack portion.<br /><br />
+     *
+     * It is a pack of file names which will be loaded first.
+     * The files, which was added after the portion was created, will be loaded only after
+     * the files from current portion will be loaded.
+     *
+     * @method setStackPortion
+     * @memberOf Subclass.Module.LoadManager.prototype
      *
      * @param {Array.<string>} fileNames
+     *      The array of file names.
      */
     LoadManager.prototype.setStackPortion = function(fileNames)
     {
@@ -444,6 +487,9 @@ Subclass.Module.LoadManager = (function()
     /**
      * Returns the stack portion
      *
+     * @method getStackPortion
+     * @memberOf Subclass.Module.LoadManager.prototype
+     *
      * @returns {Array.<string>}
      */
     LoadManager.prototype.getStackPortion = function()
@@ -454,6 +500,9 @@ Subclass.Module.LoadManager = (function()
     /**
      * Reports whether the stack portion is empty
      *
+     * @method isStackPortionEmpty
+     * @memberOf Subclass.Module.LoadManager.prototype
+     *
      * @returns {boolean}
      */
     LoadManager.prototype.isStackPortionEmpty = function()
@@ -463,6 +512,9 @@ Subclass.Module.LoadManager = (function()
 
     /**
     * Removes file name from the stack portion
+    *
+    * @method removeFromStackPortion
+    * @memberOf Subclass.Module.LoadManager.prototype
     *
     * @param {string} fileName
     */

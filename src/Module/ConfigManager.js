@@ -127,10 +127,6 @@ Subclass.Module.ConfigManager = (function()
                 .apply()
             ;
         }
-
-        function setOtherConfigs() {
-        }
-
         if (moduleConfigs) {
             for (var configName in moduleConfigs) {
                 if (
@@ -356,7 +352,6 @@ Subclass.Module.ConfigManager = (function()
      * @param {Function} callback
      *      The callback function which will invoked after
      *      the specified main file will loaded
-     *
      */
     ConfigManager.prototype.setFiles = function(files, callback)
     {
@@ -373,7 +368,7 @@ Subclass.Module.ConfigManager = (function()
         var loadManager = module.getLoadManager();
 
         for (var i = 0; i < files.length; i++) {
-            loadManager.load(files[i]);
+            loadManager.loadFile(files[i]);
         }
     };
 

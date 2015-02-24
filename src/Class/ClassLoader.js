@@ -33,6 +33,8 @@ Subclass.Class.ClassLoader = (function()
         var eventManager = classManager.getModule().getEventManager();
         var loadManager = classManager.getModule().getLoadManager();
 
+        // Removing from load stack all files of classes which are already loaded
+
         eventManager.getEvent('onAddToLoadStack')
             .addListener(function(fileName, callback) {
                 var className = fileName.replace(/\.js$/, '');
@@ -42,6 +44,8 @@ Subclass.Class.ClassLoader = (function()
                 }
             })
         ;
+
+        // Removing from load stack process all files of classes which are already loaded
 
         eventManager.getEvent('onProcessLoadStack')
             .addListener(function(stackItems) {
@@ -60,6 +64,9 @@ Subclass.Class.ClassLoader = (function()
     /**
      * Returns the instance of class manager
      *
+     * @method getClassManager
+     * @memberOf Subclass.Class.ClassLoader.prototype
+     *
      * @returns {Subclass.Class.ClassManager}
      */
     ClassLoader.prototype.getClassManager = function()
@@ -69,6 +76,9 @@ Subclass.Class.ClassLoader = (function()
 
     /**
      * Returns the instance of load manager
+     *
+     * @method getLoadManager
+     * @memberOf Subclass.Class.ClassLoader.prototype
      *
      * @returns {Subclass.Module.LoadManager}
      */
@@ -83,11 +93,15 @@ Subclass.Class.ClassLoader = (function()
     /**
      * Loads the class by its name
      *
+     * @method loadClass
+     * @memberOf Subclass.Class.ClassLoader.prototype
+     *
      * @param className
      *      The name of class. It should be compatible with the file path where
      *      it is located relative to "rootPath" configuration option of module.
      *
      * @param {Function} callback
+     *      The callback function which will be invoked after the class will be loaded
      */
     ClassLoader.prototype.loadClass = function(className, callback)
     {
@@ -106,7 +120,7 @@ Subclass.Class.ClassLoader = (function()
                 .apply()
             ;
         }
-        loadManager.load(fileName, function() {
+        loadManager.loadFile(fileName, function() {
             if (!classManager.issetClass(className)) {
                 Subclass.Error.create('The class "' + className + '" was not loaded.');
             }
@@ -119,7 +133,11 @@ Subclass.Class.ClassLoader = (function()
     /**
      * Tells that the class with specified name was loaded
      *
+     * @method setClassLoaded
+     * @memberOf Subclass.Class.ClassLoader.prototype
+     *
      * @param {string} className
+     *      The name of class
      */
     ClassLoader.prototype.setClassLoaded = function(className)
     {

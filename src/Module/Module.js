@@ -652,7 +652,6 @@ Subclass.Module.Module = (function()
                     return rootModule.setReady();
                 }
             }
-
             if ((
                     this.isRoot()
                 ) || (
@@ -780,7 +779,7 @@ Subclass.Module.Module = (function()
             );
         }
         if (moduleFile) {
-            loadManager.load(moduleFile, function() {
+            loadManager.loadFile(moduleFile, function() {
                 if (callback) {
                     var module = Subclass.getModule(moduleName).getModule();
                     var moduleEventManager = module.getEventManager();

@@ -152,7 +152,7 @@ window.Subclass = (function()
                         fileName = "^" + fileName;
                     }
                     (function(fileName, pluginName) {
-                        loadManager.load(fileName, function () {
+                        loadManager.loadFile(fileName, function () {
                             module.addPlugin(pluginName);
                         });
                     })(fileName, pluginName);

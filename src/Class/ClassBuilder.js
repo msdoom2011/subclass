@@ -13,7 +13,7 @@
  * @param {Subclass.Class.ClassManager} classManager
  *      The instance of class manager
  *
- * @param {string} classType
+ * @param {string} [classType]
  *      The name of class type
  *
  * @param {string} [className]
@@ -28,14 +28,6 @@ Subclass.Class.ClassBuilder = (function()
                 .argument('the instance of class manager', false)
                 .received(classManager)
                 .expected('an instance of class "Subclass.Class.ClassManager"')
-                .apply()
-            ;
-        }
-        if (!classType || typeof classType != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of class type', false)
-                .received(classType)
-                .expected('a string')
                 .apply()
             ;
         }

@@ -1,34 +1,79 @@
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * The class instance of which allows create the new class definition or alter already existent class.
+ *
+ * @throws {Error}
+ *      Throws error if:
+ *      - specified invalid or missed the class manager instance
+ *      - specified invalid or missed the name of class type
+ *
+ * @param {Subclass.Class.ClassManager} classManager
+ *      The instance of class manager
+ *
+ * @param {string} classType
+ *      The name of class type
+ *
+ * @param {string} [className]
+ *      The name of class which definition you want to alter
  */
 Subclass.Class.ClassBuilder = (function()
 {
     function ClassBuilder(classManager, classType, className)
     {
+        if (!classManager || !(classManager instanceof Subclass.Class.ClassManager)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the instance of class manager', false)
+                .received(classManager)
+                .expected('an instance of class "Subclass.Class.ClassManager"')
+                .apply()
+            ;
+        }
+        if (!classType || typeof classType != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the name of class type', false)
+                .received(classType)
+                .expected('a string')
+                .apply()
+            ;
+        }
         /**
+         * The class manager instance
+         *
          * @type {Subclass.Class.ClassManager}
+         * @private
          */
         this._classManager = classManager;
 
         /**
-         * @type {(ClassType|null)}
+         * The instance of class definition
+         *
+         * @type {(Subclass.Class.ClassType|null)}
          * @private
          */
         this._class = null;
 
         /**
+         * The name of class type
+         *
          * @type {string}
          * @private
          */
         this._type = classType;
 
         /**
+         * THe name of class
+         *
          * @type {string}
          * @private
          */
         this._name = null;
 
         /**
+         * The plain object with definition of class
+         *
          * @type {Object}
          * @private
          */
@@ -48,7 +93,10 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.$parent = null;
 
     /**
-     * Returns class manager instance
+     * Returns the class manager instance
+     *
+     * @method getClassManager
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Subclass.Class.ClassManager}
      */
@@ -58,11 +106,15 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets class instance that will altered
+     * Sets the class instance which will be altered
+     *
+     * @method _setClass
+     * @private
      *
      * @param {string} className
+     *      The name of class
+     *
      * @returns {Subclass.Class.ClassBuilder}
-     * @private
      */
     ClassBuilder.prototype._setClass = function(className)
     {
@@ -86,11 +138,18 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets definition of class
+     * Sets the definition of class
+     *
+     * @method _setDefinition
+     * @private
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid definition of class
      *
      * @param {Object} classDefinition
+     *      The plain object with definition of class
+     *
      * @returns {Subclass.Class.ClassBuilder}
-     * @private
      */
     ClassBuilder.prototype._setDefinition = function(classDefinition)
     {
@@ -110,8 +169,10 @@ Subclass.Class.ClassBuilder = (function()
     /**
      * Returns class definition
      *
-     * @returns {Object}
+     * @method _getDefinition
      * @private
+     *
+     * @returns {Object}
      */
     ClassBuilder.prototype._getDefinition = function()
     {
@@ -121,7 +182,15 @@ Subclass.Class.ClassBuilder = (function()
     /**
      * Sets class type
      *
+     * @method setType
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid name of class type
+     *
      * @param {string} classType
+     *      The name of class type
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setType = function(classType)
@@ -143,7 +212,10 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Returns class type
+     * Returns the name of class type
+     *
+     * @method getType
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {string}
      */
@@ -153,9 +225,17 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets name of class
+     * Sets the name of class
+     *
+     * @method setName
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @throws {Error}
+     *      Throws error if class with specified name already exists
      *
      * @param {string} className
+     *      The name of class
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setName = function(className)
@@ -169,7 +249,10 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Returns name of class
+     * Returns the name of class
+     *
+     * @method getName
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {string}
      */
@@ -179,9 +262,14 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets parent of class
+     * Sets the parent of class (the class which the current one will extend)
+     *
+     * @method setParent
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @param {string} parentClassName
+     *      The name of parent class which the current one will extend
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setParent = function(parentClassName)
@@ -192,9 +280,12 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Returns parent of class
+     * Returns the name of parent class
      *
-     * @returns {ClassType}
+     * @method getParent
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @returns {string}
      */
     ClassBuilder.prototype.getParent = function()
     {
@@ -202,10 +293,16 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Validates class properties definition
+     * Validates the definition of typed class properties
      *
-     * @param classProperties
+     * @method _validateProperties
      * @private
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid definition of class properties
+     *
+     * @param {*} classProperties
+     *      The plain object with definitions of typed class properties
      */
     ClassBuilder.prototype._validateProperties = function(classProperties)
     {
@@ -220,9 +317,17 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets typed properties of class
+     * Sets the typed properties of class.<br /><br />
+     *
+     * This method redefines all typed class properties.<br />
+     * If the class already has definitions of typed properties they will be erased.<br />
+     *
+     * @method setProperties
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @param {Object.<Object>} classProperties
+     *      The plain object with definitions of typed class properties
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setProperties = function(classProperties)
@@ -234,9 +339,19 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Adds new class properties
+     * Adds new definitions of typed properties to the class.<br /><br />
+     *
+     * Current method allows to add new typed property definitions.<br />
+     * If typed properties with the same name already exists in class
+     * they will be redefined by the new added.
+     * The left properties will be not touched.
+     *
+     * @method addProperties
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @param {Object.<Object>} classProperties
+     *      The plain object with definitions of typed class properties
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.addProperties = function(classProperties)
@@ -255,7 +370,10 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Returns typed properties of class
+     * Returns the typed properties of class
+     *
+     * @method getProperties
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Object.<Object>}
      */
@@ -265,9 +383,14 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Removes typed class property
+     * Removes the typed class property with specified name
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid name of typed property
      *
      * @param {string} propertyName
+     *      The name of typed property
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.removeProperty = function(propertyName)
@@ -286,9 +409,17 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets static properties and methods of class
+     * Sets static properties and methods of the class
+     *
+     * @method setStatic
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid definition of static properties
      *
      * @param {Object} staticProperties
+     *      The plain object with definitions of static properties.
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setStatic = function(staticProperties)
@@ -307,7 +438,10 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Returns static properties and methods of class
+     * Returns static properties and methods of the class
+     *
+     * @method getStatic
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Object}
      */
@@ -317,10 +451,20 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets static property or method depending on value of staticPropertyValue argument
+     * Sets static property or method of the class
+     *
+     * @method setStaticProperty
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @throws {Error}
+     *      Throws error if specified not allowed name of static property or method
      *
      * @param {string} staticPropertyName
+     *      The name of static property or method
+     *
      * @param {*} staticPropertyValue
+     *      The value of static property or method
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
@@ -339,9 +483,17 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Removes static property or method
+     * Removes the static property or method
+     *
+     * @method removeStaticProperty
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @throws {Error}
+     *      Throws error if specified not allowed name of static property or name
      *
      * @param {string} staticPropertyName
+     *      The name of static property or method
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.removeStaticProperty = function(staticPropertyName)
@@ -360,11 +512,15 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Prepares class body
+     * Prepares the object with class definition (the class body)
+     *
+     * @method _prepareBody
+     * @private
      *
      * @param {Object} classBody
+     *      The object with definition of class
+     *
      * @returns {*}
-     * @private
      */
     ClassBuilder.prototype._prepareBody = function(classBody)
     {
@@ -388,9 +544,14 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Adds new methods and properties to classBody
+     * Adds new methods and properties to definition of class (the class body)
+     *
+     * @method addToBody
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @param {Object} classBody
+     *      The plain object with definitions of properties and methods of the class
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.addToBody = function(classBody)
@@ -404,9 +565,14 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Sets class not typed properties and methods
+     * Sets properties and methods of the class.<br /><br />
+     *
+     * Defines the class body except special properties which names start from "$_" symbols.
+     * The such properties will be omitted.
      *
      * @param {Object} classBody
+     *      The plain object with definitions of properties and methods of the class
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setBody = function(classBody)
@@ -423,16 +589,20 @@ Subclass.Class.ClassBuilder = (function()
                 delete classDefinition[propName];
             }
         }
-
         Subclass.Tools.extend(classDefinition, classBody);
 
         return this;
     };
 
     /**
-     * Sets class constructor function
+     * Sets constructor function of the class
      *
-     * @param {Function }constructorFunction
+     * @method setConstructor
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @param {Function } constructorFunction
+     *      The function which will be invoked every time the instance of class will be created
+     *
      * @returns {Subclass.Class.ClassBuilder}
      */
     ClassBuilder.prototype.setConstructor = function(constructorFunction)
@@ -443,7 +613,10 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Returns class constructor
+     * Returns constructor function of the class
+     *
+     * @method getConstructor
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {(Function|null)}
      */
@@ -453,7 +626,10 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Removes class constructor
+     * Removes class constructor function
+     *
+     * @method removeConstructor
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Subclass.Class.ClassBuilder}
      */
@@ -467,10 +643,17 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Validates current class definition
+     * Validates the result class definition object
+     *
+     * @method _validate
+     * @private
+     *
+     * @throws {Error}
+     *      Throws error if:
+     *      - The name of class was missed
+     *      - The type of class was missed
      *
      * @returns {Subclass.Class.ClassBuilder}
-     * @private
      */
     ClassBuilder.prototype._validate = function()
     {
@@ -484,7 +667,11 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     /**
-     * Saves class definition changes and registers class if it's needed
+     * Saves class definition changes and registers class
+     * if the current one with the same name does not exist
+     *
+     * @method save
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Subclass.Class.ClassType}
      */
@@ -504,5 +691,4 @@ Subclass.Class.ClassBuilder = (function()
     };
 
     return ClassBuilder;
-
 })();

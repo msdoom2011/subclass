@@ -77,15 +77,15 @@ Subclass.Module.Error = {};
  *                                       };
  *
  * dataTypes    {Object}    opt          Object, which keys are the type
- *                                       names (alias) and value are
+ *                                       names and values are
  *                                       its definitions.
  *
  *                                       It allows to create the new data
- *                                       types based on the default data
- *                                       types using configuration whatever
- *                                       you need.
+ *                                       types based on the default
+ *                                       (registered) data types using
+ *                                       configuration whatever you need.
  *
- *                                       Also you may to change the
+ *                                       Also you may to change
  *                                       configuration of the default
  *                                       data types.
  *
@@ -95,13 +95,13 @@ Subclass.Module.Error = {};
  *                                         ...
  *                                         dataTypes: {
  *
- *                                           // the new type
+ *                                           // creating the new type
  *                                           percents: {
  *                                             type: "string",
  *                                             pattern: /^[0-9]+%$/
  *                                           },
  *
- *                                           // change existent type
+ *                                           // altering existent type
  *                                           number: {
  *                                             type: "number",
  *                                             nullable: false,

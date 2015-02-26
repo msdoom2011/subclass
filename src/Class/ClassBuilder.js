@@ -4,6 +4,8 @@
  * @description
  *
  * The class instance of which allows create the new class definition or alter already existent class.
+ * If you want alter definition of existent class you must be sure that was not created no one instance of this class.
+ * Otherwise you can't save your changes.
  *
  * @throws {Error}
  *      Throws error if:
@@ -121,7 +123,7 @@ Subclass.Class.ClassBuilder = (function()
         }
 
         this.setName(classInst.getName());
-        this.setType(classInst.constructor.getClassTypeName());
+        this._setType(classInst.constructor.getClassTypeName());
         this._class = classInst;
 
         this._setDefinition(Subclass.Tools.copy(classDefinition));
@@ -161,21 +163,21 @@ Subclass.Class.ClassBuilder = (function()
     /**
      * Returns class definition
      *
-     * @method _getDefinition
-     * @private
+     * @method getDefinition
+     * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Object}
      */
-    ClassBuilder.prototype._getDefinition = function()
+    ClassBuilder.prototype.getDefinition = function()
     {
         return this._definition;
     };
 
     /**
-     * Sets class type
+     * Sets the class type
      *
-     * @method setType
-     * @memberOf Subclass.Class.ClassBuilder.prototype
+     * @method _setType
+     * @private
      *
      * @throws {Error}
      *      Throws error if specified invalid name of class type
@@ -185,7 +187,7 @@ Subclass.Class.ClassBuilder = (function()
      *
      * @returns {Subclass.Class.ClassBuilder}
      */
-    ClassBuilder.prototype.setType = function(classType)
+    ClassBuilder.prototype._setType = function(classType)
     {
         if (typeof classType !== 'string') {
             Subclass.Error.create('InvalidArgument')
@@ -266,7 +268,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.setParent = function(parentClassName)
     {
-        this._getDefinition().$_extends = parentClassName;
+        this.getDefinition().$_extends = parentClassName;
 
         return this;
     };
@@ -281,7 +283,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getParent = function()
     {
-        return this._getDefinition().$_extends || null;
+        return this.getDefinition().$_extends || null;
     };
 
     /**
@@ -321,11 +323,40 @@ Subclass.Class.ClassBuilder = (function()
      *      The plain object with definitions of typed class properties
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     * app.registerClass("Foo/Bar/TestClass", {
+     *      ...
+     *      $_properties: {
+     *          prop1: { type: "string" },
+     *          prop2: { type: "boolean" }
+     *      },
+     *      ...
+     * });
+     * ...
+     *
+     * app.alterClass("Foo/Bar/TestClass")
+     *     .setProperties({
+     *          foo: { type: "number" },
+     *          bar: { type: "string" }
+     *     })
+     *     .save()
+     * ;
+     *
+     * var TestClass = app.getClass('Foo/Bar/TestClass');
+     *
+     * console.log(TestClass.getDefinition().getProperties());
+     *
+     * // {
+     * //     foo: { type: "number" },
+     * //     bar: { type: "string" }
+     * // }
      */
     ClassBuilder.prototype.setProperties = function(classProperties)
     {
         this._validateProperties(classProperties);
-        this._getDefinition().$_properties = classProperties;
+        this.getDefinition().$_properties = classProperties;
 
         return this;
     };
@@ -345,16 +376,51 @@ Subclass.Class.ClassBuilder = (function()
      *      The plain object with definitions of typed class properties
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     * app.registerClass("Foo/Bar/TestClass", {
+     *      ...
+     *      $_properties: {
+     *          prop1: { type: "string" },
+     *          prop2: { type: "boolean" },
+     *          prop3: { type: "array" }
+     *      },
+     *      ...
+     * });
+     * ...
+     *
+     * app.alterClass("Foo/Bar/TestClass")
+     *     .addProperties({
+     *          foo: { type: "number" },
+     *          bar: { type: "string" },
+     *          prop3: { type: "object" }
+     *     })
+     *     .save()
+     * ;
+     * ...
+     *
+     * var TestClass = app.getClass('Foo/Bar/TestClass');
+     *
+     * console.log(TestClass.getDefinition().getProperties());
+     *
+     * // {
+     * //     prop1: { type: "string" },
+     * //     prop2: { type: "boolean" },
+     * //     prop3: { type: "object" },
+     * //     foo: { type: "number" },
+     * //     bar: { type: "string" }
+     * // }
      */
     ClassBuilder.prototype.addProperties = function(classProperties)
     {
         this._validateProperties(classProperties);
 
-        if (!this._getDefinition().$_properties) {
-            this._getDefinition().$_properties = {};
+        if (!this.getDefinition().$_properties) {
+            this.getDefinition().$_properties = {};
         }
         Subclass.Tools.extend(
-            this._getDefinition().$_properties,
+            this.getDefinition().$_properties,
             classProperties
         );
 
@@ -371,7 +437,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getProperties = function()
     {
-        return this._getDefinition().$_properties || {};
+        return this.getDefinition().$_properties || {};
     };
 
     /**
@@ -384,6 +450,31 @@ Subclass.Class.ClassBuilder = (function()
      *      The name of typed property
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     *
+     * app.registerClass("Foo/Bar/TestClass", {
+     *      ...
+     *      $_properties: {
+     *          foo: { type: "string" },
+     *          bar: { type: "number" }
+     *      },
+     *      ...
+     * });
+     * ...
+     *
+     * app.alterClass("Foo/Bar/TestClass")
+     *      .removeProperty("foo")
+     *      .save()
+     * ;
+     * ...
+     *
+     * var TestClass = app.getClass("Foo/Bar/TestClass");
+     *
+     * console.log(TestClass.getDefinition().getProperties());
+     *
+     * // { bar: { type: "number" } }
      */
     ClassBuilder.prototype.removeProperty = function(propertyName)
     {
@@ -395,7 +486,7 @@ Subclass.Class.ClassBuilder = (function()
                 .apply()
             ;
         }
-        delete this._getDefinition().$_properties[propertyName];
+        delete this.getDefinition().$_properties[propertyName];
 
         return this;
     };
@@ -413,6 +504,27 @@ Subclass.Class.ClassBuilder = (function()
      *      The plain object with definitions of static properties.
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     *
+     * app.buildClass("Class")
+     *      .setName("Foo/Bar/TestClass")
+     *      .setStatic({
+     *          staticProp: "static value",
+     *          staticMethod: function() {
+     *              alert(this.staticProp);
+     *          }
+     *      })
+     *      .save()
+     * ;
+     * ...
+     *
+     * var TestClass = app.getClass("Foo/Bar/TestClass");
+     * var TestClassStatic = TestClass.getStatic();
+     *
+     * var staticProp = TestClassStatic.staticProp; // "static value"
+     * TestClassStatic.staticMethod();               // alerts "static value"
      */
     ClassBuilder.prototype.setStatic = function(staticProperties)
     {
@@ -424,7 +536,7 @@ Subclass.Class.ClassBuilder = (function()
                 .apply()
             ;
         }
-        this._getDefinition().$_static = staticProperties;
+        this.getDefinition().$_static = staticProperties;
 
         return this;
     };
@@ -439,7 +551,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getStatic = function()
     {
-        return this._getDefinition().$_static || {};
+        return this.getDefinition().$_static || {};
     };
 
     /**
@@ -458,6 +570,21 @@ Subclass.Class.ClassBuilder = (function()
      *      The value of static property or method
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     *
+     * // Defining few static properties
+     * builder.setStatic({
+     *     foo: "foo value",
+     *     bar: 100
+     * });
+     *
+     * // Defining static properties one at a time
+     * builder
+     *     .setStaticProperty("foo", "foo value")
+     *     .setStaticProperty("bar", 100)
+     * ;
      */
     ClassBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
     {
@@ -469,7 +596,7 @@ Subclass.Class.ClassBuilder = (function()
                 .apply()
             ;
         }
-        this._getDefinition().$_static[staticPropertyName] = staticPropertyValue;
+        this.getDefinition().$_static[staticPropertyName] = staticPropertyValue;
 
         return this;
     };
@@ -498,7 +625,7 @@ Subclass.Class.ClassBuilder = (function()
                 .apply()
             ;
         }
-        delete this._getDefinition().$_static[staticPropertyName];
+        delete this.getDefinition().$_static[staticPropertyName];
 
         return this;
     };
@@ -550,7 +677,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         classBody = this._prepareBody(classBody);
 
-        var classDefinition = this._getDefinition();
+        var classDefinition = this.getDefinition();
         Subclass.Tools.extend(classDefinition, classBody);
 
         return this;
@@ -571,7 +698,7 @@ Subclass.Class.ClassBuilder = (function()
     {
         classBody = this._prepareBody(classBody);
 
-        var classDefinition = this._getDefinition();
+        var classDefinition = this.getDefinition();
 
         for (var propName in classDefinition) {
             if (!classDefinition.hasOwnProperty(propName)) {
@@ -599,7 +726,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.setConstructor = function(constructorFunction)
     {
-        this._getDefinition().$_constructor = constructorFunction;
+        this.getDefinition().$_constructor = constructorFunction;
 
         return this;
     };
@@ -614,7 +741,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getConstructor = function()
     {
-        return this._getDefinition().$_constructor || null;
+        return this.getDefinition().$_constructor || null;
     };
 
     /**
@@ -627,7 +754,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.removeConstructor = function()
     {
-        var classDefinition = this._getDefinition();
+        var classDefinition = this.getDefinition();
 
         delete classDefinition.$_constructor;
 
@@ -672,13 +799,13 @@ Subclass.Class.ClassBuilder = (function()
         this._validate();
 
         if (this._class) {
-            this._class.setDefinition(this._getDefinition());
+            this._class.setDefinition(this.getDefinition());
             return this._class;
         }
         return this.getClassManager().addClass(
             this.getType(),
             this.getName(),
-            this._getDefinition()
+            this.getDefinition()
         );
     };
 

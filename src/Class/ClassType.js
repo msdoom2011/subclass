@@ -299,7 +299,7 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * Returns all typed properties in current class instance
+     * Returns all typed properties in current class definition instance
      *
      * @param {boolean} [withInherited]
      * @returns {Object.<Subclass.Property.PropertyType>}

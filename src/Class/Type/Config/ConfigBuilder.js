@@ -98,7 +98,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
     {
         this._validateIncludes(includesList);
         this._normalizeIncludes(includesList);
-        this._getDefinition().$_includes = includesList;
+        this.getDefinition().$_includes = includesList;
 
         return this;
     };
@@ -113,10 +113,10 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
     {
         this._validateIncludes(includesList);
 
-        if (!this._getDefinition().$_includes) {
-            this._getDefinition().$_includes = [];
+        if (!this.getDefinition().$_includes) {
+            this.getDefinition().$_includes = [];
         }
-        this._getDefinition().$_includes = this._getDefinition().$_includes.concat(includesList);
+        this.getDefinition().$_includes = this.getDefinition().$_includes.concat(includesList);
 
         return this;
     };
@@ -131,10 +131,10 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
     {
         this._validateInclude(include);
 
-        if (!this._getDefinition().$_includes) {
-            this._getDefinition().$_includes = [];
+        if (!this.getDefinition().$_includes) {
+            this.getDefinition().$_includes = [];
         }
-        this._getDefinition().$_includes.push(include);
+        this.getDefinition().$_includes.push(include);
 
         return this;
     };
@@ -146,7 +146,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
      */
     ConfigBuilder.prototype.getIncludes = function()
     {
-        return this._getDefinition().$_includes || [];
+        return this.getDefinition().$_includes || [];
     };
 
     /**
@@ -236,7 +236,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
     {
         this._validateDecorators(decoratorsList);
         this._normalizeDecorators(decoratorsList);
-        this._getDefinition().$_decorators = decoratorsList;
+        this.getDefinition().$_decorators = decoratorsList;
 
         return this;
     };
@@ -251,10 +251,10 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
     {
         this._validateDecorators(decoratorsList);
 
-        if (!this._getDefinition().$_decorators) {
-            this._getDefinition().$_decorators = [];
+        if (!this.getDefinition().$_decorators) {
+            this.getDefinition().$_decorators = [];
         }
-        this._getDefinition().$_decorators = this._getDefinition().$_decorators.concat(decoratorsList);
+        this.getDefinition().$_decorators = this.getDefinition().$_decorators.concat(decoratorsList);
 
         return this;
     };
@@ -269,10 +269,10 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
     {
         this._validateInclude(decorator);
 
-        if (!this._getDefinition().$_decorators) {
-            this._getDefinition().$_decorators = [];
+        if (!this.getDefinition().$_decorators) {
+            this.getDefinition().$_decorators = [];
         }
-        this._getDefinition().$_decorators.push(decorator);
+        this.getDefinition().$_decorators.push(decorator);
 
         return this;
     };
@@ -284,7 +284,7 @@ Subclass.Class.Type.Config.ConfigBuilder = (function()
      */
     ConfigBuilder.prototype.getDecorators = function()
     {
-        return this._getDefinition().$_decorators || [];
+        return this.getDefinition().$_decorators || [];
     };
 
     ConfigBuilder.prototype.setProperties = undefined;

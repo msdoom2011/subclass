@@ -59,7 +59,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setTraits = function(traitsList)
     {
         this._validateTraits(traitsList);
-        this._getDefinition().$_traits = traitsList;
+        this.getDefinition().$_traits = traitsList;
 
         return this;
     };
@@ -74,10 +74,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         this._validateTraits(traitsList);
 
-        if (!this._getDefinition().$_traits) {
-            this._getDefinition().$_traits = [];
+        if (!this.getDefinition().$_traits) {
+            this.getDefinition().$_traits = [];
         }
-        this._getDefinition().$_traits = this._getDefinition().$_traits.concat(traitsList);
+        this.getDefinition().$_traits = this.getDefinition().$_traits.concat(traitsList);
 
         return this;
     };
@@ -92,10 +92,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         this._validateTrait(traitName);
 
-        if (!this._getDefinition().$_traits) {
-            this._getDefinition().$_traits = [];
+        if (!this.getDefinition().$_traits) {
+            this.getDefinition().$_traits = [];
         }
-        this._getDefinition().$_traits.push(traitName);
+        this.getDefinition().$_traits.push(traitName);
 
         return this;
     };
@@ -107,7 +107,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getTraits = function()
     {
-        return this._getDefinition().$_traits || [];
+        return this.getDefinition().$_traits || [];
     };
 
     /**
@@ -152,7 +152,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     ClassBuilder.prototype.setInterfaces = function(interfacesList)
     {
         this._validateInterfaces(interfacesList);
-        this._getDefinition().$_implements = interfacesList;
+        this.getDefinition().$_implements = interfacesList;
 
         return this;
     };
@@ -167,10 +167,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         this._validateInterfaces(interfacesList);
 
-        if (!this._getDefinition().$_implements) {
-            this._getDefinition().$_implements = [];
+        if (!this.getDefinition().$_implements) {
+            this.getDefinition().$_implements = [];
         }
-        this._getDefinition().$_implements = this._getDefinition().$_implements.concat(interfacesList);
+        this.getDefinition().$_implements = this.getDefinition().$_implements.concat(interfacesList);
 
         return this;
     };
@@ -185,10 +185,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         this._validateInclude(interfaceName);
 
-        if (!this._getDefinition().$_implements) {
-            this._getDefinition().$_implements = [];
+        if (!this.getDefinition().$_implements) {
+            this.getDefinition().$_implements = [];
         }
-        this._getDefinition().$_implements.push(interfaceName);
+        this.getDefinition().$_implements.push(interfaceName);
 
         return this;
     };
@@ -200,7 +200,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.getInterfaces = function()
     {
-        return this._getDefinition().$_implements || [];
+        return this.getDefinition().$_implements || [];
     };
 
     return ClassBuilder;

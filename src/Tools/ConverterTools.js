@@ -105,6 +105,27 @@ Subclass.Tools.ConverterTools = (function()
                 return result[0];
             }
             return "";
+        },
+
+        /**
+         * Returns the number precision
+         *
+         * @method getNumberPrecision
+         * @memberOf Subclass.Tools
+         * @static
+         *
+         * @param {(string|number)} numeric
+         * @returns {*}
+         */
+        getNumberPrecision: function(numeric)
+        {
+            if (!this.isNumeric(numeric)) {
+                return 0;
+            }
+            numeric = String(numeric);
+            var result = numeric.match(/\.([0-9])+/i);
+
+            return result ? result[1].length : 0;
         }
     });
 

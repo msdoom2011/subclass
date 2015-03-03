@@ -523,7 +523,7 @@ Subclass.Class.ClassBuilder = (function()
      * var TestClass = app.getClass("Foo/Bar/TestClass");
      * var TestClassStatic = TestClass.getStatic();
      *
-     * var staticProp = TestClassStatic.staticProp; // "static value"
+     * var staticProp = TestClassStatic.staticProp;  // "static value"
      * TestClassStatic.staticMethod();               // alerts "static value"
      */
     ClassBuilder.prototype.setStatic = function(staticProperties)
@@ -672,6 +672,49 @@ Subclass.Class.ClassBuilder = (function()
      *      The plain object with definitions of properties and methods of the class
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     *
+     * app.registerClass("Foo/Bar/TestClass", {
+     *     _bar: 0,
+     *
+     *     $_constructor: function(bar) {
+     *          this._bar = bar;
+     *     }
+     * });
+     * ...
+     *
+     * app.alterClass("Foo/Bar/TestClass")
+     *     .addToBody({
+     *
+     *         _foo: 10,
+     *
+     *         setFoo: function(foo) {
+     *             this._foo = foo;
+     *         },
+     *
+     *         getFoo: function() {
+     *             return this._foo;
+     *         }
+     *     })
+     *     .save()
+     * ;
+     * ...
+     *
+     * var TestClass = app.getClass("Foo/Bar/TestClass");
+     * var testClassDefinition = TestClass.getDefinition().getData();
+     * console.log(testClassDefinition);
+     *
+     * // {
+     * //   ...
+     * //   _bar: 0,
+     * //   _foo: 10,
+     * //   $_constructor: function(bar) { ... },
+     * //   setFoo: function(foo) { ... },
+     * //   getFoo: function() { ... },
+     * //   ...
+     * // }
      */
     ClassBuilder.prototype.addToBody = function(classBody)
     {
@@ -689,10 +732,39 @@ Subclass.Class.ClassBuilder = (function()
      * Defines the class body except special properties which names start from "$_" symbols.
      * The such properties will be omitted.
      *
+     * If you alter someone class then the call of this method removes all methods and properties
+     * from the class body which not start from "$_" symbols and will be replaced by the new ones
+     * from the object which is specified in current method as argument.
+     *
      * @param {Object} classBody
      *      The plain object with definitions of properties and methods of the class
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     *
+     * app.buildClass("Class")
+     *      .setName("Foo/Bar/TestClass")
+     *      .setBody({
+     *
+     *          _bar: 0,
+     *
+     *          _foo: 10,
+     *
+     *          $_constructor: function(bar) {
+     *              this._bar = bar;
+     *          },
+     *
+     *          setFoo: function(foo) {
+     *              this._foo = foo;
+     *          },
+     *
+     *          getFoo: function() {
+     *              return this._foo;
+     *          }
+     *      })
+     *      .save()
+     * ;
      */
     ClassBuilder.prototype.setBody = function(classBody)
     {
@@ -719,10 +791,24 @@ Subclass.Class.ClassBuilder = (function()
      * @method setConstructor
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
-     * @param {Function } constructorFunction
+     * @param {Function} constructorFunction
      *      The function which will be invoked every time the instance of class will be created
      *
      * @returns {Subclass.Class.ClassBuilder}
+     *
+     * @example
+     * ...
+     *
+     * app.buildClass("Class")
+     *      .setName("Foo/Bar/TestClass")
+     *      .setConstructor(function(bar) {
+     *          this._bar = bar;
+     *      })
+     *      .setBody({
+     *          _bar: 0
+     *      })
+     *      .save()
+     * ;
      */
     ClassBuilder.prototype.setConstructor = function(constructorFunction)
     {

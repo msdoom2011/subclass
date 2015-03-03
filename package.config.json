@@ -131,7 +131,8 @@
       "<%= config.lib.dir.src %>/Service/**/*.js",
       "<%= config.lib.dir.src %>/Tools/**/*.js",
       "<%= config.lib.dir.src %>/Error/**/*.js",
-      "<%= config.lib.dir.src %>/Class/ClassManager.js"
+      "<%= config.lib.dir.src %>/Class/ClassManager.js",
+      "<%= config.lib.dir.src %>/Class/ClassBuilder.js"
     ]
   }
 }

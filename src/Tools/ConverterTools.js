@@ -115,7 +115,9 @@ Subclass.Tools.ConverterTools = (function()
          * @static
          *
          * @param {(string|number)} numeric
-         * @returns {*}
+         *      The numeric string or number
+         *
+         * @returns {number}
          */
         getNumberPrecision: function(numeric)
         {

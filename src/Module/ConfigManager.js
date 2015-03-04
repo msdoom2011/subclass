@@ -389,6 +389,10 @@ Subclass.Module.ConfigManager = (function()
      * Defines custom data types relying on existent property types
      * registered in Subclass.Property.PropertyManager.
      *
+     * You can also redefine definitions of standard data types,
+     * for example, if you want to set default value for all number properties or
+     * customize it to be not nullable etc.
+     *
      * @method setDataTypes
      * @memberOf Subclass.Module.ConfigManager.prototype
      *
@@ -440,7 +444,7 @@ Subclass.Module.ConfigManager = (function()
         this._checkModuleIsReady();
         this.getModule()
             .getPropertyManager()
-            .defineCustomDataTypes(propertyDefinitions)
+            .defineDataTypes(propertyDefinitions)
         ;
     };
 
@@ -456,7 +460,7 @@ Subclass.Module.ConfigManager = (function()
     {
         return this.getModule()
             .getPropertyManager()
-            .getCustomTypesManager()
+            .getDataTypeManager()
             .getTypeDefinitions()
         ;
     };

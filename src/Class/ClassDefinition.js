@@ -704,7 +704,7 @@ Subclass.Class.ClassDefinition = (function()
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
         var propertyManager = classManager.getModule().getPropertyManager();
-        var customTypesManager = propertyManager.getCustomTypesManager();
+        var dataTypeManager = propertyManager.getDataTypeManager();
 
         var requires = this.getRequires();
         var properties = this.getProperties();
@@ -746,11 +746,11 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 var propertyTypeName = propertyDefinition.type;
 
-                if (customTypesManager.issetType(propertyTypeName)) {
-                    var customTypeDefinition = Subclass.Tools.copy(customTypesManager.getTypeDefinition(propertyTypeName));
-                    propertyTypeName = customTypeDefinition.type;
+                if (dataTypeManager.issetType(propertyTypeName)) {
+                    var dataTypeDefinition = Subclass.Tools.copy(dataTypeManager.getTypeDefinition(propertyTypeName));
+                    propertyTypeName = dataTypeDefinition.type;
 
-                    propertyDefinition = Subclass.Tools.extendDeep(customTypeDefinition, propertyDefinition);
+                    propertyDefinition = Subclass.Tools.extendDeep(dataTypeDefinition, propertyDefinition);
                     propertyDefinition.type = propertyTypeName;
                 }
                 var propertyType = Subclass.Property.PropertyManager.getPropertyType(propertyDefinition.type);

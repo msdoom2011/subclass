@@ -43,12 +43,12 @@ Subclass.Property.PropertyManager = (function()
         this._hash = Math.round(Math.abs(new Date().getTime() * Math.random() / 100000));
 
         /**
-         * Custom data types manager
+         * Data types manager
          *
-         * @type {Subclass.Property.CustomTypesManager}
+         * @type {Subclass.Property.DataTypeManager}
          * @private
          */
-        this._customTypesManager = new Subclass.Property.CustomTypesManager(this);
+        this._dataTypeManager = new Subclass.Property.DataTypeManager(this);
     }
 
     /**
@@ -62,23 +62,23 @@ Subclass.Property.PropertyManager = (function()
     };
 
     /**
-     * Returns instance of custom types manager
+     * Returns instance of data type manager
      *
-     * @returns {Subclass.Property.CustomTypesManager}
+     * @returns {Subclass.Property.DataTypeManager}
      */
-    PropertyManager.prototype.getCustomTypesManager = function()
+    PropertyManager.prototype.getDataTypeManager = function()
     {
-        return this._customTypesManager;
+        return this._dataTypeManager;
     };
 
     /**
-     * Defines custom property types
+     * Defines data types
      *
      * @param {Object.<Object>} definitions
      */
-    PropertyManager.prototype.defineCustomDataTypes = function(definitions)
+    PropertyManager.prototype.defineDataTypes = function(definitions)
     {
-        this.getCustomTypesManager().addTypeDefinitions(definitions);
+        this.getDataTypeManager().addTypeDefinitions(definitions);
     };
 
     /**
@@ -158,14 +158,14 @@ Subclass.Property.PropertyManager = (function()
                 .apply()
             ;
         }
-        var customTypesManager = this.getCustomTypesManager();
+        var dataTypeManager = this.getDataTypeManager();
         var propertyTypeName = propertyDefinition.type;
 
-        if (customTypesManager.issetType(propertyTypeName)) {
-            var customTypeDefinition = Subclass.Tools.copy(customTypesManager.getTypeDefinition(propertyTypeName));
-            propertyTypeName = customTypeDefinition.type;
+        if (dataTypeManager.issetType(propertyTypeName)) {
+            var dataTypeDefinition = Subclass.Tools.copy(dataTypeManager.getTypeDefinition(propertyTypeName));
+            propertyTypeName = dataTypeDefinition.type;
 
-            propertyDefinition = Subclass.Tools.extendDeep(customTypeDefinition, propertyDefinition);
+            propertyDefinition = Subclass.Tools.extendDeep(dataTypeDefinition, propertyDefinition);
             propertyDefinition.type = propertyTypeName;
         }
 

@@ -1,14 +1,36 @@
 /**
  * @class
+ * @constructor
+ * @description
+ *
+ * The class which contains definitions of global data types.
+ * It is standard data types like "string", "number", "boolean", "object", "map" etc.
+ *
+ * Also it is possible to define custom data types based on standard ones.
+ * It is convenient in cases when you want to use the same property definition in many places.
+ *
+ * The profit of global data types in ability to check does your value fit to the global data type.
+ * Also
+ *
+ * @throws {Error}
+ *      Throws error if specified invalid property manager instance
+ *
+ * @param {Subclass.Property.PropertyManager} propertyManager
+ *      The instance of property manager
  */
-Subclass.Property.CustomTypesManager = (function()
+Subclass.Property.DataTypeManager = (function()
 {
-    /**
-     * @param {Subclass.Property.PropertyManager} propertyManager
-     * @constructor
-     */
-    function CustomTypesManager(propertyManager)
+    function DataTypeManager(propertyManager)
     {
+        if (!propertyManager || !(propertyManager instanceof Subclass.Property.PropertyManager)) {
+            Subclass.Error.create("InvalidArgument")
+                .argument('the instance of property manager')
+                .received(propertyManager)
+                .expected('an instance of class "Subclass.Property.PropertyManager"')
+                .apply()
+            ;
+        }
+
         /**
          * @type {Subclass.Property.PropertyManager}
          * @private
@@ -41,18 +63,18 @@ Subclass.Property.CustomTypesManager = (function()
      *
      * @returns {Subclass.Property.PropertyManager}
      */
-    CustomTypesManager.prototype.getPropertyManager = function()
+    DataTypeManager.prototype.getPropertyManager = function()
     {
         return this._propertyManager;
     };
 
     /**
-     * Sets custom types definitions
+     * Validates data type definitions
      *
      * @param {Object.<Object>} definitions
      * @throws {Error}
      */
-    CustomTypesManager.prototype.validateTypeDefinitions = function(definitions)
+    DataTypeManager.prototype.validateTypeDefinitions = function(definitions)
     {
         try {
             if (!Subclass.Tools.isPlainObject(definitions)) {
@@ -86,7 +108,7 @@ Subclass.Property.CustomTypesManager = (function()
      *
      * @param {Object.<Object>} definitions
      */
-    CustomTypesManager.prototype.addTypeDefinitions = function(definitions)
+    DataTypeManager.prototype.addTypeDefinitions = function(definitions)
     {
         this.validateTypeDefinitions(definitions);
 
@@ -100,7 +122,7 @@ Subclass.Property.CustomTypesManager = (function()
     /**
     * Initializing defined custom property types
     */
-    CustomTypesManager.prototype.initialize = function()
+    DataTypeManager.prototype.initialize = function()
     {
         var typeDefinitions = this.getTypeDefinitions();
         var propertyManager = this.getPropertyManager();
@@ -153,7 +175,7 @@ Subclass.Property.CustomTypesManager = (function()
      *
      * @returns {Object}
      */
-    CustomTypesManager.prototype.getTypeDefinitions = function(privateDefinitions)
+    DataTypeManager.prototype.getTypeDefinitions = function(privateDefinitions)
     {
         var mainModule = this.getPropertyManager().getModule();
         var moduleManager = mainModule.getModuleManager();
@@ -172,8 +194,8 @@ Subclass.Property.CustomTypesManager = (function()
                 Subclass.Tools.extend(typeDefinitions, $this._typeDefinitions);
                 return;
             }
-            var moduleCustomTypesManager = module.getPropertyManager().getCustomTypesManager();
-            var moduleDefinitions = moduleCustomTypesManager.getTypeDefinitions();
+            var moduleDataTypeManager = module.getPropertyManager().getDataTypeManager();
+            var moduleDefinitions = moduleDataTypeManager.getTypeDefinitions();
 
             Subclass.Tools.extend(typeDefinitions, moduleDefinitions);
         });
@@ -182,22 +204,22 @@ Subclass.Property.CustomTypesManager = (function()
     };
 
     /**
-     * Returns definition of custom property type
+     * Returns definition of data type
      *
      * @param {string} typeName
      * @returns {Object}
      * @throws {Error}
      */
-    CustomTypesManager.prototype.getTypeDefinition = function(typeName)
+    DataTypeManager.prototype.getTypeDefinition = function(typeName)
     {
         if (!this.issetType(typeName)) {
-            Subclass.Error.create('Trying to get non existent custom property type "' + typeName + '".');
+            Subclass.Error.create('Trying to get definition of non existent data type "' + typeName + '".');
         }
         return this.getTypeDefinitions()[typeName];
     };
 
     /**
-     * Returns custom types
+     * Returns data types
      *
      * @param {boolean} [privateTypes = false]
      *      If passed true it returns data types only from current module
@@ -205,7 +227,7 @@ Subclass.Property.CustomTypesManager = (function()
      *
      * @returns {Object}
      */
-    CustomTypesManager.prototype.getTypes = function(privateTypes)
+    DataTypeManager.prototype.getTypes = function(privateTypes)
     {
         var mainModule = this.getPropertyManager().getModule();
         var moduleManager = mainModule.getModuleManager();
@@ -224,8 +246,8 @@ Subclass.Property.CustomTypesManager = (function()
                 Subclass.Tools.extend(dataTypes, $this._types);
                 return;
             }
-            var moduleCustomTypesManager = module.getPropertyManager().getCustomTypesManager();
-            var moduleDataTypes = moduleCustomTypesManager.getTypes();
+            var moduleDataTypeManager = module.getPropertyManager().getDataTypeManager();
+            var moduleDataTypes = moduleDataTypeManager.getTypes();
 
             Subclass.Tools.extend(dataTypes, moduleDataTypes);
         });
@@ -234,29 +256,29 @@ Subclass.Property.CustomTypesManager = (function()
     };
 
     /**
-     * Returns custom property type instance
+     * Returns data type instance
      *
      * @param {string} typeName
      * @returns {PropertyType}
      */
-    CustomTypesManager.prototype.getType = function(typeName)
+    DataTypeManager.prototype.getType = function(typeName)
     {
         if (!this.issetType(typeName)) {
-            Subclass.Error.create('Trying to get non existent custom property type "' + typeName + '".');
+            Subclass.Error.create('Trying to get definition of non existent data type "' + typeName + '".');
         }
         return this.getTypes()[typeName];
     };
 
     /**
-     * Checks if specified custom property type is exists
+     * Checks if specified data type exists
      *
      * @param {string} typeName
      * @returns {boolean}
      */
-    CustomTypesManager.prototype.issetType = function(typeName)
+    DataTypeManager.prototype.issetType = function(typeName)
     {
         return !!this.getTypeDefinitions()[typeName];
     };
 
-    return CustomTypesManager;
+    return DataTypeManager;
 })();

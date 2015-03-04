@@ -296,10 +296,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
                 property = this.getProperty(dataType);
 
             } else {
-                var customDataTypesManager = propertyManager.getCustomTypesManager();
+                var dataTypeManager = propertyManager.getDataTypeManager();
 
-                if (customDataTypesManager.issetType(dataType)) {
-                    property = customDataTypesManager.getType(dataType).getAPI(this);
+                if (dataTypeManager.issetType(dataType)) {
+                    property = dataTypeManager.getType(dataType).getAPI(this);
                 }
             }
             if (!property) {

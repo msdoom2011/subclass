@@ -108,6 +108,7 @@ Subclass.Property.Type.Map.MapDefinition = (function()
         this.validateSchema(schema);
         this.getData().schema = schema;
 
+        var propertyManager = this.getProperty().getPropertyManager();
         var property = this.getProperty();
         var defaultValue = {};
 
@@ -115,6 +116,9 @@ Subclass.Property.Type.Map.MapDefinition = (function()
             if (!schema.hasOwnProperty(propName)) {
                 continue;
             }
+            schema[propName] = propertyManager.normalizePropertyDefinition(
+                schema[propName]
+            );
             if (!this.isWritable()) {
                 schema[propName].writable = false;
             }

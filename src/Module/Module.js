@@ -299,6 +299,7 @@ Subclass.Module.Module = (function()
 
         this.setConfigs(moduleConfigs);
         this.getClassManager().initialize();
+        this.getPropertyManager().initialize();
         this.getLoadManager().initialize();
         this.getServiceManager().initialize();
 

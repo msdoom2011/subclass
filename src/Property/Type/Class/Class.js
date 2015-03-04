@@ -68,6 +68,31 @@ Subclass.Property.Type.Class.Class = (function()
         return false;
     };
 
+    /**
+     * @inheritDoc
+     */
+    ClassType.normalizeDefinition = function(definition)
+    {
+        if (Array.isArray(definition) && definition.length >= 1 && definition.length <= 4) {
+            var fullDefinition = {};
+
+            if (definition[0]) {
+                fullDefinition.type = definition[0];
+            }
+            if (definition.length >= 2) {
+                fullDefinition.className = definition[1];
+            }
+            if (definition.length >= 3) {
+                fullDefinition.default = definition[2];
+            }
+            if (definition.length == 4) {
+                fullDefinition.writable = definition[3];
+            }
+            return fullDefinition;
+        }
+        return definition;
+    };
+
 
     /*************************************************/
     /*        Registering new property type          */

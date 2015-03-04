@@ -53,7 +53,15 @@ Subclass.Property.Type.Number.Number = (function()
      */
     NumberType.getEmptyDefinition = function()
     {
-        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+        return this.$parent.getEmptyDefinition.call(this);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    NumberType.normalizeDefinition = function(definition)
+    {
+        return this.$parent.normalizeDefinition.call(this, definition);
     };
 
 

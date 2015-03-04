@@ -76,7 +76,15 @@ Subclass.Property.Type.Collection.ObjectCollection.ObjectCollectionType = (funct
      */
     ObjectCollectionType.getEmptyDefinition = function()
     {
-        return false;
+        return this.$parent.getEmptyDefinition();
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ObjectCollectionType.normalizeDefinition = function(definition)
+    {
+        return this.$parent.normalizeDefinition(definition);
     };
 
     /**

@@ -71,12 +71,21 @@ Subclass.Property.Type.Collection.ArrayCollection.ArrayCollection = (function()
         return Subclass.Property.Type.Collection.ArrayCollection.ArrayCollectionDefinition;
     };
 
+
     /**
      * @inheritDoc
      */
     ArrayCollectionType.getEmptyDefinition = function()
     {
-        return false;
+        return this.$parent.getEmptyDefinition();
+    };
+
+    /**
+     * @inheritDoc
+     */
+    ArrayCollectionType.normalizeDefinition = function(definition)
+    {
+        return this.$parent.normalizeDefinition(definition);
     };
 
     /**

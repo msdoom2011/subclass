@@ -10,7 +10,7 @@ Subclass.Class.Type.Config = {};
 Subclass.Class.Type.Config.Config = (function()
 {
     /*************************************************/
-    /*        Describing class type "Class"          */
+    /*        Describing class type "Config"          */
     /*************************************************/
 
     /**

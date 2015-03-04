@@ -84,7 +84,7 @@ Subclass.Class.Error.InvalidClassOptionError = (function()
         var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
-            message += 'Invalid value of option "' + this.option() + '" ';
+            message += 'Invalid value of option ' + this.option() + ' ';
             message += 'in definition of class "' + this.className() + '". ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""

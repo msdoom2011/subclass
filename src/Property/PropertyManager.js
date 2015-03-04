@@ -51,6 +51,11 @@ Subclass.Property.PropertyManager = (function()
         this._dataTypeManager = new Subclass.Property.DataTypeManager(this);
     }
 
+    PropertyManager.prototype.initialize = function()
+    {
+        this.getDataTypeManager().initialize();
+    };
+
     /**
      * Returns subclass module instance
      *
@@ -194,17 +199,41 @@ Subclass.Property.PropertyManager = (function()
                 (contextClass && ' in class "' + contextClass.getName() + '"' || "") +  "."
             );
         }
-
         inst.initialize();
 
-        if (!(inst instanceof Subclass.Property.PropertyType)) {
-            Subclass.Error.create(
-                'Property type factory must be instance of ' +
-                '"Subclass.Property.PropertyType" class.'
-            );
-        }
-
         return inst;
+    };
+
+    PropertyManager.prototype.normalizePropertyDefinition = function(definition)
+    {
+        var dataTypeManager = this.getDataTypeManager();
+
+        if (definition === undefined || definition === null) {
+            Subclass.Error.create("InvalidArgument")
+                .argument('the definition of property', false)
+                .received(definition)
+                .expected('not null or undefined')
+                .apply()
+            ;
+        }
+        if (typeof definition == 'string' && dataTypeManager.issetType(definition)) {
+            return dataTypeManager.getTypeDefinition(definition);
+        }
+        if (Array.isArray(definition) && definition.length >= 1) {
+            var dataTypeName, dataType;
+
+            if (definition[0] && PropertyManager.issetPropertyType(definition[0])) {
+                dataTypeName = definition[0];
+                dataType = PropertyManager.getPropertyType(dataTypeName);
+
+                definition = dataType.normalizeDefinition(definition);
+
+            } else if (definition[0] && dataTypeManager.issetType(definition[0])) {
+                dataTypeName = definition[0];
+                definition = dataTypeManager.getTypeDefinition(dataTypeName);
+            }
+        }
+        return definition;
     };
 
 

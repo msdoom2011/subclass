@@ -54,7 +54,7 @@ Subclass.Property.DataTypeManager = (function()
         var $this = this;
 
         eventManager.getEvent('onLoadingEnd').addListener(function() {
-            $this.initialize();
+            $this.initializeTypes();
         });
     }
 
@@ -119,23 +119,16 @@ Subclass.Property.DataTypeManager = (function()
         }
     };
 
-    /**
-    * Initializing defined custom property types
-    */
     DataTypeManager.prototype.initialize = function()
     {
-        var typeDefinitions = this.getTypeDefinitions();
         var propertyManager = this.getPropertyManager();
         var module = propertyManager.getModule();
-        var typeName;
-
-        // Adding default data types to the root module
 
         if (module.isRoot()) {
             var propertyTypes = propertyManager.constructor.getPropertyTypes();
             var defaultTypeDefinitions = {};
 
-            for (typeName in propertyTypes) {
+            for (var typeName in propertyTypes) {
                 if (!propertyTypes.hasOwnProperty(typeName)) {
                     continue;
                 }
@@ -150,10 +143,43 @@ Subclass.Property.DataTypeManager = (function()
                 this._typeDefinitions
             );
         }
+    };
+
+    /**
+    * Initializing defined custom property types
+    */
+    DataTypeManager.prototype.initializeTypes = function()
+    {
+        var typeDefinitions = this.getTypeDefinitions();
+        //var propertyManager = this.getPropertyManager();
+        //var module = propertyManager.getModule();
+        //var typeName;
+
+        // Adding default data types to the root module
+
+        //if (module.isRoot()) {
+        //    var propertyTypes = propertyManager.constructor.getPropertyTypes();
+        //    var defaultTypeDefinitions = {};
+        //
+        //    for (typeName in propertyTypes) {
+        //        if (!propertyTypes.hasOwnProperty(typeName)) {
+        //            continue;
+        //        }
+        //        var defaultPropertyDefinition = propertyTypes[typeName].getEmptyDefinition();
+        //
+        //        if (defaultPropertyDefinition) {
+        //            defaultTypeDefinitions[typeName] = defaultPropertyDefinition;
+        //        }
+        //    }
+        //    this._typeDefinitions = Subclass.Tools.extendDeep(
+        //        defaultTypeDefinitions,
+        //        this._typeDefinitions
+        //    );
+        //}
 
         // Initializing type definitions
 
-        for (typeName in typeDefinitions) {
+        for (var typeName in typeDefinitions) {
             if (!typeDefinitions.hasOwnProperty(typeName)) {
                 continue;
             }

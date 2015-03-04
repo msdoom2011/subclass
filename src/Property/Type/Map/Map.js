@@ -103,6 +103,42 @@ Subclass.Property.Type.Map.Map = (function()
     };
 
     /**
+     * @inheritDoc
+     */
+    MapType.normalizeDefinition = function(definition)
+    {
+        if (Array.isArray(definition) && definition.length >= 1 && definition.length <= 5) {
+            var fullDefinition = {};
+            var isNullable = false;
+
+            if (definition[0]) {
+                fullDefinition.type = definition[0];
+            }
+            if (definition.length >= 2) {
+                fullDefinition.schema = definition[1];
+            }
+            if (definition.length >= 3) {
+                fullDefinition.default = definition[2];
+
+                if (definition[2] === null) {
+                    isNullable = true;
+                }
+            }
+            if (definition.length >= 4) {
+                fullDefinition.writable = definition[3];
+            }
+            if (definition.length == 5) {
+                fullDefinition.nullable = definition[4];
+            }
+            if (isNullable) {
+                fullDefinition.nullable = true;
+            }
+            return fullDefinition;
+        }
+        return definition;
+    };
+
+    /**
      * Tells is property value null
      *
      * @returns {boolean}

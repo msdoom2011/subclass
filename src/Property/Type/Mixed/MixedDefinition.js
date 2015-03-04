@@ -81,10 +81,22 @@ Subclass.Property.Type.Mixed.MixedDefinition = (function()
                 Subclass.Error.create(
                     'Specified not valid values in "allows" option in definition ' +
                     'of property ' + this.getProperty() + '. ' +
-                    'It must property definitions.'
+                    'It must be property definitions.'
                 );
             }
         }
+    };
+
+    MixedDefinition.prototype.normalizeAllows = function(allows)
+    {
+        var propertyManager = this.getProperty().getPropertyManager();
+
+        if (allows && Array.isArray(allows)) {
+            for (var i = 0; i < allows.length; i++) {
+                allows[i] = propertyManager.normalizePropertyDefinition(allows[i]);
+            }
+        }
+        return allows;
     };
 
     /**
@@ -94,6 +106,8 @@ Subclass.Property.Type.Mixed.MixedDefinition = (function()
      */
     MixedDefinition.prototype.setAllows = function(allows)
     {
+        allows = this.normalizeAllows(allows);
+
         this.validateAllows(allows);
         this.getData().allows = allows;
     };
@@ -157,14 +171,13 @@ Subclass.Property.Type.Mixed.MixedDefinition = (function()
      */
     MixedDefinition.prototype.processData = function()
     {
-        var allows = this.getAllows();
+        var allows = this.normalizeAllows(this.getAllows());
 
         if (allows && Array.isArray(allows)) {
             for (var i = 0; i < allows.length; i++) {
-                if (!Subclass.Tools.isPlainObject(allows[i])) {
-                    continue;
+                if (Subclass.Tools.isPlainObject(allows[i])) {
+                    this.getProperty().addAllowedType(allows[i]);
                 }
-                this.getProperty().addAllowedType(allows[i]);
             }
         }
         MixedDefinition.$parent.prototype.processData.call(this);

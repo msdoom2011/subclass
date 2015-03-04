@@ -86,7 +86,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (requires && typeof requires != 'object') {
             Subclass.Error.create('InvalidClassOption')
-                .argument('$_requires')
+                .option('$_requires')
                 .received(requires)
                 .className(this.getClass().getName())
                 .expected('a plain object with string properties')
@@ -98,7 +98,7 @@ Subclass.Class.ClassDefinition = (function()
                 for (var i = 0; i < requires.length; i++) {
                     if (typeof requires[i] != 'string') {
                         Subclass.Error.create('InvalidClassOption')
-                            .argument('$_requires')
+                            .option('$_requires')
                             .received(requires)
                             .className(this.getClass().getName())
                             .expected('a plain object with string properties')
@@ -119,7 +119,7 @@ Subclass.Class.ClassDefinition = (function()
                     }
                     if (typeof requires[alias] != 'string') {
                         Subclass.Error.create('InvalidClassOption')
-                            .argument('$_requires')
+                            .option('$_requires')
                             .received(requires)
                             .className(this.getClass().getName())
                             .expected('a plain object with string properties')
@@ -197,7 +197,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (parentClassName !== null && typeof parentClassName != 'string') {
             Subclass.Error.create('InvalidClassOption')
-                .argument('$_extends')
+                .option('$_extends')
                 .received(parentClassName)
                 .className(this.getClass().getName())
                 .expected('a string or null')
@@ -243,7 +243,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (properties && typeof properties != 'object') {
             Subclass.Error.create('InvalidClassOption')
-                .argument('$_properties')
+                .option('$_properties')
                 .received(properties)
                 .className(this.getClass().getName())
                 .expected('a plain object with property definitions')
@@ -263,7 +263,7 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
                     Subclass.Error.create('InvalidClassOption')
-                        .argument('$_properties')
+                        .option('$_properties')
                         .received(properties)
                         .className(this.getClass().getName())
                         .expected('a plain object with property definitions')
@@ -283,6 +283,32 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
+     * Normalizes property definitions.
+     * Brings all property definitions to the single form.
+     *
+     * @param {Object} properties
+     *      The object with property definitions
+     *
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.normalizeProperties = function(properties)
+    {
+        var classManager = this.getClass().getClassManager();
+        var propertyManager = classManager.getModule().getPropertyManager();
+
+        if (properties && Subclass.Tools.isPlainObject(properties)) {
+            for (var propertyName in properties) {
+                if (properties.hasOwnProperty(propertyName)) {
+                    properties[propertyName] = propertyManager.normalizePropertyDefinition(
+                        properties[propertyName]
+                    );
+                }
+            }
+        }
+        return properties;
+    };
+
+    /**
      * Sets "$_properties" attribute value
      *
      * @param {Object.<Object>} properties
@@ -297,6 +323,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.setProperties = function(properties)
     {
+        this.normalizeProperties(properties);
         this.validateProperties(properties);
         this.getData().$_properties = properties || {};
 
@@ -599,7 +626,14 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.normalizeData = function()
     {
-        // Do something
+        var data = this.getData();
+
+        if (
+            data.hasOwnProperty('$_properties')
+            && Subclass.Tools.isPlainObject(data["$_properties"])
+        ) {
+            data["$_properties"] = this.normalizeProperties(data["$_properties"]);
+        }
     };
 
     /**
@@ -734,12 +768,12 @@ Subclass.Class.ClassDefinition = (function()
 
         // Performing $_properties attribute
 
-        if (properties && this.validateProperties(properties)) {
+        if (properties && Subclass.Tools.isPlainObject(properties)) {
             for (var propName in properties) {
                 if (!properties.hasOwnProperty(propName)) {
                     continue;
                 }
-                var propertyDefinition = properties[propName];
+                var propertyDefinition = propertyManager.normalizePropertyDefinition(properties[propName]);
 
                 if (typeof propertyDefinition != 'object') {
                     continue;

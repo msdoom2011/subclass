@@ -43,8 +43,8 @@ Subclass.Property.Type.Collection.ObjectCollection.ObjectCollectionDefinition = 
      */
     ObjectCollectionDefinition.prototype.processData = function()
     {
-        var defaultValue = this.getDefault();
-        var proto = this.getProto();
+        var propertyManager = this.getProperty().getPropertyManager();
+        var proto = propertyManager.normalizePropertyDefinition(this.getProto());
 
         // Adding "extends" parameter to property "schema"
         // parameter if proto type is "map"

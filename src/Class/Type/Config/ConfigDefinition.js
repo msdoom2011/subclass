@@ -342,6 +342,8 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.normalizeData = function()
     {
+        ConfigDefinition.$parent.prototype.normalizeData.call(this);
+
         // Retrieving class definition data
         var dataDefault = this.getData();
 
@@ -401,8 +403,20 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
      */
     ConfigDefinition.prototype.normalizeProperties = function()
     {
+        var classManager = this.getClass().getClassManager();
+        var propertyManager = classManager.getModule().getPropertyManager();
         var classProperties = this.getProperties();
         var propName;
+
+        // Normalizing short style property definitions
+
+        for (propName in classProperties) {
+            if (classProperties.hasOwnProperty(propName)) {
+                classProperties[propName] = propertyManager.normalizePropertyDefinition(
+                    classProperties[propName]
+                );
+            }
+        }
 
         // Processing parent class
 
@@ -467,9 +481,18 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
                         classProperties = this.getProperties();
                         break;
                 }
-
             }
         }
+        //
+        //// Normalizing short style property definitions
+        //
+        //for (propName in classProperties) {
+        //    if (classProperties.hasOwnProperty(propName)) {
+        //        classProperties[propName] = propertyManager.normalizePropertyDefinition(
+        //            classProperties[propName]
+        //        );
+        //    }
+        //}
 
         // Validating result properties
 
@@ -512,7 +535,6 @@ Subclass.Class.Type.Config.ConfigDefinition = (function()
                 );
 
             } else if (
-                //childProperties[propName]
                 parentProperties
                 && parentProperties[propName]
             ) {

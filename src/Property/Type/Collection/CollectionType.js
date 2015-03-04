@@ -57,6 +57,50 @@ Subclass.Property.Type.Collection.CollectionType = (function()
     CollectionType.$parent = Subclass.Property.PropertyType;
 
     /**
+     * @inheritDoc
+     */
+    CollectionType.getEmptyDefinition = function()
+    {
+        return false;
+    };
+
+    /**
+     * @inheritDoc
+     */
+    CollectionType.normalizeDefinition = function(definition)
+    {
+        if (Array.isArray(definition) && definition.length >= 1 && definition.length <= 5) {
+            var fullDefinition = {};
+            var isNullable = false;
+
+            if (definition[0]) {
+                fullDefinition.type = definition[0];
+            }
+            if (definition.length >= 2) {
+                fullDefinition.proto = definition[1];
+            }
+            if (definition.length >= 3) {
+                fullDefinition.default = definition[2];
+
+                if (definition[2] === null) {
+                    isNullable = true;
+                }
+            }
+            if (definition.length >= 4) {
+                fullDefinition.writable = definition[3];
+            }
+            if (definition.length == 5) {
+                fullDefinition.nullable = definition[4];
+            }
+            if (isNullable) {
+                fullDefinition.nullable = true;
+            }
+            return fullDefinition;
+        }
+        return definition;
+    };
+
+    /**
      * Tells is property value null
      *
      * @returns {boolean}

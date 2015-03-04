@@ -127,6 +127,36 @@ Subclass.Property.PropertyType = (function()
         };
     };
 
+    PropertyType.normalizeDefinition = function(definition)
+    {
+        if (Array.isArray(definition) && definition.length >= 1 && definition.length <= 4) {
+            var fullDefinition = {};
+            var isNullable = false;
+
+            if (definition[0]) {
+                fullDefinition.type = definition[0];
+            }
+            if (definition.length >= 2) {
+                fullDefinition.default = definition[1];
+
+                if (definition[1] === null) {
+                    isNullable = true;
+                }
+            }
+            if (definition.length >= 3) {
+                fullDefinition.writable = definition[2];
+            }
+            if (definition.length == 4) {
+                fullDefinition.nullable = definition[3];
+            }
+            if (isNullable) {
+                fullDefinition.nullable = true;
+            }
+            return fullDefinition;
+        }
+        return definition;
+    };
+
     /**
      * Initializing property instance
      */

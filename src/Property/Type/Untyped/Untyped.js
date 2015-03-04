@@ -53,7 +53,15 @@ Subclass.Property.Type.Untyped.Untyped = (function()
      */
     UntypedType.getEmptyDefinition = function()
     {
-        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+        return this.$parent.getEmptyDefinition.call(this);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    UntypedType.normalizeDefinition = function(definition)
+    {
+        return this.$parent.normalizeDefinition.call(this, definition);
     };
 
 

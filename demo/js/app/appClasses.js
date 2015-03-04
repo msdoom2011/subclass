@@ -48,11 +48,12 @@ app.registerInterface("InterfaceBase", {
 
     $_properties: {
 
-        interfaceProperty: {
-            type: "string",
-            default: "It's interface property!!!!",
-            writable: false
-        }
+        //interfaceProperty: {
+        //    type: "string",
+        //    default: "It's interface property!!!!",
+        //    writable: false
+        //}
+        interfaceProperty: ["string", "It's interface property!!!!", false]
     },
 
     interfacePsix: function() {}
@@ -76,9 +77,11 @@ app.registerInterface("InterfaceExtra", {
 app.registerTrait("TraitBase", {
     $_properties: {
 
-        typedBoolean: { type: "boolean", nullable: true },
+        //typedBoolean: { type: "boolean", nullable: true },
+        typedBoolean: ["boolean", null],
 
-        typedNumber: { type: "number", value: 111, nullable: true }
+        //typedNumber: { type: "number", value: 111, nullable: true }
+        typedNumber: ["number", 111]
     },
     eat: function() {
         alert("eating!!!!!");
@@ -95,23 +98,30 @@ app.registerTrait("Trait", {
 //                    value: "my testing string changed!",
 //                    pattern: null
 //                },
-        typedObject: { type: "object", default: { psix: true }, nullable: true },
+//        typedObject: { type: "object", default: { psix: true }, nullable: true },
+        typedObject: ["object", { psix: true }],
 
-        typedArray: { type: "array", default: [] },
+        typedArray: ["array", null],
+        //typedArray: { type: "array", default: [] },
 
-        typedEnum: { type: "enum", allows: [1, 2, 3], value: 1, nullable: false },
+        //typedEnum: { type: "enum", allows: [1, 2, 3], value: 1, nullable: false },
+        typedEnum: ["enum", [1, 2, 3], 1],
 
-        typedClass: { type: "class", className: "AbstractClass" },
+        //typedClass: { type: "class", className: "AbstractClass" },
+        typedClass: ["class", "AbstractClass"],
 
-        typedFunction: { type: "function", value: function() {
-            alert("!!!!");
-        }},
+        //typedFunction: { type: "function", value: function() { alert("!!!!"); }},
+        typedFunction: [ "function", function() { alert("!!!!"); }],
 
-        typedUntyped: { type: "untyped", value: "psix" },
+        //typedUntyped: { type: "untyped", value: "psix" },
+        typedUntyped: ["untyped", "psix" ],
 
-        typedMap: { type: "map", schema: {
-            varPsix: { type: "string", default: "yo!!!!" }
-        }}
+        //typedMap: { type: "map", schema: {
+        //    varPsix: { type: "string", default: "yo!!!!" }
+        //}}
+        typedMap: ["map", {
+            varPsix: ["string", "yo!!!!"]
+        }]
     },
 
     sleep: function()
@@ -147,59 +157,93 @@ app.registerAbstractClass("Class2", {
     },
 
     $_properties: {
-        typedString: {
-            //type: "string",
-            type: "percents",
-            //value: "my testing string!"
-            default: "100%"
-        },
+        //typedString: {
+        //    //type: "string",
+        //    type: "percents",
+        //    //value: "my testing string!"
+        //    default: "100%"
+        //},
+        typedString: ["percents", "100%"],
 
-        typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, nullable: true, default: {
+        //typedObjectCollection: { type: "objectCollection", proto: { type: "number" }, nullable: true, default: {
+        //    num1: 1,
+        //    num2: 1,
+        //    num3: 3
+        //}},
+        typedObjectCollection: ["objectCollection", ["number"], {
             num1: 1,
             num2: 1,
             num3: 3
-        }},
+        }],
 
-        typedArrayCollection: {
-            type: "arrayCollection",
-            proto: { type: "string" },
-            nullable: true,
-            value: [
-                "str1",
-                "str2",
-                "str3"
-            ]
-        },
+        //typedArrayCollection: {
+        //    type: "arrayCollection",
+        //    proto: { type: "string" },
+        //    nullable: true,
+        //    value: [
+        //        "str1",
+        //        "str2",
+        //        "str3"
+        //    ]
+        //},
+        typedArrayCollection: ["arrayCollection", ["string"], [
+            "str1",
+            "str2",
+            "str3"
+        ]],
 
-        typedArrayCollectionOfMap: {
-            type: "arrayCollection",
-            proto: { type: "map", schema: {
-                "propString": { type: "string" },
-                "propNumber": { type: "number" },
-                "propBoolean": { type: "boolean" }
-            }},
-            value: [{
+        //typedArrayCollectionOfMap: {
+        //    type: "arrayCollection",
+        //    proto: { type: "map", schema: {
+        //        "propString": { type: "string" },
+        //        "propNumber": { type: "number" },
+        //        "propBoolean": { type: "boolean" }
+        //    }},
+        //    value: [{
+        //        propString: "string",
+        //        propNumber: 111,
+        //        propBoolean: true
+        //    }]
+        //},
+        typedArrayCollectionOfMap: ["arrayCollection", ["map", {
+                "propString": ["string"],
+                "propNumber": ["number"],
+                "propBoolean": ["boolean"]
+            }], [{
                 propString: "string",
                 propNumber: 111,
                 propBoolean: true
             }]
-        },
-        typedMap: { type: "map", schema: {
-            propMapMap: { type: "map", schema: {
-                propMapMapString: { type: "string", default: "" } }
-            },
-            propMapString: { type: "string", default: "string value 1" },
-            propMapNumber: { type: "number", default: 10 },
-            propMapObject: { type: "object", default: { key1: "value1" } }
-        },
-//          value: null
-            value: {
-                propMapString: "psix!!!!!!!!",
-                propMapMap: {
-                    propMapMapString: "Yahoo!!!!!!"
-                }
+        ],
+//        typedMap: { type: "map", schema: {
+//            propMapMap: { type: "map", schema: {
+//                propMapMapString: { type: "string", default: "" } }
+//            },
+//            propMapString: { type: "string", default: "string value 1" },
+//            propMapNumber: { type: "number", default: 10 },
+//            propMapObject: { type: "object", default: { key1: "value1" } }
+//        },
+////          value: null
+//            value: {
+//                propMapString: "psix!!!!!!!!",
+//                propMapMap: {
+//                    propMapMapString: "Yahoo!!!!!!"
+//                }
+//            }
+//        }
+        typedMap: ["map", {
+            propMapMap: ["map", {
+                propMapMapString: ["string", ""]
+            }],
+            propMapString: ["string", "string value 1"],
+            propMapNumber: ["number", 10],
+            propMapObject: ["object", { key1: "value1" }]
+        }, {
+            propMapString: "psix!!!!!!!!",
+            propMapMap: {
+                propMapMapString: "Yahoo!!!!!!"
             }
-        }
+        }]
     },
 
     _test: 0,
@@ -225,16 +269,22 @@ app.registerClass("Class3", {
     },
 
     $_properties: {
-        typedMixed: {
-            type: "mixed",
-            allows: [
-                { type: "number" },
-                { type: "boolean" },
+        //typedMixed: {
+        //    type: "mixed",
+        //    allows: [
+        //        { type: "number" },
+        //        { type: "boolean" },
+        //        { type: "string", pattern: /psix/i }
+        //    ],
+        //    nullable: true,
+        //    value: 0
+        //}
+        typedMixed: ["mixed", [
+                ["number"],
+                ["boolean"],
                 { type: "string", pattern: /psix/i }
-            ],
-            nullable: true,
-            value: 0
-        }
+            ], 0
+        ]
     },
 
     stop: function() {
@@ -366,90 +416,110 @@ app.alterClass("AbstractClassBase")
 
 app.registerConfig("ConfigBase", {
 
-    propString: {
-        type: "string",
-        value: "psix"
-    },
+    //propString: { type: "string", value: "psix" },
+    propString: ["string", "psix"],
+    //
+    //propMap: {
+    //    type: "map",
+    //    schema: {
+    //
+    //        propMapString: {
+    //            type: "string",
+    //            default: "string value 1"
+    //        },
+    //
+    //        propMapNumber: {
+    //            type: "number",
+    //            default: 10
+    //        },
+    //
+    //        propMapObject: {
+    //            type: "object",
+    //            default: { key1: "value1" }
+    //        }
+    //
+    //        // ... any property definitions
+    //    },
+    //    value: null
+    //},
 
-    propMap: {
-        type: "map",
-        schema: {
+    propMap: ["map", {
+        propMapString: ["string", "string value 1"],
+        propMapNumber: ["number", 10],
+        propMapObject: ["object", { key1: "value1" }]
+        // ... any property definitions
+    }, null],
 
-            propMapString: {
-                type: "string",
-                default: "string value 1"
-            },
-
-            propMapNumber: {
-                type: "number",
-                default: 10
-            },
-
-            propMapObject: {
-                type: "object",
-                default: { key1: "value1" }
-            }
-
-            // ... any property definitions
-        },
-        value: null
-    },
-
-    propObjectCollection: {
-        type: "objectCollection",
-        proto: {
-            type: "map",
-            schema: {
-                key1: { type: "string" },
-                key2: { type: "string" },
-                key3: { type: "string" }
-            }
-        },
-        value: {
+    //propObjectCollection: {
+    //    type: "objectCollection",
+    //    proto: {
+    //        type: "map",
+    //        schema: {
+    //            key1: { type: "string" },
+    //            key2: { type: "string" },
+    //            key3: { type: "string" }
+    //        }
+    //    },
+    //    value: {
+    //        itemBase: {
+    //            key1: "base key 1",
+    //            key2: "base key 2",
+    //            key3: "base key 3"
+    //        }
+    //    }
+    //}
+    propObjectCollection: ["objectCollection", ["map", {
+            key1: { type: "string" },
+            key2: { type: "string" },
+            key3: { type: "string" }
+        }], {
             itemBase: {
                 key1: "base key 1",
                 key2: "base key 2",
                 key3: "base key 3"
             }
         }
-    }
+    ]
 });
 
 
 app.registerConfig("ConfigInclude", {
 
-    propNumber: {
-        type: "number",
-        value: 0
-    },
+    //propNumber: { type: "number", value: 0 },
+    propNumber: ["number", null],
 
-    propIncluded: {
-        type: "boolean"
-    },
+    //propIncluded: { type: "boolean" },
+    propIncluded: ["boolean"],
 
-    propMap: {
-        type: "map",
-        schema: {
-            propMapExtra: { type: "string", default: "fjdklfjsldfjlsjdfljsdkfl" }
-        }
-    },
+    //propMap: {
+    //    type: "map",
+    //    schema: {
+    //        propMapExtra: { type: "string", default: "fjdklfjsldfjlsjdfljsdkfl" }
+    //    }
+    //},
+    propMap: ["map", {
+        propMapExtra: ["string", "fjdklfjsldfjlsjdfljsdkfl"]
+    }],
 
-    propObject: {
-        type: "object",
-        value: { test: true}
-    }
+    //propObject: {
+    //    type: "object",
+    //    value: { test: true}
+    //}
+    propObject: ["object", { test: true }]
 });
 
 app.registerConfig("ConfigDecorator", {
 
-    propFromDecorator: {
-        type: "string",
-        value: "property from decorator"
-    },
+    //propFromDecorator: {
+    //    type: "string",
+    //    value: "property from decorator"
+    //},
+    propFromDecorator: ["string", "property from decorator"],
 
-    propDecoratorExtra: {
-        type: "boolean"
-    }
+    //propDecoratorExtra: {
+    //    type: "boolean"
+    //}
+    propDecoratorExtra: ["boolean"]
 });
 
 app.registerConfig("Config", {
@@ -468,28 +538,39 @@ app.registerConfig("Config", {
 
     propNumber: 1000000000,
 
-    propBoolean: {
-        type: "boolean",
-        value: false
-    },
+    //propBoolean: {
+    //    type: "boolean",
+    //    value: false
+    //},
+    propBoolean: ["boolean", false],
 
-    propFromDecorator: {
-        type: "string",
-        value: "property from config"
-    },
+    //propFromDecorator: {
+    //    type: "string",
+    //    value: "property from config"
+    //},
+    propFromDecorator: ["string", "property from config"],
 
-    propArray: { type: "array", value: [] },
+    //propArray: { type: "array", value: [] },
+    propArray: ["array", []],
 
-    propObject: { type: "object", value: { test: "NO!!!!!!" } },
+    //propObject: { type: "object", value: { test: "NO!!!!!!" } },
+    propObject: ["object", { test: "NO!!!!!!" }],
 
-    propFunction: { type: "function", value: function() {} },
+    //propFunction: { type: "function", value: function() {} },
+    propFunction: ["function", function() {}],
 
-    propEnum: {
-        type: "enum",
-        allows: ["value1", "value2", "value3"],  // Allowed types: string|number|boolean
-        value: "value1"                          // If not specified, it will be the first allowed value.
-    },
+    //propEnum: {
+    //    type: "enum",
+    //    allows: ["value1", "value2", "value3"],  // Allowed types: string|number|boolean
+    //    value: "value1"                          // If not specified, it will be the first allowed value.
+    //},
+    propEnum: ["enum", ["value1", "value2", "value3"], "value1"],  // Allowed types: string|number|boolean
 
+    //propMap: {
+    //    propMapString: "Redefined string!",
+    //    propMapNumber: 999,
+    //    propMapObject: { key1: "value redefined!" }
+    //},
     propMap: {
         propMapString: "Redefined string!",
         propMapNumber: 999,

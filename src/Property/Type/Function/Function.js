@@ -53,7 +53,15 @@ Subclass.Property.Type.Function.Function = (function()
      */
     FunctionType.getEmptyDefinition = function()
     {
-        return Subclass.Property.PropertyType.getEmptyDefinition.call(this);
+        return this.$parent.getEmptyDefinition.call(this);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    FunctionType.normalizeDefinition = function(definition)
+    {
+        return this.$parent.normalizeDefinition.call(this, definition);
     };
 
 

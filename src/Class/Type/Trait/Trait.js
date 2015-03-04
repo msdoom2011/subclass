@@ -101,7 +101,7 @@ Subclass.Class.Type.Trait.Trait = (function()
         return function Trait() {
 
             // Hook for the grunt-contrib-uglify plugin
-            return AbstractClass.name;
+            return Trait.name;
         };
     };
 

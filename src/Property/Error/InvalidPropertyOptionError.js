@@ -57,7 +57,7 @@ Subclass.Property.Error.InvalidPropertyOptionError = (function()
         var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
-            message += 'Invalid value of option "' + this.option() + '" ';
+            message += 'Invalid value of option ' + this.option() + ' ';
             message += 'in definition of property "' + this.property() + '". ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""

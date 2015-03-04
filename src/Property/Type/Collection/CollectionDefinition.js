@@ -49,11 +49,12 @@ Subclass.Property.Type.Collection.CollectionDefinition = (function()
      */
     CollectionDefinition.prototype.setProto = function(proto)
     {
-        this.validateProto(proto);
-        this.getData().proto = proto;
-
         var property = this.getProperty();
         var propertyManager = property.getPropertyManager();
+        proto = propertyManager.normalizePropertyDefinition(proto);
+
+        this.validateProto(proto);
+        this.getData().proto = proto;
         proto.accessors = false;
 
         property.setProto(propertyManager.createProperty(

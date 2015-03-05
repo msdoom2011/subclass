@@ -132,8 +132,8 @@ Subclass.Module.ConfigManager = (function()
                 if (
                     !moduleConfigs.hasOwnProperty(configName)
                     || [
-                        'parameters',
-                        'services',
+                        //'parameters',
+                        //'services',
                         'pluginOf',
                         'files',
                         'onReady'
@@ -145,7 +145,7 @@ Subclass.Module.ConfigManager = (function()
 
                 if (!this[setterName]) {
                     Subclass.Error.create(
-                        'Configuration parameter "' + configName + '" is not allowed ' +
+                        'Configuration option "' + configName + '" is not allowed ' +
                         'by the module.'
                     );
                 }
@@ -157,12 +157,12 @@ Subclass.Module.ConfigManager = (function()
             if (moduleConfigs.hasOwnProperty('files')) {
                 this.setFiles(moduleConfigs.files);
             }
-            if (moduleConfigs.hasOwnProperty('parameters')) {
-                $this.setParameters(moduleConfigs.parameters);
-            }
-            if (moduleConfigs.hasOwnProperty('services')) {
-                $this.setServices(moduleConfigs.services);
-            }
+            //if (moduleConfigs.hasOwnProperty('parameters')) {
+            //    $this.setParameters(moduleConfigs.parameters);
+            //}
+            //if (moduleConfigs.hasOwnProperty('services')) {
+            //    $this.setServices(moduleConfigs.services);
+            //}
             if (moduleConfigs.hasOwnProperty('onReady')) {
                 $this.setOnReady(moduleConfigs.onReady);
             }
@@ -385,281 +385,281 @@ Subclass.Module.ConfigManager = (function()
         return !!this._files.length;
     };
 
-    /**
-     * Defines custom data types relying on existent property types
-     * registered in Subclass.Property.PropertyManager.
-     *
-     * You can also redefine definitions of standard data types,
-     * for example, if you want to set default value for all number properties or
-     * customize it to be not nullable etc.
-     *
-     * @method setDataTypes
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if trying to change value after the module became ready
-     *
-     * @param {Object.<Object>} propertyDefinitions
-     *      A plain object with property definitions. Each property
-     *      in turn also is a plain object. To learn more look at
-     *      {@link Subclass.Property.PropertyManager#createProperty}
-     *
-     * @example
-     * ...
-     *
-     * var moduleConfigs = moduleInst.getConfigManager();
-     *
-     * // Setting data types
-     * moduleConfigs.setDataTypes({
-     *     percents: {               // name of data type
-     *         type: "string",       // type of property
-     *         pattern: /^[0-9]+%$/, // RegExp instance object
-     *         value: "0%"           // default property value
-     *     },
-     *     ...
-     * });
-     * ...
-     *
-     * // Registering TestClass
-     * moduleInst.registerClass("Name/Of/TestClass", {
-     *     ...
-     *     $_properties: {
-     *         percentsProp: { type: "percents" }
-     *         ...
-     *     },
-     *     ...
-     * });
-     *
-     * // Creating TestClass instance
-     * var testClass = moduleInst.getClass("Name/Of/TestClass");
-     * var testClassInst = testClass.createInstance();
-     *
-     * // Trying to set percentsProp property value
-     * testClass.setPercentsProp("10%"); // normally set
-     * testClass.setPercentsProp("10");  // throws error
-     * ...
-     */
-    ConfigManager.prototype.setDataTypes = function(propertyDefinitions)
-    {
-        this._checkModuleIsReady();
-        this.getModule()
-            .getPropertyManager()
-            .defineDataTypes(propertyDefinitions)
-        ;
-    };
-
-    /**
-     * Returns defined custom data types in the form in which they were set
-     *
-     * @method getDataTypes
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     *
-     * @returns {Object.<Object>}
-     */
-    ConfigManager.prototype.getDataTypes = function()
-    {
-        return this.getModule()
-            .getPropertyManager()
-            .getDataTypeManager()
-            .getTypeDefinitions()
-        ;
-    };
-
-    /**
-     * Registers new parameters or redefines already existent with the same name.
-     *
-     * @method setParameters
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if trying to change value after the module became ready
-     *
-     * @param {Object} parameters
-     *      A plain object with properties which hold
-     *      properties whatever you need
-     *
-     * @example
-     * ...
-     *
-     * var moduleConfigs = moduleInst.getConfigManager();
-     *
-     * // setting new parameters
-     * moduleConfigs.setParameters({
-     *      param1: "string value",
-     *      param2: 1000,
-     *      param3: { a: 10, b: "str" },
-     *      ...
-     * });
-     * ...
-     *
-     * moduleInst.getParameter("param1"); // returns "string value"
-     * moduleInst.getParameter("param2"); // returns 1000
-     * moduleInst.getParameter("param3"); // returns { a: 10, b: "str" }
-     * ...
-     */
-    ConfigManager.prototype.setParameters = function(parameters)
-    {
-        this._checkModuleIsReady();
-
-        if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
-            Subclass.Error.create('InvalidModuleOption')
-                .option('parameters')
-                .module(this.getModule().getName())
-                .received(parameters)
-                .expected('a plain object')
-                .apply()
-            ;
-        }
-        var parameterManager = this.getModule().getParameterManager();
-
-        for (var paramName in parameters) {
-            if (!parameters.hasOwnProperty(paramName)) {
-                continue;
-            }
-            parameterManager.registerParameter(
-                paramName,
-                parameters[paramName]
-            );
-        }
-    };
-
-    /**
-     * Returns all registered parameters in the form in which they were set
-     *
-     * @method getParameters
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     *
-     * @returns {Object}
-     */
-    ConfigManager.prototype.getParameters = function()
-    {
-        var parameters = this.getModule().getParameterManager().getParameters();
-        var parameterDefinitions = {};
-
-        for (var i = 0; i < parameters.length; i++) {
-            var parameterValue = parameters[i].getValue();
-            var parameterName = parameters[i].getName();
-
-            parameterDefinitions[parameterName] = Subclass.Tools.copy(parameterValue);
-        }
-        return parameterDefinitions;
-    };
-
-    /**
-     * Registers new services and redefines already existent ones with the same name.
-     *
-     * @method setServices
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if trying to change value after the module became ready
-     *
-     * @param {Object.<Object>} services
-     *      A plain object which consists of pairs key/value. The keys
-     *      are the service names and values are the service definitions.
-     *      To see more info about service definition look at
-     *      {@link Subclass.Service.Service} class constructor
-     *
-     * @example
-     *
-     * var moduleInst = Subclass.createModule("app", {
-     *      parameters: {
-     *          mode: "dev"
-     *      },
-     *      ...
-     * });
-     * ...
-     *
-     * var moduleConfigs = moduleInst.getConfigManager();
-     *
-     * // Registering services
-     * moduleConfigs.setServices({
-     *      logger: {
-     *          className: "Name/Of/LoggerService", // name of service class
-     *          arguments: [ "%mode%" ],            // arguments for service class constructor
-     *          calls: {                            // methods that will be called right away after service was created
-     *              setParams: [                    // method name
-     *                  "param 1 value",            // method argument 1
-     *                  "param 2 value"             // method argument 2
-     *              ],
-     *          }
-     *      }
-     * });
-     * ...
-     *
-     * // Creating service class
-     * moduleInst.registerClass("Name/Of/LoggerService", {
-     *      _mode: null,
-     *      _param1: null,
-     *      _param2: null,
-     *
-     *      $_constructor: function(mode)
-     *      {
-     *          this._mode = mode;
-     *      },
-     *
-     *      setParams: function(param1, param2)
-     *      {
-     *          this._param1 = param1;
-     *          this._param2 = param2;
-     *      }
-     * });
-     * ...
-     *
-     * var logger = moduleInst.getService('logger');
-     *
-     * var mode = logger._mode;     // "dev"
-     * var param1 = logger._param1; // "param 1 value"
-     * var param2 = logger._param2; // "param 2 value"
-     * ...
-     */
-    ConfigManager.prototype.setServices = function(services)
-    {
-        this._checkModuleIsReady();
-
-        if (!services || !Subclass.Tools.isPlainObject(services)) {
-            Subclass.Error.create('InvalidModuleOption')
-                .option('services')
-                .module(this.getModule().getName())
-                .received(services)
-                .expected('a plain object')
-                .apply()
-            ;
-        }
-        var serviceManager = this.getModule().getServiceManager();
-
-        for (var serviceName in services) {
-            if (!services.hasOwnProperty(serviceName)) {
-                continue;
-            }
-            serviceManager.registerService(
-                serviceName,
-                services[serviceName]
-            );
-        }
-    };
-
-    /**
-     * Returns all registered services in the form as they were defined
-     *
-     * @method getServices
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     *
-     * @returns {Object.<Object>}
-     */
-    ConfigManager.prototype.getServices = function()
-    {
-        var services = this.getModule().getServiceManager().getServices();
-        var serviceDefinitions = {};
-
-        for (var i = 0; i < services.length; i++) {
-            var serviceDefinition = services[i].getDefinition();
-            var serviceName = services[i].getName();
-
-            serviceDefinitions[serviceName] = Subclass.Tools.copy(serviceDefinition);
-        }
-        return serviceDefinitions;
-    };
+    ///**
+    // * Defines custom data types relying on existent property types
+    // * registered in Subclass.Property.PropertyManager.
+    // *
+    // * You can also redefine definitions of standard data types,
+    // * for example, if you want to set default value for all number properties or
+    // * customize it to be not nullable etc.
+    // *
+    // * @method setDataTypes
+    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // *
+    // * @throws {Error}
+    // *      Throws error if trying to change value after the module became ready
+    // *
+    // * @param {Object.<Object>} propertyDefinitions
+    // *      A plain object with property definitions. Each property
+    // *      in turn also is a plain object. To learn more look at
+    // *      {@link Subclass.Property.PropertyManager#createProperty}
+    // *
+    // * @example
+    // * ...
+    // *
+    // * var moduleConfigs = moduleInst.getConfigManager();
+    // *
+    // * // Setting data types
+    // * moduleConfigs.setDataTypes({
+    // *     percents: {               // name of data type
+    // *         type: "string",       // type of property
+    // *         pattern: /^[0-9]+%$/, // RegExp instance object
+    // *         value: "0%"           // default property value
+    // *     },
+    // *     ...
+    // * });
+    // * ...
+    // *
+    // * // Registering TestClass
+    // * moduleInst.registerClass("Name/Of/TestClass", {
+    // *     ...
+    // *     $_properties: {
+    // *         percentsProp: { type: "percents" }
+    // *         ...
+    // *     },
+    // *     ...
+    // * });
+    // *
+    // * // Creating TestClass instance
+    // * var testClass = moduleInst.getClass("Name/Of/TestClass");
+    // * var testClassInst = testClass.createInstance();
+    // *
+    // * // Trying to set percentsProp property value
+    // * testClass.setPercentsProp("10%"); // normally set
+    // * testClass.setPercentsProp("10");  // throws error
+    // * ...
+    // */
+    //ConfigManager.prototype.setDataTypes = function(propertyDefinitions)
+    //{
+    //    this._checkModuleIsReady();
+    //    this.getModule()
+    //        .getPropertyManager()
+    //        .defineDataTypes(propertyDefinitions)
+    //    ;
+    //};
+    //
+    ///**
+    // * Returns defined custom data types in the form in which they were set
+    // *
+    // * @method getDataTypes
+    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // *
+    // * @returns {Object.<Object>}
+    // */
+    //ConfigManager.prototype.getDataTypes = function()
+    //{
+    //    return this.getModule()
+    //        .getPropertyManager()
+    //        .getDataTypeManager()
+    //        .getTypeDefinitions()
+    //    ;
+    //};
+    //
+    ///**
+    // * Registers new parameters or redefines already existent with the same name.
+    // *
+    // * @method setParameters
+    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // *
+    // * @throws {Error}
+    // *      Throws error if trying to change value after the module became ready
+    // *
+    // * @param {Object} parameters
+    // *      A plain object with properties which hold
+    // *      properties whatever you need
+    // *
+    // * @example
+    // * ...
+    // *
+    // * var moduleConfigs = moduleInst.getConfigManager();
+    // *
+    // * // setting new parameters
+    // * moduleConfigs.setParameters({
+    // *      param1: "string value",
+    // *      param2: 1000,
+    // *      param3: { a: 10, b: "str" },
+    // *      ...
+    // * });
+    // * ...
+    // *
+    // * moduleInst.getParameter("param1"); // returns "string value"
+    // * moduleInst.getParameter("param2"); // returns 1000
+    // * moduleInst.getParameter("param3"); // returns { a: 10, b: "str" }
+    // * ...
+    // */
+    //ConfigManager.prototype.setParameters = function(parameters)
+    //{
+    //    this._checkModuleIsReady();
+    //
+    //    if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
+    //        Subclass.Error.create('InvalidModuleOption')
+    //            .option('parameters')
+    //            .module(this.getModule().getName())
+    //            .received(parameters)
+    //            .expected('a plain object')
+    //            .apply()
+    //        ;
+    //    }
+    //    var parameterManager = this.getModule().getParameterManager();
+    //
+    //    for (var paramName in parameters) {
+    //        if (!parameters.hasOwnProperty(paramName)) {
+    //            continue;
+    //        }
+    //        parameterManager.registerParameter(
+    //            paramName,
+    //            parameters[paramName]
+    //        );
+    //    }
+    //};
+    //
+    ///**
+    // * Returns all registered parameters in the form in which they were set
+    // *
+    // * @method getParameters
+    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // *
+    // * @returns {Object}
+    // */
+    //ConfigManager.prototype.getParameters = function()
+    //{
+    //    var parameters = this.getModule().getParameterManager().getParameters();
+    //    var parameterDefinitions = {};
+    //
+    //    for (var i = 0; i < parameters.length; i++) {
+    //        var parameterValue = parameters[i].getValue();
+    //        var parameterName = parameters[i].getName();
+    //
+    //        parameterDefinitions[parameterName] = Subclass.Tools.copy(parameterValue);
+    //    }
+    //    return parameterDefinitions;
+    //};
+    //
+    ///**
+    // * Registers new services and redefines already existent ones with the same name.
+    // *
+    // * @method setServices
+    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // *
+    // * @throws {Error}
+    // *      Throws error if trying to change value after the module became ready
+    // *
+    // * @param {Object.<Object>} services
+    // *      A plain object which consists of pairs key/value. The keys
+    // *      are the service names and values are the service definitions.
+    // *      To see more info about service definition look at
+    // *      {@link Subclass.Service.Service} class constructor
+    // *
+    // * @example
+    // *
+    // * var moduleInst = Subclass.createModule("app", {
+    // *      parameters: {
+    // *          mode: "dev"
+    // *      },
+    // *      ...
+    // * });
+    // * ...
+    // *
+    // * var moduleConfigs = moduleInst.getConfigManager();
+    // *
+    // * // Registering services
+    // * moduleConfigs.setServices({
+    // *      logger: {
+    // *          className: "Name/Of/LoggerService", // name of service class
+    // *          arguments: [ "%mode%" ],            // arguments for service class constructor
+    // *          calls: {                            // methods that will be called right away after service was created
+    // *              setParams: [                    // method name
+    // *                  "param 1 value",            // method argument 1
+    // *                  "param 2 value"             // method argument 2
+    // *              ],
+    // *          }
+    // *      }
+    // * });
+    // * ...
+    // *
+    // * // Creating service class
+    // * moduleInst.registerClass("Name/Of/LoggerService", {
+    // *      _mode: null,
+    // *      _param1: null,
+    // *      _param2: null,
+    // *
+    // *      $_constructor: function(mode)
+    // *      {
+    // *          this._mode = mode;
+    // *      },
+    // *
+    // *      setParams: function(param1, param2)
+    // *      {
+    // *          this._param1 = param1;
+    // *          this._param2 = param2;
+    // *      }
+    // * });
+    // * ...
+    // *
+    // * var logger = moduleInst.getService('logger');
+    // *
+    // * var mode = logger._mode;     // "dev"
+    // * var param1 = logger._param1; // "param 1 value"
+    // * var param2 = logger._param2; // "param 2 value"
+    // * ...
+    // */
+    //ConfigManager.prototype.setServices = function(services)
+    //{
+    //    this._checkModuleIsReady();
+    //
+    //    if (!services || !Subclass.Tools.isPlainObject(services)) {
+    //        Subclass.Error.create('InvalidModuleOption')
+    //            .option('services')
+    //            .module(this.getModule().getName())
+    //            .received(services)
+    //            .expected('a plain object')
+    //            .apply()
+    //        ;
+    //    }
+    //    var serviceManager = this.getModule().getServiceManager();
+    //
+    //    for (var serviceName in services) {
+    //        if (!services.hasOwnProperty(serviceName)) {
+    //            continue;
+    //        }
+    //        serviceManager.registerService(
+    //            serviceName,
+    //            services[serviceName]
+    //        );
+    //    }
+    //};
+    //
+    ///**
+    // * Returns all registered services in the form as they were defined
+    // *
+    // * @method getServices
+    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // *
+    // * @returns {Object.<Object>}
+    // */
+    //ConfigManager.prototype.getServices = function()
+    //{
+    //    var services = this.getModule().getServiceManager().getServices();
+    //    var serviceDefinitions = {};
+    //
+    //    for (var i = 0; i < services.length; i++) {
+    //        var serviceDefinition = services[i].getDefinition();
+    //        var serviceName = services[i].getName();
+    //
+    //        serviceDefinitions[serviceName] = Subclass.Tools.copy(serviceDefinition);
+    //    }
+    //    return serviceDefinitions;
+    //};
 
     /**
      * Sets callback function which will invoked when all classes of the module

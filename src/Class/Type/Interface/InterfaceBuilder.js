@@ -11,21 +11,21 @@ Subclass.Class.Type.Interface.InterfaceBuilder = (function()
 
     InterfaceBuilder.$parent = Subclass.Class.ClassBuilder;
 
-    InterfaceBuilder.prototype.setProperties = undefined;
-
-    InterfaceBuilder.prototype.addProperties = undefined;
-
-    InterfaceBuilder.prototype.getProperties = undefined;
-
-    InterfaceBuilder.prototype.removeProperty = undefined;
-
-    InterfaceBuilder.prototype.setStatic = undefined;
-
-    InterfaceBuilder.prototype.getStatic = undefined;
-
-    InterfaceBuilder.prototype.setStaticProperty = undefined;
-
-    InterfaceBuilder.prototype.removeStaticProperty = undefined;
+    //InterfaceBuilder.prototype.setProperties = undefined;
+    //
+    //InterfaceBuilder.prototype.addProperties = undefined;
+    //
+    //InterfaceBuilder.prototype.getProperties = undefined;
+    //
+    //InterfaceBuilder.prototype.removeProperty = undefined;
+    //
+    //InterfaceBuilder.prototype.setStatic = undefined;
+    //
+    //InterfaceBuilder.prototype.getStatic = undefined;
+    //
+    //InterfaceBuilder.prototype.setStaticProperty = undefined;
+    //
+    //InterfaceBuilder.prototype.removeStaticProperty = undefined;
 
     return InterfaceBuilder;
 

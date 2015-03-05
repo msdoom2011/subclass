@@ -249,7 +249,7 @@ Subclass.Class.Type.Class.Class = (function() {
         }
         var traitClass = this.getClassManager().getClass(traitName);
         var traitClassConstructor = traitClass.getConstructor();
-        var traitClassProperties = traitClass.getProperties();
+        //var traitClassProperties = traitClass.getProperties();
         var traitProps = {};
 
         if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
@@ -259,17 +259,17 @@ Subclass.Class.Type.Class.Class = (function() {
             );
         }
 
-        for (var propName in traitClassProperties) {
-            if (!traitClassProperties.hasOwnProperty(propName)) {
-                continue;
-            }
-            var property = traitClassProperties[propName];
-            this.addProperty(propName, property.getDefinition().getData());
-        }
+        //for (var propName in traitClassProperties) {
+        //    if (!traitClassProperties.hasOwnProperty(propName)) {
+        //        continue;
+        //    }
+        //    var property = traitClassProperties[propName];
+        //    this.addProperty(propName, property.getDefinition().getData());
+        //}
 
         // Copying all properties and methods (with inherited) from trait to class definition
 
-        for (propName in traitClassConstructor.prototype) {
+        for (var propName in traitClassConstructor.prototype) {
             if (propName.match(/^\$_/i)) {
                 continue;
             }
@@ -373,7 +373,7 @@ Subclass.Class.Type.Class.Class = (function() {
 
         var interfaceClassConstructor = interfaceClass.getConstructor();
         var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
-        var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
+        //var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
 
         if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
@@ -385,15 +385,15 @@ Subclass.Class.Type.Class.Class = (function() {
 
         // Add interface properties
 
-        for (var propName in interfaceClassProperties) {
-            if (!interfaceClassProperties.hasOwnProperty(propName)) {
-                continue;
-            }
-            this.addProperty(
-                propName,
-                interfaceClassProperties[propName]
-            );
-        }
+        //for (var propName in interfaceClassProperties) {
+        //    if (!interfaceClassProperties.hasOwnProperty(propName)) {
+        //        continue;
+        //    }
+        //    this.addProperty(
+        //        propName,
+        //        interfaceClassProperties[propName]
+        //    );
+        //}
 
         // Add all interface prototype properties (with inherited)
 
@@ -401,17 +401,17 @@ Subclass.Class.Type.Class.Class = (function() {
             if (typeof interfaceClassConstructorProto[methodName] != 'function') {
                 continue;
             }
-            for (propName in interfaceClassProperties) {
-                if (!interfaceClassProperties.hasOwnProperty(propName)) {
-                    continue;
-                }
-                var setterName = Subclass.Tools.generateSetterName(propName);
-                var getterName = Subclass.Tools.generateGetterName(propName);
-
-                if (methodName == setterName || methodName == getterName) {
-                    continue loop;
-                }
-            }
+            //for (propName in interfaceClassProperties) {
+            //    if (!interfaceClassProperties.hasOwnProperty(propName)) {
+            //        continue;
+            //    }
+            //    var setterName = Subclass.Tools.generateSetterName(propName);
+            //    var getterName = Subclass.Tools.generateGetterName(propName);
+            //
+            //    if (methodName == setterName || methodName == getterName) {
+            //        continue loop;
+            //    }
+            //}
             abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
         }
         this.addAbstractMethods(abstractMethods);

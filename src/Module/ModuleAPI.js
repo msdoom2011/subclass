@@ -191,17 +191,17 @@ Subclass.Module.ModuleAPI = (function()
     {
         return this.getModule().getLoadManager.apply(this.getModule(), arguments);
     };
-
-    /**
-     * The same as the {@link Subclass.Module.Module#getPropertyManager}
-     *
-     * @method getPropertyManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getPropertyManager = function()
-    {
-        return this.getModule().getPropertyManager.apply(this.getModule(), arguments);
-    };
+    //
+    ///**
+    // * The same as the {@link Subclass.Module.Module#getPropertyManager}
+    // *
+    // * @method getPropertyManager
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.getPropertyManager = function()
+    //{
+    //    return this.getModule().getPropertyManager.apply(this.getModule(), arguments);
+    //};
 
     /**
      * The same as the {@link Subclass.Module.Module#getClassManager}
@@ -213,140 +213,140 @@ Subclass.Module.ModuleAPI = (function()
     {
         return this.getModule().getClassManager.apply(this.getModule(), arguments);
     };
-
-    /**
-     * The same as the {@link Subclass.Module.Module#getServiceManager}
-     *
-     * @method getServiceManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getServiceManager = function()
-    {
-        return this.getModule().getServiceManager.apply(this.getModule(), arguments);
-    };
-
-    /**
-     * The same as the {@link Subclass.Module.Module#getParameterManager}
-     *
-     * @method getParameterManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getParameterManager = function()
-    {
-        return this.getModule().getParameterManager.apply(this.getModule(), arguments);
-    };
-
-    /**
-     * The same as the {@link Subclass.Service.ServiceManager#registerService}
-     *
-     * @method registerService
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.registerService = function()
-    {
-        return this.getModule().getServiceManager().registerService.apply(
-            this.getModule().getServiceManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Module.ConfigManager#setServices}
-     *
-     * @method registerServices
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.registerServices = function()
-    {
-        return this.getModule().getConfigManager().setServices.apply(
-            this.getModule().getConfigManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Service.ServiceManager#getService}
-     *
-     * @method getService
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getService = function()
-    {
-        return this.getModule().getServiceManager().getService.apply(
-            this.getModule().getServiceManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Parameter.ParameterManager#registerParameter}
-     *
-     * @method registerService
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.registerParameter = function()
-    {
-        return this.getModule().getParameterManager().registerParameter.apply(
-            this.getModule().getParameterManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Module.ConfigManager#setParameters}
-     *
-     * @method registerParameters
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.registerParameters = function()
-    {
-        return this.getModule().getConfigManager().setParameters.apply(
-            this.getModule().getConfigManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Parameter.ParameterManager#setParameter}
-     *
-     * @method setParameter
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.setParameter = function()
-    {
-        return this.getModule().getParameterManager().setParameter.apply(
-            this.getModule().getParameterManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Parameter.ParameterManager#getParameter}
-     *
-     * @method getParameter
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getParameter = function(parameterName)
-    {
-        return this.getModule().getParameterManager().getParameter.apply(
-            this.getModule().getParameterManager(),
-            arguments
-        );
-    };
-
-    /**
-     * The same as the {@link Subclass.Module.ConfigManager#setDataTypes}
-     *
-     * @method registerDataTypes
-     * @memberOf Subclass.Module.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.registerDataTypes = function()
-    {
-        return this.getModule().getConfigManager().setDataTypes.apply(
-            this.getModule().getConfigManager(),
-            arguments
-        );
-    };
+    //
+    ///**
+    // * The same as the {@link Subclass.Module.Module#getServiceManager}
+    // *
+    // * @method getServiceManager
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.getServiceManager = function()
+    //{
+    //    return this.getModule().getServiceManager.apply(this.getModule(), arguments);
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Module.Module#getParameterManager}
+    // *
+    // * @method getParameterManager
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.getParameterManager = function()
+    //{
+    //    return this.getModule().getParameterManager.apply(this.getModule(), arguments);
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Service.ServiceManager#registerService}
+    // *
+    // * @method registerService
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.registerService = function()
+    //{
+    //    return this.getModule().getServiceManager().registerService.apply(
+    //        this.getModule().getServiceManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Module.ConfigManager#setServices}
+    // *
+    // * @method registerServices
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.registerServices = function()
+    //{
+    //    return this.getModule().getConfigManager().setServices.apply(
+    //        this.getModule().getConfigManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Service.ServiceManager#getService}
+    // *
+    // * @method getService
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.getService = function()
+    //{
+    //    return this.getModule().getServiceManager().getService.apply(
+    //        this.getModule().getServiceManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Parameter.ParameterManager#registerParameter}
+    // *
+    // * @method registerService
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.registerParameter = function()
+    //{
+    //    return this.getModule().getParameterManager().registerParameter.apply(
+    //        this.getModule().getParameterManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Module.ConfigManager#setParameters}
+    // *
+    // * @method registerParameters
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.registerParameters = function()
+    //{
+    //    return this.getModule().getConfigManager().setParameters.apply(
+    //        this.getModule().getConfigManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Parameter.ParameterManager#setParameter}
+    // *
+    // * @method setParameter
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.setParameter = function()
+    //{
+    //    return this.getModule().getParameterManager().setParameter.apply(
+    //        this.getModule().getParameterManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Parameter.ParameterManager#getParameter}
+    // *
+    // * @method getParameter
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.getParameter = function(parameterName)
+    //{
+    //    return this.getModule().getParameterManager().getParameter.apply(
+    //        this.getModule().getParameterManager(),
+    //        arguments
+    //    );
+    //};
+    //
+    ///**
+    // * The same as the {@link Subclass.Module.ConfigManager#setDataTypes}
+    // *
+    // * @method registerDataTypes
+    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // */
+    //ModuleAPI.prototype.registerDataTypes = function()
+    //{
+    //    return this.getModule().getConfigManager().setDataTypes.apply(
+    //        this.getModule().getConfigManager(),
+    //        arguments
+    //    );
+    //};
 
     /**
      * The same as the {@link Subclass.Module.Module#getRoot}

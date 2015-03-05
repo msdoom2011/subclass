@@ -74,12 +74,12 @@ Subclass.Class.ClassType = (function()
          * @protected
          */
         this._parent = null;
-
-        /**
-         * @type {Object}
-         * @protected
-         */
-        this._properties = {};
+        //
+        ///**
+        // * @type {Object}
+        // * @protected
+        // */
+        //this._properties = {};
 
         /**
          * Reports whether the instance of current class was created
@@ -297,94 +297,94 @@ Subclass.Class.ClassType = (function()
     {
         return !!this._parent;
     };
-
-    /**
-     * Returns all typed properties in current class definition instance
-     *
-     * @param {boolean} [withInherited]
-     * @returns {Object.<Subclass.Property.PropertyType>}
-     */
-    ClassType.prototype.getProperties = function(withInherited)
-    {
-        var properties = {};
-
-        if (withInherited !== true) {
-            withInherited = false;
-        }
-
-        if (withInherited && this.hasParent()) {
-            var parentClass = this.getParent();
-            var parentClassProperties = parentClass.getProperties(withInherited);
-
-            Subclass.Tools.extend(
-                properties,
-                parentClassProperties
-            );
-        }
-        return Subclass.Tools.extend(
-            properties,
-            this._properties
-        );
-    };
-
-    /**
-     * Adds new typed property to class
-     *
-     * @param {string} propertyName
-     * @param {Object} propertyDefinition
-     */
-    ClassType.prototype.addProperty = function(propertyName, propertyDefinition)
-    {
-        var propertyManager = this.getClassManager().getModule().getPropertyManager();
-
-        this._properties[propertyName] = propertyManager.createProperty(
-            propertyName,
-            propertyDefinition,
-            this
-        );
-    };
-
-    /**
-     * Returns property instance by its name
-     *
-     * @param {string} propertyName
-     * @returns {Subclass.Property.PropertyType}
-     * @throws {Error}
-     */
-    ClassType.prototype.getProperty = function(propertyName)
-    {
-        var classProperties = this.getProperties();
-
-        if (!classProperties[propertyName] && this.hasParent()) {
-            return this.getParent().getProperty(propertyName);
-
-        } else if (!classProperties[propertyName]) {
-            Subclass.Error.create(
-                'Trying to call to non existent property "' + propertyName + '" ' +
-                'in class "' + this.getName() + '".'
-            );
-        }
-        return this.getProperties()[propertyName];
-    };
-
-    /**
-     * Checks if property with specified property name exists
-     *
-     * @param {string} propertyName
-     * @returns {boolean}
-     */
-    ClassType.prototype.issetProperty = function(propertyName)
-    {
-        var classProperties = this.getProperties();
-
-        if (!classProperties[propertyName] && this.hasParent()) {
-            return this.getParent().issetProperty(propertyName);
-
-        } else if (!classProperties[propertyName]) {
-            return false;
-        }
-        return true;
-    };
+    //
+    ///**
+    // * Returns all typed properties in current class definition instance
+    // *
+    // * @param {boolean} [withInherited]
+    // * @returns {Object.<Subclass.Property.PropertyType>}
+    // */
+    //ClassType.prototype.getProperties = function(withInherited)
+    //{
+    //    var properties = {};
+    //
+    //    if (withInherited !== true) {
+    //        withInherited = false;
+    //    }
+    //
+    //    if (withInherited && this.hasParent()) {
+    //        var parentClass = this.getParent();
+    //        var parentClassProperties = parentClass.getProperties(withInherited);
+    //
+    //        Subclass.Tools.extend(
+    //            properties,
+    //            parentClassProperties
+    //        );
+    //    }
+    //    return Subclass.Tools.extend(
+    //        properties,
+    //        this._properties
+    //    );
+    //};
+    //
+    ///**
+    // * Adds new typed property to class
+    // *
+    // * @param {string} propertyName
+    // * @param {Object} propertyDefinition
+    // */
+    //ClassType.prototype.addProperty = function(propertyName, propertyDefinition)
+    //{
+    //    var propertyManager = this.getClassManager().getModule().getPropertyManager();
+    //
+    //    this._properties[propertyName] = propertyManager.createProperty(
+    //        propertyName,
+    //        propertyDefinition,
+    //        this
+    //    );
+    //};
+    //
+    ///**
+    // * Returns property instance by its name
+    // *
+    // * @param {string} propertyName
+    // * @returns {Subclass.Property.PropertyType}
+    // * @throws {Error}
+    // */
+    //ClassType.prototype.getProperty = function(propertyName)
+    //{
+    //    var classProperties = this.getProperties();
+    //
+    //    if (!classProperties[propertyName] && this.hasParent()) {
+    //        return this.getParent().getProperty(propertyName);
+    //
+    //    } else if (!classProperties[propertyName]) {
+    //        Subclass.Error.create(
+    //            'Trying to call to non existent property "' + propertyName + '" ' +
+    //            'in class "' + this.getName() + '".'
+    //        );
+    //    }
+    //    return this.getProperties()[propertyName];
+    //};
+    //
+    ///**
+    // * Checks if property with specified property name exists
+    // *
+    // * @param {string} propertyName
+    // * @returns {boolean}
+    // */
+    //ClassType.prototype.issetProperty = function(propertyName)
+    //{
+    //    var classProperties = this.getProperties();
+    //
+    //    if (!classProperties[propertyName] && this.hasParent()) {
+    //        return this.getParent().issetProperty(propertyName);
+    //
+    //    } else if (!classProperties[propertyName]) {
+    //        return false;
+    //    }
+    //    return true;
+    //};
 
     /**
      * Returns constructor function for current class type
@@ -470,23 +470,23 @@ Subclass.Class.ClassType = (function()
     {
         return true;
     };
-
-    /**
-     * Creates and attaches class typed properties
-     *
-     * @param {Object} context Class constructor prototype
-     */
-    ClassType.prototype.attachProperties = function(context)
-    {
-        var classProperties = this.getProperties();
-
-        for (var propName in classProperties) {
-            if (!classProperties.hasOwnProperty(propName)) {
-                continue;
-            }
-            classProperties[propName].attach(context);
-        }
-    };
+    //
+    ///**
+    // * Creates and attaches class typed properties
+    // *
+    // * @param {Object} context Class constructor prototype
+    // */
+    //ClassType.prototype.attachProperties = function(context)
+    //{
+    //    var classProperties = this.getProperties();
+    //
+    //    for (var propName in classProperties) {
+    //        if (!classProperties.hasOwnProperty(propName)) {
+    //            continue;
+    //        }
+    //        classProperties[propName].attach(context);
+    //    }
+    //};
 
     /**
      * Creates class instance of current class type
@@ -503,37 +503,37 @@ Subclass.Class.ClassType = (function()
 
         var classManager = this.getClassManager();
         var classConstructor = this.getConstructor();
-        var classProperties = this.getProperties(true);
+        //var classProperties = this.getProperties(true);
         var classInstance = new classConstructor();
         var setterName;
 
         // Attaching hashed typed properties
 
-        for (var propertyName in classProperties) {
-            if (!classProperties.hasOwnProperty(propertyName)) {
-                continue;
-            }
-            classProperties[propertyName].attachHashed(classInstance);
-
-            // Getting init value
-
-            var property = classProperties[propertyName];
-            var propertyDefinition = property.getDefinition();
-            var initValue = propertyDefinition.getValue();
-
-            // Setting init value
-
-            if (initValue !== undefined) {
-                if (propertyDefinition.isAccessors()) {
-                    setterName = Subclass.Tools.generateSetterName(propertyName);
-                    classInstance[setterName](initValue);
-
-                } else {
-                    classInstance[propertyName] = initValue;
-                }
-                property.setIsModified(false);
-            }
-        }
+        //for (var propertyName in classProperties) {
+        //    if (!classProperties.hasOwnProperty(propertyName)) {
+        //        continue;
+        //    }
+        //    classProperties[propertyName].attachHashed(classInstance);
+        //
+        //    // Getting init value
+        //
+        //    var property = classProperties[propertyName];
+        //    var propertyDefinition = property.getDefinition();
+        //    var initValue = propertyDefinition.getValue();
+        //
+        //    // Setting init value
+        //
+        //    if (initValue !== undefined) {
+        //        if (propertyDefinition.isAccessors()) {
+        //            setterName = Subclass.Tools.generateSetterName(propertyName);
+        //            classInstance[setterName](initValue);
+        //
+        //        } else {
+        //            classInstance[propertyName] = initValue;
+        //        }
+        //        property.setIsModified(false);
+        //    }
+        //}
 
         // Adding no methods to class instance
 
@@ -626,16 +626,16 @@ Subclass.Class.ClassType = (function()
 
     // Adding not allowed class properties
 
-    Subclass.Property.PropertyManager.registerNotAllowedPropertyNames([
-        "class",
-        "parent",
-        "classManager",
-        "class_manager",
-        "classWrap",
-        "class_wrap",
-        "className",
-        "class_name"
-    ]);
+    //Subclass.Property.PropertyManager.registerNotAllowedPropertyNames([
+    //    "class",
+    //    "parent",
+    //    "classManager",
+    //    "class_manager",
+    //    "classWrap",
+    //    "class_wrap",
+    //    "className",
+    //    "class_name"
+    //]);
 
     return ClassType;
 

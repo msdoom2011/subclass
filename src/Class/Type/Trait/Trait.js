@@ -69,29 +69,29 @@ Subclass.Class.Type.Trait.Trait = (function()
             );
         }
     };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.getProperties = function()
-    {
-        var properties = {};
-
-        if (this.hasParent()) {
-            var parentClass = this.getParent();
-            var parentProperties = parentClass.getProperties();
-            properties = Subclass.Tools.extend({}, parentProperties);
-        }
-        return Subclass.Tools.extend(
-            properties,
-            this._properties
-        );
-    };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.attachProperties = function() {};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //Trait.prototype.getProperties = function()
+    //{
+    //    var properties = {};
+    //
+    //    if (this.hasParent()) {
+    //        var parentClass = this.getParent();
+    //        var parentProperties = parentClass.getProperties();
+    //        properties = Subclass.Tools.extend({}, parentProperties);
+    //    }
+    //    return Subclass.Tools.extend(
+    //        properties,
+    //        this._properties
+    //    );
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //Trait.prototype.attachProperties = function() {};
 
     /**
      * @inheritDoc

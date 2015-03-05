@@ -19,8 +19,7 @@ Subclass.Module.Error = {};
  * by plug-ins (other modules which were marked as plug-ins).<br /><br />
  *
  * Using this class you can get access to module configuration, event manager,
- * class manager, property manager, parameter manager, service manager
- * and make all manipulations whatever you need.
+ * load manager, class manager and make all manipulations whatever you need.
  *
  * @throws {Error}
  *      Throws if was missed or is not a string the module name
@@ -76,84 +75,84 @@ Subclass.Module.Error = {};
  *                                         ...
  *                                       };
  *
- * dataTypes    {Object}    opt          Object, which keys are the type
- *                                       names and values are
- *                                       its definitions.
- *
- *                                       It allows to create the new data
- *                                       types based on the default
- *                                       (registered) data types using
- *                                       configuration whatever you need.
- *
- *                                       Also you may to change
- *                                       configuration of the default
- *                                       data types.
- *
- *                                       Example:
- *
- *                                       var moduleConfigs = {
- *                                         ...
- *                                         dataTypes: {
- *
- *                                           // creating the new type
- *                                           percents: {
- *                                             type: "string",
- *                                             pattern: /^[0-9]+%$/
- *                                           },
- *
- *                                           // altering existent type
- *                                           number: {
- *                                             type: "number",
- *                                             nullable: false,
- *                                             default: 100
- *                                           }
- *                                         },
- *                                         ...
- *                                       };
+ //* dataTypes    {Object}    opt          Object, which keys are the type
+ //*                                       names and values are
+ //*                                       its definitions.
+ //*
+ //*                                       It allows to create the new data
+ //*                                       types based on the default
+ //*                                       (registered) data types using
+ //*                                       configuration whatever you need.
+ //*
+ //*                                       Also you may to change
+ //*                                       configuration of the default
+ //*                                       data types.
+ //*
+ //*                                       Example:
+ //*
+ //*                                       var moduleConfigs = {
+ //*                                         ...
+ //*                                         dataTypes: {
+ //*
+ //*                                           // creating the new type
+ //*                                           percents: {
+ //*                                             type: "string",
+ //*                                             pattern: /^[0-9]+%$/
+ //*                                           },
+ //*
+ //*                                           // altering existent type
+ //*                                           number: {
+ //*                                             type: "number",
+ //*                                             nullable: false,
+ //*                                             default: 100
+ //*                                           }
+ //*                                         },
+ //*                                         ...
+ //*                                       };
  *
  * onReady      {Function}  opt          Callback function that will be
  *                                       invoked when all module classes
  *                                       will be loaded.
  *
- * parameters   {Object}    opt          Object with parameters which can
- *                                       be used in service definitions
- *                                       or in any other places of the
- *                                       module.
- *
- *                                       Example:
- *
- *                                       var moduleConfigs = {
- *                                         ...
- *                                         parameters: {
- *                                           mode: "dev",
- *                                           foo: 111,
- *                                           bar: true,
- *                                           ...
- *                                         },
- *                                         ...
- *                                       };
- *
- * services     {Object}    opt          List of service definitions.
- *                                       To see more about service
- *                                       definition configuration look at
- *                                       {@link Subclass.Service.Service}
- *
- *                                       Example:
- *
- *                                       var moduleConfigs = {
- *                                         ...
- *                                         services: {
- *                                           foo: {
- *                                             className: "Path/Of/FooClass",
- *                                             arguments: ["%mode%]
- *                                           },
- *                                           bar: {
- *                                             className: "Path/Of/BarClass"
- *                                           },
- *                                           ...
- *                                         },
- *                                         ...
- *                                       };
+ //* parameters   {Object}    opt          Object with parameters which can
+ //*                                       be used in service definitions
+ //*                                       or in any other places of the
+ //*                                       module.
+ //*
+ //*                                       Example:
+ //*
+ //*                                       var moduleConfigs = {
+ //*                                         ...
+ //*                                         parameters: {
+ //*                                           mode: "dev",
+ //*                                           foo: 111,
+ //*                                           bar: true,
+ //*                                           ...
+ //*                                         },
+ //*                                         ...
+ //*                                       };
+ //*
+ //* services     {Object}    opt          List of service definitions.
+ //*                                       To see more about service
+ //*                                       definition configuration look at
+ //*                                       {@link Subclass.Service.Service}
+ //*
+ //*                                       Example:
+ //*
+ //*                                       var moduleConfigs = {
+ //*                                         ...
+ //*                                         services: {
+ //*                                           foo: {
+ //*                                             className: "Path/Of/FooClass",
+ //*                                             arguments: ["%mode%]
+ //*                                           },
+ //*                                           bar: {
+ //*                                             className: "Path/Of/BarClass"
+ //*                                           },
+ //*                                           ...
+ //*                                         },
+ //*                                         ...
+ //*                                       };
  * </pre>
  */
 Subclass.Module.Module = (function()
@@ -237,14 +236,14 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._moduleManager = new Subclass.Module.ModuleManager(this, modulePlugins);
-
-        /**
-         * Property manager instance
-         *
-         * @type {Subclass.Property.PropertyManager}
-         * @private
-         */
-        this._propertyManager = new Subclass.Property.PropertyManager(this);
+        //
+        ///**
+        // * Property manager instance
+        // *
+        // * @type {Subclass.Property.PropertyManager}
+        // * @private
+        // */
+        //this._propertyManager = new Subclass.Property.PropertyManager(this);
 
         /**
          * Class manager instance
@@ -253,22 +252,22 @@ Subclass.Module.Module = (function()
          * @private
          */
         this._classManager = new Subclass.Class.ClassManager(this);
-
-        /**
-         * Service manager instance
-         *
-         * @type {Subclass.Service.ServiceManager}
-         * @private
-         */
-        this._serviceManager = new Subclass.Service.ServiceManager(this);
-
-        /**
-         * Parameter manager instance
-         *
-         * @type {Subclass.Parameter.ParameterManager}
-         * @private
-         */
-        this._parameterManager = new Subclass.Parameter.ParameterManager(this);
+        //
+        ///**
+        // * Service manager instance
+        // *
+        // * @type {Subclass.Service.ServiceManager}
+        // * @private
+        // */
+        //this._serviceManager = new Subclass.Service.ServiceManager(this);
+        //
+        ///**
+        // * Parameter manager instance
+        // *
+        // * @type {Subclass.Parameter.ParameterManager}
+        // * @private
+        // */
+        //this._parameterManager = new Subclass.Parameter.ParameterManager(this);
 
         /**
          * Module configuration
@@ -299,9 +298,9 @@ Subclass.Module.Module = (function()
 
         this.setConfigs(moduleConfigs);
         this.getClassManager().initialize();
-        this.getPropertyManager().initialize();
+        //this.getPropertyManager().initialize();
         this.getLoadManager().initialize();
-        this.getServiceManager().initialize();
+        //this.getServiceManager().initialize();
 
         var eventManager = this.getEventManager();
         eventManager.getEvent('onModuleInit').triggerPrivate();
@@ -511,20 +510,20 @@ Subclass.Module.Module = (function()
     {
         return this._loadManager;
     };
-
-    /**
-     * Returns an instance of property manager which allows to register
-     * custom data types and creates typed property instance by its definition.
-     *
-     * @method getPropertyManager
-     * @memberOf Subclass.Module.Module.prototype
-     *
-     * @returns {Subclass.Property.PropertyManager}
-     */
-    Module.prototype.getPropertyManager = function()
-    {
-        return this._propertyManager;
-    };
+    //
+    ///**
+    // * Returns an instance of property manager which allows to register
+    // * custom data types and creates typed property instance by its definition.
+    // *
+    // * @method getPropertyManager
+    // * @memberOf Subclass.Module.Module.prototype
+    // *
+    // * @returns {Subclass.Property.PropertyManager}
+    // */
+    //Module.prototype.getPropertyManager = function()
+    //{
+    //    return this._propertyManager;
+    //};
 
     /**
      * Returns class manager instance that allows to register, process, and get
@@ -539,34 +538,34 @@ Subclass.Module.Module = (function()
     {
         return this._classManager;
     };
-
-    /**
-     * Returns an instance of parameter manager which allows to register parameters,
-     * set and get its values throughout the project
-     *
-     * @method getParameterManager
-     * @memberOf Subclass.Module.Module.prototype
-     *
-     * @returns {Subclass.Parameter.ParameterManager}
-     */
-    Module.prototype.getParameterManager = function()
-    {
-        return this._parameterManager;
-    };
-
-    /**
-     * Returns an instance of service manager which allows to register, build and
-     * get services throughout the project
-     *
-     * @method getServiceManager
-     * @memberOf Subclass.Module.Module.prototype
-     *
-     * @returns {Subclass.Service.ServiceManager}
-     */
-    Module.prototype.getServiceManager = function()
-    {
-        return this._serviceManager;
-    };
+    //
+    ///**
+    // * Returns an instance of parameter manager which allows to register parameters,
+    // * set and get its values throughout the project
+    // *
+    // * @method getParameterManager
+    // * @memberOf Subclass.Module.Module.prototype
+    // *
+    // * @returns {Subclass.Parameter.ParameterManager}
+    // */
+    //Module.prototype.getParameterManager = function()
+    //{
+    //    return this._parameterManager;
+    //};
+    //
+    ///**
+    // * Returns an instance of service manager which allows to register, build and
+    // * get services throughout the project
+    // *
+    // * @method getServiceManager
+    // * @memberOf Subclass.Module.Module.prototype
+    // *
+    // * @returns {Subclass.Service.ServiceManager}
+    // */
+    //Module.prototype.getServiceManager = function()
+    //{
+    //    return this._serviceManager;
+    //};
 
     /**
      * The same as the {@link Subclass.Module.ConfigManager#setOnReady}

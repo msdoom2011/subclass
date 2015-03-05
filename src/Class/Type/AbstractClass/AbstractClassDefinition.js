@@ -56,7 +56,8 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
     /**
      * Sets "$_abstract" attribute value
      *
-     * @param {Object} value Plain object with different properties and methods
+     * @param {Object} value
+     *      The plain object with different properties and methods
      */
     AbstractClassDefinition.prototype.setAbstract = function(value)
     {
@@ -96,9 +97,9 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
         delete classDefinition.isImplements;
         delete classDefinition.getClassName;
         delete classDefinition.getCopy;
-        delete classDefinition.issetProperty;
-        delete classDefinition.getProperty;
-        delete classDefinition._getDataTypeProperty;
+        //delete classDefinition.issetProperty;
+        //delete classDefinition.getProperty;
+        //delete classDefinition._getDataTypeProperty;
         delete classDefinition.value;
         delete classDefinition.result;
 

@@ -69,20 +69,20 @@ Subclass.Class.Type.Interface.Interface = (function()
             );
         }
     };
-
-    Interface.prototype.getClassDefinitionProperties = function()
-    {
-        var classDefinition = this.getDefinition();
-        var classProperties = {};
-
-        if (this.hasParent()) {
-            classProperties = this.getParent().getClassDefinitionProperties();
-        }
-        return Subclass.Tools.extend(
-            classProperties,
-            classDefinition.getProperties()
-        );
-    };
+    //
+    //Interface.prototype.getClassDefinitionProperties = function()
+    //{
+    //    var classDefinition = this.getDefinition();
+    //    var classProperties = {};
+    //
+    //    if (this.hasParent()) {
+    //        classProperties = this.getParent().getClassDefinitionProperties();
+    //    }
+    //    return Subclass.Tools.extend(
+    //        classProperties,
+    //        classDefinition.getProperties()
+    //    );
+    //};
 
     /**
      * @inheritDoc
@@ -95,11 +95,11 @@ Subclass.Class.Type.Interface.Interface = (function()
             return Interface.name;
         };
     };
-
-    /**
-     * @inheritDoc
-     */
-    Interface.prototype.attachProperties = function() {};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //Interface.prototype.attachProperties = function() {};
 
     /**
      * @inheritDoc

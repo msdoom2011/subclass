@@ -13,7 +13,7 @@ Subclass.Event = {};
  * - receive events;<br />
  * - check whether is interesting event exists.
  *
- * @param {Subclass.Module.Module} module
+ * @param {Subclass.Module} module
  *      A module instance
  */
 Subclass.Event.EventManager = (function()
@@ -26,7 +26,7 @@ Subclass.Event.EventManager = (function()
         /**
          * An instance of subclass module
          *
-         * @type {Subclass.Module.Module}
+         * @type {Subclass.Module}
          * @private
          */
         this._module = module;
@@ -47,7 +47,7 @@ Subclass.Event.EventManager = (function()
      * @method getModule
      * @memberOf Subclass.Event.EventManager.prototype
      *
-     * @returns {Subclass.Module.Module}
+     * @returns {Subclass.Module}
      */
     EventManager.prototype.getModule = function()
     {
@@ -69,7 +69,7 @@ Subclass.Event.EventManager = (function()
     EventManager.prototype.getEvents = function(privateEvents)
     {
         var mainModule = this.getModule();
-        var moduleManager = mainModule.getModuleManager();
+        var moduleStorage = mainModule.getModuleStorage();
         var events = {};
         var $this = this;
 
@@ -80,7 +80,7 @@ Subclass.Event.EventManager = (function()
             return this._events;
         }
 
-        moduleManager.eachModule(true, function(module) {
+        moduleStorage.eachModule(true, function(module) {
             if (module == mainModule) {
                 Subclass.Tools.extend(events, $this._events);
                 return;

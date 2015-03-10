@@ -1,14 +1,4 @@
 /**
- * @namespace
- */
-Subclass.Module = {};
-
-/**
- * @namespace
- */
-Subclass.Module.Error = {};
-
-/**
  * @class
  * @constructor
  * @description
@@ -155,10 +145,10 @@ Subclass.Module.Error = {};
  //*                                       };
  * </pre>
  */
-Subclass.Module.Module = (function()
+Subclass.Module = (function()
 {
     /**
-     * @alias Subclass.Module.Module
+     * @alias Subclass.Module
      */
     function Module(moduleName, modulePlugins, moduleConfigs)
     {
@@ -190,7 +180,7 @@ Subclass.Module.Module = (function()
         /**
          * Parent module (if current one is a plugin relative to parent module)
          *
-         * @type {(Subclass.Module.Module|null)}
+         * @type {(Subclass.Module|null)}
          * @private
          */
         this._parent = null;
@@ -198,10 +188,10 @@ Subclass.Module.Module = (function()
         /**
          * Module public api
          *
-         * @type {Subclass.Module.ModuleAPI}
+         * @type {Subclass.ModuleAPI}
          * @private
          */
-        this._api = new Subclass.Module.ModuleAPI(this);
+        this._api = new Subclass.ModuleAPI(this);
 
         /**
          * Event manager instance
@@ -224,18 +214,18 @@ Subclass.Module.Module = (function()
         /**
          * The load manager instance
          *
-         * @type {Subclass.Module.LoadManager}
+         * @type {Subclass.LoadManager}
          * @private
          */
-        this._loadManager = new Subclass.Module.LoadManager(this);
+        this._loadManager = new Subclass.LoadManager(this);
 
         /**
          * Collection of modules
          *
-         * @type {Subclass.Module.ModuleManager}
+         * @type {Subclass.ModuleStorage}
          * @private
          */
-        this._moduleManager = new Subclass.Module.ModuleManager(this, modulePlugins);
+        this._moduleStorage = new Subclass.ModuleStorage(this, modulePlugins);
         //
         ///**
         // * Property manager instance
@@ -272,10 +262,10 @@ Subclass.Module.Module = (function()
         /**
          * Module configuration
          *
-         * @type {Subclass.Module.ConfigManager}
+         * @type {Subclass.ConfigManager}
          * @private
          */
-        this._configManager = new Subclass.Module.ConfigManager(this);
+        this._configManager = new Subclass.ConfigManager(this);
 
         /**
          * Checks whether module is prepared for ready
@@ -317,7 +307,7 @@ Subclass.Module.Module = (function()
      * Returns name of the module
      *
      * @method getName
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {string}
      */
@@ -331,21 +321,21 @@ Subclass.Module.Module = (function()
      * Allows to specify that the current module is a plugin relative to the parent module
      *
      * @method setParent
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @throws {Error}
      *      Throws error if was specified not valid argument
      *
-     * @param {(Subclass.Module.Module|null)} parentModule
+     * @param {(Subclass.Module|null)} parentModule
      *      The parent module instance
      */
     Module.prototype.setParent = function(parentModule)
     {
-        if (parentModule !== null && !(parentModule instanceof Subclass.Module.Module)) {
+        if (parentModule !== null && !(parentModule instanceof Subclass.Module)) {
             Subclass.Error.create('InvalidArgument')
                 .argument("the parent module instance", false)
                 .received(parentModule)
-                .expected('an instance of "Subclass.Module.Module"')
+                .expected('an instance of "Subclass.Module"')
                 .apply()
             ;
         }
@@ -356,9 +346,9 @@ Subclass.Module.Module = (function()
      * Returns parent module
      *
      * @method getParent
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
-     * @returns {(Subclass.Module.Module|null)}
+     * @returns {(Subclass.Module|null)}
      */
     Module.prototype.getParent = function()
     {
@@ -370,7 +360,7 @@ Subclass.Module.Module = (function()
      * i.e. is a plugin relative to another module
      *
      * @method hasParent
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
@@ -387,15 +377,15 @@ Subclass.Module.Module = (function()
      * of the inheritance chain is called a root module.
      *
      * @method getRoot
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Module.Module}
+     * @returns {Subclass.Module}
      */
     Module.prototype.getRoot = function()
     {
         var parent = this;
 
-        if (arguments[0] && arguments[0] instanceof Subclass.Module.Module) {
+        if (arguments[0] && arguments[0] instanceof Subclass.Module) {
             parent = arguments[0];
         }
         if (parent.hasParent()) {
@@ -409,7 +399,7 @@ Subclass.Module.Module = (function()
      * i.e. hasn't the parent module and isn't a plugin.
      *
      * @method isRoot
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
@@ -422,7 +412,7 @@ Subclass.Module.Module = (function()
      * Checks whether current module is a plug-in.
      *
      * @method isPlugin
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {*}
      */
@@ -433,12 +423,12 @@ Subclass.Module.Module = (function()
 
     /**
      * Returns the public api of the module which
-     * is an instance of class Subclass.Module.ModuleAPI
+     * is an instance of class Subclass.ModuleAPI
      *
      * @method getAPI
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Module.ModuleAPI}
+     * @returns {Subclass.ModuleAPI}
      */
     Module.prototype.getAPI = function()
     {
@@ -446,10 +436,10 @@ Subclass.Module.Module = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.ConfigManager#setConfigs}
+     * The same as the {@link Subclass.ConfigManager#setConfigs}
      *
      * @method setConfigs
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      */
     Module.prototype.setConfigs = function(configs)
     {
@@ -460,9 +450,9 @@ Subclass.Module.Module = (function()
      * Returns an instance of manager that holds and processes module configuration.
      *
      * @method getConfigManager
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Module.ConfigManager}
+     * @returns {Subclass.ConfigManager}
      */
     Module.prototype.getConfigManager = function()
     {
@@ -474,7 +464,7 @@ Subclass.Module.Module = (function()
      * subscribe listeners and triggers them at the appointed time
      *
      * @method getEventManager
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {Subclass.Event.EventManager}
      */
@@ -488,23 +478,23 @@ Subclass.Module.Module = (function()
      * names were specified earlier in module constructor as modulePlugins)
      * and link on this module
      *
-     * @method getModuleManager
-     * @memberOf Subclass.Module.Module.prototype
+     * @method getModuleStorage
+     * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Module.ModuleManager}
+     * @returns {Subclass.ModuleStorage}
      */
-    Module.prototype.getModuleManager = function()
+    Module.prototype.getModuleStorage = function()
     {
-        return this._moduleManager;
+        return this._moduleStorage;
     };
 
     /**
      * Returns the instance of load manager
      *
      * @method getLoadManager
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Module.LoadManager}
+     * @returns {Subclass.LoadManager}
      */
     Module.prototype.getLoadManager = function()
     {
@@ -516,7 +506,7 @@ Subclass.Module.Module = (function()
     // * custom data types and creates typed property instance by its definition.
     // *
     // * @method getPropertyManager
-    // * @memberOf Subclass.Module.Module.prototype
+    // * @memberOf Subclass.Module.prototype
     // *
     // * @returns {Subclass.Property.PropertyManager}
     // */
@@ -530,7 +520,7 @@ Subclass.Module.Module = (function()
      * classes of different type: Class, AbstractClass, Interface, Trait, Config
      *
      * @method getClassManager
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {Subclass.Class.ClassManager}
      */
@@ -544,7 +534,7 @@ Subclass.Module.Module = (function()
     // * set and get its values throughout the project
     // *
     // * @method getParameterManager
-    // * @memberOf Subclass.Module.Module.prototype
+    // * @memberOf Subclass.Module.prototype
     // *
     // * @returns {Subclass.Parameter.ParameterManager}
     // */
@@ -558,7 +548,7 @@ Subclass.Module.Module = (function()
     // * get services throughout the project
     // *
     // * @method getServiceManager
-    // * @memberOf Subclass.Module.Module.prototype
+    // * @memberOf Subclass.Module.prototype
     // *
     // * @returns {Subclass.Service.ServiceManager}
     // */
@@ -568,10 +558,10 @@ Subclass.Module.Module = (function()
     //};
 
     /**
-     * The same as the {@link Subclass.Module.ConfigManager#setOnReady}
+     * The same as the {@link Subclass.ConfigManager#setOnReady}
      *
      * @method onReady
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @param {Function} callback
      *      The callback function
@@ -589,7 +579,7 @@ Subclass.Module.Module = (function()
      * from plug-ins in order as they were added to the current module.
      *
      * @method triggerOnReady
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      */
     Module.prototype.triggerOnReady = function()
     {
@@ -600,7 +590,7 @@ Subclass.Module.Module = (function()
      * Sets that module is prepared
      *
      * @method setPrepared
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      */
     Module.prototype.setPrepared = function()
     {
@@ -611,7 +601,7 @@ Subclass.Module.Module = (function()
      * Checks whether the module is prepared
      *
      * @method isPrepared
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
@@ -625,7 +615,7 @@ Subclass.Module.Module = (function()
      * It can be invoked only once otherwise nothing will happen.
      *
      * @method setReady
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      */
     Module.prototype.setReady = function()
     {
@@ -643,10 +633,10 @@ Subclass.Module.Module = (function()
 
             if (this.isPlugin() && this.hasParent()) {
                 var rootModule = this.getRoot();
-                var rootModuleManager = rootModule.getModuleManager();
+                var rootModuleStorage = rootModule.getModuleStorage();
 
-                if (rootModuleManager.issetLazyModule(this.getName())) {
-                    rootModuleManager.resolveLazyModule(this.getName());
+                if (rootModuleStorage.issetLazyModule(this.getName())) {
+                    rootModuleStorage.resolveLazyModule(this.getName());
                 }
                 if (!rootModule.isReady()) {
                     return rootModule.setReady();
@@ -672,7 +662,7 @@ Subclass.Module.Module = (function()
      * initialized by invoking onReady registered callback functions
      *
      * @method isReady
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
@@ -685,17 +675,17 @@ Subclass.Module.Module = (function()
      * Checks whether the all module plug-ins are ready
      *
      * @method isPluginsReady
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
     Module.prototype.isPluginsReady = function()
     {
-        var moduleManager = this.getModuleManager();
-        var plugins = moduleManager.getPlugins();
+        var moduleStorage = this.getModuleStorage();
+        var plugins = moduleStorage.getPlugins();
         var result = true;
 
-        if (moduleManager.hasLazyModules()) {
+        if (moduleStorage.hasLazyModules()) {
             return false;
         }
 
@@ -722,7 +712,7 @@ Subclass.Module.Module = (function()
      * it onReady callback functions.
      *
      * @method addPlugin
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @param {string} moduleName
      *      The name of the module which you want to add to the current one as a plug-in
@@ -795,8 +785,8 @@ Subclass.Module.Module = (function()
         }
 
         var eventManager = this.getEventManager();
-        var moduleManager = this.getModuleManager();
-            moduleManager.addPlugin(moduleName);
+        var moduleStorage = this.getModuleStorage();
+            moduleStorage.addPlugin(moduleName);
 
         if (this.isPrepared()) {
             var pluginModule = Subclass.getModule(moduleName).getModule();
@@ -818,13 +808,13 @@ Subclass.Module.Module = (function()
      * Checks whether current module has any plugins
      *
      * @method hasPlugins
-     * @memberOf Subclass.Module.Module.prototype
+     * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
     Module.prototype.hasPlugins = function()
     {
-        return !!this.getModuleManager().getPlugins().length;
+        return !!this.getModuleStorage().getPlugins().length;
     };
 
     return Module;

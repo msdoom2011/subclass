@@ -201,11 +201,11 @@ Subclass.Event.Event = (function()
             ;
         }
         var mainModule = this.getEventManager().getModule();
-        var moduleManager = mainModule.getModuleManager();
+        var moduleStorage = mainModule.getModuleStorage();
         var listener = null;
         var $this = this;
 
-        moduleManager.eachModule(function(module) {
+        moduleStorage.eachModule(function(module) {
             var moduleEventManager = module.getEventManager();
             var moduleEvent = moduleEventManager.getEvent($this.getName());
             var listeners = moduleEvent.getListeners(true);
@@ -236,7 +236,7 @@ Subclass.Event.Event = (function()
     Event.prototype.getListeners = function(privateListeners)
     {
         var mainModule = this.getEventManager().getModule();
-        var moduleManager = mainModule.getModuleManager();
+        var moduleStorage = mainModule.getModuleStorage();
         var listeners = [];
         var $this = this;
 
@@ -247,7 +247,7 @@ Subclass.Event.Event = (function()
             return this._listeners;
         }
 
-        moduleManager.eachModule(function(module) {
+        moduleStorage.eachModule(function(module) {
             if (module == mainModule) {
                 Subclass.Tools.extend(listeners, $this._listeners);
                 return;

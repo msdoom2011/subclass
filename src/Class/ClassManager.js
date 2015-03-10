@@ -23,18 +23,18 @@ Subclass.Class.Type = {};
  * @throws {Error}
  *      Throws error if specified invalid module instance
  *
- * @param {Subclass.Module.Module} module
+ * @param {Subclass.Module} module
  *      The module instance
  */
 Subclass.Class.ClassManager = (function()
 {
     function ClassManager(module)
     {
-        if (!module || !(module instanceof Subclass.Module.Module)) {
+        if (!module || !(module instanceof Subclass.Module)) {
             Subclass.Error.create('InvalidArgument')
                 .argument('the module instance')
                 .received(module)
-                .expected('an instance of Subclass.Module.Module class')
+                .expected('an instance of Subclass.Module class')
                 .apply()
             ;
         }
@@ -42,7 +42,7 @@ Subclass.Class.ClassManager = (function()
         /**
          * Instance of Subclass module
          *
-         * @type {Subclass.Module.Module}
+         * @type {Subclass.Module}
          * @private
          */
         this._module = module;
@@ -126,7 +126,7 @@ Subclass.Class.ClassManager = (function()
      * @method getModule
      * @memberOf Subclass.Class.ClassManager.prototype
      *
-     * @returns {Subclass.Module.Module}
+     * @returns {Subclass.Module}
      *      The module instance
      */
     ClassManager.prototype.getModule = function()
@@ -166,7 +166,7 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.getClasses = function(privateClasses, withParentClasses)
     {
         var mainModule = this.getModule();
-        var moduleManager = mainModule.getModuleManager();
+        var moduleStorage = mainModule.getModuleStorage();
         var classes = {};
         var $this = this;
 
@@ -197,7 +197,7 @@ Subclass.Class.ClassManager = (function()
 
         // Adding classes from plug-in modules to result of searching
 
-        moduleManager.eachModule(function(module) {
+        moduleStorage.eachModule(function(module) {
             if (module == mainModule) {
                 Subclass.Tools.extend(classes, $this.getClasses(true, withParentClasses));
                 return;
@@ -226,18 +226,18 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.getClassLocations = function(className)
     {
-        var moduleManager = this.getModule().getModuleManager();
+        var moduleStorage = this.getModule().getModuleStorage();
         var locations = [];
 
-        moduleManager.eachModule(function(module) {
+        moduleStorage.eachModule(function(module) {
             var classManager = module.getClassManager();
 
             if (classManager.issetClass(className, true)) {
                 locations.push(module.getName());
             }
             if (module.hasPlugins()) {
-                var pluginModuleManager = module.getModuleManager();
-                var plugins = pluginModuleManager.getPlugins();
+                var pluginModuleStorage = module.getModuleStorage();
+                var plugins = pluginModuleStorage.getPlugins();
 
                 for (var i = 0; i < plugins.length; i++) {
                     var subPlugin = plugins[i];
@@ -446,11 +446,11 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.checkForClones = function()
     {
         var mainModule = this.getModule();
-        var moduleManager = mainModule.getModuleManager();
+        var moduleStorage = mainModule.getModuleStorage();
         var $this = this;
         var classes = {};
 
-        moduleManager.eachModule(function(module) {
+        moduleStorage.eachModule(function(module) {
             if (module == mainModule) {
                 Subclass.Tools.extend(classes, $this._classes);
                 return;
@@ -698,7 +698,7 @@ Subclass.Class.ClassManager = (function()
          * @param {string} className
          * @param {Object} classDefinition
          */
-        Subclass.Module.ModuleAPI.prototype["register" + classTypeName] = function (className, classDefinition)
+        Subclass.ModuleAPI.prototype["register" + classTypeName] = function (className, classDefinition)
         {
             return this.getModule().getClassManager().addClass(
                 classTypeConstructor.getClassTypeName(),

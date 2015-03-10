@@ -6,20 +6,20 @@
  * This class contains all needed API to manipulation with classes,
  * services, parameters, services, events and module configuration.
  *
- * @param {Subclass.Module.Module} module
+ * @param {Subclass.Module} module
  *      An instance of module that will provide public API
  */
-Subclass.Module.ModuleAPI = (function()
+Subclass.ModuleAPI = (function()
 {
     /**
-     * @alias Subclass.Module.ModuleAPI
+     * @alias Subclass.ModuleAPI
      */
     function ModuleAPI(module)
     {
         /**
          * Module instance
          *
-         * @type {Subclass.Module.Module}
+         * @type {Subclass.Module}
          */
         this._module = module;
     }
@@ -28,9 +28,9 @@ Subclass.Module.ModuleAPI = (function()
      * Returns module instance
      *
      * @method getModule
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      *
-     * @returns {Subclass.Module.Module}
+     * @returns {Subclass.Module}
      */
     ModuleAPI.prototype.getModule = function()
     {
@@ -38,10 +38,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#getName}
+     * The same as the {@link Subclass.Module#getName}
      *
      * @method getName
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getName = function()
     {
@@ -49,10 +49,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#addPlugin}
+     * The same as the {@link Subclass.Module#addPlugin}
      *
      * @method addPlugin
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.addPlugin = function()
     {
@@ -63,7 +63,7 @@ Subclass.Module.ModuleAPI = (function()
      * The same as the {@link Subclass.Class.ClassManager#getClass}
      *
      * @method getClass
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getClass = function()
     {
@@ -77,7 +77,7 @@ Subclass.Module.ModuleAPI = (function()
      * The same as the {@link Subclass.Class.ClassManager#issetClass}
      *
      * @method issetClass
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.issetClass = function()
     {
@@ -91,7 +91,7 @@ Subclass.Module.ModuleAPI = (function()
      * The same as the {@link Subclass.Class.ClassManager#buildClass}
      *
      * @method buildClass
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.buildClass = function()
     {
@@ -105,7 +105,7 @@ Subclass.Module.ModuleAPI = (function()
      * The same as the {@link Subclass.Class.ClassManager#alterClass}
      *
      * @method alterClass
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.alterClass = function()
     {
@@ -116,10 +116,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#onReady}
+     * The same as the {@link Subclass.Module#onReady}
      *
      * @method onReady
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.onReady = function()
     {
@@ -127,10 +127,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#triggerOnReady}
+     * The same as the {@link Subclass.Module#triggerOnReady}
      *
      * @method triggerOnReady
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.triggerOnReady = function()
     {
@@ -138,10 +138,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#isReady}
+     * The same as the {@link Subclass.Module#isReady}
      *
      * @method isReady
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.isReady = function()
     {
@@ -149,10 +149,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#setConfigs}
+     * The same as the {@link Subclass.Module#setConfigs}
      *
      * @method setConfigs
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.setConfigs = function()
     {
@@ -160,10 +160,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#getConfigManager}
+     * The same as the {@link Subclass.Module#getConfigManager}
      *
      * @method getConfigManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getConfigManager = function()
     {
@@ -171,10 +171,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#getEventManager}
+     * The same as the {@link Subclass.Module#getEventManager}
      *
      * @method getEventManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getEventManager = function()
     {
@@ -182,10 +182,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#getLoadManager}
+     * The same as the {@link Subclass.Module#getLoadManager}
      *
      * @method getLoadManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getLoadManager = function()
     {
@@ -193,10 +193,10 @@ Subclass.Module.ModuleAPI = (function()
     };
     //
     ///**
-    // * The same as the {@link Subclass.Module.Module#getPropertyManager}
+    // * The same as the {@link Subclass.Module#getPropertyManager}
     // *
     // * @method getPropertyManager
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.getPropertyManager = function()
     //{
@@ -204,10 +204,10 @@ Subclass.Module.ModuleAPI = (function()
     //};
 
     /**
-     * The same as the {@link Subclass.Module.Module#getClassManager}
+     * The same as the {@link Subclass.Module#getClassManager}
      *
      * @method getClassManager
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getClassManager = function()
     {
@@ -215,10 +215,10 @@ Subclass.Module.ModuleAPI = (function()
     };
     //
     ///**
-    // * The same as the {@link Subclass.Module.Module#getServiceManager}
+    // * The same as the {@link Subclass.Module#getServiceManager}
     // *
     // * @method getServiceManager
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.getServiceManager = function()
     //{
@@ -226,10 +226,10 @@ Subclass.Module.ModuleAPI = (function()
     //};
     //
     ///**
-    // * The same as the {@link Subclass.Module.Module#getParameterManager}
+    // * The same as the {@link Subclass.Module#getParameterManager}
     // *
     // * @method getParameterManager
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.getParameterManager = function()
     //{
@@ -240,7 +240,7 @@ Subclass.Module.ModuleAPI = (function()
     // * The same as the {@link Subclass.Service.ServiceManager#registerService}
     // *
     // * @method registerService
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.registerService = function()
     //{
@@ -251,10 +251,10 @@ Subclass.Module.ModuleAPI = (function()
     //};
     //
     ///**
-    // * The same as the {@link Subclass.Module.ConfigManager#setServices}
+    // * The same as the {@link Subclass.ConfigManager#setServices}
     // *
     // * @method registerServices
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.registerServices = function()
     //{
@@ -268,7 +268,7 @@ Subclass.Module.ModuleAPI = (function()
     // * The same as the {@link Subclass.Service.ServiceManager#getService}
     // *
     // * @method getService
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.getService = function()
     //{
@@ -282,7 +282,7 @@ Subclass.Module.ModuleAPI = (function()
     // * The same as the {@link Subclass.Parameter.ParameterManager#registerParameter}
     // *
     // * @method registerService
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.registerParameter = function()
     //{
@@ -293,10 +293,10 @@ Subclass.Module.ModuleAPI = (function()
     //};
     //
     ///**
-    // * The same as the {@link Subclass.Module.ConfigManager#setParameters}
+    // * The same as the {@link Subclass.ConfigManager#setParameters}
     // *
     // * @method registerParameters
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.registerParameters = function()
     //{
@@ -310,7 +310,7 @@ Subclass.Module.ModuleAPI = (function()
     // * The same as the {@link Subclass.Parameter.ParameterManager#setParameter}
     // *
     // * @method setParameter
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.setParameter = function()
     //{
@@ -324,7 +324,7 @@ Subclass.Module.ModuleAPI = (function()
     // * The same as the {@link Subclass.Parameter.ParameterManager#getParameter}
     // *
     // * @method getParameter
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.getParameter = function(parameterName)
     //{
@@ -335,10 +335,10 @@ Subclass.Module.ModuleAPI = (function()
     //};
     //
     ///**
-    // * The same as the {@link Subclass.Module.ConfigManager#setDataTypes}
+    // * The same as the {@link Subclass.ConfigManager#setDataTypes}
     // *
     // * @method registerDataTypes
-    // * @memberOf Subclass.Module.ModuleAPI.prototype
+    // * @memberOf Subclass.ModuleAPI.prototype
     // */
     //ModuleAPI.prototype.registerDataTypes = function()
     //{
@@ -349,10 +349,10 @@ Subclass.Module.ModuleAPI = (function()
     //};
 
     /**
-     * The same as the {@link Subclass.Module.Module#getRoot}
+     * The same as the {@link Subclass.Module#getRoot}
      *
      * @method getRootModule
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getRootModule = function()
     {
@@ -360,10 +360,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#isRoot}
+     * The same as the {@link Subclass.Module#isRoot}
      *
      * @method isRootModule
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.isRootModule = function()
     {
@@ -371,10 +371,10 @@ Subclass.Module.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module.Module#getParent}
+     * The same as the {@link Subclass.Module#getParent}
      *
      * @method getParentModule
-     * @memberOf Subclass.Module.ModuleAPI.prototype
+     * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getParentModule = function()
     {

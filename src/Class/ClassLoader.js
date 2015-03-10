@@ -80,7 +80,7 @@ Subclass.Class.ClassLoader = (function()
      * @method getLoadManager
      * @memberOf Subclass.Class.ClassLoader.prototype
      *
-     * @returns {Subclass.Module.LoadManager}
+     * @returns {Subclass.LoadManager}
      */
     ClassLoader.prototype.getLoadManager = function()
     {

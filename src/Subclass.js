@@ -12,7 +12,7 @@ window.Subclass = (function()
     /**
      * Collection of registered modules
      *
-     * @type {Array.<Subclass.Module.Module>}
+     * @type {Array.<Subclass.Module>}
      * @private
      */
     var _modules = [];
@@ -22,7 +22,7 @@ window.Subclass = (function()
         /**
          * Creates new subclass module.<br /><br />
          *
-         * Creates instance of {@link Subclass.Module.Module}
+         * Creates instance of {@link Subclass.Module}
          *
          * @param {string} moduleName
          *      A name of the future module
@@ -36,7 +36,7 @@ window.Subclass = (function()
          * @param {Object} [moduleConfigs = {}]
          *      A configuration of the creating module
          *
-         * @returns {Subclass.Module.ModuleAPI}
+         * @returns {Subclass.ModuleAPI}
          * @memberOf Subclass
          * @static
          *
@@ -134,7 +134,7 @@ window.Subclass = (function()
 
             // Creating instance of module
 
-            var module = new Subclass.Module.Module(
+            var module = new Subclass.Module(
                 moduleName,
                 modulePlugins,
                 moduleConfigs
@@ -182,7 +182,7 @@ window.Subclass = (function()
          * @param {string} moduleName
          *      A name of module which you want to receive
          *
-         * @returns {Subclass.Module.ModuleAPI}
+         * @returns {Subclass.ModuleAPI}
          * @memberOf Subclass
          * @static
          */

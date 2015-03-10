@@ -2,23 +2,22 @@
  * @final
  * @class
  * @extends {Subclass.Error}
- * @mixes Subclass.Error.Option.Option
- * @mixes Subclass.Error.Option.Module
+ * @mixes Subclass.Error.Option.ClassName
  * @mixes Subclass.Error.Option.Expected
  * @mixes Subclass.Error.Option.Received
+ * @mixes Subclass.Error.Option.Option
  * @constructor
  * @description
  *
- * The error class which indicates that was specified not valid value of
- * option in module configuration. To see details about constructor
- * parameters look at {@link Subclass.Error} class constructor
+ * The instance of this class helps to build error with specific message
+ * when some class definition option is invalid
  *
  * @param {string} [message]
- *      The error message
+ *      The custom error message
  */
-Subclass.Module.Error.InvalidModuleOptionError = (function()
+Subclass.Error.InvalidClassOptionError = (function()
 {
-    function InvalidModuleOptionError(message)
+    function InvalidClassOptionError(message)
     {
         Subclass.Error.call(this, message);
     }
@@ -27,34 +26,34 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
      * Returns the name of error type
      *
      * @method getName
-     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+     * @memberOf Subclass.Class.Error.InvalidClassOptionError
      * @static
      *
      * @returns {string}
      */
-    InvalidModuleOptionError.getName = function()
+    InvalidClassOptionError.getName = function()
     {
-        return "InvalidModuleOption";
+        return "InvalidClassOption";
     };
 
     /**
      * Returns all available error type options
      *
      * @method getOptions
-     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+     * @memberOf Subclass.Class.Error.InvalidClassOptionError
      * @static
      *
      * @returns {Array}
      */
-    InvalidModuleOptionError.getOptions = function()
+    InvalidClassOptionError.getOptions = function()
     {
         var options = Subclass.Error.getOptions();
 
         return options.concat([
-            'option',
-            'module',
+            'className',
             'expected',
-            'received'
+            'received',
+            'option'
         ]);
     };
 
@@ -62,17 +61,17 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
      * Returns required error fields
      *
      * @method getRequiredOptions
-     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+     * @memberOf Subclass.Class.Error.InvalidClassOptionError
      * @static
      *
      * @returns {Array}
      */
-    InvalidModuleOptionError.getRequiredOptions = function()
+    InvalidClassOptionError.getRequiredOptions = function()
     {
         var required = Subclass.Error.getRequiredOptions();
 
         return required.concat([
-            'module',
+            'className',
             'option'
         ]);
     };
@@ -80,13 +79,13 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
     /**
      * @inheritDoc
      */
-    InvalidModuleOptionError.prototype.buildMessage = function()
+    InvalidClassOptionError.prototype.buildMessage = function()
     {
         var message = Subclass.Error.prototype.buildMessage.call(this);
 
         if (!message) {
-            message += 'Invalid value of option "' + this.option() + '" ';
-            message += 'in configuration of module "' + this.module() + '". ';
+            message += 'Invalid value of option ' + this.option() + ' ';
+            message += 'in definition of class "' + this.className() + '". ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""
         }
@@ -95,10 +94,10 @@ Subclass.Module.Error.InvalidModuleOptionError = (function()
     };
 
     Subclass.Error.registerType(
-        InvalidModuleOptionError.getName(),
-        InvalidModuleOptionError
+        InvalidClassOptionError.getName(),
+        InvalidClassOptionError
     );
 
-    return InvalidModuleOptionError;
+    return InvalidClassOptionError;
 
 })();

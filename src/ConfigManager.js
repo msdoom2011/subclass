@@ -7,23 +7,23 @@
  * It can validate, set and get configuration parameters.<br /><br />
  *
  * To see the list of available configuration parameters
- * look at description of {@link Subclass.Module.Module}
+ * look at description of {@link Subclass.Module}
  * class constructor parameters.
  *
- * @param {Subclass.Module.Module} module
+ * @param {Subclass.Module} module
  *      The module instance
  */
-Subclass.Module.ConfigManager = (function()
+Subclass.ConfigManager = (function()
 {
     /**
-     * @alias Subclass.Module.ConfigManager
+     * @alias Subclass.ConfigManager
      */
     function ConfigManager(module)
     {
         /**
          * Instance of subclass module
          *
-         * @type {Subclass.Module.Module}
+         * @type {Subclass.Module}
          */
         this._module = module;
 
@@ -67,7 +67,7 @@ Subclass.Module.ConfigManager = (function()
      * specified in module constructor or in earlier call of ConfigManager#setConfigs method.
      *
      * @method setConfigs
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @throws {Error}
      *     Throws error when:<br />
@@ -173,9 +173,9 @@ Subclass.Module.ConfigManager = (function()
      * Returns module instance to which current configuration manager belongs
      *
      * @method getModule
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
-     * @returns {Subclass.Module.Module}
+     * @returns {Subclass.Module}
      */
     ConfigManager.prototype.getModule = function()
     {
@@ -190,7 +190,7 @@ Subclass.Module.ConfigManager = (function()
      * will be invoked only when the root module becomes ready.
      *
      * @method setPlugin
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -220,7 +220,7 @@ Subclass.Module.ConfigManager = (function()
      * Reports whether the current module is a plug-in of another module or not
      *
      * @method getPlugin
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @returns {boolean}
      */
@@ -231,8 +231,8 @@ Subclass.Module.ConfigManager = (function()
 
     /**
      * @method isPlugin
-     * @memberOf Subclass.Module.ConfigManager.prototype
-     * @alias Subclass.Module.ConfigManager#getPlugin
+     * @memberOf Subclass.ConfigManager.prototype
+     * @alias Subclass.ConfigManager#getPlugin
      */
     ConfigManager.prototype.isPlugin = ConfigManager.prototype.getPlugin;
 
@@ -243,7 +243,7 @@ Subclass.Module.ConfigManager = (function()
      * "plugin" will forcibly set to true.
      *
      * @method setPluginOf
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if specified argument is not string or null
@@ -272,7 +272,7 @@ Subclass.Module.ConfigManager = (function()
      * Returns name of the parent module if current one is a plug-in of the specified module
      *
      * @method getPluginOf
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @returns {(string|null)}
      */
@@ -286,7 +286,7 @@ Subclass.Module.ConfigManager = (function()
      * It's required if autoload configuration parameter is turned on.
      *
      * @method setRootPath
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -323,7 +323,7 @@ Subclass.Module.ConfigManager = (function()
      * Returns root directory path of the project
      *
      * @method getRootPath
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @returns {(string|null)}
      */
@@ -336,7 +336,7 @@ Subclass.Module.ConfigManager = (function()
      * Sets and loads specified files.
      *
      * @method setFiles
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -376,7 +376,7 @@ Subclass.Module.ConfigManager = (function()
      * Reports whether current module loads some files
      *
      * @method hasFiles
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @returns {boolean}
      */
@@ -394,7 +394,7 @@ Subclass.Module.ConfigManager = (function()
     // * customize it to be not nullable etc.
     // *
     // * @method setDataTypes
-    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // * @memberOf Subclass.ConfigManager.prototype
     // *
     // * @throws {Error}
     // *      Throws error if trying to change value after the module became ready
@@ -452,7 +452,7 @@ Subclass.Module.ConfigManager = (function()
     // * Returns defined custom data types in the form in which they were set
     // *
     // * @method getDataTypes
-    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // * @memberOf Subclass.ConfigManager.prototype
     // *
     // * @returns {Object.<Object>}
     // */
@@ -469,7 +469,7 @@ Subclass.Module.ConfigManager = (function()
     // * Registers new parameters or redefines already existent with the same name.
     // *
     // * @method setParameters
-    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // * @memberOf Subclass.ConfigManager.prototype
     // *
     // * @throws {Error}
     // *      Throws error if trying to change value after the module became ready
@@ -527,7 +527,7 @@ Subclass.Module.ConfigManager = (function()
     // * Returns all registered parameters in the form in which they were set
     // *
     // * @method getParameters
-    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // * @memberOf Subclass.ConfigManager.prototype
     // *
     // * @returns {Object}
     // */
@@ -549,7 +549,7 @@ Subclass.Module.ConfigManager = (function()
     // * Registers new services and redefines already existent ones with the same name.
     // *
     // * @method setServices
-    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // * @memberOf Subclass.ConfigManager.prototype
     // *
     // * @throws {Error}
     // *      Throws error if trying to change value after the module became ready
@@ -643,7 +643,7 @@ Subclass.Module.ConfigManager = (function()
     // * Returns all registered services in the form as they were defined
     // *
     // * @method getServices
-    // * @memberOf Subclass.Module.ConfigManager.prototype
+    // * @memberOf Subclass.ConfigManager.prototype
     // *
     // * @returns {Object.<Object>}
     // */
@@ -675,7 +675,7 @@ Subclass.Module.ConfigManager = (function()
      * the call of current method invokes specified callback immediately.
      *
      * @method setOnReady
-     * @memberOf Subclass.Module.ConfigManager.prototype
+     * @memberOf Subclass.ConfigManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />

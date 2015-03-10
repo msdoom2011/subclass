@@ -9,7 +9,7 @@
  * and a root module by specific callback function in order
  * as they were attached to the root module.
  *
- * @param {Subclass.Module.Module} module
+ * @param {Subclass.Module} module
  *      An instance of module
  *
  * @param {string[]} pluginModuleNames
@@ -18,15 +18,15 @@
  * @param {string[]} lazyModuleNames
  *      Array of plug-in module names which are in loading process at the moment
  */
-Subclass.Module.ModuleManager = (function()
+Subclass.ModuleStorage = (function()
 {
-    function ModuleManager(module, pluginModuleNames)
+    function ModuleStorage(module, pluginModuleNames)
     {
-        if (!module || !(module instanceof Subclass.Module.Module)) {
+        if (!module || !(module instanceof Subclass.Module)) {
             Subclass.Error.create('InvalidArgument')
                 .argument("the module instance", false)
                 .received(module)
-                .expected('an instance of "Subclass.Module.Module"')
+                .expected('an instance of "Subclass.Module"')
                 .apply()
             ;
         }
@@ -56,14 +56,14 @@ Subclass.Module.ModuleManager = (function()
         /**
          * Main module instance
          *
-         * @type {Subclass.Module.Module}
+         * @type {Subclass.Module}
          */
         this._module = module;
 
         /**
          * Collection with current module and its plug-in modules
          *
-         * @type {Array.<Subclass.Module.Module>}
+         * @type {Array.<Subclass.Module>}
          */
         this._modules = this._processModules(pluginModuleNames);
         this._modules.unshift(module);
@@ -82,11 +82,11 @@ Subclass.Module.ModuleManager = (function()
      * which belongs current instance of module manager)
      *
      * @method getMainModule
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
-     * @returns {Subclass.Module.Module}
+     * @returns {Subclass.Module}
      */
-    ModuleManager.prototype.getMainModule = function()
+    ModuleStorage.prototype.getMainModule = function()
     {
         return this._module;
     };
@@ -95,11 +95,11 @@ Subclass.Module.ModuleManager = (function()
      * Returns array with all module instances (including main module)
      *
      * @method getModules
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
-     * @returns {Array.<Subclass.Module.Module>}
+     * @returns {Array.<Subclass.Module>}
      */
-    ModuleManager.prototype.getModules = function()
+    ModuleStorage.prototype.getModules = function()
     {
         return this._modules;
     };
@@ -108,11 +108,11 @@ Subclass.Module.ModuleManager = (function()
      * Returns the list of all not resolved lazy plug-in modules
      *
      * @method getLazyModules
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
      * @returns {string[]}
      */
-    ModuleManager.prototype.getLazyModules = function()
+    ModuleStorage.prototype.getLazyModules = function()
     {
         return this._lazyModules;
     };
@@ -121,14 +121,14 @@ Subclass.Module.ModuleManager = (function()
      * Checks whether module with specified name is lazy
      *
      * @mthod issetLazyModule
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
      * @param {string} moduleName
      *      A name of lazy module
      *
      * @returns {boolean}
      */
-    ModuleManager.prototype.issetLazyModule = function(moduleName)
+    ModuleStorage.prototype.issetLazyModule = function(moduleName)
     {
         return !!this.getLazyModules().hasOwnProperty(moduleName);
     };
@@ -137,11 +137,11 @@ Subclass.Module.ModuleManager = (function()
      * Reports whether current module has not resolved lazy plug-in modules
      *
      * @method hasLazyModules
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
      * @returns {boolean}
      */
-    ModuleManager.prototype.hasLazyModules = function()
+    ModuleStorage.prototype.hasLazyModules = function()
     {
         return !!Object.keys(this.getLazyModules()).length;
     };
@@ -151,12 +151,12 @@ Subclass.Module.ModuleManager = (function()
      * It means that lazy module was loaded.
      *
      * @method resolveLazyModule
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
      * @param {string} moduleName
      *      The name of lazy plug-in module
      */
-    ModuleManager.prototype.resolveLazyModule = function(moduleName)
+    ModuleStorage.prototype.resolveLazyModule = function(moduleName)
     {
         if (!this.issetLazyModule(moduleName)) {
             return;
@@ -176,11 +176,11 @@ Subclass.Module.ModuleManager = (function()
      *      Array of module names. Each module should be marked as a plugin
      *      (by the "plugin" or "pluginOf" configuration parameters)
      *
-     * @returns {Array.<Subclass.Module.Module>}
+     * @returns {Array.<Subclass.Module>}
      * @private
      * @ignore
      */
-    ModuleManager.prototype._processModules = function(moduleNames)
+    ModuleStorage.prototype._processModules = function(moduleNames)
     {
         var mainModule = this.getMainModule();
         var modules = [];
@@ -206,12 +206,12 @@ Subclass.Module.ModuleManager = (function()
      * Adds the new plugin module
      *
      * @method addPlugin
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
      * @param {string} moduleName
      *      The name of plug-in module
      */
-    ModuleManager.prototype.addPlugin = function(moduleName)
+    ModuleStorage.prototype.addPlugin = function(moduleName)
     {
         var processedModule = this._processModules([moduleName])[0];
 
@@ -228,11 +228,11 @@ Subclass.Module.ModuleManager = (function()
      * Returns all plug-in module instances of the current module
      *
      * @method getPlugins
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
-     * @returns {Array.<Subclass.Module.Module>}
+     * @returns {Array.<Subclass.Module>}
      */
-    ModuleManager.prototype.getPlugins = function()
+    ModuleStorage.prototype.getPlugins = function()
     {
         var modules = this.getModules();
         var modulesCopy = [];
@@ -249,7 +249,7 @@ Subclass.Module.ModuleManager = (function()
      * Sorts out each module by specified callback
      *
      * @method eachModule
-     * @memberOf Subclass.Module.ModuleManager.prototype
+     * @memberOf Subclass.ModuleStorage.prototype
      *
      * @param {boolean} [reverse]
      *      Optional parameter which allows to sort out modules in a reverse order
@@ -266,9 +266,9 @@ Subclass.Module.ModuleManager = (function()
      * @example
      * ...
      *
-     * var moduleManager = moduleInst.getModuleManager();
+     * var ModuleStorage = moduleInst.getModuleStorage();
      *
-     * moduleManager.eachModule(function(module, moduleName) {
+     * moduleStorage.eachModule(function(module, moduleName) {
      *     // some manipulations
      *     ...
      *
@@ -279,7 +279,7 @@ Subclass.Module.ModuleManager = (function()
      * });
      * ...
      */
-    ModuleManager.prototype.eachModule = function(reverse, callback)
+    ModuleStorage.prototype.eachModule = function(reverse, callback)
     {
         if (typeof reverse == 'function') {
             callback = reverse;
@@ -298,6 +298,6 @@ Subclass.Module.ModuleManager = (function()
         }
     };
 
-    return ModuleManager;
+    return ModuleStorage;
 
 })();

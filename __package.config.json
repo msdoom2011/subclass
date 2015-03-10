@@ -10,13 +10,7 @@
       "release": "<%= config.release_dir %>/lib"
     },
     "content": {
-      "main": {
-        "files": [
-          "Subclass.js",
-          "Module.js",
-          "*.js"
-        ]
-      },
+      "main": "Subclass.js",
       "tools": {
         "dir": "Tools",
         "files": [
@@ -49,11 +43,49 @@
           "<%= config.lib.content.class.dir %>/**/*.js"
         ]
       },
+      "property": {
+        "dir": "Property",
+        "files": [
+          "<%= config.lib.content.property.dir %>/PropertyManager.js",
+          "<%= config.lib.content.property.dir %>/CustomTypesManager.js",
+          "<%= config.lib.content.property.dir %>/PropertyType.js",
+          "<%= config.lib.content.property.dir %>/PropertyDefinition.js",
+          "<%= config.lib.content.property.dir %>/PropertyAPI.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/CollectionType.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/CollectionManager.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/*.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/*Collection/*Type.js",
+          "<%= config.lib.content.property.dir %>/Type/Collection/*Collection/*.js",
+          "<%= config.lib.content.property.dir %>/Type/**/*.js",
+          "<%= config.lib.content.property.dir %>/**/*.js"
+        ]
+      },
       "error": {
         "dir": "Error",
         "files": [
           "<%= config.lib.content.error.dir %>/Error.js",
           "<%= config.lib.content.error.dir %>/**/*.js"
+        ]
+      },
+      "service": {
+        "dir": "Service",
+        "files": [
+          "<%= config.lib.content.service.dir %>/ServiceManager.js",
+          "<%= config.lib.content.service.dir %>/**/*.js"
+        ]
+      },
+      "parameter": {
+        "dir": "Parameter",
+        "files": [
+          "<%= config.lib.content.parameter.dir %>/ParameterManager.js",
+          "<%= config.lib.content.parameter.dir %>/**/*.js"
+        ]
+      },
+      "module": {
+        "dir": "Module",
+        "files": [
+          "<%= config.lib.content.module.dir %>/Module.js",
+          "<%= config.lib.content.module.dir %>/**/*.js"
         ]
       },
       "event": {
@@ -65,11 +97,15 @@
       }
     },
     "files": [
-      "<%= config.lib.content.main.files %>",
+      "<%= config.lib.content.main %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.error.files %>",
+      "<%= config.lib.content.module.files %>",
+      "<%= config.lib.content.property.files %>",
       "<%= config.lib.content.class.files %>",
-      "<%= config.lib.content.event.files %>"
+      "<%= config.lib.content.event.files %>",
+      "<%= config.lib.content.service.files %>",
+      "<%= config.lib.content.parameter.files %>"
     ],
     "files_release": {
       "normal": "<%= config.lib.dir.release %>/<%= config.name %>.js",
@@ -88,12 +124,15 @@
   "doc": {
     "dir": "doc/api",
     "files": [
-      "<%= config.lib.dir.src %>/*.js",
+      "<%= config.lib.dir.src %>/Subclass.js",
+      "<%= config.lib.dir.src %>/Module/**/*.js",
       "<%= config.lib.dir.src %>/Event/**/*.js",
+      "<%= config.lib.dir.src %>/Parameter/**/*.js",
+      "<%= config.lib.dir.src %>/Service/**/*.js",
       "<%= config.lib.dir.src %>/Tools/**/*.js",
       "<%= config.lib.dir.src %>/Error/**/*.js",
-      "<%= config.lib.dir.src %>/ClassManager.js",
-      "<%= config.lib.dir.src %>/ClassBuilder.js"
+      "<%= config.lib.dir.src %>/Class/ClassManager.js",
+      "<%= config.lib.dir.src %>/Class/ClassBuilder.js"
     ]
   }
 }

@@ -185,49 +185,45 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.createDefinition = function(classDefinition)
     {
-        var construct = null;
-        var createInstance = true;
+        return Subclass.Tools.createClassInstance(
+            this.constructor.getDefinitionClass(),
+            this,
+            classDefinition
+        );
 
-        if (!arguments[1]) {
-            construct = this.constructor.getDefinitionClass();
-        } else {
-            construct = arguments[1];
-        }
-        if (arguments[2] === false) {
-            createInstance = false;
-        }
 
-        if (construct.$parent) {
-            var parentConstruct = this.createDefinition(
-                classDefinition,
-                construct.$parent,
-                false
-            );
-
-            var constructProto = Object.create(parentConstruct.prototype);
-
-            constructProto = Subclass.Tools.extend(
-                constructProto,
-                construct.prototype
-            );
-
-            construct.prototype = constructProto;
-            construct.prototype.constructor = construct;
-        }
-
-        if (createInstance) {
-            var inst = new construct(this, classDefinition);
-
-            if (!(inst instanceof Subclass.Class.ClassDefinition)) {
-                Subclass.Error.create(
-                    'Class definition class must be instance of ' +
-                    '"Subclass.Class.ClassDefinition" class.'
-                );
-            }
-            return inst;
-        }
-
-        return construct;
+        //var construct = null;
+        //var createInstance = true;
+        //
+        //if (!arguments[1]) {
+        //    construct = this.constructor.getDefinitionClass();
+        //} else {
+        //    construct = arguments[1];
+        //}
+        //if (arguments[2] === false) {
+        //    createInstance = false;
+        //}
+        //
+        //if (construct.$parent) {
+        //    var parentConstruct = this.createDefinition(
+        //        classDefinition,
+        //        construct.$parent,
+        //        false
+        //    );
+        //    var constructProto = Object.create(parentConstruct.prototype);
+        //
+        //    constructProto = Subclass.Tools.extend(
+        //        constructProto,
+        //        construct.prototype
+        //    );
+        //    construct.prototype = constructProto;
+        //    construct.prototype.constructor = construct;
+        //}
+        //if (createInstance) {
+        //    return new construct(this, classDefinition);
+        //}
+        //
+        //return construct;
     };
 
     /**
@@ -445,11 +441,12 @@ Subclass.Class.ClassType = (function()
             classConstructor.prototype = classConstructorProto;
         }
 
-        this.attachProperties(classConstructor.prototype);
+        //this.attachProperties(classConstructor.prototype);
         Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
         Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
         Object.defineProperty(classConstructor.prototype, "constructor", {
             enumerable: false,
+            configurable: true,
             value: classConstructor
         });
 

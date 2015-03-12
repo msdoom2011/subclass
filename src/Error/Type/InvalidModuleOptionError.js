@@ -23,6 +23,13 @@ Subclass.Error.InvalidModuleOptionError = (function()
         Subclass.Error.call(this, message);
     }
 
+    InvalidModuleOptionError.$mixins = [
+        Subclass.Error.Option.Option,
+        Subclass.Error.Option.Module,
+        Subclass.Error.Option.Expected,
+        Subclass.Error.Option.Received
+    ];
+
     /**
      * Returns the name of error type
      *
@@ -36,27 +43,27 @@ Subclass.Error.InvalidModuleOptionError = (function()
     {
         return "InvalidModuleOption";
     };
-
-    /**
-     * Returns all available error type options
-     *
-     * @method getOptions
-     * @memberOf Subclass.Module.Error.InvalidModuleOptionError
-     * @static
-     *
-     * @returns {Array}
-     */
-    InvalidModuleOptionError.getOptions = function()
-    {
-        var options = Subclass.Error.getOptions();
-
-        return options.concat([
-            'option',
-            'module',
-            'expected',
-            'received'
-        ]);
-    };
+    //
+    ///**
+    // * Returns all available error type options
+    // *
+    // * @method getOptions
+    // * @memberOf Subclass.Module.Error.InvalidModuleOptionError
+    // * @static
+    // *
+    // * @returns {Array}
+    // */
+    //InvalidModuleOptionError.getOptions = function()
+    //{
+    //    var options = Subclass.Error.getOptions();
+    //
+    //    return options.concat([
+    //        'option',
+    //        'module',
+    //        'expected',
+    //        'received'
+    //    ]);
+    //};
 
     /**
      * Returns required error fields

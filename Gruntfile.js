@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-jsdoc');
 
     // Project configuration
@@ -30,7 +31,7 @@ module.exports = function(grunt) {
             suffix: '\n})();'
         },
 
-        config: grunt.file.readJSON('package.config.json'),
+        config: grunt.file.readJSON('Gruntfile.config.json'),
 
         clean: {
             build: {
@@ -110,6 +111,24 @@ module.exports = function(grunt) {
             }
         },
 
+        karma: {
+            options: {
+                configFile: "karma.config.js"
+            },
+            build: {
+                files: [
+                    "<%= config.lib.files %>",
+                    "tests/**/*.js"
+                ]
+            },
+            release: {
+                files: [
+                    "<%= config.lib.files_release.minimized %>",
+                    "tests/**/*.js"
+                ]
+            }
+        },
+
         jsdoc: {
             doc: {
                 src: "<%= config.doc.files %>",
@@ -152,13 +171,17 @@ module.exports = function(grunt) {
         "index:release"
     ]);
 
+    grunt.registerTask("test", [
+        "karma:unit"
+    ]);
+
     grunt.registerTask("doc", [
         "clean:doc",
         "jsdoc:doc"
     ]);
 
     grunt.registerTask("default", [
-        "build", "release", "doc"
+        "build", "release", "test", "doc"
     ]);
 
     grunt.registerMultiTask("index", "Process index.html template", function() {

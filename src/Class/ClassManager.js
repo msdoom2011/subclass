@@ -285,35 +285,42 @@ Subclass.Class.ClassManager = (function()
      */
     ClassManager.prototype.createClass = function(classConstructor, className, classDefinition)
     {
-        var createInstance = true;
+        return Subclass.Tools.createClassInstance(
+            classConstructor,
+            this,
+            className,
+            classDefinition
+        );
 
-        if (arguments[3] === false) {
-            createInstance = false;
-        }
-        if (classConstructor.$parent) {
-            var parentClassConstructor = this.createClass(
-                classConstructor.$parent,
-                className,
-                classDefinition,
-                false
-            );
-
-            var classConstructorProto = Object.create(parentClassConstructor.prototype);
-
-            classConstructorProto = Subclass.Tools.extend(
-                classConstructorProto,
-                classConstructor.prototype
-            );
-
-            classConstructor.prototype = classConstructorProto;
-            classConstructor.prototype.constructor = classConstructor;
-        }
-
-        if (createInstance) {
-            return new classConstructor(this, className, classDefinition);
-        }
-
-        return classConstructor;
+        //var createInstance = true;
+        //
+        //if (arguments[3] === false) {
+        //    createInstance = false;
+        //}
+        //if (classConstructor.$parent) {
+        //    var parentClassConstructor = this.createClass(
+        //        classConstructor.$parent,
+        //        className,
+        //        classDefinition,
+        //        false
+        //    );
+        //
+        //    var classConstructorProto = Object.create(parentClassConstructor.prototype);
+        //
+        //    classConstructorProto = Subclass.Tools.extend(
+        //        classConstructorProto,
+        //        classConstructor.prototype
+        //    );
+        //
+        //    classConstructor.prototype = classConstructorProto;
+        //    classConstructor.prototype.constructor = classConstructor;
+        //}
+        //
+        //if (createInstance) {
+        //    return new classConstructor(this, className, classDefinition);
+        //}
+        //
+        //return classConstructor;
     };
 
     /**
@@ -544,51 +551,66 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.createClassBuilder = function(classType, className)
     {
         var classBuilderConstructor = null;
-        var createInstance = true;
 
-        if (!arguments[2]) {
-            if (className && !this.issetClass(className)) {
-                Subclass.Error.create(
-                    'Can\'t alter definition of class "' + className + '". ' +
-                    'It does not exists.'
-                );
-            }
-            if (className) {
-                classBuilderConstructor = this.getClass(className).constructor.getBuilderClass();
-            } else {
-                classBuilderConstructor = Subclass.Class.ClassManager.getClassType(classType).getBuilderClass();
-            }
+        //var createInstance = true;
+        //
+        //if (!arguments[2]) {
+
+        if (className && !this.issetClass(className)) {
+            Subclass.Error.create(
+                'Can\'t alter definition of class "' + className + '". ' +
+                'It does not exists.'
+            );
+        }
+        if (className) {
+            classBuilderConstructor = this.getClass(className).constructor.getBuilderClass();
+
         } else {
-            classBuilderConstructor = arguments[2];
-        }
-        if (arguments[3] === false) {
-            createInstance = false;
-        }
-
-        if (classBuilderConstructor.$parent) {
-            var parentClassBuilderConstructor = this.createClassBuilder(
-                classType,
-                className,
-                classBuilderConstructor.$parent,
-                false
-            );
-
-            var classBuilderConstructorProto = Object.create(parentClassBuilderConstructor.prototype);
-
-            classBuilderConstructorProto = Subclass.Tools.extend(
-                classBuilderConstructorProto,
-                classBuilderConstructor.prototype
-            );
-
-            classBuilderConstructor.prototype = classBuilderConstructorProto;
-            classBuilderConstructor.prototype.constructor = classBuilderConstructor;
+            classBuilderConstructor = Subclass.Class.ClassManager
+                .getClassType(classType)
+                .getBuilderClass()
+            ;
         }
 
-        if (createInstance) {
-            return new classBuilderConstructor(this, classType, className);
-        }
+        //}
+        //else {
+        //    classBuilderConstructor = arguments[2];
+        //}
+        //if (arguments[3] === false) {
+        //    createInstance = false;
+        //}
 
-        return classBuilderConstructor;
+        return Subclass.Tools.createClassInstance(
+            classBuilderConstructor,
+            this,
+            classType,
+            className
+        );
+
+        //if (classBuilderConstructor.$parent) {
+        //    var parentClassBuilderConstructor = this.createClassBuilder(
+        //        classType,
+        //        className,
+        //        classBuilderConstructor.$parent,
+        //        false
+        //    );
+        //
+        //    var classBuilderConstructorProto = Object.create(parentClassBuilderConstructor.prototype);
+        //
+        //    classBuilderConstructorProto = Subclass.Tools.extend(
+        //        classBuilderConstructorProto,
+        //        classBuilderConstructor.prototype
+        //    );
+        //
+        //    classBuilderConstructor.prototype = classBuilderConstructorProto;
+        //    classBuilderConstructor.prototype.constructor = classBuilderConstructor;
+        //}
+        //
+        //if (createInstance) {
+        //    return new classBuilderConstructor(this, classType, className);
+        //}
+        //
+        //return classBuilderConstructor;
     };
 
 

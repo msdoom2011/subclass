@@ -20,6 +20,11 @@ Subclass.Error.NotExistentMethodError = (function()
         Subclass.Error.call(this, message);
     }
 
+    NotExistentMethodError.$mixins = [
+        Subclass.Error.Option.ClassName,
+        Subclass.Error.Option.Method
+    ];
+
     /**
      * Returns the name of error type
      *
@@ -33,25 +38,25 @@ Subclass.Error.NotExistentMethodError = (function()
     {
         return "NotExistentMethod";
     };
-
-    /**
-     * Returns all available error type options
-     *
-     * @method getOptions
-     * @memberOf Subclass.Error.NotExistentMethodError
-     * @static
-     *
-     * @returns {Array}
-     */
-    NotExistentMethodError.getOptions = function()
-    {
-        var options = Subclass.Error.getOptions();
-
-        return options.concat([
-            'className',
-            'method'
-        ]);
-    };
+    //
+    ///**
+    // * Returns all available error type options
+    // *
+    // * @method getOptions
+    // * @memberOf Subclass.Error.NotExistentMethodError
+    // * @static
+    // *
+    // * @returns {Array}
+    // */
+    //NotExistentMethodError.getOptions = function()
+    //{
+    //    var options = Subclass.Error.getOptions();
+    //
+    //    return options.concat([
+    //        'className',
+    //        'method'
+    //    ]);
+    //};
 
     /**
      * Returns required error fields

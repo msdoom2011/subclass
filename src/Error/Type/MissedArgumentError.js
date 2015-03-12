@@ -19,6 +19,10 @@ Subclass.Error.MissedArgumentError = (function()
         Subclass.Error.call(this, message);
     }
 
+    MissedArgumentError.$mixins = [
+        Subclass.Error.Option.Argument
+    ];
+
     /**
      * Returns the name of error type
      *
@@ -32,24 +36,24 @@ Subclass.Error.MissedArgumentError = (function()
     {
         return "MissedArgument";
     };
-
-    /**
-     * Returns all available error type options
-     *
-     * @method getOptions
-     * @memberOf Subclass.Error.InvalidArgumentError
-     * @static
-     *
-     * @returns {Array}
-     */
-    MissedArgumentError.getOptions = function()
-    {
-        var options = Subclass.Error.getOptions();
-
-        return options.concat([
-            'argument'
-        ]);
-    };
+    //
+    ///**
+    // * Returns all available error type options
+    // *
+    // * @method getOptions
+    // * @memberOf Subclass.Error.InvalidArgumentError
+    // * @static
+    // *
+    // * @returns {Array}
+    // */
+    //MissedArgumentError.getOptions = function()
+    //{
+    //    var options = Subclass.Error.getOptions();
+    //
+    //    return options.concat([
+    //        'argument'
+    //    ]);
+    //};
 
     /**
      * Returns required error fields

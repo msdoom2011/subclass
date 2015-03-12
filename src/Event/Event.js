@@ -1,4 +1,9 @@
 /**
+ * @namespace
+ */
+Subclass.Event = {};
+
+/**
  * @class
  * @constructor
  * @description
@@ -13,9 +18,6 @@
  *      - was specified invalid event manager argument;<br />
  *      - was missed event name or it's not a string.
  *
- * @param {Subclass.Event.EventManager} eventManager
- *      Instance of event manager
- *
  * @param {string} eventName
  *      The name of the creating event
  *
@@ -29,16 +31,8 @@ Subclass.Event.Event = (function()
     /**
      * @alias Subclass.Event.Event
      */
-    function Event(eventManager, eventName, context)
+    function Event(eventName, context)
     {
-        if (!eventManager || !(eventManager instanceof Subclass.Event.EventManager)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the event manager instance", false)
-                .received(eventManager)
-                .expected('an instance of "Subclass.Event.EventManager"')
-                .apply()
-            ;
-        }
         if (!eventName || typeof eventName != 'string') {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of event", false)
@@ -50,14 +44,6 @@ Subclass.Event.Event = (function()
         if (!context) {
             context = {};
         }
-
-        /**
-         * Event manager instance
-         *
-         * @type {Subclass.Event.EventManager}
-         * @private
-         */
-        this._eventManager = eventManager;
 
         /**
          * Name of the event
@@ -84,19 +70,6 @@ Subclass.Event.Event = (function()
          */
         this._listeners = [];
     }
-
-    /**
-     * Returns event manager instance
-     *
-     * @method getEventManager
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @returns {Subclass.Event.EventManager}
-     */
-    Event.prototype.getEventManager = function()
-    {
-        return this._eventManager;
-    };
 
     /**
      * Returns name of event
@@ -177,6 +150,19 @@ Subclass.Event.Event = (function()
     };
 
     /**
+     * Returns all registered event listeners
+     *
+     * @method getListeners
+     * @memberOf Subclass.Event.Event.prototype
+     *
+     * @returns {Object.<Subclass.Event.EventListener>}
+     */
+    Event.prototype.getListeners = function()
+    {
+        return this._listeners;
+    };
+
+    /**
      * Returns event listener by specified callback function
      *
      * @method getListenerByCallback
@@ -200,65 +186,14 @@ Subclass.Event.Event = (function()
                 .apply()
             ;
         }
-        var mainModule = this.getEventManager().getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var listener = null;
-        var $this = this;
+        var listeners = this.getListeners();
 
-        moduleStorage.eachModule(function(module) {
-            var moduleEventManager = module.getEventManager();
-            var moduleEvent = moduleEventManager.getEvent($this.getName());
-            var listeners = moduleEvent.getListeners(true);
-
-            for (var i = 0; i < listeners.length; i++) {
-                if (listeners[i].getCallback() == callback) {
-                    listener = listeners[i];
-                    return false;
-                }
+        for (var i = 0; i < listeners.length; i++) {
+            if (listeners[i].getCallback() == callback) {
+                return listeners[i];
             }
-        });
-
-        return listener;
-    };
-
-    /**
-     * Returns all registered event listeners
-     *
-     * @method getListeners
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @param {boolean} [privateListeners = false]
-     *      If passed true it returns event listeners only from event instance from current module
-     *      without listeners from its plug-in module events with the same name.
-     *
-     * @returns {Object.<Subclass.Event.EventListener>}
-     */
-    Event.prototype.getListeners = function(privateListeners)
-    {
-        var mainModule = this.getEventManager().getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var listeners = [];
-        var $this = this;
-
-        if (privateListeners !== true) {
-            privateListeners = false;
         }
-        if (privateListeners) {
-            return this._listeners;
-        }
-
-        moduleStorage.eachModule(function(module) {
-            if (module == mainModule) {
-                Subclass.Tools.extend(listeners, $this._listeners);
-                return;
-            }
-            var moduleEventManager = module.getEventManager();
-            var moduleEventListeners = moduleEventManager.getEvent($this.getName()).getListeners();
-
-            Subclass.Tools.extend(listeners, moduleEventListeners);
-        });
-
-        return Subclass.Tools.unique(listeners);
+        return null;
     };
 
     /**
@@ -296,30 +231,6 @@ Subclass.Event.Event = (function()
     {
         var listeners = this.getListeners();
 
-        return this._processTrigger(listeners, arguments)
-    };
-
-    /**
-     * Invokes event listeners only from module to which event with specified name belongs to.<br /><br />
-     *
-     * Will be invoked all listener callback functions only from
-     * current module (without plug-ins) event.<br /><br />
-     *
-     * Each event listener callback function will receive as arguments all arguments from current method call.
-     * If listener callback function returns false then it will bring to stop propagation of event.
-     *
-     * @method triggerPrivate
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @param [arguments]
-     *      Any number of any needed arguments
-     *
-     * @returns {Subclass.Event.Event}
-     */
-    Event.prototype.triggerPrivate = function()
-    {
-        var listeners = this.getListeners(true);
-
         return this._processTrigger(listeners, arguments);
     };
 
@@ -327,7 +238,6 @@ Subclass.Event.Event = (function()
      * Invokes event listeners
      *
      * @method _processTriggger
-     * @memberOf Subclass.Event.Event.prototype
      *
      * @param {Array.<Subclass.Event.EventListener>} listeners
      *      An array of event listeners

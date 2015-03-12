@@ -1,7 +1,7 @@
 /**
  * @final
  * @class
- * @extends {Subclass.Error}
+ * @extends {Subclass.Error.ErrorBase}
  * @mixes Subclass.Error.Option.Argument
  * @mixes Subclass.Error.Option.Expected
  * @mixes Subclass.Error.Option.Received
@@ -14,12 +14,18 @@
  * @param {string} [message]
  *      The custom error message
  */
-Subclass.Error.InvalidArgumentError = (function()
+Subclass.Error.Type.InvalidArgumentError = (function()
 {
     function InvalidArgumentError(message)
     {
         Subclass.Error.call(this, message);
     }
+
+    InvalidArgumentError.$mixins = [
+        Subclass.Error.Option.Argument,
+        Subclass.Error.Option.Expected,
+        Subclass.Error.Option.Received
+    ];
 
     /**
      * Returns the name of error type
@@ -34,26 +40,26 @@ Subclass.Error.InvalidArgumentError = (function()
     {
         return "InvalidArgument";
     };
-
-    /**
-     * Returns all available error type options
-     *
-     * @method getOptions
-     * @memberOf Subclass.Error.InvalidArgumentError
-     * @static
-     *
-     * @returns {Array}
-     */
-    InvalidArgumentError.getOptions = function()
-    {
-        var options = Subclass.Error.getOptions();
-
-        return options.concat([
-            'argument',
-            'expected',
-            'received'
-        ]);
-    };
+    //
+    ///**
+    // * Returns all available error type options
+    // *
+    // * @method getOptions
+    // * @memberOf Subclass.Error.InvalidArgumentError
+    // * @static
+    // *
+    // * @returns {Array}
+    // */
+    //InvalidArgumentError.getOptions = function()
+    //{
+    //    var options = Subclass.Error.getOptions();
+    //
+    //    return options.concat([
+    //        'argument',
+    //        'expected',
+    //        'received'
+    //    ]);
+    //};
 
     /**
      * Returns required error fields

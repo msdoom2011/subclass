@@ -20,6 +20,11 @@ Subclass.Error.NotImplementedMethodError = (function()
         Subclass.Error.call(this, message);
     }
 
+    NotImplementedMethodError.$mixins = [
+        Subclass.Error.Option.ClassName,
+        Subclass.Error.Option.Method
+    ];
+
     /**
      * Returns the name of error type
      *
@@ -33,25 +38,25 @@ Subclass.Error.NotImplementedMethodError = (function()
     {
         return "NotImplementedMethod";
     };
-
-    /**
-     * Returns all available error type options
-     *
-     * @method getOptions
-     * @memberOf Subclass.Error.NotImplementedMethodError
-     * @static
-     *
-     * @returns {Array}
-     */
-    NotImplementedMethodError.getOptions = function()
-    {
-        var options = Subclass.Error.getOptions();
-
-        return options.concat([
-            'className',
-            'method'
-        ]);
-    };
+    //
+    ///**
+    // * Returns all available error type options
+    // *
+    // * @method getOptions
+    // * @memberOf Subclass.Error.NotImplementedMethodError
+    // * @static
+    // *
+    // * @returns {Array}
+    // */
+    //NotImplementedMethodError.getOptions = function()
+    //{
+    //    var options = Subclass.Error.getOptions();
+    //
+    //    return options.concat([
+    //        'className',
+    //        'method'
+    //    ]);
+    //};
 
     /**
      * Returns required error fields

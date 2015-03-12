@@ -17,8 +17,10 @@ Subclass.Error.NotImplementedMethodError = (function()
 {
     function NotImplementedMethodError(message)
     {
-        Subclass.Error.call(this, message);
+        Subclass.Error.ErrorBase.call(this, message);
     }
+
+    NotImplementedMethodError.$parent = Subclass.Error.ErrorBase;
 
     NotImplementedMethodError.$mixins = [
         Subclass.Error.Option.ClassName,
@@ -69,7 +71,7 @@ Subclass.Error.NotImplementedMethodError = (function()
      */
     NotImplementedMethodError.getRequiredOptions = function()
     {
-        var required = Subclass.Error.getRequiredOptions();
+        var required = NotImplementedMethodError.$parent.getRequiredOptions();
 
         return required.concat([
             'className',
@@ -82,7 +84,7 @@ Subclass.Error.NotImplementedMethodError = (function()
      */
     NotImplementedMethodError.prototype.buildMessage = function()
     {
-        var message = Subclass.Error.prototype.buildMessage.call(this);
+        var message = NotImplementedMethodError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'The method "' + this.className() + '#' + this.method() + '" ';

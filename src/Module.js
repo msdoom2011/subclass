@@ -191,15 +191,15 @@ Subclass.Module = (function()
          * @type {Subclass.ModuleAPI}
          * @private
          */
-        this._api = new Subclass.ModuleAPI(this);
+        this._api = Subclass.Tools.createClassInstance(Subclass.ModuleAPI, this);
 
         /**
          * Event manager instance
          *
-         * @type {Subclass.Event.EventManager}
+         * @type {Subclass.EventManager}
          * @private
          */
-        this._eventManager = new Subclass.Event.EventManager(this);
+        this._eventManager = Subclass.Tools.createClassInstance(Subclass.EventManager, this);
 
         // Registering events
 
@@ -217,7 +217,7 @@ Subclass.Module = (function()
          * @type {Subclass.LoadManager}
          * @private
          */
-        this._loadManager = new Subclass.LoadManager(this);
+        this._loadManager = Subclass.Tools.createClassInstance(Subclass.LoadManager, this);
 
         /**
          * Collection of modules
@@ -225,7 +225,7 @@ Subclass.Module = (function()
          * @type {Subclass.ModuleStorage}
          * @private
          */
-        this._moduleStorage = new Subclass.ModuleStorage(this, modulePlugins);
+        this._moduleStorage = Subclass.Tools.createClassInstance(Subclass.ModuleStorage, this, modulePlugins);
         //
         ///**
         // * Property manager instance
@@ -241,7 +241,7 @@ Subclass.Module = (function()
          * @type {Subclass.Class.ClassManager}
          * @private
          */
-        this._classManager = new Subclass.Class.ClassManager(this);
+        this._classManager = Subclass.Tools.createClassInstance(Subclass.Class.ClassManager, this);
         //
         ///**
         // * Service manager instance
@@ -265,7 +265,7 @@ Subclass.Module = (function()
          * @type {Subclass.ConfigManager}
          * @private
          */
-        this._configManager = new Subclass.ConfigManager(this);
+        this._configManager = Subclass.Tools.createClassInstance(Subclass.ConfigManager, this);
 
         /**
          * Checks whether module is prepared for ready
@@ -466,7 +466,7 @@ Subclass.Module = (function()
      * @method getEventManager
      * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Event.EventManager}
+     * @returns {Subclass.EventManager}
      */
     Module.prototype.getEventManager = function()
     {

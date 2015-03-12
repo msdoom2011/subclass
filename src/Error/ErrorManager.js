@@ -25,7 +25,7 @@ Subclass.Error = function()
         {
             if (!this.issetType(type)) {
                 var message = type;
-                return (new Subclass.Error.ErrorBase(message)).apply();
+                return (Subclass.Tools.createClassInstance(Subclass.Error.ErrorBase, message)).apply();
             }
             return Subclass.Tools.createClassInstance(this.getType(type));
         },
@@ -108,3 +108,8 @@ Subclass.Error = function()
 }();
 
 Subclass.Error.ErrorManager = Subclass.Error;
+
+/**
+ * @namespace
+ */
+Subclass.Error.Type = {};

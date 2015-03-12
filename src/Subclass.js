@@ -134,7 +134,7 @@ window.Subclass = (function()
 
             // Creating instance of module
 
-            var module = new Subclass.Module(
+            var module = Subclass.Tools.createClassInstance(Subclass.Module,
                 moduleName,
                 modulePlugins,
                 moduleConfigs

@@ -15,6 +15,39 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+
+      // Src Files
+      "src/Subclass.js",
+      "src/Module.js",
+      "src/ModuleAPI.js",
+      "src/Tools/Tools.js",
+      "src/Tools/**/*.js",
+      "src/Error/ErrorManager.js",
+      "src/Error/**/*.js",
+      "src/Class/ClassManager.js",
+      "src/Class/ClassType.js",
+      "src/Class/ClassDefinition.js",
+      "src/Class/ClassLoader.js",
+      "src/Class/*.js",
+      "src/Class/Type/Class/Class.js",
+      "src/Class/Type/Class/**/*.js",
+      "src/Class/Type/AbstractClass/AbstractClass.js",
+      "src/Class/Type/AbstractClass/**/*.js",
+      "src/Class/Type/Interface/Interface.js",
+      "src/Class/Type/Interface/**/*.js",
+      "src/Class/Type/Trait/Trait.js",
+      "src/Class/Type/Trait/**/*.js",
+      "src/Class/Type/Config/Config.js",
+      "src/Class/Type/Config/**/*.js",
+      "src/Class/Type/**/*.js",
+      "src/Class/**/*.js",
+      "src/Event/Event.js",
+      "src/Event/**/*.js",
+      "src/*.js",
+
+      // Tests
+      "tests/module.js",
+      "tests/**/*.js"
     ],
 
 
@@ -54,7 +87,8 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox', 'Safari'],
+    //browsers: ['Chrome', 'Firefox', 'Safari'],
+    browsers: ['PhantomJS'],
 
 
     // Continuous Integration mode

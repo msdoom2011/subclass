@@ -18,8 +18,10 @@ Subclass.Error.Type.InvalidArgumentError = (function()
 {
     function InvalidArgumentError(message)
     {
-        Subclass.Error.call(this, message);
+        Subclass.Error.ErrorBase.call(this, message);
     }
+
+    InvalidArgumentError.$parent = Subclass.Error.ErrorBase;
 
     InvalidArgumentError.$mixins = [
         Subclass.Error.Option.Argument,
@@ -72,7 +74,7 @@ Subclass.Error.Type.InvalidArgumentError = (function()
      */
     InvalidArgumentError.getRequiredOptions = function()
     {
-        var required = Subclass.Error.getRequiredOptions();
+        var required = InvalidArgumentError.$parent.getRequiredOptions();
 
         return required.concat(['argument']);
     };
@@ -82,7 +84,7 @@ Subclass.Error.Type.InvalidArgumentError = (function()
      */
     InvalidArgumentError.prototype.buildMessage = function()
     {
-        var message = Subclass.Error.prototype.buildMessage.call(this);
+        var message = InvalidArgumentError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Specified invalid value of ' + this.argument() + '. ';

@@ -46,34 +46,53 @@ Subclass.Class.ClassType = (function()
         }
 
         /**
+         * The instance of class manager
+         *
          * @type {Subclass.Class.ClassManager}
          * @protected
          */
         this._classManager = classManager;
 
         /**
+         * The name of class
+         *
          * @type {string}
          * @protected
          */
         this._name = className;
 
         /**
+         * The instance class definition
+         *
          * @type {Subclass.Class.ClassDefinition}
          * @protected
          */
         this._definition = this.createDefinition(classDefinition);
 
         /**
+         * The class constructor function
+         *
          * @type {(function|null)}
          * @protected
          */
         this._constructor = null;
 
         /**
-         * @type {(ClassType|null)}
+         * The instance of class which is parent of current class
+         *
+         * @type {(Subclass.Class.ClassType|null)}
          * @protected
          */
         this._parent = null;
+
+        /**
+         * The plain object with class constants
+         *
+         * @type {Object}
+         * @private
+         */
+        this._constants = {};
+
         //
         ///**
         // * @type {Object}
@@ -293,6 +312,93 @@ Subclass.Class.ClassType = (function()
     {
         return !!this._parent;
     };
+
+    /**
+     * Sets constants of the class
+     *
+     * @param {Object} constants
+     *      The plain object which keys are names and values are values of constants
+     */
+    ClassType.prototype.setConstants = function(constants)
+    {
+        this._constants = constants;
+    };
+
+    /**
+     * Creates the new (or redefines) constant with specified name and value
+     *
+     * @param {string} constName
+     *      The name of constant
+     *
+     * @param {*} constValue
+     *      The value of constant
+     */
+    ClassType.prototype.setConstant = function(constName, constValue)
+    {
+        this._constants[constName] = constValue;
+    };
+
+    /**
+     * Adds the new constant.
+     * If the constant with specified name is already exists then will be thrown Error.
+     *
+     * @param {string} constName
+     *      The name of constant
+     *
+     * @param {*} constValue
+     *      The value of constant
+     */
+    ClassType.prototype.addConstant = function(constName, constValue)
+    {
+        if (this.issetConstant(constName, true)) {
+            Subclass.Error.create(
+                'The constant "' + constName + '" already exists in class "' + this.getName() + '".'
+            );
+        }
+        this.setConstant(constName, constValue);
+    };
+
+    /**
+     * Checks whether the constant with specified name exists
+     *
+     * @param {string} constName
+     *      The name of constant
+     *
+     * @param {boolean} [withInheritance=false]
+     *      Should perform searching of constant also in parent classes
+     *
+     * @returns {boolean}
+     */
+    ClassType.prototype.issetConstant = function(constName, withInheritance)
+    {
+        var constants = this.getConstants(withInheritance);
+
+        return constants.hasOwnProperty(constName);
+    };
+
+    /**
+     * Returns class constants
+     *
+     * @param {boolean} [withInherited=false]
+     *
+     * @returns {Object}
+     */
+    ClassType.prototype.getConstants = function(withInherited)
+    {
+        var constants = this._constants;
+
+        if (withInherited !== true) {
+            withInherited = false;
+        }
+        if (withInherited && this.hasParent()) {
+            var parentConstants = this.getParent().getConstants();
+            constants = Subclass.Tools.extend(parentConstants, constants);
+        }
+        return constants;
+    };
+
+
+
     //
     ///**
     // * Returns all typed properties in current class definition instance

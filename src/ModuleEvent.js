@@ -6,13 +6,13 @@ Subclass.ModuleEvent = function()
 {
     function ModuleEvent(eventManager, eventName, context)
     {
-        ModuleEvent.$parent.apply(this, arguments);
+        ModuleEvent.$parent.call(this, eventName, context);
 
-        if (!eventManager || !(eventManager instanceof Subclass.Event.EventManager)) {
+        if (!eventManager || !(eventManager instanceof Subclass.EventManager)) {
             Subclass.Error.create('InvalidArgument')
                 .argument("the event manager instance", false)
                 .received(eventManager)
-                .expected('an instance of "Subclass.Event.EventManager"')
+                .expected('an instance of "Subclass.EventManager"')
                 .apply()
             ;
         }
@@ -20,7 +20,7 @@ Subclass.ModuleEvent = function()
         /**
          * Event manager instance
          *
-         * @type {Subclass.Event.EventManager}
+         * @type {Subclass.EventManager}
          * @private
          */
         this._eventManager = eventManager;
@@ -34,7 +34,7 @@ Subclass.ModuleEvent = function()
      * @method getEventManager
      * @memberOf Subclass.ModuleEvent.prototype
      *
-     * @returns {Subclass.Event.EventManager}
+     * @returns {Subclass.EventManager}
      */
     ModuleEvent.prototype.getEventManager = function()
     {

@@ -105,7 +105,11 @@ Subclass.Event.EventableMixin = (function()
         if (this.issetEvent(eventName, true)) {
             Subclass.Error.create('Event with name "' + eventName + '" already exists.');
         }
-        this._events[eventName] = new Subclass.Event.Event(this, eventName, context);
+        this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.Event.Event,
+            this,
+            eventName,
+            context
+        );
 
         return this;
     };

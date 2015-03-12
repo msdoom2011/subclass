@@ -17,8 +17,10 @@ Subclass.Error.NotExistentMethodError = (function()
 {
     function NotExistentMethodError(message)
     {
-        Subclass.Error.call(this, message);
+        Subclass.Error.ErrorBase.call(this, message);
     }
+
+    NotExistentMethodError.$parent = Subclass.Error.ErrorBase;
 
     NotExistentMethodError.$mixins = [
         Subclass.Error.Option.ClassName,
@@ -69,7 +71,7 @@ Subclass.Error.NotExistentMethodError = (function()
      */
     NotExistentMethodError.getRequiredOptions = function()
     {
-        var required = Subclass.Error.getRequiredOptions();
+        var required = NotExistentMethodError.$parent.getRequiredOptions();
 
         return required.concat([
             'className',
@@ -82,7 +84,7 @@ Subclass.Error.NotExistentMethodError = (function()
      */
     NotExistentMethodError.prototype.buildMessage = function()
     {
-        var message = Subclass.Error.prototype.buildMessage.call(this);
+        var message = NotExistentMethodError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'The method "' + this.className() + '#' + this.method() + '" does not exist.';

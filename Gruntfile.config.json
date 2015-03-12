@@ -11,9 +11,12 @@
     },
     "content": {
       "main": {
-        "files": [
+        "files_first": [
           "Subclass.js",
           "Module.js",
+          "ModuleAPI.js"
+        ],
+        "files_rest": [
           "*.js"
         ]
       },
@@ -29,7 +32,6 @@
         "dir": "Class",
         "files": [
           "<%= config.lib.content.class.dir %>/ClassManager.js",
-          "<%= config.lib.content.class.dir %>/ClassManagerAPI.js",
           "<%= config.lib.content.class.dir %>/ClassType.js",
           "<%= config.lib.content.class.dir %>/ClassDefinition.js",
           "<%= config.lib.content.class.dir %>/ClassLoader.js",
@@ -45,31 +47,31 @@
           "<%= config.lib.content.class.dir %>/Type/Config/Config.js",
           "<%= config.lib.content.class.dir %>/Type/Config/**/*.js",
           "<%= config.lib.content.class.dir %>/Type/**/*.js",
-          "<%= config.lib.content.class.dir %>/Error/**/*.js",
           "<%= config.lib.content.class.dir %>/**/*.js"
         ]
       },
       "error": {
         "dir": "Error",
         "files": [
-          "<%= config.lib.content.error.dir %>/Error.js",
+          "<%= config.lib.content.error.dir %>/ErrorManager.js",
           "<%= config.lib.content.error.dir %>/**/*.js"
         ]
       },
       "event": {
         "dir": "Event",
         "files": [
-          "<%= config.lib.content.event.dir %>/EventManager.js",
+          "<%= config.lib.content.event.dir %>/Event.js",
           "<%= config.lib.content.event.dir %>/**/*.js"
         ]
       }
     },
     "files": [
-      "<%= config.lib.content.main.files %>",
+      "<%= config.lib.content.main.files_first %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.error.files %>",
       "<%= config.lib.content.class.files %>",
-      "<%= config.lib.content.event.files %>"
+      "<%= config.lib.content.event.files %>",
+      "<%= config.lib.content.main.files_rest %>"
     ],
     "files_release": {
       "normal": "<%= config.lib.dir.release %>/<%= config.name %>.js",

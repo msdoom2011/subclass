@@ -20,8 +20,10 @@ Subclass.Error.InvalidModuleOptionError = (function()
 {
     function InvalidModuleOptionError(message)
     {
-        Subclass.Error.call(this, message);
+        Subclass.Error.ErrorBase.call(this, message);
     }
+
+    InvalidModuleOptionError.$parent = Subclass.Error.ErrorBase;
 
     InvalidModuleOptionError.$mixins = [
         Subclass.Error.Option.Option,
@@ -76,7 +78,7 @@ Subclass.Error.InvalidModuleOptionError = (function()
      */
     InvalidModuleOptionError.getRequiredOptions = function()
     {
-        var required = Subclass.Error.getRequiredOptions();
+        var required = InvalidModuleOptionError.$parent.getRequiredOptions();
 
         return required.concat([
             'module',
@@ -89,7 +91,7 @@ Subclass.Error.InvalidModuleOptionError = (function()
      */
     InvalidModuleOptionError.prototype.buildMessage = function()
     {
-        var message = Subclass.Error.prototype.buildMessage.call(this);
+        var message = InvalidModuleOptionError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Invalid value of option "' + this.option() + '" ';

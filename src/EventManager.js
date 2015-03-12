@@ -20,30 +20,30 @@ Subclass.EventManager = function()
     EventManager.$mixins = [Subclass.Event.EventableMixin];
 
     /**
-     * Returns instance of module
-     *
-     * @method getModule
-     * @memberOf Subclass.EventManager.prototype
-     *
-     * @returns {*}
-     */
+    * Returns instance of module
+    *
+    * @method getModule
+    * @memberOf Subclass.EventManager.prototype
+    *
+    * @returns {*}
+    */
     EventManager.prototype.getModule = function()
     {
         return this._module;
     };
 
     /**
-     * Returns all registered services
-     *
-     * @method getEvents
-     * @memberOf Subclass.EventManager.prototype
-     *
-     * @param {boolean} [privateEvents=false]
-     *      If passed true it returns events only from current module
-     *      without events from it plug-in modules.
-     *
-     * @returns {Object.<Subclass.Event.Event>}
-     */
+    * Returns all registered services
+    *
+    * @method getEvents
+    * @memberOf Subclass.EventManager.prototype
+    *
+    * @param {boolean} [privateEvents=false]
+    *      If passed true it returns events only from current module
+    *      without events from it plug-in modules.
+    *
+    * @returns {Object.<Subclass.Event.Event>}
+    */
     EventManager.prototype.getEvents = function(privateEvents)
     {
         var mainModule = this.getModule();
@@ -73,14 +73,18 @@ Subclass.EventManager = function()
     };
 
     /**
-     * @inheritDoc
-     */
+    * @inheritDoc
+    */
     EventManager.prototype.registerEvent = function(eventName, context)
     {
         if (this.issetEvent(eventName, true)) {
             Subclass.Error.create('Event with name "' + eventName + '" already exists.');
         }
-        this._events[eventName] = new Subclass.ModuleEvent(this, eventName, context);
+        this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.ModuleEvent,
+            this,
+            eventName,
+            context
+        );
 
         return this;
     };

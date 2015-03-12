@@ -61,7 +61,7 @@ Subclass.Class.ClassManager = (function()
          * @type {Subclass.Class.ClassLoader}
          * @private
          */
-        this._loader = new Subclass.Class.ClassLoader(this);
+        this._loader = Subclass.Tools.createClassInstance(Subclass.Class.ClassLoader, this);
     }
 
     /**

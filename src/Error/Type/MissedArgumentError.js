@@ -16,8 +16,10 @@ Subclass.Error.MissedArgumentError = (function()
 {
     function MissedArgumentError(message)
     {
-        Subclass.Error.call(this, message);
+        Subclass.Error.ErrorBase.call(this, message);
     }
+
+    MissedArgumentError.$parent = Subclass.Error.ErrorBase;
 
     MissedArgumentError.$mixins = [
         Subclass.Error.Option.Argument
@@ -66,7 +68,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.getRequiredOptions = function()
     {
-        var required = Subclass.Error.getRequiredOptions();
+        var required = MissedArgumentError.$parent.getRequiredOptions();
 
         return required.concat(['argument']);
     };
@@ -76,7 +78,7 @@ Subclass.Error.MissedArgumentError = (function()
      */
     MissedArgumentError.prototype.buildMessage = function()
     {
-        var message = Subclass.Error.prototype.buildMessage.call(this);
+        var message = MissedArgumentError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'The ' + this.argument() + ' argument is required but was missed.';

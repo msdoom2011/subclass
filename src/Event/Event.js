@@ -114,7 +114,10 @@ Subclass.Event.Event = (function()
      */
     Event.prototype.addListener = function(priority, callback)
     {
-        var listener = new Subclass.Event.EventListener(priority, callback);
+        var listener = Subclass.Tools.createClassInstance(Subclass.Event.EventListener,
+            priority,
+            callback
+        );
         this._listeners.push(listener);
 
         return this;

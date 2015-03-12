@@ -26,7 +26,7 @@ Subclass.Tools.CheckTools = (function()
                     for (var i = 0; i < constructor.$mixins.length; i++) {
                         Subclass.Tools.extend(
                             constructorProto,
-                            constructor.$mixins[i]
+                            constructor.$mixins[i].prototype
                         );
                     }
                 }
@@ -43,8 +43,10 @@ Subclass.Tools.CheckTools = (function()
                 });
 
             } else if (constructor.$mixins) {
+                constructorProto = {};
+
                 for (var j = 0; j < constructor.$mixins.length; j++) {
-                    constructorProto = Subclass.Tools.extend({}, constructor.$mixins[i]);
+                    Subclass.Tools.extend(constructorProto, constructor.$mixins[j].prototype);
                 }
                 constructor.prototype = Subclass.Tools.extend(
                     constructorProto,
@@ -81,6 +83,7 @@ Subclass.Tools.CheckTools = (function()
                 return properties;
             }
 
+            constructor = this.buildClassConstructor(constructor);
             var properties = getPropertiesFromMixins(constructor);
             var instance = new (constructor.bind.apply(constructor, arguments))();
             var instanceProperties = {};
@@ -96,6 +99,39 @@ Subclass.Tools.CheckTools = (function()
             return instance;
         }
     });
+
+    if (!Function.prototype.bind) {
+        Object.defineProperty(Function.prototype, 'bind', {
+            enumerable: false,
+            configurable: true,
+            value: function (oThis)
+            {
+                if (typeof this !== 'function') {
+                    // closest thing possible to the ECMAScript 5
+                    // internal IsCallable function
+                    throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+                }
+
+                var aArgs = Array.prototype.slice.call(arguments, 1),
+                    fToBind = this,
+                    fNOP = function ()
+                    {
+                    },
+                    fBound = function ()
+                    {
+                        return fToBind.apply(this instanceof fNOP
+                                ? this
+                                : oThis,
+                            aArgs.concat(Array.prototype.slice.call(arguments)));
+                    };
+
+                fNOP.prototype = this.prototype;
+                fBound.prototype = new fNOP();
+
+                return fBound;
+            }
+        });
+    }
 
     return Subclass.Tools;
 

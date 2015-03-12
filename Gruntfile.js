@@ -113,19 +113,17 @@ module.exports = function(grunt) {
 
         karma: {
             options: {
-                configFile: "karma.config.js"
+                configFile: "karma.config.js",
+                singleRun: true
             },
-            build: {
-                files: [
-                    "<%= config.lib.files %>",
-                    "tests/**/*.js"
-                ]
-            },
+            build: {},
             release: {
-                files: [
-                    "<%= config.lib.files_release.minimized %>",
-                    "tests/**/*.js"
-                ]
+                files: [{
+                    src: [
+                        "<%= config.lib.files_release.minimized %>",
+                        "tests/**/*.js"
+                    ]
+                }]
             }
         },
 
@@ -158,7 +156,8 @@ module.exports = function(grunt) {
         "clean:build",
         "copy:build_lib",
         "copy:build_demo",
-        "index:build"
+        "index:build",
+        //"karma:build"
     ]);
 
     grunt.registerTask("release", [
@@ -168,11 +167,8 @@ module.exports = function(grunt) {
         "concat:release",
         "uglify:release",
         'minimize:release',
-        "index:release"
-    ]);
-
-    grunt.registerTask("test", [
-        "karma:unit"
+        "index:release",
+        "karma:release"
     ]);
 
     grunt.registerTask("doc", [
@@ -181,7 +177,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask("default", [
-        "build", "release", "test", "doc"
+        "build", "release", "doc"
     ]);
 
     grunt.registerMultiTask("index", "Process index.html template", function() {

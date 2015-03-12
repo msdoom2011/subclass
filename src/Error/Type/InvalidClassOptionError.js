@@ -19,8 +19,10 @@ Subclass.Error.InvalidClassOptionError = (function()
 {
     function InvalidClassOptionError(message)
     {
-        Subclass.Error.call(this, message);
+        Subclass.Error.ErrorBase.call(this, message);
     }
+
+    InvalidClassOptionError.$parent = Subclass.Error.ErrorBase;
 
     InvalidClassOptionError.$mixins = [
         Subclass.Error.Option.ClassName,
@@ -75,7 +77,7 @@ Subclass.Error.InvalidClassOptionError = (function()
      */
     InvalidClassOptionError.getRequiredOptions = function()
     {
-        var required = Subclass.Error.getRequiredOptions();
+        var required = InvalidClassOptionError.$parent.getRequiredOptions();
 
         return required.concat([
             'className',
@@ -88,7 +90,7 @@ Subclass.Error.InvalidClassOptionError = (function()
      */
     InvalidClassOptionError.prototype.buildMessage = function()
     {
-        var message = Subclass.Error.prototype.buildMessage.call(this);
+        var message = InvalidClassOptionError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
             message += 'Invalid value of option ' + this.option() + ' ';

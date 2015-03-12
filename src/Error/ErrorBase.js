@@ -90,7 +90,7 @@ Subclass.Error.ErrorBase = function()
      */
     ErrorBase.prototype.apply = function()
     {
-        Subclass.Error.validateRequiredOptions(this);
+        Subclass.Error.ErrorBase.validateRequiredOptions(this);
         throw new Error(this.message());
     };
 

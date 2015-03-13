@@ -76,7 +76,7 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
-     * Validates "$_requires" attribute value
+     * Validates "$_requires" option value
      *
      * @param {*} requires
      * @returns {boolean}
@@ -133,7 +133,7 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
-     * Sets "$_requires" attribute value
+     * Sets "$_requires" option value
      *
      * @param {Object.<string>} requires
      *
@@ -179,7 +179,7 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
-     * Return "$_requires" attribute value
+     * Return "$_requires" option value
      *
      * @returns {Object.<string>}
      */
@@ -189,7 +189,7 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
-     * Validates "$_extends" attribute value
+     * Validates "$_extends" option value
      *
      * @param {*} parentClassName
      * @returns {boolean}
@@ -210,7 +210,7 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
-     * Sets "$_extends" attribute value
+     * Sets "$_extends" option value
      *
      * @param {string} parentClassName  Name of parent class, i.e. "Namespace/Of/ParentClass"
      */
@@ -225,7 +225,7 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
-     * Returns "$_extends" attribute value
+     * Returns "$_extends" option value
      *
      * @returns {string}
      */
@@ -234,8 +234,53 @@ Subclass.Class.ClassDefinition = (function()
         return this.getData().$_extends;
     };
 
+    /**
+     * Validates "$_constants" option value
+     *
+     * @param {*} constants
+     * @returns {boolean}
+     * @throws {Error}
+     */
+    ClassDefinition.prototype.validateConstants = function(constants)
+    {
+        if (constants !== null && !Subclass.Tools.isPlainObject(constants)) {
+            Subclass.Error.create("InvalidClassOption")
+                .argument('$_constants')
+                .received(constants)
+                .expected('a plain object')
+                .apply()
+            ;
+        }
+    };
+
+    /**
+     * Sets "$_constants" option value
+     *
+     * @param {Object} constants
+     *      Name of parent class, i.e. "Namespace/Of/ParentClass"
+     */
+    ClassDefinition.prototype.setConstants = function(constants)
+    {
+        this.validateConstants(constants);
+        this._constants = constants;
+
+        if (constants) {
+            this.getClass().setConstants(constants);
+        }
+    };
+
+    /**
+     * Returns "$_constants" option value
+     *
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.getConstants = function()
+    {
+        return this._constants;
+    };
+
     ///**
-    // * Validates "$_properties" attribute value
+    // * Validates "$_properties" option value
     // *
     // * @param {*} properties
     // * @returns {boolean}
@@ -259,7 +304,7 @@ Subclass.Class.ClassDefinition = (function()
     //            }
     //            if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
     //                Subclass.Error.create(
-    //                    'Specified not allowed typed property name "' + propName + '" in attribute "$_properties" ' +
+    //                    'Specified not allowed typed property name "' + propName + '" in option "$_properties" ' +
     //                    'in definition of class "' + this.getClass().getName() + '".'
     //                );
     //            }
@@ -311,7 +356,7 @@ Subclass.Class.ClassDefinition = (function()
     //};
     //
     ///**
-    // * Sets "$_properties" attribute value
+    // * Sets "$_properties" option value
     // *
     // * @param {Object.<Object>} properties
     // *
@@ -343,7 +388,7 @@ Subclass.Class.ClassDefinition = (function()
     //};
     //
     ///**
-    // * Return "$_properties" attribute value
+    // * Return "$_properties" option value
     // *
     // * @returns {Object.<Object>}
     // */
@@ -451,7 +496,6 @@ Subclass.Class.ClassDefinition = (function()
         return parts;
     };
 
-
     /**
      * Modifies class definition
      *
@@ -495,6 +539,13 @@ Subclass.Class.ClassDefinition = (function()
              * @type {string}
              */
             $_extends: null,
+
+            /**
+             * Constants list
+             *
+             * @type {Object}
+             */
+            $_constants: null,
 
             ///**
             // * List of class typed properties
@@ -754,7 +805,7 @@ Subclass.Class.ClassDefinition = (function()
         //var properties = this.getProperties();
         var parentClass = this.getExtends();
 
-        // Performing $_requires attribute
+        // Performing $_requires option
 
         if (requires && this.validateRequires(requires)) {
             if (Subclass.Tools.isPlainObject(requires)) {
@@ -770,13 +821,13 @@ Subclass.Class.ClassDefinition = (function()
             }
         }
 
-        // Performing $_extends attribute
+        // Performing $_extends option
 
         if (parentClass && this.validateExtends(parentClass)) {
             classManager.loadClass(parentClass);
         }
 
-        //// Performing $_properties attribute
+        //// Performing $_properties option
         //
         //if (properties && Subclass.Tools.isPlainObject(properties)) {
         //    for (var propName in properties) {

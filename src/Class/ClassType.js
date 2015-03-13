@@ -339,44 +339,6 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
-     * Adds the new constant.
-     * If the constant with specified name is already exists then will be thrown Error.
-     *
-     * @param {string} constName
-     *      The name of constant
-     *
-     * @param {*} constValue
-     *      The value of constant
-     */
-    ClassType.prototype.addConstant = function(constName, constValue)
-    {
-        if (this.issetConstant(constName, true)) {
-            Subclass.Error.create(
-                'The constant "' + constName + '" already exists in class "' + this.getName() + '".'
-            );
-        }
-        this.setConstant(constName, constValue);
-    };
-
-    /**
-     * Checks whether the constant with specified name exists
-     *
-     * @param {string} constName
-     *      The name of constant
-     *
-     * @param {boolean} [withInheritance=false]
-     *      Should perform searching of constant also in parent classes
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.issetConstant = function(constName, withInheritance)
-    {
-        var constants = this.getConstants(withInheritance);
-
-        return constants.hasOwnProperty(constName);
-    };
-
-    /**
      * Returns class constants
      *
      * @param {boolean} [withInherited=false]
@@ -396,9 +358,6 @@ Subclass.Class.ClassType = (function()
         }
         return constants;
     };
-
-
-
     //
     ///**
     // * Returns all typed properties in current class definition instance
@@ -514,12 +473,10 @@ Subclass.Class.ClassType = (function()
             var baseClassDefinition = classDefinition.getBaseData();
 
             classDefinition.normalizeData();
-
             classDefinition.setData(Subclass.Tools.extend(
                 baseClassDefinition,
                 classDefinition.getData()
             ));
-
             classDefinition.validateData();
             classDefinition.processData();
 

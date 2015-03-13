@@ -492,16 +492,16 @@ Subclass.Class.ClassBuilder = (function()
     //};
 
     /**
-     * Sets static properties and methods of the class
+     * Sets constants of the class
      *
-     * @method setStatic
+     * @method setConstants
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @throws {Error}
-     *      Throws error if specified invalid definition of static properties
+     *      Throws error if specified invalid definition of constants
      *
-     * @param {Object} staticProperties
-     *      The plain object with definitions of static properties.
+     * @param {Object} constants
+     *      The plain object with constants definitions.
      *
      * @returns {Subclass.Class.ClassBuilder}
      *
@@ -510,122 +510,113 @@ Subclass.Class.ClassBuilder = (function()
      *
      * app.buildClass("Class")
      *      .setName("Foo/Bar/TestClass")
-     *      .setStatic({
-     *          staticProp: "static value",
-     *          staticMethod: function() {
-     *              alert(this.staticProp);
-     *          }
+     *      .setConstants({
+     *          FOO_CONST: 10,
+     *          BAR_CONST: 20
      *      })
      *      .save()
      * ;
      * ...
      *
      * var TestClass = app.getClass("Foo/Bar/TestClass");
-     * var TestClassStatic = TestClass.getStatic();
-     *
-     * var staticProp = TestClassStatic.staticProp;  // "static value"
-     * TestClassStatic.staticMethod();               // alerts "static value"
+     * var testClassInst = TestClass.createInstance();
+     * console.log(testClassInst.FOO_CONST);   // 10
+     * console.log(testClassInst.BAR_CONST);   // 20
      */
-    ClassBuilder.prototype.setStatic = function(staticProperties)
+    ClassBuilder.prototype.setConstants = function(constants)
     {
-        if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
+        if (!constants || !Subclass.Tools.isPlainObject(constants)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("the static properties", false)
-                .received(staticProperties)
+                .argument("the constants definition", false)
+                .received(constants)
                 .expected("a plain object")
                 .apply()
             ;
         }
-        this.getDefinition().$_static = staticProperties;
+        this.getDefinition().$_constants = constants;
 
         return this;
     };
 
     /**
-     * Returns static properties and methods of the class
+     * Returns constants of the class
      *
-     * @method getStatic
+     * @method getConstants
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @returns {Object}
      */
-    ClassBuilder.prototype.getStatic = function()
+    ClassBuilder.prototype.getConstants = function()
     {
-        return this.getDefinition().$_static || {};
+        return this.getDefinition().$_constants || {};
     };
 
     /**
-     * Sets static property or method of the class
+     * Sets constant of the class
      *
-     * @method setStaticProperty
+     * @method setConstant
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @throws {Error}
-     *      Throws error if specified not allowed name of static property or method
+     *      Throws error if specified not allowed name of constant
      *
-     * @param {string} staticPropertyName
-     *      The name of static property or method
+     * @param {string} constantName
+     *      The name of constant
      *
-     * @param {*} staticPropertyValue
-     *      The value of static property or method
+     * @param {*} constantValue
+     *      The value of constant
      *
      * @returns {Subclass.Class.ClassBuilder}
      *
      * @example
      * ...
      *
-     * // Defining few static properties
-     * builder.setStatic({
-     *     foo: "foo value",
-     *     bar: 100
-     * });
-     *
-     * // Defining static properties one at a time
      * builder
-     *     .setStaticProperty("foo", "foo value")
-     *     .setStaticProperty("bar", 100)
+     *      .setConstant("FOO_CONST", 10)
+     *      .setConstant("BAR_CONST", 20)
+     *      .save()
      * ;
      */
-    ClassBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
+    ClassBuilder.prototype.setConstant = function(constantName, constantValue)
     {
-        if (typeof staticPropertyName !== 'string') {
+        if (typeof constantName !== 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("the name of static property", false)
-                .received(staticPropertyName)
+                .argument("the name of constant", false)
+                .received(constantName)
                 .expected("a string")
                 .apply()
             ;
         }
-        this.getDefinition().$_static[staticPropertyName] = staticPropertyValue;
+        this.getDefinition().$_constants[constantName] = constantValue;
 
         return this;
     };
 
     /**
-     * Removes the static property or method
+     * Removes the constant
      *
-     * @method removeStaticProperty
+     * @method removeConstant
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @throws {Error}
-     *      Throws error if specified not allowed name of static property or name
+     *      Throws error if specified not allowed name of constant
      *
-     * @param {string} staticPropertyName
-     *      The name of static property or method
+     * @param {string} constantName
+     *      The name of constant
      *
      * @returns {Subclass.Class.ClassBuilder}
      */
-    ClassBuilder.prototype.removeStaticProperty = function(staticPropertyName)
+    ClassBuilder.prototype.removeConstant = function(constantName)
     {
-        if (typeof staticPropertyName !== 'string') {
+        if (typeof constantName !== 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("the name of static property", false)
-                .received(staticPropertyName)
+                .argument("the name of constant", false)
+                .received(constantName)
                 .expected("a string")
                 .apply()
             ;
         }
-        delete this.getDefinition().$_static[staticPropertyName];
+        delete this.getDefinition().$_constants[constantName];
 
         return this;
     };

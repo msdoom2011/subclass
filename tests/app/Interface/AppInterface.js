@@ -1,19 +1,25 @@
 describe("Registering", function() {
     it("Interface/AppInterface", function() {
-        var test = function() {
-            app.registerInterface("Interface/AppInterface", {
+        app.registerInterface("Interface/AppInterface", {
 
-                $_extends: "Interface/AppInterfaceBase",
+            $_extends: "Interface/AppInterfaceBase",
 
-                DEFAULT_GOAL: "MyAppGoal",
+            $_constants: {
 
-                getGoal: function() {},
+                MODE_DEV: 1,
 
-                setGoal: function(goal) {},
+                MODE_PROD: 2
+            },
 
-                execute: function() {}
-            });
-        };
-        expect(test).not.toThrow();
+            DEFAULT_NAME: "App",
+
+            DEFAULT_GOAL: "MyAppGoal",
+
+            getGoal: function() {},
+
+            setGoal: function(goal) {},
+
+            execute: function() {}
+        });
     });
 });

@@ -73,17 +73,42 @@ Subclass.Class.Type.Interface.InterfaceDefinition = (function()
     {
         return {
             /**
-             * @type {string} Parent class name
+             * Parent class name
+             *
+             * @type {(string|null)}
              */
             $_extends: null,
 
-            ///**
-            // * @type {Object.<Object>} Typed property definitions
-            // */
-            //$_properties: {}
+            /**
+             * List of constants
+             *
+             * @type {(Object|null)}
+             */
+            $_constants: null
         };
     };
 
-    return InterfaceDefinition;
+    /**
+     * Normalizes definition data
+     */
+    InterfaceDefinition.prototype.normalizeData = function()
+    {
+        InterfaceDefinition.$parent.prototype.normalizeData.call(this);
 
+        var data = this.getData();
+        var constants = this.getNoMethods();
+
+        if (!data.hasOwnProperty('$_constants')) {
+            data.$_constants = {};
+        }
+
+        for (var constantName in constants) {
+            if (constants.hasOwnProperty(constantName)) {
+                data.$_constants[constantName] = constants[constantName];
+                delete data[constantName];
+            }
+        }
+    };
+
+    return InterfaceDefinition;
 })();

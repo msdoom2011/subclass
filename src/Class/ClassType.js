@@ -564,8 +564,23 @@ Subclass.Class.ClassType = (function()
         var classManager = this.getClassManager();
         var classConstructor = this.getConstructor();
         //var classProperties = this.getProperties(true);
+        var classConstants = this.getConstants();
         var classInstance = new classConstructor();
         var setterName;
+
+        // Attaching constants
+
+        for (var constantName in classConstants) {
+            if (!classConstants.hasOwnProperty(constantName)) {
+                continue;
+            }
+            Object.defineProperty(classInstance, constantName, {
+                enumerable: true,
+                configurable: false,
+                writable: false,
+                value: classConstants[constantName]
+            });
+        }
 
         // Attaching hashed typed properties
 

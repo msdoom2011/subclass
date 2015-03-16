@@ -44,6 +44,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
     {
         this.validateStatic(value);
         this.getData().$_static = value || {};
+
+        if (value) {
+            this.getClass().setStaticProperties(value);
+        }
     };
 
     /**
@@ -111,11 +115,7 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         this.getData().$_traits = traits || [];
 
         if (traits) {
-            var classInst = this.getClass();
-
-            for (var i = 0; i < traits.length; i++) {
-                classInst.addTrait(traits[i]);
-            }
+            this.getClass().addTraits(traits);
         }
     };
 
@@ -184,11 +184,7 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         this.getData().$_implements = interfaces || [];
 
         if (interfaces) {
-            var classInst = this.getClass();
-
-            for (var i = 0; i < interfaces.length; i++) {
-                classInst.addInterface(interfaces[i]);
-            }
+            this.getClass().addInterfaces(interfaces);
         }
     };
 
@@ -229,16 +225,6 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
          * @type {string[]}
          */
         classDefinition.$_implements = [];
-
-        /**
-         * Returns all static methods and properties
-         *
-         * @returns {Object}
-         */
-        classDefinition.getStatic = function()
-        {
-            return this.$_class.getStatic();
-        };
 
         /**
          * Checks if current class instance has specified trait

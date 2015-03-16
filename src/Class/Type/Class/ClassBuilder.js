@@ -14,7 +14,7 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     /**
      * Sets static properties and methods of the class
      *
-     * @method setStatic
+     * @method setStaticProperties
      * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
      *
      * @throws {Error}
@@ -41,12 +41,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
      * ...
      *
      * var TestClass = app.getClass("Foo/Bar/TestClass");
-     * var TestClassStatic = TestClass.getStatic();
-     *
-     * var staticProp = TestClassStatic.staticProp;  // "static value"
-     * TestClassStatic.staticMethod();               // alerts "static value"
+     * var staticProp = TestClass.staticProp;  // "static value"
+     * TestClass.staticMethod();               // alerts "static value"
      */
-    ClassBuilder.prototype.setStatic = function(staticProperties)
+    ClassBuilder.prototype.setStaticProperties = function(staticProperties)
     {
         if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
             Subclass.Error.create('InvalidArgument')
@@ -64,12 +62,12 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     /**
      * Returns static properties and methods of the class
      *
-     * @method getStatic
+     * @method getStaticProperties
      * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
      *
      * @returns {Object}
      */
-    ClassBuilder.prototype.getStatic = function()
+    ClassBuilder.prototype.getStaticProperties = function()
     {
         return this.getDefinition().$_static || {};
     };
@@ -95,12 +93,6 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
      * ...
      *
      * // Defining few static properties
-     * builder.setStatic({
-     *     foo: "foo value",
-     *     bar: 100
-     * });
-     *
-     * // Defining static properties one at a time
      * builder
      *     .setStaticProperty("foo", "foo value")
      *     .setStaticProperty("bar", 100)

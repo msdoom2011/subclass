@@ -15,6 +15,10 @@ describe("Registering", function() {
 
             DEFAULT_GOAL: "MyAppGoal",
 
+            getMode: function() {},
+
+            setMode: function(mode) {},
+
             getGoal: function() {},
 
             setGoal: function(goal) {},

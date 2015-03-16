@@ -1,52 +1,56 @@
 describe("Registering", function() {
     it("Abstract/AppAbstractBase", function() {
-        var test = function() {
-            app.registerAbstractClass("Abstract/AppAbstractBase", {
+        app.registerAbstractClass("Abstract/AppAbstractBase", {
 
-                $_implements: ["AppInterface"],
+            $_implements: ["Interface/AppInterface"],
 
-                $_abstract: {
+            $_abstract: {
 
-                    play: function() {},
+                play: function() {},
 
-                    pause: function() {},
+                pause: function() {},
 
-                    stop: function() {}
-                },
+                stop: function() {}
+            },
 
-                _name: null,
+            _mode: null,
 
-                _goal: null,
+            _name: null,
 
-                setName: function (name)
-                {
-                    this._name = name;
-                },
+            _goal: null,
 
-                getName: function ()
-                {
-                    return this._name;
-                },
+            getMode: function()
+            {
+                return this._mode;
+            },
 
-                setGoal: function (goal)
-                {
-                    this._goal = goal;
-                },
+            setName: function (name)
+            {
+                this._name = name;
+            },
 
-                getGoal: function ()
-                {
-                    return this._goal;
-                },
+            getName: function ()
+            {
+                return this._name;
+            },
 
-                execute: function ()
-                {
-                    this.play();
-                    this.pause();
-                    this.play();
-                    this.stop();
-                }
-            });
-        };
-        expect(test).not.toThrow();
+            setGoal: function (goal)
+            {
+                this._goal = goal;
+            },
+
+            getGoal: function ()
+            {
+                return this._goal;
+            },
+
+            execute: function ()
+            {
+                this.play();
+                this.pause();
+                this.play();
+                this.stop();
+            }
+        });
     });
 });

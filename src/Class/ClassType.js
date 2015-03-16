@@ -86,12 +86,12 @@ Subclass.Class.ClassType = (function()
         this._parent = null;
 
         /**
-         * The plain object with class constants
+         * Names of class constants
          *
-         * @type {Object}
+         * @type {Array}
          * @private
          */
-        this._constants = {};
+        this._constants = [];
 
         //
         ///**
@@ -321,21 +321,51 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setConstants = function(constants)
     {
-        this._constants = constants;
+        if (!constants || !Subclass.Tools.isPlainObject(constants)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the constants definition', false)
+                .expected('a plain object')
+                .received(constants)
+                .apply()
+            ;
+        }
+        for (var constantName in constants) {
+            if (constants.hasOwnProperty(constantName)) {
+                this.setConstant(constantName, constants[constantName]);
+            }
+        }
     };
 
     /**
      * Creates the new (or redefines) constant with specified name and value
      *
-     * @param {string} constName
+     * @throws {Error}
+     *      Throws error if specified invalid constant name
+     *
+     * @param {string} constantName
      *      The name of constant
      *
-     * @param {*} constValue
+     * @param {*} constantValue
      *      The value of constant
      */
-    ClassType.prototype.setConstant = function(constName, constValue)
+    ClassType.prototype.setConstant = function(constantName, constantValue)
     {
-        this._constants[constName] = constValue;
+        if (!constantName || typeof constantName != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the name of constant', false)
+                .expected('a string')
+                .received(constantName)
+                .apply()
+            ;
+        }
+        this._constants.push(constantName);
+
+        Object.defineProperty(this.constructor, constantName, {
+            enumerable: true,
+            configurable: true,
+            writable: false,
+            value: constantValue
+        });
     };
 
     /**
@@ -347,14 +377,11 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.getConstants = function(withInherited)
     {
-        var constants = this._constants;
+        var constantNames = this._constants;
+        var constants = {};
 
-        if (withInherited !== true) {
-            withInherited = false;
-        }
-        if (withInherited && this.hasParent()) {
-            var parentConstants = this.getParent().getConstants();
-            constants = Subclass.Tools.extend(parentConstants, constants);
+        for (var i = 0; i < constantNames.length; i++) {
+            constants[constantNames[i]] = this[constantNames[i]];
         }
         return constants;
     };
@@ -564,23 +591,8 @@ Subclass.Class.ClassType = (function()
         var classManager = this.getClassManager();
         var classConstructor = this.getConstructor();
         //var classProperties = this.getProperties(true);
-        var classConstants = this.getConstants();
         var classInstance = new classConstructor();
         var setterName;
-
-        // Attaching constants
-
-        for (var constantName in classConstants) {
-            if (!classConstants.hasOwnProperty(constantName)) {
-                continue;
-            }
-            Object.defineProperty(classInstance, constantName, {
-                enumerable: true,
-                configurable: false,
-                writable: false,
-                value: classConstants[constantName]
-            });
-        }
 
         // Attaching hashed typed properties
 

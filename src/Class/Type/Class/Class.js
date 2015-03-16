@@ -47,6 +47,22 @@ Subclass.Class.Type.Class.Class = (function() {
          * @private
          */
         this._traits = [];
+
+        /**
+         * Names of class static properties
+         *
+         * @type {Array}
+         * @private
+         */
+        this._static = [];
+
+        /**
+         * The context object for static methods
+         *
+         * @type {Object}
+         * @private
+         */
+        this._staticContext = null;
     }
 
     Class.$parent = Subclass.Class.ClassType;
@@ -73,35 +89,6 @@ Subclass.Class.Type.Class.Class = (function() {
     Class.getDefinitionClass = function()
     {
         return Subclass.Class.Type.Class.ClassDefinition;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    Class.prototype.setParent = function (parentClassName)
-    {
-        Class.$parent.prototype.setParent.call(this, parentClassName);
-
-        if (
-            this._parent
-            && this._parent.constructor != Class
-            && this._parent.constructor != Subclass.Class.ClassManager.getClassType('AbstractClass')
-        ) {
-            Subclass.Error.create(
-                'The class "' + this.getName() + '" can be inherited ' +
-                'only from another class or abstract class.'
-            );
-        }
-    };
-
-    /**
-     * Returns class static properties and methods
-     *
-     * @returns {Object}
-     */
-    Class.prototype.getStatic = function()
-    {
-        return this.getDefinition().getStatic();
     };
 
     /**
@@ -167,6 +154,25 @@ Subclass.Class.Type.Class.Class = (function() {
     };
 
     /**
+     * @inheritDoc
+     */
+    Class.prototype.setParent = function (parentClassName)
+    {
+        Class.$parent.prototype.setParent.call(this, parentClassName);
+
+        if (
+            this._parent
+            && this._parent.constructor != Class
+            && this._parent.constructor != Subclass.Class.ClassManager.getClassType('AbstractClass')
+        ) {
+            Subclass.Error.create(
+                'The class "' + this.getName() + '" can be inherited ' +
+                'only from another class or abstract class.'
+            );
+        }
+    };
+
+    /**
      * Checks if current class is instance of another class,
      * has trait or event implements interface with specified class name.
      *
@@ -187,6 +193,126 @@ Subclass.Class.Type.Class.Class = (function() {
     };
 
     /**
+     * Returns class static properties and methods
+     *
+     * @returns {Object}
+     */
+    Class.prototype.getStaticContext = function()
+    {
+        var $this = this;
+
+        if (!this._staticContext) {
+            this._staticContext = {
+
+                /**
+                 * Returns current class declaration instance
+                 *
+                 * @returns {Subclass.Class.ClassType}
+                 */
+                getClass: function()
+                {
+                    return $this;
+                }
+            }
+        }
+        return this._staticContext;
+    };
+
+    /**
+     * Adds static properties
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid static properties definition
+     *
+     * @param {Object} properties
+     */
+    Class.prototype.addStaticProperties = function(properties)
+    {
+        if (!properties || !Subclass.Tools.isPlainObject(properties)) {
+            Subclass.Error.create("InvalidArgument")
+                .argument('the static properties definition', false)
+                .expected('a plain object')
+                .received(properties)
+                .apply()
+            ;
+        }
+        for (var propName in properties) {
+            if (properties.hasOwnProperty(propName)) {
+                this.addStaticProperty(propName, properties[propName]);
+            }
+        }
+    };
+
+    /**
+     * Adds the new static property.<br />
+     *
+     * If the static property value was specified as a function then it will contain
+     * specific static context object with all earlier defined static properties and methods.<br />
+     *
+     * If you'll want call static method with another context, you should use the "origin" property of it.
+     * For example, instead of using expression myClass.staticMethod.call(obj) you should use this:
+     * myClass.staticMethod.<b>origin</b>.call(obj).
+     *
+     * @thorws {Error}
+     *      Throws error if specified invalid static property name
+     *
+     * @param {string} propertyName
+     *      The name of static property
+     *
+     * @param {*} propertyValue
+     *      The value of static property
+     */
+    Class.prototype.addStaticProperty = function(propertyName, propertyValue)
+    {
+        if (!propertyName || typeof propertyName != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the name of static property', false)
+                .expected('a string')
+                .received(propertyName)
+                .apply()
+            ;
+        }
+        var staticContext = this.getStaticContext();
+            staticContext[propertyName] = propertyValue;
+
+        this._static.push(propertyName);
+
+        if (typeof propertyValue == 'function') {
+            this[propertyName] = function() {
+                return staticContext[propertyName].apply(staticContext, arguments);
+            };
+            this[propertyName].origin = propertyValue;
+
+        } else {
+            Object.defineProperty(this, propertyName, {
+                configurable: true,
+                enumerable: true,
+                set: function(value) {
+                    staticContext[propertyName] = value;
+                },
+                get: function() {
+                    return staticContext[propertyName];
+                }
+            });
+        }
+    };
+
+    /**
+     * Returns all defined static class properties
+     *
+     * @returns {Object}
+     */
+    Class.prototype.getStaticProperties = function()
+    {
+        var staticPropertyNames = this._static;
+        var staticProperties = {};
+
+        for (var i = 0; i < staticPropertyNames.length; i++) {
+            staticProperties[staticPropertyNames[i]] = this[staticPropertyNames];
+        }
+    };
+
+    /**
      * Returns all abstract methods
      *
      * @returns {Array}
@@ -204,6 +330,26 @@ Subclass.Class.Type.Class.Class = (function() {
     Class.prototype.addAbstractMethods = function(methods)
     {
         Subclass.Tools.extend(this._abstractMethods, methods);
+    };
+
+    /**
+     * Adds traits
+     *
+     * @param {Object} traits
+     */
+    Class.prototype.addTraits = function(traits)
+    {
+        if (!traits || !Subclass.Tools.isPlainObject(traits)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the traits list', false)
+                .expected('a plain object')
+                .received(traits)
+                .apply()
+            ;
+        }
+        for (var i = 0; i < traits.length; i++) {
+            this.addTrait(traits[i]);
+        }
     };
 
     /**
@@ -234,10 +380,7 @@ Subclass.Class.Type.Class.Class = (function() {
         var classDefinition = this.getDefinition();
 
         if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            Subclass.Error.create('NotExistentMethod')
-                .method('addTrait')
-                .apply()
-            ;
+            Subclass.Error.create('The trait with name "' + traitName + '" already exists.');
         }
         if (!traitName || typeof traitName != 'string') {
             Subclass.Error.create('InvalidArgument')
@@ -321,6 +464,26 @@ Subclass.Class.Type.Class.Class = (function() {
             }
         }
         return false;
+    };
+
+    /**
+     * Adds interfaces
+     *
+     * @param {Object} interfaces
+     */
+    Class.prototype.addInterfaces = function(interfaces)
+    {
+        if (!interfaces || !Subclass.Tools.isPlainObject(interfaces)) {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the traits list', false)
+                .expected('a plain object')
+                .received(interfaces)
+                .apply()
+            ;
+        }
+        for (var i = 0; i < interfaces.length; i++) {
+            this.addInterface(interfaces[i]);
+        }
     };
 
     /**

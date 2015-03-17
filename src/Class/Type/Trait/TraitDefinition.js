@@ -12,7 +12,7 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
         TraitDefinition.$parent.call(this, classInst, classDefinition);
     }
 
-    TraitDefinition.$parent = Subclass.Class.ClassDefinition;
+    TraitDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
     /**
      * Validates "$_abstract" attribute value
@@ -43,19 +43,6 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
     };
 
     /**
-     * Validate "$_static" attribute value
-     *
-     * @param {*} value
-     * @throws {Error}
-     */
-    TraitDefinition.prototype.validateStatic = function(value)
-    {
-        Subclass.Error.create(
-            'You can\'t specify any static properties or methods in trait.'
-        );
-    };
-
-    /**
      * Validates "$_traits" attribute value
      *
      * @param {*} value
@@ -76,9 +63,18 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
     {
         return {
             /**
-             * @type {string} Parent class name
+             * The name of parent class
+             *
+             * @type {string}
              */
-            $_extends: null
+            $_extends: null,
+
+            /**
+             * Static properties and methods for current class constructor
+             *
+             * @type {Object}
+             */
+            $_static: {}
         };
     };
 

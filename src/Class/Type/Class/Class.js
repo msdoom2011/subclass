@@ -128,10 +128,7 @@ Subclass.Class.Type.Class.Class = (function() {
             // Adding parent static methods
 
             if (parent.getStaticProperties) {
-                this._static = Subclass.Tools.extend(
-                    parent.getStaticProperties(),
-                    this._static
-                );
+                this.extendStaticProperties(parent);
             }
         }
 
@@ -315,6 +312,34 @@ Subclass.Class.Type.Class.Class = (function() {
     };
 
     /**
+     * Extends static properties from parent to current class
+     *
+     * @param {Subclass.Class.Type.Class.Class} parentClass
+     *      The parent class declaration instance
+     */
+    Class.prototype.extendStaticProperties = function(parentClass)
+    {
+        var ownStaticPropertyNames = Subclass.Tools.copy(this.getStaticPropertyNames());
+        var ownStaticContext = Subclass.Tools.copy(this.getStaticContext());
+        var parentStaticContext = parentClass.getStaticContext();
+        var parentStaticPropertyNames = parentClass.getStaticPropertyNames();
+        var propName, propValue;
+
+        for (var i = 0; i < parentStaticPropertyNames.length; i++) {
+            propName = parentStaticPropertyNames[i];
+            propValue = parentStaticContext[propName];
+
+            this.addStaticProperty(propName, propValue);
+        }
+        for (i = 0; i < ownStaticPropertyNames.length; i++) {
+            propName = ownStaticPropertyNames[i];
+            propValue = ownStaticContext[propName];
+
+            this.addStaticProperty(propName, propValue);
+        }
+    };
+
+    /**
      * Returns all defined static class properties
      *
      * @returns {Object}
@@ -327,6 +352,16 @@ Subclass.Class.Type.Class.Class = (function() {
         for (var i = 0; i < staticPropertyNames.length; i++) {
             staticProperties[staticPropertyNames[i]] = this[staticPropertyNames];
         }
+    };
+
+    /**
+     * Returns array with names of static class properties
+     *
+     * @returns {Array}
+     */
+    Class.prototype.getStaticPropertyNames = function()
+    {
+        return this._static;
     };
 
     /**
@@ -426,6 +461,10 @@ Subclass.Class.Type.Class.Class = (function() {
         //    var property = traitClassProperties[propName];
         //    this.addProperty(propName, property.getDefinition().getData());
         //}
+
+        // Copying all static properties to current class
+
+        this.extendStaticProperties(traitClass);
 
         // Copying all properties and methods (with inherited) from trait to class definition
 

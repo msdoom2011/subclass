@@ -5,7 +5,7 @@ Subclass.Class.Type.Trait = {};
 
 /**
  * @class
- * @extends {Subclass.Class.ClassType}
+ * @extends {Subclass.Class.Type.Class.Class}
  */
 Subclass.Class.Type.Trait.Trait = (function()
 {
@@ -23,9 +23,15 @@ Subclass.Class.Type.Trait.Trait = (function()
     function Trait(classManager, className, classDefinition)
     {
         Trait.$parent.call(this, classManager, className, classDefinition);
+
+        delete this._abstractMethods;
+        delete this._interfaces;
+        delete this._constants;
+        delete this._created;
+        delete this._traits;
     }
 
-    Trait.$parent = Subclass.Class.ClassType;
+    Trait.$parent = Subclass.Class.Type.Class.Class;
 
     /**
      * @inheritDoc
@@ -54,6 +60,18 @@ Subclass.Class.Type.Trait.Trait = (function()
     /**
      * @inheritDoc
      */
+    Trait.prototype.getConstructorEmpty = function ()
+    {
+        return function Trait() {
+
+            // Hook for the grunt-contrib-uglify plugin
+            return Trait.name;
+        };
+    };
+
+    /**
+     * @inheritDoc
+     */
     Trait.prototype.setParent = function (parentClassName)
     {
         Trait.$parent.prototype.setParent.call(this, parentClassName);
@@ -69,6 +87,48 @@ Subclass.Class.Type.Trait.Trait = (function()
             );
         }
     };
+
+    /**
+     * @inheritDoc
+     */
+    Trait.prototype.createConstructor = function()
+    {
+        return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Trait.prototype.isInstanceOf = function()
+    {
+        return Subclass.Class.ClassType.prototype.isInstanceOf.apply(this, arguments);
+    };
+
+    Trait.prototype.getAbstractMethods = undefined;
+
+    Trait.prototype.addAbstractMethods = undefined;
+
+    Trait.prototype.addTraits = undefined;
+
+    Trait.prototype.getTraits = undefined;
+
+    Trait.prototype.addTrait = undefined;
+
+    Trait.prototype.hasTrait = undefined;
+
+    Trait.prototype.addInterfaces = undefined;
+
+    Trait.prototype.getInterfaces = undefined;
+
+    Trait.prototype.addInterface = undefined;
+
+    Trait.prototype.isImplements = undefined;
+
+    Trait.prototype.setConstants = undefined;
+
+    Trait.prototype.setConstant = undefined;
+
+    Trait.prototype.getConstants = undefined;
     //
     ///**
     // * @inheritDoc
@@ -92,18 +152,6 @@ Subclass.Class.Type.Trait.Trait = (function()
     // * @inheritDoc
     // */
     //Trait.prototype.attachProperties = function() {};
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.getConstructorEmpty = function ()
-    {
-        return function Trait() {
-
-            // Hook for the grunt-contrib-uglify plugin
-            return Trait.name;
-        };
-    };
 
     /**
      * @inheritDoc

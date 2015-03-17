@@ -116,20 +116,28 @@ Subclass.Class.Type.Class.Class = (function() {
         if (this.hasParent()) {
             var parent = this.getParent();
 
+            // Adding parent abstract methods
+
             if (parent.getAbstractMethods) {
                 Subclass.Tools.extend(
                     abstractMethods,
                     parent.getAbstractMethods()
                 );
             }
+
+            // Adding parent static methods
+
+            if (parent.getStaticProperties) {
+                this._static = Subclass.Tools.extend(
+                    parent.getStaticProperties(),
+                    this._static
+                );
+            }
         }
-        if (
-            !Subclass.Class.ClassManager.issetClassType('AbstractClass')
-            || (
-                Subclass.Class.ClassManager.issetClassType('AbstractClass')
-                && this.constructor != Subclass.Class.Type.AbstractClass.AbstractClass
-            )
-        ) {
+
+        // Checking for not implemented methods
+
+        if (this.constructor != Subclass.Class.Type.AbstractClass.AbstractClass) {
             for (var abstractMethodName in abstractMethods) {
                 if (!abstractMethods.hasOwnProperty(abstractMethodName)) {
                     continue;
@@ -141,7 +149,6 @@ Subclass.Class.Type.Class.Class = (function() {
                     notImplementedMethods.push(abstractMethodName);
                 }
             }
-
             if (notImplementedMethods.length) {
                 Subclass.Error.create(
                     'The class "' + this.getName() + '" must be an abstract or implement abstract methods: ' +
@@ -212,6 +219,16 @@ Subclass.Class.Type.Class.Class = (function() {
                 getClass: function()
                 {
                     return $this;
+                },
+
+                /**
+                 * Returns parent of current class
+                 *
+                 * @returns {(Subclass.Class.ClassType|null)}
+                 */
+                getParent: function()
+                {
+                    return $this.getParent();
                 }
             }
         }
@@ -380,7 +397,7 @@ Subclass.Class.Type.Class.Class = (function() {
         var classDefinition = this.getDefinition();
 
         if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            Subclass.Error.create('The trait with name "' + traitName + '" already exists.');
+            return;
         }
         if (!traitName || typeof traitName != 'string') {
             Subclass.Error.create('InvalidArgument')

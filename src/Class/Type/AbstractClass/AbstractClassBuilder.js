@@ -141,5 +141,4 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
     };
 
     return AbstractClassBuilder;
-
 })();

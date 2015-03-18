@@ -1,10 +1,11 @@
 var app;
 
 describe("Creation of", function() {
-    it("Module", function() {
+    it("module 'app'", function() {
         app = Subclass.createModule("app", {
-            rootPath: "tests/app/"
+            rootPath: "tests/app/",
+            files: ["Interface/AppInterfaceBase.js"]
         });
-        expect(app).not.toThrow();
+        expect(Subclass.issetModule('app')).toBe(true);
     });
 });

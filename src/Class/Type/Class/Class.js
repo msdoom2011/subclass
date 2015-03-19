@@ -391,10 +391,10 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.addTraits = function(traits)
     {
-        if (!traits || !Subclass.Tools.isPlainObject(traits)) {
+        if (!traits || !Array.isArray(traits)) {
             Subclass.Error.create('InvalidArgument')
                 .argument('the traits list', false)
-                .expected('a plain object')
+                .expected('an array')
                 .received(traits)
                 .apply()
             ;
@@ -529,10 +529,10 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.addInterfaces = function(interfaces)
     {
-        if (!interfaces || !Subclass.Tools.isPlainObject(interfaces)) {
+        if (!interfaces || !Array.isArray(interfaces)) {
             Subclass.Error.create('InvalidArgument')
                 .argument('the traits list', false)
-                .expected('a plain object')
+                .expected('an array')
                 .received(interfaces)
                 .apply()
             ;

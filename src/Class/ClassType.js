@@ -360,9 +360,9 @@ Subclass.Class.ClassType = (function()
         }
         this._constants.push(constantName);
 
-        Object.defineProperty(this.constructor, constantName, {
+        Object.defineProperty(this, constantName, {
             enumerable: true,
-            configurable: true,
+            configurable: false,
             writable: false,
             value: constantValue
         });

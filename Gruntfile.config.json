@@ -44,8 +44,6 @@
           "<%= config.lib.content.class.dir %>/Type/Interface/**/*.js",
           "<%= config.lib.content.class.dir %>/Type/Trait/Trait.js",
           "<%= config.lib.content.class.dir %>/Type/Trait/**/*.js",
-          "<%= config.lib.content.class.dir %>/Type/Config/Config.js",
-          "<%= config.lib.content.class.dir %>/Type/Config/**/*.js",
           "<%= config.lib.content.class.dir %>/Type/**/*.js",
           "<%= config.lib.content.class.dir %>/**/*.js"
         ]

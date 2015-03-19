@@ -74,7 +74,7 @@ Subclass.Class.Type.Trait.Trait = (function()
      */
     Trait.prototype.setParent = function (parentClassName)
     {
-        Trait.$parent.prototype.setParent.call(this, parentClassName);
+        Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
 
         if (
             this._parent

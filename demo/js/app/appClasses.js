@@ -414,188 +414,188 @@ app.alterClass("AbstractClassBase")
 
 // ====================== CONFIGS =======================
 
-app.registerConfig("ConfigBase", {
+//app.registerConfig("ConfigBase", {
+//
+//    //propString: { type: "string", value: "psix" },
+//    propString: ["string", "psix"],
+//    //
+//    //propMap: {
+//    //    type: "map",
+//    //    schema: {
+//    //
+//    //        propMapString: {
+//    //            type: "string",
+//    //            default: "string value 1"
+//    //        },
+//    //
+//    //        propMapNumber: {
+//    //            type: "number",
+//    //            default: 10
+//    //        },
+//    //
+//    //        propMapObject: {
+//    //            type: "object",
+//    //            default: { key1: "value1" }
+//    //        }
+//    //
+//    //        // ... any property definitions
+//    //    },
+//    //    value: null
+//    //},
+//
+//    propMap: ["map", {
+//        propMapString: ["string", "string value 1"],
+//        propMapNumber: ["number", 10],
+//        propMapObject: ["object", { key1: "value1" }]
+//        // ... any property definitions
+//    }, null],
+//
+//    //propObjectCollection: {
+//    //    type: "objectCollection",
+//    //    proto: {
+//    //        type: "map",
+//    //        schema: {
+//    //            key1: { type: "string" },
+//    //            key2: { type: "string" },
+//    //            key3: { type: "string" }
+//    //        }
+//    //    },
+//    //    value: {
+//    //        itemBase: {
+//    //            key1: "base key 1",
+//    //            key2: "base key 2",
+//    //            key3: "base key 3"
+//    //        }
+//    //    }
+//    //}
+//    propObjectCollection: ["objectCollection", ["map", {
+//            key1: { type: "string" },
+//            key2: { type: "string" },
+//            key3: { type: "string" }
+//        }], {
+//            itemBase: {
+//                key1: "base key 1",
+//                key2: "base key 2",
+//                key3: "base key 3"
+//            }
+//        }
+//    ]
+//});
+//
+//
+//app.registerConfig("ConfigInclude", {
+//
+//    //propNumber: { type: "number", value: 0 },
+//    propNumber: ["number", null],
+//
+//    //propIncluded: { type: "boolean" },
+//    propIncluded: ["boolean"],
+//
+//    //propMap: {
+//    //    type: "map",
+//    //    schema: {
+//    //        propMapExtra: { type: "string", default: "fjdklfjsldfjlsjdfljsdkfl" }
+//    //    }
+//    //},
+//    propMap: ["map", {
+//        propMapExtra: ["string", "fjdklfjsldfjlsjdfljsdkfl"]
+//    }],
+//
+//    //propObject: {
+//    //    type: "object",
+//    //    value: { test: true}
+//    //}
+//    propObject: ["object", { test: true }]
+//});
+//
+//app.registerConfig("ConfigDecorator", {
+//
+//    //propFromDecorator: {
+//    //    type: "string",
+//    //    value: "property from decorator"
+//    //},
+//    propFromDecorator: ["string", "property from decorator"],
+//
+//    //propDecoratorExtra: {
+//    //    type: "boolean"
+//    //}
+//    propDecoratorExtra: ["boolean"]
+//});
+//
+//app.registerConfig("Config", {
+//
+//    $_extends: "ConfigBase",
+//
+//    //$_includes: [
+//    //    "ConfigInclude"
+//    //],
+//    //
+//    //$_decorators: [
+//    //    "ConfigDecorator"
+//    //],
+//
+//    propString: "TEST!!!!!",
+//
+//    propNumber: 1000000000,
+//
+//    //propBoolean: {
+//    //    type: "boolean",
+//    //    value: false
+//    //},
+//    propBoolean: ["boolean", false],
+//
+//    //propFromDecorator: {
+//    //    type: "string",
+//    //    value: "property from config"
+//    //},
+//    propFromDecorator: ["string", "property from config"],
+//
+//    //propArray: { type: "array", value: [] },
+//    propArray: ["array", []],
+//
+//    //propObject: { type: "object", value: { test: "NO!!!!!!" } },
+//    propObject: ["object", { test: "NO!!!!!!" }],
+//
+//    //propFunction: { type: "function", value: function() {} },
+//    propFunction: ["function", function() {}],
+//
+//    //propEnum: {
+//    //    type: "enum",
+//    //    allows: ["value1", "value2", "value3"],  // Allowed types: string|number|boolean
+//    //    value: "value1"                          // If not specified, it will be the first allowed value.
+//    //},
+//    propEnum: ["enum", ["value1", "value2", "value3"], "value1"],  // Allowed types: string|number|boolean
+//
+//    //propMap: {
+//    //    propMapString: "Redefined string!",
+//    //    propMapNumber: 999,
+//    //    propMapObject: { key1: "value redefined!" }
+//    //},
+//    propMap: {
+//        propMapString: "Redefined string!",
+//        propMapNumber: 999,
+//        propMapObject: { key1: "value redefined!" }
+//    },
+//
+//    propObjectCollection: {
+//        item1: {
+//            extends: "itemBase",
+//            key2: "key 2 value",
+//            key3: "key 3 value"
+//        },
+//        item2: {
+//            extends: "item1",
+//            key3: "item 2 value!!!!"
+//        }
+//    }
+//});
+//
+//app.alterClass("Config")
+//    .addInclude("ConfigInclude")
+//    .addDecorator("ConfigDecorator")
+//    .save();
 
-    //propString: { type: "string", value: "psix" },
-    propString: ["string", "psix"],
-    //
-    //propMap: {
-    //    type: "map",
-    //    schema: {
-    //
-    //        propMapString: {
-    //            type: "string",
-    //            default: "string value 1"
-    //        },
-    //
-    //        propMapNumber: {
-    //            type: "number",
-    //            default: 10
-    //        },
-    //
-    //        propMapObject: {
-    //            type: "object",
-    //            default: { key1: "value1" }
-    //        }
-    //
-    //        // ... any property definitions
-    //    },
-    //    value: null
-    //},
-
-    propMap: ["map", {
-        propMapString: ["string", "string value 1"],
-        propMapNumber: ["number", 10],
-        propMapObject: ["object", { key1: "value1" }]
-        // ... any property definitions
-    }, null],
-
-    //propObjectCollection: {
-    //    type: "objectCollection",
-    //    proto: {
-    //        type: "map",
-    //        schema: {
-    //            key1: { type: "string" },
-    //            key2: { type: "string" },
-    //            key3: { type: "string" }
-    //        }
-    //    },
-    //    value: {
-    //        itemBase: {
-    //            key1: "base key 1",
-    //            key2: "base key 2",
-    //            key3: "base key 3"
-    //        }
-    //    }
-    //}
-    propObjectCollection: ["objectCollection", ["map", {
-            key1: { type: "string" },
-            key2: { type: "string" },
-            key3: { type: "string" }
-        }], {
-            itemBase: {
-                key1: "base key 1",
-                key2: "base key 2",
-                key3: "base key 3"
-            }
-        }
-    ]
-});
-
-
-app.registerConfig("ConfigInclude", {
-
-    //propNumber: { type: "number", value: 0 },
-    propNumber: ["number", null],
-
-    //propIncluded: { type: "boolean" },
-    propIncluded: ["boolean"],
-
-    //propMap: {
-    //    type: "map",
-    //    schema: {
-    //        propMapExtra: { type: "string", default: "fjdklfjsldfjlsjdfljsdkfl" }
-    //    }
-    //},
-    propMap: ["map", {
-        propMapExtra: ["string", "fjdklfjsldfjlsjdfljsdkfl"]
-    }],
-
-    //propObject: {
-    //    type: "object",
-    //    value: { test: true}
-    //}
-    propObject: ["object", { test: true }]
-});
-
-app.registerConfig("ConfigDecorator", {
-
-    //propFromDecorator: {
-    //    type: "string",
-    //    value: "property from decorator"
-    //},
-    propFromDecorator: ["string", "property from decorator"],
-
-    //propDecoratorExtra: {
-    //    type: "boolean"
-    //}
-    propDecoratorExtra: ["boolean"]
-});
-
-app.registerConfig("Config", {
-
-    $_extends: "ConfigBase",
-
-    //$_includes: [
-    //    "ConfigInclude"
-    //],
-    //
-    //$_decorators: [
-    //    "ConfigDecorator"
-    //],
-
-    propString: "TEST!!!!!",
-
-    propNumber: 1000000000,
-
-    //propBoolean: {
-    //    type: "boolean",
-    //    value: false
-    //},
-    propBoolean: ["boolean", false],
-
-    //propFromDecorator: {
-    //    type: "string",
-    //    value: "property from config"
-    //},
-    propFromDecorator: ["string", "property from config"],
-
-    //propArray: { type: "array", value: [] },
-    propArray: ["array", []],
-
-    //propObject: { type: "object", value: { test: "NO!!!!!!" } },
-    propObject: ["object", { test: "NO!!!!!!" }],
-
-    //propFunction: { type: "function", value: function() {} },
-    propFunction: ["function", function() {}],
-
-    //propEnum: {
-    //    type: "enum",
-    //    allows: ["value1", "value2", "value3"],  // Allowed types: string|number|boolean
-    //    value: "value1"                          // If not specified, it will be the first allowed value.
-    //},
-    propEnum: ["enum", ["value1", "value2", "value3"], "value1"],  // Allowed types: string|number|boolean
-
-    //propMap: {
-    //    propMapString: "Redefined string!",
-    //    propMapNumber: 999,
-    //    propMapObject: { key1: "value redefined!" }
-    //},
-    propMap: {
-        propMapString: "Redefined string!",
-        propMapNumber: 999,
-        propMapObject: { key1: "value redefined!" }
-    },
-
-    propObjectCollection: {
-        item1: {
-            extends: "itemBase",
-            key2: "key 2 value",
-            key3: "key 3 value"
-        },
-        item2: {
-            extends: "item1",
-            key3: "item 2 value!!!!"
-        }
-    }
-});
-
-app.alterClass("Config")
-    .addInclude("ConfigInclude")
-    .addDecorator("ConfigDecorator")
-    .save();
-
-app.registerService("psix", {
-    className: "Logger/Logger",
-    arguments: ["%mode%"]
-});
+//app.registerService("psix", {
+//    className: "Logger/Logger",
+//    arguments: ["%mode%"]
+//});

@@ -1,16 +1,9 @@
-describe("Registering", function() {
+app.registerInterface("Interface/AppInterfaceBase", {
 
-    it("interface Interface/AppInterfaceBase", function() {
-        app.registerInterface("Interface/AppInterfaceBase", {
+    DEFAULT_NAME: "MyApp",
 
-            DEFAULT_NAME: "MyApp",
+    getName: function() {},
 
-            getName: function() {},
+    setName: function(name) {}
 
-            setName: function(name) {}
-
-        });
-        console.log('jsfdlkfjklsjdfl');
-        expect(app.issetClass("Interface/AppInterfaceBase")).toBe(true);
-    });
 });

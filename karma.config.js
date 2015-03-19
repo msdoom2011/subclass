@@ -37,8 +37,6 @@ module.exports = function(config) {
       "src/Class/Type/Interface/**/*.js",
       "src/Class/Type/Trait/Trait.js",
       "src/Class/Type/Trait/**/*.js",
-      "src/Class/Type/Config/Config.js",
-      "src/Class/Type/Config/**/*.js",
       "src/Class/Type/**/*.js",
       "src/Class/**/*.js",
       "src/Event/Event.js",
@@ -47,7 +45,7 @@ module.exports = function(config) {
 
       // Tests
       "tests/app/app.js",
-      //"tests/app/**/*.js",
+      "tests/app/**/*.js",
       "tests/*.js"
     ],
 
@@ -88,7 +86,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    //browsers: ['Chrome', 'Firefox', 'Safari'],
+    //browsers: ['Chrome'], //, 'Firefox', 'Safari'],
     browsers: ['PhantomJS'],
 
 

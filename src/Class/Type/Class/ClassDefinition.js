@@ -46,7 +46,7 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         this.getData().$_static = value || {};
 
         if (value) {
-            this.getClass().setStaticProperties(value);
+            this.getClass().addStaticProperties(value);
         }
     };
 

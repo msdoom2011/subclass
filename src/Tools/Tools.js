@@ -251,13 +251,14 @@ Subclass.Tools = (function()
             var newObj;
 
             if (
-                typeof arg == 'object'
+                arg
+                && typeof arg == 'object'
                 && (
                     arg.constructor == Object
                     || Array.isArray(arg)
                 )
             ) {
-                newObj = Object.create(Object.getPrototypeOf(arg));
+                newObj = !Array.isArray(arg) ? Object.create(Object.getPrototypeOf(arg)) : [];
                 newObj = this.extendDeep(newObj, arg, true);
 
             } else {

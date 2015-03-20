@@ -245,11 +245,26 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (constants !== null && !Subclass.Tools.isPlainObject(constants)) {
             Subclass.Error.create("InvalidClassOption")
-                .argument('$_constants')
+                .option('$_constants')
+                .className(this.getClass().getName())
                 .received(constants)
-                .expected('a plain object')
+                .expected('a plain object with not function values')
                 .apply()
             ;
+        } else if (constants) {
+            for (var constantName in constants) {
+                if (!constants.hasOwnProperty(constantName)) {
+                    continue;
+                }
+                if (typeof constants[constantName] == 'function') {
+                    Subclass.Error.create("InvalidClassOption")
+                        .option('$_constants')
+                        .className(this.getClass().getName())
+                        .expected('a plain object with not function values')
+                        .apply()
+                    ;
+                }
+            }
         }
     };
 
@@ -420,6 +435,31 @@ Subclass.Class.ClassDefinition = (function()
     };
 
     /**
+     * Returns class to which belongs specified method body
+     *
+     * @param {Function} methodFunc
+     * @returns {(Subclass.Class.ClassType|null)}
+     */
+    ClassDefinition.prototype.getMethodClass = function(methodFunc)
+    {
+        var classInst = this.getData();
+
+        for (var propName in classInst) {
+            if (classInst.hasOwnProperty(propName)) {
+                return this.getClass();
+            }
+        }
+        if (this.getClass().hasParent()) {
+            return this.getClass()
+                .getParent()
+                .getDefinition()
+                .getMethodClass(methodFunc)
+            ;
+        }
+        return null;
+    };
+
+    /**
      * Returns all class properties (except properties which names started from symbols "$_")
      * that are not methods
      *
@@ -522,7 +562,7 @@ Subclass.Class.ClassDefinition = (function()
             /**
              * Class definition closure
              *
-             * @type {ClassType}
+             * @type {Subclass.Class.ClassType}
              */
             $_class: null,
 
@@ -581,7 +621,7 @@ Subclass.Class.ClassDefinition = (function()
              */
             getClass: function()
             {
-                return this._class;
+                return this.$_class;
             },
 
             /**
@@ -629,6 +669,48 @@ Subclass.Class.ClassDefinition = (function()
                     .getParent()
                     .getConstructor()
                     .prototype
+                ;
+            },
+
+            /**
+             *
+             * @param {string} methodName
+             * @param [arguments]
+             */
+            callParent: function (methodName)
+            {
+                var methodFunc = this[methodName];
+
+                if (!methodFunc || typeof methodFunc != 'function') {
+                    Subclass.Error.create(
+                        'Trying to call to non existent method "' + methodName + '" ' +
+                        'in class "' + this.getClass().getName() + '"'
+                    );
+                }
+                var parentClass = this
+                    .getParent()
+                    .getClass()
+                    .getDefinition()
+                    .getMethodClass(this[methodName])
+                ;
+                if (!parentClass) {
+                    Subclass.Error.create(
+                        'Trying to call parent method "' + methodName + '" ' +
+                        'in class "' + this.getClass().getName() + '" which hasn\'t parent'
+                    );
+                }
+                if (methodFunc == parentClass.getDefinition().getData()[methodName]) {
+                    parentClass = parentClass.getParent();
+                }
+                var args = [];
+
+                for (var i = 1; i < arguments.length; i++) {
+                    args.push(arguments[i]);
+                }
+                return parentClass
+                    .getDefinition()
+                    .getData()[methodName]
+                    .apply(this, args)
                 ;
             },
 

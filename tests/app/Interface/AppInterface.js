@@ -9,7 +9,7 @@ app.registerInterface("Interface/AppInterface", {
         MODE_PROD: 2
     },
 
-    DEFAULT_NAME: "App",
+    DEFAULT_NAME: "MyApp",
 
     DEFAULT_GOAL: "MyAppGoal",
 

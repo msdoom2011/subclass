@@ -95,13 +95,12 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
         delete classDefinition.getClassManager;
         delete classDefinition.hasTrait;
         delete classDefinition.isImplements;
-        delete classDefinition.getClassName;
         delete classDefinition.getCopy;
         //delete classDefinition.issetProperty;
         //delete classDefinition.getProperty;
         //delete classDefinition._getDataTypeProperty;
-        delete classDefinition.value;
-        delete classDefinition.result;
+        //delete classDefinition.value;
+        //delete classDefinition.result;
 
         return classDefinition;
     };

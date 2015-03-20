@@ -1,3 +1,19 @@
+
+describe("Checking inheritance of interface", function() {
+
+    it ("Interface/AppInterfaceBase", function() {
+        var AppInterfaceBase = app.getClass('Interface/AppInterfaceBase');
+        expect(AppInterfaceBase.hasParent()).toBe(false);
+        expect(AppInterfaceBase.isInstanceOf('Interface/FalseInterface')).toBe(false);
+    });
+
+    it ("Interface/AppInterface", function() {
+        var AppInterface = app.getClass('Interface/AppInterface');
+        expect(AppInterface.hasParent()).toBe(true);
+        expect(AppInterface.isInstanceOf('Interface/AppInterfaceBase')).toBe(true);
+    });
+});
+
 describe("Checking definition of interface", function() {
 
     function checkMethods(classInst, expectedMethods)
@@ -26,28 +42,29 @@ describe("Checking definition of interface", function() {
         }
     }
 
+    it("Interface/FailInterface", function() {
+        var test = function() {
+            var FailInterface = app.getClass('Interface/FailInterface');
+        };
+        expect(test).toThrow();
+    });
+
     describe("Interface/AppInterfaceBase", function() {
-        var classInst = app.getClass("Interface/AppInterfaceBase");
+        var AppInterfaceBase = app.getClass("Interface/AppInterfaceBase");
 
         it("and correctness of abstract methods", function() {
-            checkMethods(classInst, [
+            checkMethods(AppInterfaceBase, [
                 'getName',
                 'setName'
             ]);
         });
-
-        it("and correctness of constants", function() {
-            checkConstants(classInst, {
-                DEFAULT_NAME: 'MyApp'
-            })
-        });
     });
 
     describe("Interface/AppInterface", function() {
-        var classInst = app.getClass('Interface/AppInterface');
+        var AppInterface = app.getClass('Interface/AppInterface');
 
         it("and correctness of abstract methods", function() {
-            checkMethods(classInst, [
+            checkMethods(AppInterface, [
                 'getName',
                 'setName',
                 'getMode',
@@ -59,12 +76,24 @@ describe("Checking definition of interface", function() {
         });
 
         it ("and correctness of constants", function() {
-            checkConstants(classInst, {
-                DEFAULT_NAME: "App",
+            checkConstants(AppInterface, {
+                DEFAULT_NAME: "MyApp",
                 DEFAULT_GOAL: "MyAppGoal",
                 MODE_DEV: 1,
                 MODE_PROD: 2
             })
+        });
+    });
+
+    describe("Interface/AddonnableInterface", function() {
+        var AddonnableInterface = app.getClass('Interface/AddonnableInterface');
+
+        it("and correctness of abstract methods", function() {
+            checkMethods(AddonnableInterface, [
+                'hasAddons',
+                'getAddons',
+                'addAddon'
+            ]);
         });
     });
 });

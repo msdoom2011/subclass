@@ -119,13 +119,10 @@ Subclass.Class.Type.Class.Class = (function() {
             // Adding parent abstract methods
 
             if (parent.getAbstractMethods) {
-                Subclass.Tools.extend(
-                    abstractMethods,
-                    parent.getAbstractMethods()
-                );
+                this.extendAbstractMethods(parent);
             }
 
-            // Adding parent static methods
+            // Adding parent static properties
 
             if (parent.getStaticProperties) {
                 this.extendStaticProperties(parent);
@@ -384,6 +381,14 @@ Subclass.Class.Type.Class.Class = (function() {
         Subclass.Tools.extend(this._abstractMethods, methods);
     };
 
+    Class.prototype.extendAbstractMethods = function(parentClass)
+    {
+        Subclass.Tools.extend(
+            this.getAbstractMethods(),
+            parentClass.getAbstractMethods()
+        );
+    };
+
     /**
      * Adds traits
      *
@@ -444,6 +449,7 @@ Subclass.Class.Type.Class.Class = (function() {
         }
         var traitClass = this.getClassManager().getClass(traitName);
         var traitClassConstructor = traitClass.getConstructor();
+        var traitClassDefinition = traitClass.getDefinition();
         //var traitClassProperties = traitClass.getProperties();
         var traitProps = {};
 
@@ -465,16 +471,12 @@ Subclass.Class.Type.Class.Class = (function() {
         // Copying all static properties to current class
 
         this.extendStaticProperties(traitClass);
+        this.getTraits().push(traitClass);
 
         // Copying all properties and methods (with inherited) from trait to class definition
 
-        for (var propName in traitClassConstructor.prototype) {
-            if (propName.match(/^\$_/i)) {
-                continue;
-            }
-            traitProps[propName] = traitClassConstructor.prototype[propName];
-        }
-        this.getTraits().push(traitClass);
+        Subclass.Tools.extend(traitProps, traitClassDefinition.getNoMethods(true));
+        Subclass.Tools.extend(traitProps, traitClassDefinition.getMethods(true));
 
         classDefinition.setData(Subclass.Tools.extend(
             traitProps,

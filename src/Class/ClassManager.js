@@ -110,13 +110,15 @@ Subclass.Class.ClassManager = (function()
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function() {
             $this.checkForClones();
+            $this.initializeClasses();
         });
 
         // Checking for classes with the same name in module (and its plug-ins)
         // after the new plug-in module was added
 
-        eventManager.getEvent('onAddPlugin').addListener(function() {
+        eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
             $this.checkForClones();
+            pluginModule.getClassManager().initializeClasses();
         });
     };
 
@@ -209,6 +211,23 @@ Subclass.Class.ClassManager = (function()
         });
 
         return classes;
+    };
+
+    /**
+     * Initializes registered classes
+     *
+     * @method initializeClasses
+     * @memberOf Subclass.Class.ClassManager.prototype
+     */
+    ClassManager.prototype.initializeClasses = function()
+    {
+        var classes = this.getClasses();
+
+        for (var className in classes) {
+            if (classes.hasOwnProperty(className)) {
+                classes[className].getConstructor();
+            }
+        }
     };
 
     /**
@@ -389,6 +408,16 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
+     * Removes registered class
+     *
+     * @param {string} className
+     */
+    ClassManager.prototype.removeClass = function(className)
+    {
+        // @TODO
+    };
+
+    /**
      * Returns the class definition instance
      *
      * @method getClass
@@ -407,13 +436,15 @@ Subclass.Class.ClassManager = (function()
         if (!this.issetClass(className)) {
             Subclass.Error.create('Trying to call to none existed class "' + className + '".');
         }
-        var classInst = this.getClasses()[className];
+        return this.getClasses()[className];
 
-        if (classInst.createConstructorOnGet()) {
-            classInst.getConstructor();
-        }
-
-        return classInst;
+        //var classInst = this.getClasses()[className];
+        //
+        //if (classInst.createConstructorOnGet()) {
+        //    classInst.getConstructor();
+        //}
+        //
+        //return classInst;
     };
 
     /**
@@ -529,6 +560,25 @@ Subclass.Class.ClassManager = (function()
     ClassManager.prototype.alterClass = function(className)
     {
         return this.createClassBuilder(null, className);
+    };
+
+    /**
+     * Registers and returns copy of specified class with specified name
+     *
+     * @param {string} className
+     * @param {string} classNameNew
+     * @returns {Subclass.Class.ClassType}
+     */
+    ClassManager.prototype.copyClass = function(className, classNameNew)
+    {
+        var classInst = this.getClassManager().getClass(className);
+        var classDefinition = classInst.getDefinition().getData();
+
+        return this.getClassManager().addClass(
+            classInst.getType(),
+            className,
+            classDefinition
+        );
     };
 
     /**

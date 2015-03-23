@@ -46,10 +46,13 @@ module.exports = function(config) {
       // Tests
       "tests/app/app.js",
       "tests/app/**/*.js",
-      "tests/Interfaces.js",
-      "tests/Traits.js",
-      "tests/Abstracts.js",
-      "tests/Classes.js"
+      "tests/main.js",
+      "tests/interfaces.js",
+      "tests/traits.js",
+      "tests/abstracts.js",
+      "tests/classes.js",
+      "tests/builder/BuiltInterfaces.js",
+      "tests/builder/BuiltClasses.js"
     ],
 
 

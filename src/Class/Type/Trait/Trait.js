@@ -104,6 +104,22 @@ Subclass.Class.Type.Trait.Trait = (function()
         return Subclass.Class.ClassType.prototype.isInstanceOf.apply(this, arguments);
     };
 
+    /**
+     * @inheritDoc
+     */
+    Trait.prototype.setInstanceCreated = function()
+    {
+        return Subclass.Class.ClassType.prototype.setInstanceCreated.apply(this, arguments);
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Trait.prototype.getParentClasses = function()
+    {
+        return Subclass.Class.ClassType.prototype.getParentClasses.apply(this, arguments);
+    };
+
     Trait.prototype.getAbstractMethods = undefined;
 
     Trait.prototype.addAbstractMethods = undefined;

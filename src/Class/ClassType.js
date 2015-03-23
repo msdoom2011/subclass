@@ -93,6 +93,14 @@ Subclass.Class.ClassType = (function()
          */
         this._constants = [];
 
+        /**
+         * Array with class names of classes which inherit current class
+         *
+         * @type {Array}
+         * @private
+         */
+        this._children = [];
+
         //
         ///**
         // * @type {Object}
@@ -177,6 +185,16 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
+     * Returns name of class type
+     *
+     * @returns {string}
+     */
+    ClassType.prototype.getType = function()
+    {
+        return this.constructor.getClassTypeName();
+    };
+
+    /**
      * Returns class manager instance
      *
      * @returns {Subclass.Class.ClassManager}
@@ -252,6 +270,13 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setDefinition = function(classDefinition)
     {
+        var parentClasses = this.getParentClasses();
+        var classManager = this.getClassManager();
+
+        for (var i = 0; i < parentClasses.length; i++) {
+            var parentClass = classManager.getClass(parentClasses[i]);
+                parentClass.removeChildClass(this.getName());
+        }
         this.constructor.call(
             this,
             this.getClassManager(),
@@ -271,6 +296,126 @@ Subclass.Class.ClassType = (function()
     };
 
     /**
+     * Adds name of child class to current class
+     *
+     * @param {string} className
+     *      The name of class
+     */
+    ClassType.prototype.addChildClass = function(className)
+    {
+        if (!className || typeof className != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the name of child class', false)
+                .expected('a string')
+                .received(className)
+                .apply()
+            ;
+        }
+        if (this._children.indexOf(className) >= 0) {
+            return;
+        }
+        this._children.push(className);
+
+        if (this.hasParent()) {
+            this.getParent().addChildClass(className);
+        }
+    };
+
+    /**
+     * Removes name of child class from current class
+     *
+     * @param {string} className
+     *      The name of class
+     */
+    ClassType.prototype.removeChildClass = function(className)
+    {
+        if (!className || typeof className != 'string') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the name of child class', false)
+                .expected('a string')
+                .received(className)
+                .apply()
+            ;
+        }
+        var classIndex = this._children.indexOf(className);
+
+        if (classIndex >= 0) {
+            this._children.splice(classIndex, 1);
+        }
+        if (this.hasParent()) {
+            this.getParent().removeChildClass(className);
+        }
+    };
+
+    /**
+     * Returns array of children class names which inherits current class
+     *
+     * @param {boolean} [grouping=false]
+     *      Whether the class names should be grouped
+     *
+     * @return {(string[]|Object)}
+     */
+    ClassType.prototype.getChildClasses = function(grouping)
+    {
+        if (grouping !== true) {
+            return this._children;
+        }
+        var classes = {};
+
+        for (var i = 0; i < this._children.length; i++) {
+            var childClassName = this._children[i];
+            var childClassType = this.getClassManager().getClass(this._children[i]).getType();
+
+            if (!classes.hasOwnProperty(childClassType)) {
+                classes[childClassType] = [];
+            }
+            classes[childClassType].push(childClassName);
+        }
+        return classes;
+    };
+
+    /**
+     * Returns chain of parent class names
+     *
+     * @param {boolean} [grouping=false]
+     *      Whether the class names should be grouped
+     *
+     * @returns {(string[]|Object)}
+     */
+    ClassType.prototype.getParentClasses = function(grouping)
+    {
+        var classes = [];
+
+        if (grouping !== true) {
+            grouping = false;
+        }
+        if (grouping) {
+            classes = {};
+        }
+        if (arguments[1] && Array.isArray(arguments[1])) {
+            classes = arguments[1];
+        }
+        if (this.hasParent()) {
+            var parent = this.getParent();
+            var parentName = parent.getName();
+
+            if (grouping) {
+                var parentType = parent.getType();
+
+                if (!classes.hasOwnProperty(parentType)) {
+                    classes[parentType] = [];
+                }
+                classes[parentType].push(parentName);
+
+            } else {
+                classes.push(parentName);
+            }
+            parent.getParentClasses(grouping, classes);
+        }
+        return classes;
+    };
+
+    /**
      * Sets class parent
      *
      * @param {string} parentClassName
@@ -278,9 +423,13 @@ Subclass.Class.ClassType = (function()
     ClassType.prototype.setParent = function (parentClassName)
     {
         if (typeof parentClassName == 'string') {
-            this._parent = this.getClassManager().getClass(parentClassName)
+            this._parent = this.getClassManager().getClass(parentClassName);
+            this._parent.addChildClass(this.getName());
 
         } else if (parentClassName === null) {
+            if (this.hasParent()) {
+                this._parent.removeChildClass(this.getName());
+            }
             this._parent = null;
 
         } else {
@@ -509,7 +658,6 @@ Subclass.Class.ClassType = (function()
 
             this._constructor = this.createConstructor();
         }
-
         return this._constructor;
     };
 
@@ -547,16 +695,16 @@ Subclass.Class.ClassType = (function()
         return classConstructor;
     };
 
-    /**
-     * Returns whether it is needed to create constructor right away
-     * after get class instance by Subclass.Class.ClassManager#getClass method
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.createConstructorOnGet = function()
-    {
-        return true;
-    };
+    ///**
+    // * Returns whether it is needed to create constructor right away
+    // * after get class instance by Subclass.Class.ClassManager#getClass method
+    // *
+    // * @returns {boolean}
+    // */
+    //ClassType.prototype.createConstructorOnGet = function()
+    //{
+    //    return true;
+    //};
     //
     ///**
     // * Creates and attaches class typed properties
@@ -668,6 +816,9 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setInstanceCreated = function()
     {
+        if (this.hasParent()) {
+            this.getParent().setInstanceCreated();
+        }
         this._created = true;
     };
 
@@ -678,7 +829,13 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.wasInstanceCreated = function()
     {
-        return this._created;
+        if (this._created) {
+            return true;
+        }
+        if (this.hasParent()) {
+            return this.wasInstanceCreated();
+        }
+        return false;
     };
 
     /**

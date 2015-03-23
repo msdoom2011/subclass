@@ -157,6 +157,59 @@ Subclass.Class.Type.Class.Class = (function() {
     /**
      * @inheritDoc
      */
+    Class.prototype.getParentClasses = function(grouping)
+    {
+        var classes = Class.$parent.prototype.getParentClasses.apply(this, arguments);
+        var classGroups = [];
+            classGroups.concat(this.getInterfaces());
+            classGroups.concat(this.getTraits());
+
+        if (grouping !== true) {
+            grouping = false;
+        }
+        for (var i = 0; i < classGroups.length; i++) {
+            var classInst = classGroups[i];
+
+            if (typeof classGroups[i] == 'string') {
+                classInst = this.getClassManager().getClass(classGroups[i]);
+            }
+            var className = classInst.getName();
+
+            if (grouping) {
+                var classType = classInst.getType();
+
+                if (!classes.hasOwnProperty(classType)) {
+                    classes[classType] = className;
+                }
+            } else {
+                classes.push(className);
+            }
+        }
+    };
+
+    /**
+     * @inheritDoc
+     */
+    Class.prototype.setInstanceCreated = function()
+    {
+        Class.$parent.prototype.setInstanceCreated.call(this);
+
+        var classNames = [];
+            classNames = classNames.concat(this.getInterfaces());
+            classNames = classNames.concat(this.getTraits());
+
+        for (var i = 0; i < classNames.length; i++) {
+            if (typeof classNames[i] != 'string') {
+                classNames[i] = classNames[i].getName();
+            }
+            var classInst = this.getClassManager().getClass(classNames[i]);
+            classInst.setInstanceCreated();
+        }
+    };
+
+    /**
+     * @inheritDoc
+     */
     Class.prototype.setParent = function (parentClassName)
     {
         Class.$parent.prototype.setParent.call(this, parentClassName);
@@ -417,12 +470,12 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.getTraits = function ()
     {
-        if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            Subclass.Error.create('NotExistentMethod')
-                .method('getTraits')
-                .apply()
-            ;
-        }
+        //if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
+        //    Subclass.Error.create('NotExistentMethod')
+        //        .method('getTraits')
+        //        .apply()
+        //    ;
+        //}
         return this._traits;
     };
 
@@ -436,9 +489,9 @@ Subclass.Class.Type.Class.Class = (function() {
     {
         var classDefinition = this.getDefinition();
 
-        if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            return;
-        }
+        //if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
+        //    return;
+        //}
         if (!traitName || typeof traitName != 'string') {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of trait", false)
@@ -448,10 +501,12 @@ Subclass.Class.Type.Class.Class = (function() {
             ;
         }
         var traitClass = this.getClassManager().getClass(traitName);
-        var traitClassConstructor = traitClass.getConstructor();
+        //var traitClassConstructor = traitClass.getConstructor();
         var traitClassDefinition = traitClass.getDefinition();
         //var traitClassProperties = traitClass.getProperties();
         var traitProps = {};
+
+        traitClass.addChildClass(this.getName());
 
         if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
             Subclass.Error.create(
@@ -493,12 +548,12 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.hasTrait = function (traitName)
     {
-        if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
-            Subclass.Error.create('NotExistentMethod')
-                .method('hasTrait')
-                .apply()
-            ;
-        }
+        //if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
+        //    Subclass.Error.create('NotExistentMethod')
+        //        .method('hasTrait')
+        //        .apply()
+        //    ;
+        //}
         if (!traitName || typeof traitName != "string") {
             Subclass.Error.create('InvalidArgument')
                 .argument('the name of trait', false)
@@ -552,12 +607,12 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.getInterfaces = function ()
     {
-        if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
-            Subclass.Error.create('NotExistentMethod')
-                .method('getInterfaces')
-                .apply()
-            ;
-        }
+        //if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
+        //    Subclass.Error.create('NotExistentMethod')
+        //        .method('getInterfaces')
+        //        .apply()
+        //    ;
+        //}
         return this._interfaces;
     };
 
@@ -569,12 +624,6 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.addInterface = function (interfaceName)
     {
-        if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
-            Subclass.Error.create('NotExistentMethod')
-                .method('addInterface')
-                .apply()
-            ;
-        }
         if (!interfaceName || typeof interfaceName != 'string') {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of interface", false)
@@ -584,6 +633,7 @@ Subclass.Class.Type.Class.Class = (function() {
             ;
         }
         var interfaceClass = this.getClassManager().getClass(interfaceName);
+            interfaceClass.addChildClass(this.getName());
 
         if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
             Subclass.Error.create(
@@ -648,12 +698,12 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     Class.prototype.isImplements = function (interfaceName)
     {
-        if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
-            Subclass.Error.create('NotExistentMethod')
-                .method('isImplements')
-                .apply()
-            ;
-        }
+        //if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
+        //    Subclass.Error.create('NotExistentMethod')
+        //        .method('isImplements')
+        //        .apply()
+        //    ;
+        //}
         if (!interfaceName || typeof interfaceName != 'string') {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of interface", false)

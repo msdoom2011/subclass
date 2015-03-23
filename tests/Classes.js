@@ -27,13 +27,6 @@ describe("Checking inheritance of class", function() {
 
 describe("Checking definition of class", function() {
 
-    it ("Class/FailClass", function() {
-        var test = function() {
-            var classInst = app.getClass('Class/FailClass');
-        };
-        expect(test).toThrow();
-    });
-
     it ("Class/AppClassBase", function() {
         var AppInterfaceBase = app.getClass('Interface/AppInterfaceBase');
         var AppInterface = app.getClass('Interface/AppInterface');

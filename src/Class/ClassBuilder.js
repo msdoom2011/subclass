@@ -117,15 +117,14 @@ Subclass.Class.ClassBuilder = (function()
 
         if (classInst.wasInstanceCreated()) {
             Subclass.Error.create(
-                'Can\'t alter class "' + className + '" because ' +
-                'the one or more it instances was already created.'
+                'Can\'t alter class "' + className + '". ' +
+                'The one or more instances of this class was already created ' +
+                'or was created one or more instance of class for which inherits from current one.'
             );
         }
-
         this.setName(classInst.getName());
         this._setType(classInst.constructor.getClassTypeName());
         this._class = classInst;
-
         this._setDefinition(Subclass.Tools.copy(classDefinition));
 
         return this;
@@ -882,6 +881,25 @@ Subclass.Class.ClassBuilder = (function()
         return this.getClassManager().addClass(
             this.getType(),
             this.getName(),
+            this.getDefinition()
+        );
+    };
+
+    /**
+     * Allows to create copy of class with definition of current class builder
+     *
+     * @param {string} className
+     *      The name of new class
+     *
+     * @returns {Subclass.Class.ClassType}
+     */
+    ClassBuilder.prototype.saveAs = function(className)
+    {
+        this._validate();
+
+        return this.getClassManager().addClass(
+            this.getType(),
+            className,
             this.getDefinition()
         );
     };

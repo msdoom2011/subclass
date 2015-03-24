@@ -878,11 +878,14 @@ Subclass.Class.ClassBuilder = (function()
             this._class.setDefinition(this.getDefinition());
             return this._class;
         }
-        return this.getClassManager().addClass(
+        var classInst = this.getClassManager().addClass(
             this.getType(),
             this.getName(),
             this.getDefinition()
         );
+        classInst.getConstructor();
+
+        return classInst;
     };
 
     /**
@@ -897,11 +900,14 @@ Subclass.Class.ClassBuilder = (function()
     {
         this._validate();
 
-        return this.getClassManager().addClass(
+        var classInst = this.getClassManager().addClass(
             this.getType(),
             className,
             this.getDefinition()
         );
+        classInst.getConstructor();
+
+        return classInst;
     };
 
     return ClassBuilder;

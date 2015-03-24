@@ -112,6 +112,14 @@ Subclass.Class.Type.Trait.Trait = (function()
         return Subclass.Class.ClassType.prototype.setInstanceCreated.apply(this, arguments);
     };
 
+    ///**
+    // * @inheritDoc
+    // */
+    //Trait.prototype.addChildClass = function()
+    //{
+    //    return Subclass.Class.ClassType.prototype.addChildClass.apply(this, arguments);
+    //};
+
     /**
      * @inheritDoc
      */

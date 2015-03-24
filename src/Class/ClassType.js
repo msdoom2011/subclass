@@ -316,6 +316,18 @@ Subclass.Class.ClassType = (function()
         }
         this._children.push(className);
 
+        var classInst = this.getClassManager().getClass(className);
+        var classInstChildren = classInst.getChildClasses();
+
+        for (var i = 0; i < classInstChildren.length; i++) {
+            if (this._children.indexOf(classInstChildren[i]) < 0) {
+                this._children.push(classInstChildren[i]);
+            }
+        }
+
+        if (className == 'Class/AppClassBase') {
+            console.log(this.getName());
+        }
         if (this.hasParent()) {
             this.getParent().addChildClass(className);
         }

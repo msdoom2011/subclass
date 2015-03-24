@@ -1,33 +1,40 @@
 
-
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
-
 describe("Checking inheritance of interface", function() {
 
-    it ("Interface/AppInterfaceBase", function(done) {
-        setTimeout(function() {
-            var AppInterfaceBase = app.getClass('Interface/AppInterfaceBase');
-            expect(AppInterfaceBase.hasParent()).toBe(false);
-            expect(AppInterfaceBase.isInstanceOf('Interface/FalseInterface')).toBe(false);
-            expect(AppInterfaceBase.getChildClasses()).toContain("Interface/AppInterface");
-            expect(AppInterfaceBase.getChildClasses().length).toBe(1);
-            expect(AppInterfaceBase.getParentClasses().length).toBe(0);
+    it ("Interface/AppInterfaceBase", function() {
+        var AppInterfaceBase = app.getClass('Interface/AppInterfaceBase');
+        var parentClasses = AppInterfaceBase.getParentClasses();
+        var childClasses = AppInterfaceBase.getChildClasses();
 
-            console.log(AppInterfaceBase.getChildClasses());
-            app.getClass('Class/AppClass');
-            console.log(AppInterfaceBase.getChildClasses());
-            console.log('--------');
-            done();
-        }, 500);
+        expect(AppInterfaceBase.hasParent()).toBe(false);
+        expect(AppInterfaceBase.isInstanceOf('Interface/FalseInterface')).toBe(false);
+
+        expect(childClasses).toContain("Interface/AppInterface");
+        expect(childClasses).toContain("Abstract/AppAbstractBase");
+        expect(childClasses).toContain("Abstract/AppAbstract");
+        expect(childClasses).toContain("Class/AppClassBase");
+        expect(childClasses).toContain("Class/AppClass");
+
+        expect(childClasses.length).toBe(5);
+        expect(parentClasses.length).toBe(0);
     });
 
     it ("Interface/AppInterface", function() {
         var AppInterface = app.getClass('Interface/AppInterface');
+        var parentClasses = AppInterface.getParentClasses();
+        var childClasses = AppInterface.getChildClasses();
+
         expect(AppInterface.hasParent()).toBe(true);
         expect(AppInterface.isInstanceOf('Interface/AppInterfaceBase')).toBe(true);
-        expect(AppInterface.getChildClasses().length).toBe(0);
-        expect(AppInterface.getParentClasses()).toContain("Interface/AppInterfaceBase");
-        expect(AppInterface.getParentClasses().length).toBe(1);
+
+        expect(childClasses.length).toBe(4);
+        expect(childClasses).toContain("Abstract/AppAbstractBase");
+        expect(childClasses).toContain("Abstract/AppAbstract");
+        expect(childClasses).toContain("Class/AppClassBase");
+        expect(childClasses).toContain("Class/AppClass");
+
+        expect(parentClasses).toContain("Interface/AppInterfaceBase");
+        expect(parentClasses.length).toBe(1);
     });
 
 });

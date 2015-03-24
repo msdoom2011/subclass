@@ -154,15 +154,44 @@ Subclass.Class.Type.Class.Class = (function() {
         return classConstructor;
     };
 
+    ///**
+    // * @inheritDoc
+    // */
+    //Class.prototype.addChildClass = function()
+    //{
+    //    Class.$parent.prototype.addChildClass.apply(this, arguments);
+    //
+    //    var classManager = this.getClassManager();
+    //    var classGroups = [];
+    //
+    //    classGroups.concat(this.getInterfaces());
+    //    classGroups.concat(this.getTraits());
+    //
+    //    for (var i = 0; i < classGroups.length; i++) {
+    //        var classInst = classManager.getClass(classGroups[i]);
+    //
+    //        if (typeof classGroups[i] == 'string') {
+    //            classInst = classManager.getClass(classGroups[i]);
+    //        }
+    //        var className = classInst.getName();
+    //
+    //        if (this._children.indexOf(className) < 0) {
+    //            this._children.push(className);
+    //        }
+    //    }
+    //};
+
     /**
      * @inheritDoc
      */
     Class.prototype.getParentClasses = function(grouping)
     {
         var classes = Class.$parent.prototype.getParentClasses.apply(this, arguments);
+        var classManager = this.getClassManager();
         var classGroups = [];
-            classGroups.concat(this.getInterfaces());
-            classGroups.concat(this.getTraits());
+
+        classGroups.concat(this.getInterfaces());
+        classGroups.concat(this.getTraits());
 
         if (grouping !== true) {
             grouping = false;
@@ -171,7 +200,7 @@ Subclass.Class.Type.Class.Class = (function() {
             var classInst = classGroups[i];
 
             if (typeof classGroups[i] == 'string') {
-                classInst = this.getClassManager().getClass(classGroups[i]);
+                classInst = classManager.getClass(classGroups[i]);
             }
             var className = classInst.getName();
 

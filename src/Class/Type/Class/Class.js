@@ -35,7 +35,7 @@ Subclass.Class.Type.Class.Class = (function() {
         /**
          * List of interfaces class names
          *
-         * @type {String[]}
+         * @type {Array<Subclass.Class.Interface.Interface>}
          * @private
          */
         this._interfaces = [];
@@ -43,7 +43,7 @@ Subclass.Class.Type.Class.Class = (function() {
         /**
          * List of traits class names
          *
-         * @type {String[]}
+         * @type {Array<Subclass.Class.Trait.Trait>}
          * @private
          */
         this._traits = [];
@@ -184,18 +184,19 @@ Subclass.Class.Type.Class.Class = (function() {
     /**
      * @inheritDoc
      */
-    Class.prototype.getParentClasses = function(grouping)
+    Class.prototype.getClassParents = function(grouping)
     {
-        var classes = Class.$parent.prototype.getParentClasses.apply(this, arguments);
+        var classes = Class.$parent.prototype.getClassParents.apply(this, arguments);
         var classManager = this.getClassManager();
         var classGroups = [];
 
-        classGroups.concat(this.getInterfaces());
-        classGroups.concat(this.getTraits());
+        classGroups = classGroups.concat(this.getInterfaces(true));
+        classGroups = classGroups.concat(this.getTraits(true));
 
         if (grouping !== true) {
             grouping = false;
         }
+
         for (var i = 0; i < classGroups.length; i++) {
             var classInst = classGroups[i];
 
@@ -214,27 +215,28 @@ Subclass.Class.Type.Class.Class = (function() {
                 classes.push(className);
             }
         }
+        return classes;
     };
 
-    /**
-     * @inheritDoc
-     */
-    Class.prototype.setInstanceCreated = function()
-    {
-        Class.$parent.prototype.setInstanceCreated.call(this);
-
-        var classNames = [];
-            classNames = classNames.concat(this.getInterfaces());
-            classNames = classNames.concat(this.getTraits());
-
-        for (var i = 0; i < classNames.length; i++) {
-            if (typeof classNames[i] != 'string') {
-                classNames[i] = classNames[i].getName();
-            }
-            var classInst = this.getClassManager().getClass(classNames[i]);
-            classInst.setInstanceCreated();
-        }
-    };
+    ///**
+    // * @inheritDoc
+    // */
+    //Class.prototype.setInstanceCreated = function()
+    //{
+    //    Class.$parent.prototype.setInstanceCreated.call(this);
+    //
+    //    var classNames = [];
+    //        classNames = classNames.concat(this.getInterfaces());
+    //        classNames = classNames.concat(this.getTraits());
+    //
+    //    for (var i = 0; i < classNames.length; i++) {
+    //        if (typeof classNames[i] != 'string') {
+    //            classNames[i] = classNames[i].getName();
+    //        }
+    //        var classInst = this.getClassManager().getClass(classNames[i]);
+    //        classInst.setInstanceCreated();
+    //    }
+    //};
 
     /**
      * @inheritDoc
@@ -494,10 +496,14 @@ Subclass.Class.Type.Class.Class = (function() {
     /**
      * Returns trait names list
      *
-     * @returns {Array}
      * @throws {Error}
+     *
+     * @param {boolean} [withInherited=false]
+     *      Whether the inherited traits should be returned
+     *
+     * @returns {Array<Subclass.Class.Trait.Trait>}
      */
-    Class.prototype.getTraits = function ()
+    Class.prototype.getTraits = function(withInherited)
     {
         //if (!Subclass.Class.ClassManager.issetClassType('Trait')) {
         //    Subclass.Error.create('NotExistentMethod')
@@ -505,7 +511,27 @@ Subclass.Class.Type.Class.Class = (function() {
         //        .apply()
         //    ;
         //}
-        return this._traits;
+        if (withInherited !== true) {
+            return this._traits;
+        }
+        var classManager = this.getClassManager();
+        var traits = Subclass.Tools.copy(this._traits);
+
+        for (var i = 0; i < traits.length; i++) {
+            var traitParents = traits[i].getClassParents();
+
+            for (var j = 0; j < traitParents.length; j++) {
+                traits.push(classManager.getClass(traitParents[j]));
+            }
+        }
+        if (this.hasParent()) {
+            var parent = this.getParent();
+
+            if (parent.getTraits) {
+                traits = traits.concat(parent.getTraits(withInherited))
+            }
+        }
+        return traits;
     };
 
     /**
@@ -631,10 +657,14 @@ Subclass.Class.Type.Class.Class = (function() {
     /**
      * Returns interface names list
      *
-     * @returns {Array}
      * @throws {Error}
+     *
+     * @param {boolean} [withInherited=false]
+     *      Whether the inherited interfaces should be returned
+     *
+     * @returns {Array<Subclass.Class.Interface.Interface>}
      */
-    Class.prototype.getInterfaces = function ()
+    Class.prototype.getInterfaces = function(withInherited)
     {
         //if (!Subclass.Class.ClassManager.issetClassType('Interface')) {
         //    Subclass.Error.create('NotExistentMethod')
@@ -642,7 +672,29 @@ Subclass.Class.Type.Class.Class = (function() {
         //        .apply()
         //    ;
         //}
-        return this._interfaces;
+        //return this._interfaces;
+
+        if (withInherited !== true) {
+            return this._interfaces;
+        }
+        var classManager = this.getClassManager();
+        var interfaces = Subclass.Tools.copy(this._interfaces);
+
+        for (var i = 0; i < interfaces.length; i++) {
+            var interfaceParents = interfaces[i].getClassParents();
+
+            for (var j = 0; j < interfaceParents.length; j++) {
+                interfaces.push(classManager.getClass(interfaceParents[j]));
+            }
+        }
+        if (this.hasParent()) {
+            var parent = this.getParent();
+
+            if (parent.getInterfaces) {
+                interfaces = interfaces.concat(parent.getInterfaces(withInherited))
+            }
+        }
+        return interfaces;
     };
 
     /**
@@ -715,7 +767,8 @@ Subclass.Class.Type.Class.Class = (function() {
             abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
         }
         this.addAbstractMethods(abstractMethods);
-        this.getInterfaces().push(interfaceName);
+        this.getInterfaces().push(interfaceClass);
+        //this.getInterfaces().push(interfaceName);
     };
 
     /**
@@ -749,9 +802,7 @@ Subclass.Class.Type.Class.Class = (function() {
 
         } else {
             for (var i = 0; i < interfaces.length; i++) {
-                var classInst = classManager.getClass(interfaces[i]);
-
-                if (classInst.isInstanceOf(interfaceName)) {
+                if (interfaces[i].isInstanceOf(interfaceName)) {
                     return true;
                 }
             }

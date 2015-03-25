@@ -270,11 +270,11 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setDefinition = function(classDefinition)
     {
-        var parentClasses = this.getParentClasses();
+        var classParents = this.getClassParents();
         var classManager = this.getClassManager();
 
-        for (var i = 0; i < parentClasses.length; i++) {
-            var parentClass = classManager.getClass(parentClasses[i]);
+        for (var i = 0; i < classParents.length; i++) {
+            var parentClass = classManager.getClass(classParents[i]);
                 parentClass.removeChildClass(this.getName());
         }
         this.constructor.call(
@@ -311,26 +311,36 @@ Subclass.Class.ClassType = (function()
                 .apply()
             ;
         }
-        if (this._children.indexOf(className) >= 0) {
+        if (this.hasChild(className)) {
             return;
         }
         this._children.push(className);
 
-        var classInst = this.getClassManager().getClass(className);
-        var classInstChildren = classInst.getChildClasses();
+        var classManager = this.getClassManager();
+        var classInst = classManager.getClass(className);
+        var classInstChildren = classInst.getClassChildren();
+        var classInstParents = classInst.getClassParents();
 
         for (var i = 0; i < classInstChildren.length; i++) {
-            if (this._children.indexOf(classInstChildren[i]) < 0) {
-                this._children.push(classInstChildren[i]);
+            if (!this.hasChild(classInstChildren[i])) {
+                this.addChildClass(classInstChildren[i]);
             }
         }
+        for (i = 0; i < classInstParents.length; i++) {
+            var parentClassInst = classManager.getClass(classInstParents[i]);
+            parentClassInst.addChildClass(className);
+        }
+    };
 
-        if (className == 'Class/AppClassBase') {
-            console.log(this.getName());
-        }
-        if (this.hasParent()) {
-            this.getParent().addChildClass(className);
-        }
+    /**
+     * Checks whether current class has children with specified class name
+     *
+     * @param {string} className
+     * @returns {boolean}
+     */
+    ClassType.prototype.hasChild = function(className)
+    {
+        return this._children.indexOf(className) >= 0;
     };
 
     /**
@@ -367,7 +377,7 @@ Subclass.Class.ClassType = (function()
      *
      * @return {(string[]|Object)}
      */
-    ClassType.prototype.getChildClasses = function(grouping)
+    ClassType.prototype.getClassChildren = function(grouping)
     {
         if (grouping !== true) {
             return this._children;
@@ -394,7 +404,7 @@ Subclass.Class.ClassType = (function()
      *
      * @returns {(string[]|Object)}
      */
-    ClassType.prototype.getParentClasses = function(grouping)
+    ClassType.prototype.getClassParents = function(grouping)
     {
         var classes = [];
 
@@ -422,7 +432,7 @@ Subclass.Class.ClassType = (function()
             } else {
                 classes.push(parentName);
             }
-            parent.getParentClasses(grouping, classes);
+            parent.getClassParents(grouping, classes);
         }
         return classes;
     };
@@ -828,8 +838,11 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setInstanceCreated = function()
     {
-        if (this.hasParent()) {
-            this.getParent().setInstanceCreated();
+        var classManager = this.getClassManager();
+        var classParents = this.getClassParents();
+
+        for (var i = 0; i < classParents.length; i++) {
+            classManager.getClass(classParents[i]).setInstanceCreated();
         }
         this._created = true;
     };

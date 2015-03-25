@@ -123,9 +123,9 @@ Subclass.Class.Type.Trait.Trait = (function()
     /**
      * @inheritDoc
      */
-    Trait.prototype.getParentClasses = function()
+    Trait.prototype.getClassParents = function()
     {
-        return Subclass.Class.ClassType.prototype.getParentClasses.apply(this, arguments);
+        return Subclass.Class.ClassType.prototype.getClassParents.apply(this, arguments);
     };
 
     Trait.prototype.getAbstractMethods = undefined;

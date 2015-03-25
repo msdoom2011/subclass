@@ -263,7 +263,7 @@ Subclass.Class.ClassManager = (function()
                     var subPluginManager = subPlugin.getClassManager();
                     var subPluginLocations = subPluginManager.getClassLocations(className);
 
-                    locations.concat(subPluginLocations);
+                    locations = locations.concat(subPluginLocations);
                 }
             }
         });
@@ -405,16 +405,6 @@ Subclass.Class.ClassManager = (function()
         this.getLoader().setClassLoaded(className);
 
         return classInstance;
-    };
-
-    /**
-     * Removes registered class
-     *
-     * @param {string} className
-     */
-    ClassManager.prototype.removeClass = function(className)
-    {
-        // @TODO
     };
 
     /**

@@ -114,11 +114,8 @@ Subclass.Tools.CheckTools = (function()
 
                 var aArgs = Array.prototype.slice.call(arguments, 1),
                     fToBind = this,
-                    fNOP = function ()
-                    {
-                    },
-                    fBound = function ()
-                    {
+                    fNOP = function() {},
+                    fBound = function() {
                         return fToBind.apply(this instanceof fNOP
                                 ? this
                                 : oThis,

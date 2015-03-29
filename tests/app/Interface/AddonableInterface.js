@@ -1,4 +1,4 @@
-app.registerInterface("Interface/AddonnableInterface", {
+app.registerInterface("Interface/AddonableInterface", {
 
     hasAddons: function() {},
 

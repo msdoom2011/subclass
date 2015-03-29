@@ -2,7 +2,7 @@ app.registerClass("Class/AppClassBase", {
 
     $_extends: "Abstract/AppAbstract",
 
-    $_implements: ['Interface/AddonnableInterface'],
+    $_implements: ['Interface/AddonableInterface'],
 
     $_traits: ['Trait/AppTraitBase'],
 

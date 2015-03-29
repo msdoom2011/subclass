@@ -168,7 +168,7 @@ module.exports = function(grunt) {
         "uglify:release",
         'minimize:release',
         "index:release",
-        "karma:release"
+        //"karma:release"
     ]);
 
     grunt.registerTask("doc", [

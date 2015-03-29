@@ -190,6 +190,13 @@ Subclass.Class.Type.Class.Class = (function() {
         var classManager = this.getClassManager();
         var classGroups = [];
 
+        function addClassName(classes, className)
+        {
+            if (classes.indexOf(className) < 0) {
+                classes.push(className);
+            }
+        }
+
         classGroups = classGroups.concat(this.getInterfaces(true));
         classGroups = classGroups.concat(this.getTraits(true));
 
@@ -209,10 +216,12 @@ Subclass.Class.Type.Class.Class = (function() {
                 var classType = classInst.getType();
 
                 if (!classes.hasOwnProperty(classType)) {
-                    classes[classType] = className;
+                    classes[classType] = [];
                 }
+                addClassName(classes[classType], className);
+
             } else {
-                classes.push(className);
+                addClassName(classes, className);
             }
         }
         return classes;

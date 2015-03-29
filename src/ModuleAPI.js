@@ -116,6 +116,22 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
+     * The same as the {@link Subclass.Class.ClassManager#copyClass}
+     *
+     * @method alterClass
+     * @memberOf Subclass.ModuleAPI.prototype
+     *
+     * @returns {Subclass.Class.ClassType}
+     */
+    ModuleAPI.prototype.copyClass = function()
+    {
+        return this.getModule().getClassManager().copyClass.apply(
+            this.getModule().getClassManager(),
+            arguments
+        );
+    };
+
+    /**
      * The same as the {@link Subclass.Module#onReady}
      *
      * @method onReady

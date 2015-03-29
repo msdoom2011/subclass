@@ -3,25 +3,67 @@ describe("Checking inheritance of class", function() {
 
     it ("Class/AppClassBase", function() {
         var AppClassBase = app.getClass('Class/AppClassBase');
+        var classParents = AppClassBase.getClassParents();
+        var classChildren = AppClassBase.getClassChildren();
 
         expect(AppClassBase.hasParent()).toBe(true);
         expect(AppClassBase.isInstanceOf('Abstract/AppAbstract')).toBe(true);
         expect(AppClassBase.isInstanceOf('Abstract/AppAbstractBase')).toBe(true);
-        expect(AppClassBase.isImplements('Interface/AddonnableInterface')).toBe(true);
+        expect(AppClassBase.isImplements('Interface/AddonableInterface')).toBe(true);
         expect(AppClassBase.isImplements('Interface/AppInterface')).toBe(true);
         expect(AppClassBase.isImplements('Interface/AppInterfaceBase')).toBe(true);
+
+        expect(classParents.length).toBe(7);
+        expect(classParents).toContain('Interface/AppInterfaceBase');
+        expect(classParents).toContain('Interface/AppInterface');
+        expect(classParents).toContain('Interface/AddonableInterface');
+        expect(classParents).toContain('Abstract/AppAbstractBase');
+        expect(classParents).toContain('Abstract/AppAbstract');
+        expect(classParents).toContain('Trait/AppTraitBase');
+        expect(classParents).toContain('Trait/AppTraitForAbstract');
+
+        expect(classChildren.length).toBe(1);
+        expect(classChildren).toContain('Class/AppClass');
     });
 
     it ("Class/AppClass", function() {
         var AppClass = app.getClass('Class/AppClass');
+        var classParents = AppClass.getClassParents();
+        var classChildren = AppClass.getClassChildren();
 
         expect(AppClass.hasParent()).toBe(true);
         expect(AppClass.isInstanceOf('Class/AppClassBase')).toBe(true);
         expect(AppClass.isInstanceOf('Abstract/AppAbstract')).toBe(true);
         expect(AppClass.isInstanceOf('Abstract/AppAbstractBase')).toBe(true);
-        expect(AppClass.isImplements('Interface/AddonnableInterface')).toBe(true);
+        expect(AppClass.isImplements('Interface/AddonableInterface')).toBe(true);
         expect(AppClass.isImplements('Interface/AppInterface')).toBe(true);
         expect(AppClass.isImplements('Interface/AppInterfaceBase')).toBe(true);
+
+        expect(classChildren.length).toBe(0);
+        expect(classParents.length).toBe(9);
+        expect(classParents).toContain('Interface/AppInterfaceBase');
+        expect(classParents).toContain('Interface/AppInterface');
+        expect(classParents).toContain('Interface/AddonableInterface');
+        expect(classParents).toContain('Abstract/AppAbstractBase');
+        expect(classParents).toContain('Abstract/AppAbstract');
+        expect(classParents).toContain('Trait/AppTraitBase');
+        expect(classParents).toContain('Trait/AppTrait');
+        expect(classParents).toContain('Trait/AppTraitForAbstract');
+        expect(classParents).toContain('Class/AppClassBase');
+
+        var classParentsGrouped = AppClass.getClassParents(true);
+        var classParentsGroupedKeys = Object.keys(classParentsGrouped);
+
+        expect(classParentsGroupedKeys.length).toBe(4);
+        expect(classParentsGroupedKeys).toContain('Class');
+        expect(classParentsGroupedKeys).toContain('AbstractClass');
+        expect(classParentsGroupedKeys).toContain('Trait');
+        expect(classParentsGroupedKeys).toContain('Interface');
+
+        expect(classParentsGrouped['Class'].length).toBe(1);
+        expect(classParentsGrouped['AbstractClass'].length).toBe(2);
+        expect(classParentsGrouped['Interface'].length).toBe(3);
+        expect(classParentsGrouped['Trait'].length).toBe(3);
     });
 });
 

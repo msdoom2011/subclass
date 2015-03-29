@@ -408,13 +408,19 @@ Subclass.Class.ClassType = (function()
     {
         var classes = [];
 
+        function addClassName(classes, className)
+        {
+            if (classes.indexOf(className) < 0) {
+                classes.push(className);
+            }
+        }
         if (grouping !== true) {
             grouping = false;
         }
         if (grouping) {
             classes = {};
         }
-        if (arguments[1] && Array.isArray(arguments[1])) {
+        if (arguments[1]) {
             classes = arguments[1];
         }
         if (this.hasParent()) {
@@ -427,13 +433,14 @@ Subclass.Class.ClassType = (function()
                 if (!classes.hasOwnProperty(parentType)) {
                     classes[parentType] = [];
                 }
-                classes[parentType].push(parentName);
+                addClassName(classes[parentType], parentName);
 
             } else {
-                classes.push(parentName);
+                addClassName(classes, parentName);
             }
             parent.getClassParents(grouping, classes);
         }
+
         return classes;
     };
 

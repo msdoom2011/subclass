@@ -394,7 +394,8 @@ Subclass.Class.ClassManager = (function()
         }
         if (this.issetClass(className)) {
             Subclass.Error.create(
-                'Trying to redefine already existed class "' + className + '".'
+                'Trying to define class with already ' +
+                'existed class name "' + className + '".'
             );
         }
 
@@ -520,23 +521,6 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Builds the new class of specified class type.
-     * Creates the class builder instance.
-     *
-     * @method buildClass
-     * @memberOf Subclass.Class.ClassManager.prototype
-     *
-     * @param {string} classType
-     *      The type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassManager.prototype.buildClass = function(classType)
-    {
-        return this.createClassBuilder(classType);
-    };
-
-    /**
      * Modifies existed class definition
      *
      * @method alterClass
@@ -553,22 +537,51 @@ Subclass.Class.ClassManager = (function()
     };
 
     /**
-     * Registers and returns copy of specified class with specified name
+     * Builds the new class of specified class type.
+     * Creates the class builder instance.
+     *
+     * @method buildClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
+     * @param {string} classType
+     *      The type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
      *
      * @param {string} className
+     *      The name of creating class
+     *
+     * @returns {Subclass.Class.ClassBuilder}
+     */
+    ClassManager.prototype.buildClass = function(classType, className)
+    {
+        return this.createClassBuilder(classType, className);
+    };
+
+    /**
+     * Registers and returns copy of specified class with specified name
+     *
+     * @method copyClass
+     * @memberOf Subclass.Class.ClassManager.prototype
+     *
+     * @param {string} className
+     *      The name of source class
+     *
      * @param {string} classNameNew
+     *      The name of new class
+     *
      * @returns {Subclass.Class.ClassType}
      */
     ClassManager.prototype.copyClass = function(className, classNameNew)
     {
-        var classInst = this.getClassManager().getClass(className);
+        var classInst = this.getClass(className);
         var classDefinition = classInst.getDefinition().getData();
-
-        return this.getClassManager().addClass(
+        var replicaInst = this.addClass(
             classInst.getType(),
-            className,
+            classNameNew,
             classDefinition
         );
+        replicaInst.getConstructor();
+
+        return replicaInst;
     };
 
     /**
@@ -596,13 +609,13 @@ Subclass.Class.ClassManager = (function()
         //
         //if (!arguments[2]) {
 
-        if (className && !this.issetClass(className)) {
+        if (!classType && className && !this.issetClass(className)) {
             Subclass.Error.create(
                 'Can\'t alter definition of class "' + className + '". ' +
                 'It does not exists.'
             );
         }
-        if (className) {
+        if (!classType && className) {
             classBuilderConstructor = this.getClass(className).constructor.getBuilderClass();
 
         } else {

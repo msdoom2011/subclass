@@ -17,6 +17,18 @@ describe("Checking inheritance of interface", function() {
 
         expect(classChildren.length).toBe(5);
         expect(classParents.length).toBe(0);
+
+        var classChildrenGrouped = AppInterfaceBase.getClassChildren(true);
+        var classChildrenGroupedKeys = Object.keys(classChildrenGrouped);
+
+        expect(classChildrenGroupedKeys.length).toBe(3);
+        expect(classChildrenGroupedKeys).toContain('Class');
+        expect(classChildrenGroupedKeys).toContain('AbstractClass');
+        expect(classChildrenGroupedKeys).toContain('Interface');
+
+        expect(classChildrenGrouped['Interface'].length).toBe(1);
+        expect(classChildrenGrouped['AbstractClass'].length).toBe(2);
+        expect(classChildrenGrouped['Class'].length).toBe(2);
     });
 
     it ("Interface/AppInterface", function() {
@@ -103,11 +115,11 @@ describe("Checking definition of interface", function() {
         });
     });
 
-    describe("Interface/AddonnableInterface", function() {
-        var AddonnableInterface = app.getClass('Interface/AddonnableInterface');
+    describe("Interface/AddonableInterface", function() {
+        var AddonableInterface = app.getClass('Interface/AddonableInterface');
 
         it("and correctness of abstract methods", function() {
-            checkMethods(AddonnableInterface, [
+            checkMethods(AddonableInterface, [
                 'hasAddons',
                 'getAddons',
                 'addAddon'

@@ -270,6 +270,7 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setDefinition = function(classDefinition)
     {
+        var classChildren = this.getClassChildren();
         var classParents = this.getClassParents();
         var classManager = this.getClassManager();
 
@@ -283,6 +284,8 @@ Subclass.Class.ClassType = (function()
             this.getName(),
             classDefinition
         );
+        this._children = classChildren;
+        this.createConstructor();
     };
 
     /**
@@ -451,6 +454,9 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.setParent = function (parentClassName)
     {
+        if (parentClassName == this.getName()) {
+            Subclass.Tools.create("Trying to set class as the parent for itself.")
+        }
         if (typeof parentClassName == 'string') {
             this._parent = this.getClassManager().getClass(parentClassName);
             this._parent.addChildClass(this.getName());
@@ -673,20 +679,19 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.getConstructor = function ()
     {
-        if (!this._constructor) {
-            var classDefinition = this.getDefinition();
-            var baseClassDefinition = classDefinition.getBaseData();
-
-            classDefinition.normalizeData();
-            classDefinition.setData(Subclass.Tools.extend(
-                baseClassDefinition,
-                classDefinition.getData()
-            ));
-            classDefinition.validateData();
-            classDefinition.processData();
-
-            this._constructor = this.createConstructor();
+        if (!this.isConstructorCreated()) {
+            this.createConstructor();
         }
+        return this._constructor;
+    };
+
+    /**
+     * Checks whether class constructor is created
+     *
+     * @returns {Function}
+     */
+    ClassType.prototype.isConstructorCreated = function()
+    {
         return this._constructor;
     };
 
@@ -697,6 +702,25 @@ Subclass.Class.ClassType = (function()
      */
     ClassType.prototype.createConstructor = function ()
     {
+        if (this.isConstructorCreated()) {
+            return this._constructor;
+        }
+
+        // Processing class definition
+
+        var classDefinition = this.getDefinition();
+        var baseClassDefinition = classDefinition.getBaseData();
+
+        classDefinition.normalizeData();
+        classDefinition.setData(Subclass.Tools.extend(
+            baseClassDefinition,
+            classDefinition.getData()
+        ));
+        classDefinition.validateData();
+        classDefinition.processData();
+
+        // Creating constructor
+
         var classConstructor = this.getConstructorEmpty();
         var parentClass = this.getParent();
 
@@ -721,7 +745,7 @@ Subclass.Class.ClassType = (function()
         classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
         classConstructor.prototype.$_class = this;
 
-        return classConstructor;
+        return this._constructor = classConstructor;
     };
 
     ///**
@@ -865,7 +889,7 @@ Subclass.Class.ClassType = (function()
             return true;
         }
         if (this.hasParent()) {
-            return this.wasInstanceCreated();
+            return this.getParent().wasInstanceCreated();
         }
         return false;
     };

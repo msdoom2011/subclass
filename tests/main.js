@@ -7,6 +7,6 @@ describe("Launching tests", function() {
     it("and setting launch timeout", function(done) {
         setTimeout(function() {
             done();
-        }, 50);
+        }, 100);
     });
 });

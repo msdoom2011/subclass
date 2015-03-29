@@ -284,6 +284,21 @@ Subclass.Class.ClassBuilder = (function()
     {
         return this.getDefinition().$_extends || null;
     };
+
+    /**
+     * Removes class parent
+     *
+     * @method removeParent
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @returns {Subclass.Class.ClassBuilder}
+     */
+    ClassBuilder.prototype.removeParent = function()
+    {
+        delete this.getDefinition().$_extends;
+
+        return this;
+    };
     //
     ///**
     // * Validates the definition of typed class properties

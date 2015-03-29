@@ -280,11 +280,10 @@ app.registerClass("Class3", {
         //    value: 0
         //}
         typedMixed: ["mixed", [
-                ["number"],
-                ["boolean"],
-                { type: "string", pattern: /psix/i }
-            ], 0
-        ]
+            ["number"],
+            ["boolean"],
+            { type: "string", pattern: /psix/i }
+        ], 0]
     },
 
     stop: function() {

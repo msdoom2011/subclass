@@ -225,7 +225,7 @@ Subclass.Class.ClassManager = (function()
 
         for (var className in classes) {
             if (classes.hasOwnProperty(className)) {
-                classes[className].getConstructor();
+                classes[className].createConstructor();
             }
         }
     };
@@ -579,7 +579,7 @@ Subclass.Class.ClassManager = (function()
             classNameNew,
             classDefinition
         );
-        replicaInst.getConstructor();
+        replicaInst.createConstructor();
 
         return replicaInst;
     };

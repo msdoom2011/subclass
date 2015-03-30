@@ -104,7 +104,7 @@ Subclass.LoadManager = (function()
         // Starting load files of plug-in modules after the files
         // of current module (to which the current one instance of load manager belongs) were fully loaded
 
-        eventManager.getEvent('onLoadingEnd').addListener(100, function() {
+        eventManager.getEvent('onLoadingEnd').addListener(100, function(evt) {
             module.getModuleStorage().eachModule(function(module) {
                 if (module != $this.getModule()) {
                     module.getLoadManager().startLoading();

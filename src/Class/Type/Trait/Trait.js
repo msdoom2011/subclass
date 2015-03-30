@@ -14,7 +14,7 @@ Subclass.Class.Type.Trait.Trait = (function()
     /*************************************************/
 
     /**
-     * @param {Subclass.Class.ClassManager} classManager
+     * @param {Subclass.ClassManager} classManager
      * @param {string} className
      * @param {Object} classDefinition
      * @extends {ClassType}
@@ -30,6 +30,8 @@ Subclass.Class.Type.Trait.Trait = (function()
         delete this._created;
         delete this._traits;
     }
+
+    Subclass.Class.ClassType.addStaticMethods.call(Trait);
 
     Trait.$parent = Subclass.Class.Type.Class.Class;
 
@@ -187,7 +189,7 @@ Subclass.Class.Type.Trait.Trait = (function()
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.Class.ClassManager.registerClassType(Trait);
+    Subclass.ClassManager.registerClassType(Trait);
 
     return Trait;
 

@@ -607,7 +607,7 @@ Subclass.Class.ClassDefinition = (function()
             /**
              * Returns class manager instance
              *
-             * @returns {Subclass.Class.ClassManager}
+             * @returns {Subclass.ClassManager}
              */
             getClassManager: function()
             {

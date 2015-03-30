@@ -4,7 +4,7 @@
  * @name Subclass.Event.EventableTrait
  * @extends {Subclass.Event.EventableInterface}
  */
-Subclass.Class.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
+Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
 
     $_properties: {
 

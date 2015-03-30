@@ -14,7 +14,8 @@
         "files_first": [
           "Subclass.js",
           "Module.js",
-          "ModuleAPI.js"
+          "ModuleAPI.js",
+          "ClassManager.js"
         ],
         "files_rest": [
           "*.js"
@@ -31,7 +32,6 @@
       "class": {
         "dir": "Class",
         "files": [
-          "<%= config.lib.content.class.dir %>/ClassManager.js",
           "<%= config.lib.content.class.dir %>/ClassType.js",
           "<%= config.lib.content.class.dir %>/ClassDefinition.js",
           "<%= config.lib.content.class.dir %>/ClassLoader.js",
@@ -67,8 +67,8 @@
       "<%= config.lib.content.main.files_first %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.error.files %>",
-      "<%= config.lib.content.class.files %>",
       "<%= config.lib.content.event.files %>",
+      "<%= config.lib.content.class.files %>",
       "<%= config.lib.content.main.files_rest %>"
     ],
     "files_release": {

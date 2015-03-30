@@ -93,22 +93,16 @@ Subclass.Event.EventableMixin = (function()
      * @param {string} eventName
      *      A name of creating event
      *
-     * @param {Object} [context]
-     *      An any object which link on it will be held
-     *      in "this" variable inside every registered
-     *      listener of current event.
-     *
      * @returns {Subclass.Event.EventableMixin}
      */
-    EventableMixin.prototype.registerEvent = function(eventName, context)
+    EventableMixin.prototype.registerEvent = function(eventName)
     {
-        if (this.issetEvent(eventName, true)) {
+        if (this.issetEvent(eventName)) {
             Subclass.Error.create('Event with name "' + eventName + '" already exists.');
         }
         this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.Event.Event,
-            this,
             eventName,
-            context
+            this
         );
 
         return this;
@@ -145,15 +139,11 @@ Subclass.Event.EventableMixin = (function()
      * @param {string} eventName
      *      The name of interesting event
      *
-     * @param {boolean} [privateEvents]
-     *      Checks whether is event with specified name was registered
-     *      specificly in this module without checking in plug-in modules.
-     *
      * @returns {boolean}
      */
-    EventableMixin.prototype.issetEvent = function(eventName, privateEvents)
+    EventableMixin.prototype.issetEvent = function(eventName)
     {
-        return !!this.getEvents(privateEvents)[eventName];
+        return !!this.getEvents()[eventName];
     };
 
     return EventableMixin;

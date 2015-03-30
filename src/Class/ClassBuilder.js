@@ -12,7 +12,7 @@
  *      - specified invalid or missed the class manager instance
  *      - specified invalid or missed the name of class type
  *
- * @param {Subclass.Class.ClassManager} classManager
+ * @param {Subclass.ClassManager} classManager
  *      The instance of class manager
  *
  * @param {string} [classType]
@@ -25,18 +25,18 @@ Subclass.Class.ClassBuilder = (function()
 {
     function ClassBuilder(classManager, classType, className)
     {
-        if (!classManager || !(classManager instanceof Subclass.Class.ClassManager)) {
+        if (!classManager || !(classManager instanceof Subclass.ClassManager)) {
             Subclass.Error.create('InvalidArgument')
                 .argument('the instance of class manager', false)
                 .received(classManager)
-                .expected('an instance of class "Subclass.Class.ClassManager"')
+                .expected('an instance of class "Subclass.ClassManager"')
                 .apply()
             ;
         }
         /**
          * The class manager instance
          *
-         * @type {Subclass.Class.ClassManager}
+         * @type {Subclass.ClassManager}
          * @private
          */
         this._classManager = classManager;
@@ -92,7 +92,7 @@ Subclass.Class.ClassBuilder = (function()
      * @method getClassManager
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
-     * @returns {Subclass.Class.ClassManager}
+     * @returns {Subclass.ClassManager}
      */
     ClassBuilder.prototype.getClassManager = function()
     {

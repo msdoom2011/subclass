@@ -60,7 +60,7 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Class.ClassManager#getClass}
+     * The same as the {@link Subclass.ClassManager#getClass}
      *
      * @method getClass
      * @memberOf Subclass.ModuleAPI.prototype
@@ -74,7 +74,7 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Class.ClassManager#issetClass}
+     * The same as the {@link Subclass.ClassManager#issetClass}
      *
      * @method issetClass
      * @memberOf Subclass.ModuleAPI.prototype
@@ -88,7 +88,7 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Class.ClassManager#buildClass}
+     * The same as the {@link Subclass.ClassManager#buildClass}
      *
      * @method buildClass
      * @memberOf Subclass.ModuleAPI.prototype
@@ -102,7 +102,7 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Class.ClassManager#alterClass}
+     * The same as the {@link Subclass.ClassManager#alterClass}
      *
      * @method alterClass
      * @memberOf Subclass.ModuleAPI.prototype
@@ -116,7 +116,7 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Class.ClassManager#copyClass}
+     * The same as the {@link Subclass.ClassManager#copyClass}
      *
      * @method alterClass
      * @memberOf Subclass.ModuleAPI.prototype

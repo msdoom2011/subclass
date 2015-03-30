@@ -238,10 +238,10 @@ Subclass.Module = (function()
         /**
          * Class manager instance
          *
-         * @type {Subclass.Class.ClassManager}
+         * @type {Subclass.ClassManager}
          * @private
          */
-        this._classManager = Subclass.Tools.createClassInstance(Subclass.Class.ClassManager, this);
+        this._classManager = Subclass.Tools.createClassInstance(Subclass.ClassManager, this);
         //
         ///**
         // * Service manager instance
@@ -297,7 +297,7 @@ Subclass.Module = (function()
 
         // Calling onReady callback
         eventManager.getEvent('onLoadingEnd')
-            .addListener(1000, function() {
+            .addListener(1000, function(evt) {
                 $this.setReady();
             }
         );
@@ -522,7 +522,7 @@ Subclass.Module = (function()
      * @method getClassManager
      * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.Class.ClassManager}
+     * @returns {Subclass.ClassManager}
      */
     Module.prototype.getClassManager = function()
     {
@@ -774,9 +774,7 @@ Subclass.Module = (function()
                     var module = Subclass.getModule(moduleName).getModule();
                     var moduleEventManager = module.getEventManager();
 
-                    moduleEventManager.getEvent('onLoadingEnd').addListener(function() {
-                        callback();
-                    });
+                    moduleEventManager.getEvent('onLoadingEnd').addListener(callback);
                 }
                 $this.addPlugin(moduleName);
             });
@@ -797,7 +795,7 @@ Subclass.Module = (function()
                 eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
             } else {
                 pluginLoadManager.startLoading();
-                pluginEventManager.getEvent('onLoadingEnd').addListener(100000, function () {
+                pluginEventManager.getEvent('onLoadingEnd').addListener(100000, function (evt) {
                     eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
                 });
             }

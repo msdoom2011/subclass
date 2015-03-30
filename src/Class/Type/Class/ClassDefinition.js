@@ -129,6 +129,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         return this.getData().$_traits;
     };
 
+//==============================================
+//============== INTERFACE START ===============
+//==============================================
+
     /**
      * Validates "$_implements" attribute value
      *
@@ -198,6 +202,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         return this.getData().$_implements;
     };
 
+//==============================================
+//============== INTERFACE END ===============
+//==============================================
+
     /**
      * @inheritDoc
      */
@@ -219,12 +227,20 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
          */
         classDefinition.$_traits = [];
 
+//==============================================
+//============== INTERFACE START ===============
+//==============================================
+
         /**
          * Array of interfaces names
          *
          * @type {string[]}
          */
         classDefinition.$_implements = [];
+
+//==============================================
+//============== INTERFACE END ===============
+//==============================================
 
         /**
          * Checks if current class instance has specified trait
@@ -237,6 +253,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
             return this.$_class.hasTrait(traitName);
         };
 
+//==============================================
+//============== INTERFACE START ===============
+//==============================================
+
         /**
          * Checks if current class implements specified interface
          *
@@ -247,6 +267,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         {
             return this.$_class.isImplements(interfaceName);
         };
+
+//==============================================
+//============== INTERFACE END ===============
+//==============================================
 
         ///**
         // * Returns the property instance based on specified data type.
@@ -354,7 +378,16 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
 
+//==============================================
+//============== INTERFACE START ===============
+//==============================================
+
         var interfaces = this.getImplements();
+
+//==============================================
+//============== INTERFACE END ===============
+//==============================================
+
         var traits = this.getTraits();
 
         // Performing $_traits (Needs to be defined in ClassDefinition)
@@ -365,6 +398,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
             }
         }
 
+//==============================================
+//============== INTERFACE START ===============
+//==============================================
+
         // Performing $_implements (Needs to be defined in ClassDefinition)
 
         if (interfaces && this.validateImplements(interfaces)) {
@@ -372,6 +409,11 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
                 classManager.loadClass(interfaces[i]);
             }
         }
+
+//==============================================
+//============== INTERFACE END ===============
+//==============================================
+
     };
 
     return ClassDefinition;

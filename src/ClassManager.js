@@ -1,19 +1,4 @@
 /**
- * @namespace
- */
-Subclass.Class = {};
-
-/**
- * @namespace
- */
-Subclass.Class.Error = {};
-
-/**
- * @namespace
- */
-Subclass.Class.Type = {};
-
-/**
  * @class
  * @constructor
  * @description
@@ -26,7 +11,7 @@ Subclass.Class.Type = {};
  * @param {Subclass.Module} module
  *      The module instance
  */
-Subclass.Class.ClassManager = (function()
+Subclass.ClassManager = (function()
 {
     function ClassManager(module)
     {
@@ -68,7 +53,7 @@ Subclass.Class.ClassManager = (function()
      * Initializes the class manager
      *
      * @method initialize
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      */
     ClassManager.prototype.initialize = function()
     {
@@ -108,7 +93,7 @@ Subclass.Class.ClassManager = (function()
 
         // Checking for classes with the same name in module (and its plug-ins)
 
-        eventManager.getEvent('onLoadingEnd').addListener(100, function() {
+        eventManager.getEvent('onLoadingEnd').addListener(100, function(evt) {
             $this.checkForClones();
             $this.initializeClasses();
         });
@@ -116,7 +101,7 @@ Subclass.Class.ClassManager = (function()
         // Checking for classes with the same name in module (and its plug-ins)
         // after the new plug-in module was added
 
-        eventManager.getEvent('onAddPlugin').addListener(function(pluginModule) {
+        eventManager.getEvent('onAddPlugin').addListener(function(evt, pluginModule) {
             $this.checkForClones();
             pluginModule.getClassManager().initializeClasses();
         });
@@ -126,7 +111,7 @@ Subclass.Class.ClassManager = (function()
      * Returns the module instance
      *
      * @method getModule
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @returns {Subclass.Module}
      *      The module instance
@@ -140,7 +125,7 @@ Subclass.Class.ClassManager = (function()
      * Returns the instance of class loader
      *
      * @method getLoader
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @returns {Subclass.Class.ClassLoader|*}
      */
@@ -153,7 +138,7 @@ Subclass.Class.ClassManager = (function()
      * Return all registered classes
      *
      * @method getClasses
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {boolean} [privateClasses=false]
      *      If it's true it returns classes only from current module
@@ -217,7 +202,7 @@ Subclass.Class.ClassManager = (function()
      * Initializes registered classes
      *
      * @method initializeClasses
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      */
     ClassManager.prototype.initializeClasses = function()
     {
@@ -238,7 +223,7 @@ Subclass.Class.ClassManager = (function()
      * classes with the same name defined in multiple modules.
      *
      * @method getClassLocations
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
      * @returns {string[]}
@@ -275,7 +260,7 @@ Subclass.Class.ClassManager = (function()
      * The same as the {@link Subclass.Class.ClassLoader#loadClass}
      *
      * @method loadClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      * @alias Subclass.Class.ClassLoader#loadClass
      */
     ClassManager.prototype.loadClass = function()
@@ -289,7 +274,7 @@ Subclass.Class.ClassManager = (function()
      * Creates the instance of class definition
      *
      * @method createClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {Function} classConstructor
      *      Class constructor of specific class type
@@ -346,7 +331,7 @@ Subclass.Class.ClassManager = (function()
      * Adds a new class
      *
      * @method addClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @throws {Error}
      *      Throws error if:
@@ -375,7 +360,7 @@ Subclass.Class.ClassManager = (function()
                 'without specifying class type.'
             );
         }
-        if (!Subclass.Class.ClassManager.issetClassType(classTypeName)) {
+        if (!Subclass.ClassManager.issetClassType(classTypeName)) {
             Subclass.Error.create(
                 'Trying to register the class "' + className + '" ' +
                 'of unknown class type "' + classTypeName + '".'
@@ -399,7 +384,7 @@ Subclass.Class.ClassManager = (function()
             );
         }
 
-        var classTypeConstructor = Subclass.Class.ClassManager.getClassType(classTypeName);
+        var classTypeConstructor = Subclass.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
 
         this._classes[className] = classInstance;
@@ -412,7 +397,7 @@ Subclass.Class.ClassManager = (function()
      * Returns the class definition instance
      *
      * @method getClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @throws {Error}
      *      Throws error if trying to get non existent class definition instance
@@ -442,7 +427,7 @@ Subclass.Class.ClassManager = (function()
      * Checks if class with specified name was ever registered
      *
      * @method issetClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
      *      The name of needed class
@@ -467,7 +452,7 @@ Subclass.Class.ClassManager = (function()
      * Validates whether there are classes with the same names in the module and its plug-ins
      *
      * @method checkForClones
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @throws {Error}
      *      Throws error if definition multiple definition of class with the same name
@@ -511,7 +496,7 @@ Subclass.Class.ClassManager = (function()
      * Checks whether class manager contains any class
      *
      * @method isEmpty
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @returns {boolean}
      */
@@ -524,7 +509,7 @@ Subclass.Class.ClassManager = (function()
      * Modifies existed class definition
      *
      * @method alterClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
      *      The name of class
@@ -541,7 +526,7 @@ Subclass.Class.ClassManager = (function()
      * Creates the class builder instance.
      *
      * @method buildClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} classType
      *      The type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
@@ -560,7 +545,7 @@ Subclass.Class.ClassManager = (function()
      * Registers and returns copy of specified class with specified name
      *
      * @method copyClass
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
      *      The name of source class
@@ -588,7 +573,7 @@ Subclass.Class.ClassManager = (function()
      * Creates the instance of class builder
      *
      * @method createClassBuilder
-     * @memberOf Subclass.Class.ClassManager.prototype
+     * @memberOf Subclass.ClassManager.prototype
      *
      * @throws {Error}
      *      Throws error if it was specified the name of class
@@ -619,7 +604,7 @@ Subclass.Class.ClassManager = (function()
             classBuilderConstructor = this.getClass(className).constructor.getBuilderClass();
 
         } else {
-            classBuilderConstructor = Subclass.Class.ClassManager
+            classBuilderConstructor = Subclass.ClassManager
                 .getClassType(classType)
                 .getBuilderClass()
             ;
@@ -687,7 +672,7 @@ Subclass.Class.ClassManager = (function()
      * Returns all registered default classes
      *
      * @method getClasses
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @returns {Object.<Object>}
      */
@@ -701,7 +686,7 @@ Subclass.Class.ClassManager = (function()
      * The classes registered by this way will be available in every created module.
      *
      * @method registerClass
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @throws {Error}
      *      Throws error if trying to redefine already existent class
@@ -732,7 +717,7 @@ Subclass.Class.ClassManager = (function()
      * It performs checking only in the common registered classes.
      *
      * @method issetClass
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @param {string} className
      *      The name of class
@@ -756,7 +741,7 @@ Subclass.Class.ClassManager = (function()
      * Registers the new class type
      *
      * @method registerClassType
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @param {Function} classTypeConstructor
      *      The constructor of registering class type factory
@@ -787,7 +772,7 @@ Subclass.Class.ClassManager = (function()
      * Returns the class type factory constructor
      *
      * @method getClassType
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @throws {Error}
      *      Throws error if trying to get constructor
@@ -810,7 +795,7 @@ Subclass.Class.ClassManager = (function()
      * Checks if exists specified class type
      *
      * @method issetClassType
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @param {string} classTypeName
      *      The name of class type
@@ -826,7 +811,7 @@ Subclass.Class.ClassManager = (function()
      * Returns names of all registered class types
      *
      * @method getClassType
-     * @memberOf Subclass.Class.ClassManager
+     * @memberOf Subclass.ClassManager
      *
      * @returns {Array.<string>}
      */

@@ -16,7 +16,7 @@ Subclass.Tools.CheckTools = (function()
          */
         buildClassConstructor: function(constructor)
         {
-            var constructorProto;
+            var constructorProto = {};
 
             if (constructor.$parent) {
                 var parentConstructor = this.buildClassConstructor(constructor.$parent);
@@ -30,29 +30,23 @@ Subclass.Tools.CheckTools = (function()
                         );
                     }
                 }
-                constructorProto = Subclass.Tools.extend(
-                    constructorProto,
-                    constructor.prototype
-                );
-                constructor.prototype = constructorProto;
-
-                Object.defineProperty(constructor.prototype, "constructor", {
-                    enumerable: false,
-                    configurable: true,
-                    value: constructor
-                });
-
             } else if (constructor.$mixins) {
-                constructorProto = {};
-
                 for (var j = 0; j < constructor.$mixins.length; j++) {
                     Subclass.Tools.extend(constructorProto, constructor.$mixins[j].prototype);
                 }
-                constructor.prototype = Subclass.Tools.extend(
-                    constructorProto,
-                    constructor.prototype
-                );
             }
+
+            constructor.prototype = Subclass.Tools.extend(
+                constructorProto,
+                constructor.prototype
+            );
+
+            Object.defineProperty(constructor.prototype, "constructor", {
+                enumerable: false,
+                configurable: true,
+                value: constructor
+            });
+
             return constructor;
         },
 
@@ -86,15 +80,22 @@ Subclass.Tools.CheckTools = (function()
             constructor = this.buildClassConstructor(constructor);
             var properties = getPropertiesFromMixins(constructor);
             var instance = new (constructor.bind.apply(constructor, arguments))();
-            var instanceProperties = {};
 
-            for (var propName in instance) {
-                if (instance.hasOwnProperty(propName)) {
-                    instanceProperties[propName] = instance[propName];
+            ===============================!!!!!!!!
+
+            if (instance.getType) {
+                console.log(instance.getName());
+                console.log(instance instanceof Subclass.Class.ClassType);
+                console.log('----------');
+            }
+
+            //var instanceProperties = {};
+
+            for (var propName in properties) {
+                if (properties.hasOwnProperty(propName) && !instance.hasOwnProperty(propName)) {
+                    instance[propName] = properties[propName];
                 }
             }
-            Subclass.Tools.extend(instanceProperties, properties);
-            Subclass.Tools.extend(instance, instanceProperties);
 
             return instance;
         }

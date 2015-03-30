@@ -172,7 +172,7 @@ Subclass.ModuleEvent = function()
      * @param [arguments]
      *      Any number of any needed arguments
      *
-     * @returns {Subclass.Event.Event}
+     * @returns {Subclass.Event.EventData}
      */
     ModuleEvent.prototype.triggerPrivate = function()
     {

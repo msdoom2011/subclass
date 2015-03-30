@@ -14,7 +14,7 @@ Subclass.Class.Type.Interface.Interface = (function()
     /*************************************************/
 
     /**
-     * @param {Subclass.Class.ClassManager} classManager
+     * @param {Subclass.ClassManager} classManager
      * @param {string} className
      * @param {Object} classDefinition
      * @extends {ClassType}
@@ -24,6 +24,8 @@ Subclass.Class.Type.Interface.Interface = (function()
     {
         Interface.$parent.call(this, classManager, className, classDefinition);
     }
+
+    Subclass.Class.ClassType.addStaticMethods.call(Interface);
 
     Interface.$parent = Subclass.Class.ClassType;
 
@@ -112,7 +114,7 @@ Subclass.Class.Type.Interface.Interface = (function()
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.Class.ClassManager.registerClassType(Interface);
+    Subclass.ClassManager.registerClassType(Interface);
 
     return Interface;
 

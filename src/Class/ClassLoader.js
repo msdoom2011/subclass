@@ -5,18 +5,18 @@
  * @throws {Error}
  *      Throws error if specified invalid instance of class manager
  *
- * @param {Subclass.Class.ClassManager} classManager
+ * @param {Subclass.ClassManager} classManager
  *      The instance of class manager
  */
 Subclass.Class.ClassLoader = (function()
 {
     function ClassLoader(classManager)
     {
-        if (!classManager || !(classManager instanceof Subclass.Class.ClassManager)) {
+        if (!classManager || !(classManager instanceof Subclass.ClassManager)) {
             Subclass.Error.create('InvalidArgument')
                 .argument('the class manager instance', false)
                 .received(classManager)
-                .expected('an instance of Subclass.Class.ClassManager class')
+                .expected('an instance of Subclass.ClassManager class')
                 .apply()
             ;
         }
@@ -24,7 +24,7 @@ Subclass.Class.ClassLoader = (function()
         /**
          * The instance of class manager
          *
-         * @type {Subclass.Class.ClassManager}
+         * @type {Subclass.ClassManager}
          */
         this._classManager = classManager;
 
@@ -36,7 +36,7 @@ Subclass.Class.ClassLoader = (function()
         // Removing from load stack all files of classes which are already loaded
 
         eventManager.getEvent('onAddToLoadStack')
-            .addListener(function(fileName, callback) {
+            .addListener(function(evt, fileName, callback) {
                 var className = fileName.replace(/\.js$/, '');
 
                 if (classManager.issetClass(className)) {
@@ -48,7 +48,7 @@ Subclass.Class.ClassLoader = (function()
         // Removing from load stack process all files of classes which are already loaded
 
         eventManager.getEvent('onProcessLoadStack')
-            .addListener(function(stackItems) {
+            .addListener(function(evt, stackItems) {
                 for (var i = 0; i < stackItems.length; i++) {
                     var fileName = stackItems[i].file;
                     var className = fileName.replace(/\.js$/, '');
@@ -67,7 +67,7 @@ Subclass.Class.ClassLoader = (function()
      * @method getClassManager
      * @memberOf Subclass.Class.ClassLoader.prototype
      *
-     * @returns {Subclass.Class.ClassManager}
+     * @returns {Subclass.ClassManager}
      */
     ClassLoader.prototype.getClassManager = function()
     {

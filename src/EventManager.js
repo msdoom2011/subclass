@@ -75,7 +75,7 @@ Subclass.EventManager = function()
     /**
     * @inheritDoc
     */
-    EventManager.prototype.registerEvent = function(eventName, context)
+    EventManager.prototype.registerEvent = function(eventName)
     {
         if (this.issetEvent(eventName, true)) {
             Subclass.Error.create('Event with name "' + eventName + '" already exists.');
@@ -83,10 +83,30 @@ Subclass.EventManager = function()
         this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.ModuleEvent,
             this,
             eventName,
-            context
+            this.getModule()
         );
 
         return this;
+    };
+
+    /**
+     * Checks whether event with specified name was registered
+     *
+     * @method issetEvent
+     * @memberOf Subclass.Event.EventableMixin.prototype
+     *
+     * @param {string} eventName
+     *      The name of interesting event
+     *
+     * @param {boolean} [privateEvents]
+     *      Checks whether is event with specified name was registered
+     *      specificly in this module without checking in plug-in modules.
+     *
+     * @returns {boolean}
+     */
+    EventManager.prototype.issetEvent = function(eventName, privateEvents)
+    {
+        return !!this.getEvents(privateEvents)[eventName];
     };
 
     return EventManager;

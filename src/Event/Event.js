@@ -35,7 +35,7 @@ Subclass.Event.Event = (function()
     {
         if (!eventName || typeof eventName != 'string') {
             Subclass.Error.create('InvalidArgument')
-                .argument("the name of event", false)
+                .argument("the event name", false)
                 .received(eventName)
                 .expected('a string')
                 .apply()
@@ -228,7 +228,7 @@ Subclass.Event.Event = (function()
      * @param [arguments]
      *      Any number of any needed arguments
      *
-     * @returns {Subclass.Event.Event}
+     * @returns {Subclass.Event.EventData}
      */
     Event.prototype.trigger = function()
     {
@@ -248,13 +248,14 @@ Subclass.Event.Event = (function()
      * @param {Array} listenerArgs
      *      Arguments which will be transferred to each even listener callback function
      *
-     * @returns {Subclass.Event.Event}
+     * @returns {Subclass.Event.EventData}
      * @private
      * @ignore
      */
     Event.prototype._processTrigger = function(listeners, listenerArgs)
     {
         var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
+        var eventData = new Subclass.Event.EventData(this, this.getContext());
         var priorities = [];
 
         // Preparing event listeners
@@ -286,8 +287,18 @@ Subclass.Event.Event = (function()
 
                 if (!listener[uniqueFieldName] && listener.getPriority() == priorities[i]) {
                     listener[uniqueFieldName] = true;
+                    var args = [eventData];
 
-                    if (listener.getCallback().apply(listener, listenerArgs) === false) {
+                    for (var k = 0; k < listenerArgs.length; k++) {
+                        args.push(listenerArgs[k]);
+                    }
+                    var result = listener.getCallback().apply(
+                        listener,
+                        args
+                    );
+                    eventData.addResult(result);
+
+                    if (eventData.isPropagationStopped()) {
                         break;
                     }
                 }
@@ -301,7 +312,7 @@ Subclass.Event.Event = (function()
             delete listener[uniqueFieldName];
         }
 
-        return this;
+        return eventData;
     };
 
     return Event;

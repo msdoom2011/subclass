@@ -240,6 +240,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
         return this.getDefinition().$_traits || [];
     };
 
+//==============================================
+//============== INTERFACE START ===============
+//==============================================
+
     /**
      * Validates list of interfaces
      *
@@ -338,6 +342,10 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     {
         return this.getDefinition().$_implements || [];
     };
+
+//==============================================
+//============== INTERFACE END ===============
+//==============================================
 
     return ClassBuilder;
 

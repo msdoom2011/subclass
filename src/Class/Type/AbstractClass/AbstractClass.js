@@ -14,7 +14,7 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
     /*************************************************/
 
     /**
-     * @param {Subclass.Class.ClassManager} classManager
+     * @param {Subclass.ClassManager} classManager
      * @param {string} className
      * @param {Object} classDefinition
      * @extends {Class}
@@ -24,6 +24,8 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
     {
         AbstractClass.$parent.call(this, classManager, className, classDefinition);
     }
+
+    Subclass.Class.ClassType.addStaticMethods.call(AbstractClass);
 
     /**
      * @type {Subclass.Class.Type.Class.Class}
@@ -96,7 +98,7 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.Class.ClassManager.registerClassType(AbstractClass);
+    Subclass.ClassManager.registerClassType(AbstractClass);
 
     return AbstractClass;
 

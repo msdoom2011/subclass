@@ -38,46 +38,6 @@ Subclass.Event.EventableMixin = (function()
         return this._events;
     };
 
-    ///**
-    // * Returns all registered services
-    // *
-    // * @method getEvents
-    // * @memberOf Subclass.Event.EventableMixin.prototype
-    // *
-    // * @param {boolean} [privateEvents=false]
-    // *      If passed true it returns events only from current module
-    // *      without events from it plug-in modules .
-    // *
-    // * @returns {Object.<Subclass.Event.Event>}
-    // */
-    //EventableMixin.prototype.getEvents = function(privateEvents)
-    //{
-    //    var mainModule = this.getModule();
-    //    var moduleStorage = mainModule.getModuleStorage();
-    //    var events = {};
-    //    var $this = this;
-    //
-    //    if (privateEvents !== true) {
-    //        privateEvents = false;
-    //    }
-    //    if (privateEvents) {
-    //        return this._events;
-    //    }
-    //
-    //    moduleStorage.eachModule(true, function(module) {
-    //        if (module == mainModule) {
-    //            Subclass.Tools.extend(events, $this._events);
-    //            return;
-    //        }
-    //        var moduleEventManager = module.getEventManager();
-    //        var moduleEvents = moduleEventManager.getEvents();
-    //
-    //        Subclass.Tools.extend(events, moduleEvents);
-    //    });
-    //
-    //    return events;
-    //};
-
     /**
      * Registers new event with specified name.<br />
      * It's required step for further using every event.<br /><br />

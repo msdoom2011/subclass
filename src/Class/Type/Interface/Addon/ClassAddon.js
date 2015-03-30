@@ -24,7 +24,7 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
 
         // Defining interfaces storage
 
-        classInst.getEvent('onCreate').addListener(function(evt)
+        classInst.getEvent('onClassInit').addListener(function(evt)
         {
             /**
              * List of interfaces class names
@@ -47,7 +47,6 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
                     classes.push(className);
                 }
             }
-
             for (var i = 0; i < interfaces.length; i++) {
                 var classInst = interfaces[i];
                 var className = classInst.getName();
@@ -115,14 +114,6 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
      */
     Class.prototype.getInterfaces = function(withInherited)
     {
-        //if (!Subclass.ClassManager.issetClassType('Interface')) {
-        //    Subclass.Error.create('NotExistentMethod')
-        //        .method('getInterfaces')
-        //        .apply()
-        //    ;
-        //}
-        //return this._interfaces;
-
         if (withInherited !== true) {
             return this._interfaces;
         }
@@ -229,12 +220,6 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
      */
     Class.prototype.isImplements = function (interfaceName)
     {
-        //if (!Subclass.ClassManager.issetClassType('Interface')) {
-        //    Subclass.Error.create('NotExistentMethod')
-        //        .method('isImplements')
-        //        .apply()
-        //    ;
-        //}
         if (!interfaceName || typeof interfaceName != 'string') {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of interface", false)
@@ -243,17 +228,11 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
                 .apply()
             ;
         }
-        //var classManager = this.getClassManager();
         var interfaces = this.getInterfaces();
 
-        if (interfaces && interfaces.indexOf(interfaceName) >= 0) {
-            return true;
-
-        } else {
-            for (var i = 0; i < interfaces.length; i++) {
-                if (interfaces[i].isInstanceOf(interfaceName)) {
-                    return true;
-                }
+        for (var i = 0; i < interfaces.length; i++) {
+            if (interfaces[i].isInstanceOf(interfaceName)) {
+                return true;
             }
         }
         if (this.hasParent()) {
@@ -266,7 +245,16 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
         return false;
     };
 
+    // Registering addon for Class class type
+
     Class.registerAddon(ClassAddon);
+
+    // Registering addon for AbstractClass class type
+
+    if (Subclass.ClassManager.issetClassType('AbstractClass')) {
+        var AbstractClass = Subclass.Class.Type.AbstractClass.AbstractClass;
+        AbstractClass.registerAddon(ClassAddon);
+    }
 
     return ClassAddon;
 }();

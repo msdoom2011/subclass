@@ -135,7 +135,7 @@ Subclass.Class.ClassType = function()
         this._events = [];
 
         this
-            .registerEvent("onInitialize")
+            .registerEvent("onClassInit")
             .registerEvent("onCreateBefore")
             .registerEvent("onCreate")
             .registerEvent("onCreateAfter")
@@ -262,7 +262,7 @@ Subclass.Class.ClassType = function()
         for (var i = 0; i < addons.length; i++) {
             addons[i].initialize(this);
         }
-        this.getEvent('onInitialize').trigger();
+        this.getEvent('onClassInit').trigger();
 
         var classDefinition = this.getDefinition();
             classDefinition.processRelatedClasses();
@@ -1014,13 +1014,14 @@ Subclass.Class.ClassType = function()
         }
         if (this.getName() == className) {
             result = true;
-        }
-        if (this.hasParent()) {
+
+        } else if (this.hasParent()) {
             result = this.getParent().isInstanceOf(className);
         }
         if (result) {
             return true;
         }
+
         var evt = this.getEvent('onIsInstanceOf').trigger(className);
 
         return !!evt.getLastResult();

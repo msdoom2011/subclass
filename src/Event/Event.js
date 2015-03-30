@@ -293,7 +293,7 @@ Subclass.Event.Event = (function()
                         args.push(listenerArgs[k]);
                     }
                     var result = listener.getCallback().apply(
-                        listener,
+                        this.getContext(),
                         args
                     );
                     eventData.addResult(result);

@@ -244,7 +244,7 @@ Subclass.Class.Type.Class.Class = (function() {
      *
      * @inheritDoc
      */
-    Class.prototype.isInstanceOf = function (className)
+    Class.prototype.isInstanceOf = function(className)
     {
         return ((
                 Class.$parent.prototype.isInstanceOf.call(this, className)

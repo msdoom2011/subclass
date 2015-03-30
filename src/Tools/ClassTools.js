@@ -16,8 +16,14 @@ Subclass.Tools.CheckTools = (function()
          */
         buildClassConstructor: function(constructor)
         {
-            var constructorProto = {};
+            var constructorProto = constructor.prototype;
+            var constructorProtoCopy = {};
 
+            for (var propName in constructorProto) {
+                if (constructorProto.hasOwnProperty(propName)) {
+                    constructorProtoCopy[propName] = constructorProto[propName];
+                }
+            }
             if (constructor.$parent) {
                 var parentConstructor = this.buildClassConstructor(constructor.$parent);
                 constructorProto = Object.create(parentConstructor.prototype);
@@ -35,10 +41,9 @@ Subclass.Tools.CheckTools = (function()
                     Subclass.Tools.extend(constructorProto, constructor.$mixins[j].prototype);
                 }
             }
-
             constructor.prototype = Subclass.Tools.extend(
                 constructorProto,
-                constructor.prototype
+                constructorProtoCopy
             );
 
             Object.defineProperty(constructor.prototype, "constructor", {
@@ -81,21 +86,18 @@ Subclass.Tools.CheckTools = (function()
             var properties = getPropertiesFromMixins(constructor);
             var instance = new (constructor.bind.apply(constructor, arguments))();
 
-            ===============================!!!!!!!!
-
-            if (instance.getType) {
-                console.log(instance.getName());
-                console.log(instance instanceof Subclass.Class.ClassType);
-                console.log('----------');
-            }
-
-            //var instanceProperties = {};
-
             for (var propName in properties) {
                 if (properties.hasOwnProperty(propName) && !instance.hasOwnProperty(propName)) {
                     instance[propName] = properties[propName];
                 }
             }
+
+            //if (instance.getType && instance.getName() == 'AbstractClass' && instance.createDefinition) {
+            //    console.trace();
+            //    console.log(instance.getName());
+            //    console.log(instance instanceof Subclass.Class.ClassType);
+            //    console.log('----------');
+            //}
 
             return instance;
         }

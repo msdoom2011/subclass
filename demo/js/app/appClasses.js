@@ -44,6 +44,7 @@ app.registerAbstractClass("AbstractClass", {
     }
 });
 
+
 app.registerInterface("InterfaceBase", {
 
     $_properties: {

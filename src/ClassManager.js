@@ -383,7 +383,6 @@ Subclass.ClassManager = (function()
                 'existed class name "' + className + '".'
             );
         }
-
         var classTypeConstructor = Subclass.ClassManager.getClassType(classTypeName);
         var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
 

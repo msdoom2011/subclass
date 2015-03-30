@@ -20,11 +20,13 @@ module.exports = function(config) {
       "src/Subclass.js",
       "src/Module.js",
       "src/ModuleAPI.js",
+      "src/ClassManager.js",
       "src/Tools/Tools.js",
       "src/Tools/**/*.js",
       "src/Error/ErrorManager.js",
       "src/Error/**/*.js",
-      "src/Class/ClassManager.js",
+      "src/Event/Event.js",
+      "src/Event/**/*.js",
       "src/Class/ClassType.js",
       "src/Class/ClassDefinition.js",
       "src/Class/ClassLoader.js",
@@ -39,8 +41,6 @@ module.exports = function(config) {
       "src/Class/Type/Trait/**/*.js",
       "src/Class/Type/**/*.js",
       "src/Class/**/*.js",
-      "src/Event/Event.js",
-      "src/Event/**/*.js",
       "src/*.js",
 
       // Tests

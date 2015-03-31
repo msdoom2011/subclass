@@ -135,7 +135,7 @@ Subclass.Class.ClassType = function()
         this._events = [];
 
         this
-            .registerEvent("onClassInit")
+            .registerEvent("onInitialize")
             .registerEvent("onCreateBefore")
             .registerEvent("onCreate")
             .registerEvent("onCreateAfter")
@@ -144,7 +144,6 @@ Subclass.Class.ClassType = function()
             .registerEvent("onCreateInstanceAfter")
             .registerEvent("onGetClassChildren")
             .registerEvent("onGetClassParents")
-            .registerEvent("onIsInstanceOf")
         ;
 
         /**
@@ -154,31 +153,24 @@ Subclass.Class.ClassType = function()
     }
 
     /**
+     * Can be parent class type
+     *
+     * @type {(Subclass.Class.ClassType|null)}
+     */
+    ClassType.$parent = Subclass.Extendable;
+
+    /**
      * List of class mixins
      *
      * @type {Array.<Function>}
      */
     ClassType.$mixins = [Subclass.Event.EventableMixin];
 
-    /**
-     * Defining static methods and properties
-     */
-    ClassType.addStaticMethods = function() {
-
-        /**
-         * Can be parent class type
-         *
-         * @type {(Subclass.Class.ClassType|null)}
-         */
-        this.$parent = null;
-
-        /**
-         * An array of class type addons
-         *
-         * @type {Array.<Function>}
-         */
-        this.$addons = [];
-
+    ///**
+    // * Defining static methods and properties
+    // */
+    //ClassType.addStaticMethods = function()
+    //{
         /**
          * Returns name of class type
          *
@@ -222,33 +214,16 @@ Subclass.Class.ClassType = function()
         {
             return Subclass.Class.ClassDefinition;
         };
-
-        /**
-         * Registers class type addon
-         *
-         * @param {Function} classAddon
-         *      The constructor of class addon
-         */
-        this.registerAddon = function(classAddon)
-        {
-            this.$addons.push(classAddon);
-        };
-
-        /**
-         * Returns all registered addons
-         *
-         * @returns {Array.<Function>}
-         */
-        this.getAddons = function()
-        {
-            return this.$addons;
-        };
-    };
-
-    /**
-     * Adding static methods and properties
-     */
-    ClassType.addStaticMethods();
+    //};
+    //
+    //if (ClassType.$parent && ClassType.$parent.addStaticMethods) {
+    //    ClassType.$parent.addStaticMethods.call(ClassType);
+    //}
+    //
+    ///**
+    // * Adding static methods and properties
+    // */
+    //ClassType.addStaticMethods();
 
     /**
      * Initializes class on creation stage.
@@ -257,12 +232,14 @@ Subclass.Class.ClassType = function()
      */
     ClassType.prototype.initialize = function()
     {
-        var addons = this.constructor.getAddons();
+        console.dir(this.constructor);
+        var extensions = this.constructor.getExtensions();
 
-        for (var i = 0; i < addons.length; i++) {
-            addons[i].initialize(this);
+        for (var i = 0; i < extensions.length; i++) {
+            extensions[i] = Subclass.Tools.buildClassConstructor(extensions[i]);
+            extensions[i].initialize(this);
         }
-        this.getEvent('onClassInit').trigger();
+        this.getEvent('onInitialize').trigger();
 
         var classDefinition = this.getDefinition();
             classDefinition.processRelatedClasses();
@@ -311,40 +288,6 @@ Subclass.Class.ClassType = function()
             this,
             classDefinition
         );
-
-
-        //var construct = null;
-        //var createInstance = true;
-        //
-        //if (!arguments[1]) {
-        //    construct = this.constructor.getDefinitionClass();
-        //} else {
-        //    construct = arguments[1];
-        //}
-        //if (arguments[2] === false) {
-        //    createInstance = false;
-        //}
-        //
-        //if (construct.$parent) {
-        //    var parentConstruct = this.createDefinition(
-        //        classDefinition,
-        //        construct.$parent,
-        //        false
-        //    );
-        //    var constructProto = Object.create(parentConstruct.prototype);
-        //
-        //    constructProto = Subclass.Tools.extend(
-        //        constructProto,
-        //        construct.prototype
-        //    );
-        //    construct.prototype = constructProto;
-        //    construct.prototype.constructor = construct;
-        //}
-        //if (createInstance) {
-        //    return new construct(this, classDefinition);
-        //}
-        //
-        //return construct;
     };
 
     /**
@@ -883,11 +826,11 @@ Subclass.Class.ClassType = function()
             args.push(arguments[i]);
         }
 
-        var classManager = this.getClassManager();
+        //var classManager = this.getClassManager();
         var classConstructor = this.getConstructor();
         //var classProperties = this.getProperties(true);
         var classInstance = new classConstructor();
-        var setterName;
+        //var setterName;
 
         this.getEvent('onCreateInstanceBefore', classInstance);
 
@@ -1002,8 +945,6 @@ Subclass.Class.ClassType = function()
      */
     ClassType.prototype.isInstanceOf = function (className)
     {
-        var result = false;
-
         if (!className || typeof className != 'string') {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of class", false)
@@ -1013,18 +954,10 @@ Subclass.Class.ClassType = function()
             ;
         }
         if (this.getName() == className) {
-            result = true;
-
-        } else if (this.hasParent()) {
-            result = this.getParent().isInstanceOf(className);
-        }
-        if (result) {
             return true;
         }
-
-        var evt = this.getEvent('onIsInstanceOf').trigger(className);
-
-        return !!evt.getLastResult();
+        var classParents = this.getClassParents();
+        return classParents.indexOf(className) >= 0
     };
 
 

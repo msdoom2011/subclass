@@ -349,6 +349,28 @@ Subclass.Tools = (function()
                 }
             }
             return uniqueArray;
+        },
+
+        /**
+         * Returns all own enumerable object properties
+         *
+         * @method getObjectProperties
+         * @memberOf Subclass.Tools
+         * @static
+         *
+         * @param {Object} object
+         * @returns {Object}
+         */
+        getObjectProperties: function(object)
+        {
+            var props = {};
+
+            for (var propName in object) {
+                if (object.hasOwnProperty(propName)) {
+                    props[propName] = object[propName];
+                }
+            }
+            return props;
         }
     };
 })();

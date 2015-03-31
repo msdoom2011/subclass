@@ -4,6 +4,11 @@
 Subclass.Class.Type.Trait = {};
 
 /**
+ * @namespace
+ */
+Subclass.Class.Type.Trait.Extension = {};
+
+/**
  * @class
  * @extends {Subclass.Class.Type.Class.Class}
  */
@@ -31,9 +36,11 @@ Subclass.Class.Type.Trait.Trait = (function()
         delete this._traits;
     }
 
-    Subclass.Class.ClassType.addStaticMethods.call(Trait);
-
     Trait.$parent = Subclass.Class.Type.Class.Class;
+
+    //if (Trait.$parent && Trait.$parent.addStaticMethods) {
+    //    Trait.$parent.addStaticMethods.call(Trait);
+    //}
 
     /**
      * @inheritDoc
@@ -97,23 +104,23 @@ Subclass.Class.Type.Trait.Trait = (function()
     {
         return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
     };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.isInstanceOf = function()
-    {
-        return Subclass.Class.ClassType.prototype.isInstanceOf.apply(this, arguments);
-    };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.setInstanceCreated = function()
-    {
-        return Subclass.Class.ClassType.prototype.setInstanceCreated.apply(this, arguments);
-    };
-
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //Trait.prototype.isInstanceOf = function()
+    //{
+    //    return Subclass.Class.ClassType.prototype.isInstanceOf.apply(this, arguments);
+    //};
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //Trait.prototype.setInstanceCreated = function()
+    //{
+    //    return Subclass.Class.ClassType.prototype.setInstanceCreated.apply(this, arguments);
+    //};
+    //
     ///**
     // * @inheritDoc
     // */
@@ -121,34 +128,34 @@ Subclass.Class.Type.Trait.Trait = (function()
     //{
     //    return Subclass.Class.ClassType.prototype.addChildClass.apply(this, arguments);
     //};
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.getClassParents = function()
-    {
-        return Subclass.Class.ClassType.prototype.getClassParents.apply(this, arguments);
-    };
+    //
+    ///**
+    // * @inheritDoc
+    // */
+    //Trait.prototype.getClassParents = function()
+    //{
+    //    return Subclass.Class.ClassType.prototype.getClassParents.apply(this, arguments);
+    //};
 
     Trait.prototype.getAbstractMethods = undefined;
 
     Trait.prototype.addAbstractMethods = undefined;
 
-    Trait.prototype.addTraits = undefined;
-
-    Trait.prototype.getTraits = undefined;
-
-    Trait.prototype.addTrait = undefined;
-
-    Trait.prototype.hasTrait = undefined;
-
-    Trait.prototype.addInterfaces = undefined;
-
-    Trait.prototype.getInterfaces = undefined;
-
-    Trait.prototype.addInterface = undefined;
-
-    Trait.prototype.isImplements = undefined;
+    //Trait.prototype.addTraits = undefined;
+    //
+    //Trait.prototype.getTraits = undefined;
+    //
+    //Trait.prototype.addTrait = undefined;
+    //
+    //Trait.prototype.hasTrait = undefined;
+    //
+    //Trait.prototype.addInterfaces = undefined;
+    //
+    //Trait.prototype.getInterfaces = undefined;
+    //
+    //Trait.prototype.addInterface = undefined;
+    //
+    //Trait.prototype.isImplements = undefined;
 
     Trait.prototype.setConstants = undefined;
 

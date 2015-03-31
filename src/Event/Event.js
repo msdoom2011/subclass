@@ -255,7 +255,7 @@ Subclass.Event.Event = (function()
     Event.prototype._processTrigger = function(listeners, listenerArgs)
     {
         var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
-        var eventData = new Subclass.Event.EventData(this, this.getContext());
+        var eventData = Subclass.Tools.createClassInstance(Subclass.Event.EventData, this, this.getContext());
         var priorities = [];
 
         // Preparing event listeners

@@ -8,7 +8,7 @@ describe("Defining classes using class builder:", function() {
                 foo: function() {},
                 bar: function() {}
             })
-            .addToBody({
+            .addBody({
                 test: function() {}
             })
             .setConstants({

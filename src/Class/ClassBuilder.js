@@ -33,6 +33,7 @@ Subclass.Class.ClassBuilder = (function()
                 .apply()
             ;
         }
+
         /**
          * The class manager instance
          *
@@ -73,6 +74,14 @@ Subclass.Class.ClassBuilder = (function()
          */
         this._definition = {};
 
+        /**
+         * List of events
+         *
+         * @type {Array}
+         * @private
+         */
+        this._events = [];
+
 
         // Initializing
 
@@ -82,9 +91,62 @@ Subclass.Class.ClassBuilder = (function()
         } else {
             this._name = className;
         }
+
+        this.registerEvent("onInitialize");
+        this.initialize();
     }
 
     ClassBuilder.$parent = null;
+
+    ClassBuilder.$mixins = [Subclass.Event.EventableMixin];
+
+    //ClassBuilder.addStaticMethods = function()
+    //{
+        /**
+         * An array of class extensions
+         *
+         * @type {Array.<Function>}
+         */
+        this.$extensions = [];
+
+        /**
+         * Registers class extension
+         *
+         * @param {Function} classExtension
+         *      The constructor of class extension
+         */
+        this.registerExtension = function(classExtension)
+        {
+            this.$extensions.push(classExtension);
+        };
+
+        /**
+         * Returns all registered extensions
+         *
+         * @returns {Array.<Function>}
+         */
+        this.getExtensions = function()
+        {
+            return this.$extensions;
+        };
+    //};
+    //
+    //if (ClassBuilder.$parent && ClassBuilder.$parent.addStaticMethods) {
+    //    ClassBuilder.$parent.addStaticMethods.call(ClassBuilder);
+    //}
+    //
+    //ClassBuilder.addStaticMethods();
+
+    ClassBuilder.prototype.initialize = function()
+    {
+        var extensions = this.constructor.getExtensions();
+
+        for (var i = 0; i < extensions.length; i++) {
+            extensions[i] = Subclass.Tools.buildClassConstructor(extensions[i]);
+            extensions[i].initialize(this);
+        }
+        this.getEvent('onInitialize').trigger();
+    };
 
     /**
      * Returns the class manager instance
@@ -670,7 +732,7 @@ Subclass.Class.ClassBuilder = (function()
     /**
      * Adds new methods and properties to definition of class (the class body)
      *
-     * @method addToBody
+     * @method addBody
      * @memberOf Subclass.Class.ClassBuilder.prototype
      *
      * @param {Object} classBody
@@ -691,7 +753,7 @@ Subclass.Class.ClassBuilder = (function()
      * ...
      *
      * app.alterClass("Foo/Bar/TestClass")
-     *     .addToBody({
+     *     .addBody({
      *
      *         _foo: 10,
      *
@@ -721,7 +783,7 @@ Subclass.Class.ClassBuilder = (function()
      * //   ...
      * // }
      */
-    ClassBuilder.prototype.addToBody = function(classBody)
+    ClassBuilder.prototype.addBody = function(classBody)
     {
         classBody = this._prepareBody(classBody);
 

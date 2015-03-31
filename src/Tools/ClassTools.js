@@ -18,33 +18,100 @@ Subclass.Tools.CheckTools = (function()
         {
             var constructorProto = constructor.prototype;
             var constructorProtoCopy = {};
+            var constructorStatic = {};
+            var constructorStaticCopy = {};
 
-            for (var propName in constructorProto) {
-                if (constructorProto.hasOwnProperty(propName)) {
-                    constructorProtoCopy[propName] = constructorProto[propName];
+            Subclass.Tools.extend(constructorProtoCopy, Subclass.Tools.getObjectProperties(constructorProto));
+            Subclass.Tools.extend(constructorStaticCopy, Subclass.Tools.getObjectProperties(constructor));
+
+            function extendStaticProperties(target, source)
+            {
+                for (var staticPropName in source) {
+                    if (
+                        source.hasOwnProperty(staticPropName)
+                        && ["$parent", "$mixins"].indexOf(staticPropName) < 0
+                    ) {
+                        target[staticPropName] = source[staticPropName];
+                    }
+                }
+                return target;
+            }
+
+            function extendMixinsProto(constructorProto, mixins)
+            {
+                for (var i = 0; i < mixins.length; i++) {
+                    Subclass.Tools.extend(constructorProto, mixins[i].prototype);
                 }
             }
+
+            function extendMixinsStatic(constructor, mixins)
+            {
+                for (var i = 0; i < mixins.length; i++) {
+                    Subclass.Tools.extend(constructor, Subclass.Tools.getObjectProperties(mixins[i]));
+                }
+            }
+
+            //for (var propName in constructorProto) {
+            //    if (constructorProto.hasOwnProperty(propName)) {
+            //        constructorProtoCopy[propName] = constructorProto[propName];
+            //    }
+            //}
+            //for (propName in constructor) {
+            //    if (constructor.hasOwnProperty(propName)) {
+            //        constructorStaticCopy[propName] = constructor[propName];
+            //    }
+            //}
             if (constructor.$parent) {
                 var parentConstructor = this.buildClassConstructor(constructor.$parent);
                 constructorProto = Object.create(parentConstructor.prototype);
 
+                //if (constructor.$mixins) {
+                //    for (var i = 0; i < constructor.$mixins.length; i++) {
+                //        Subclass.Tools.extend(constructorProto, constructor.$mixins[i].prototype);
+                //    }
+                //}
+                extendStaticProperties(constructorStatic, parentConstructor);
+
                 if (constructor.$mixins) {
-                    for (var i = 0; i < constructor.$mixins.length; i++) {
-                        Subclass.Tools.extend(
-                            constructorProto,
-                            constructor.$mixins[i].prototype
-                        );
-                    }
+                    extendMixinsProto(constructorProto, constructor.$mixins);
+                    extendMixinsStatic(constructor, constructor.$mixins);
                 }
+
+                //for (var staticPropName in parentConstructor) {
+                //    if (
+                //        parentConstructor.hasOwnProperty(staticPropName)
+                //        && ["$parent", "$mixins"].indexOf(staticPropName) < 0
+                //    ) {
+                //        constructorStatic[staticPropName] = parentConstructor[staticPropName];
+                //    }
+                //}
             } else if (constructor.$mixins) {
-                for (var j = 0; j < constructor.$mixins.length; j++) {
-                    Subclass.Tools.extend(constructorProto, constructor.$mixins[j].prototype);
-                }
+                extendMixinsProto(constructorProto, constructor.$mixins);
+                extendMixinsStatic(constructor, constructor.$mixins);
+
+                //for (var j = 0; j < constructor.$mixins.length; j++) {
+                //    Subclass.Tools.extend(constructorProto, constructor.$mixins[j].prototype);
+                //}
             }
             constructor.prototype = Subclass.Tools.extend(
                 constructorProto,
                 constructorProtoCopy
             );
+            Subclass.Tools.extend(constructorStatic, constructorStaticCopy);
+
+            extendStaticProperties(
+                constructor,
+                constructorStatic
+            );
+
+            //for (propName in constructorStatic) {
+            //    if (
+            //        constructorStatic.hasOwnProperty(propName)
+            //        && ["$parent", "$mixins"].indexOf(propName) < 0
+            //    ) {
+            //        constructor[propName] = constructorStatic[propName];
+            //    }
+            //}
 
             Object.defineProperty(constructor.prototype, "constructor", {
                 enumerable: false,

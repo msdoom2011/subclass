@@ -18,6 +18,8 @@ module.exports = function(config) {
 
       // Src Files
       "src/Subclass.js",
+      "src/Extension.js",
+      "src/Extendable.js",
       "src/Module.js",
       "src/ModuleAPI.js",
       "src/ClassManager.js",

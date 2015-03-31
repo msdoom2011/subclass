@@ -1,35 +1,32 @@
 /**
- * @namespace
- */
-Subclass.Class.Type.Interface.Addon = {};
-
-/**
  * @class
  * @constructor
  */
-Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
+Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
 
-    function ClassAddon(classInst)
+    function ClassExtension(classInst)
     {
-        ClassAddon.$parent.apply(this, arguments);
+        ClassExtension.$parent.apply(this, arguments);
     }
 
-    Subclass.Class.ClassTypeAddon.addStaticMethods.call(this);
+    ClassExtension.$parent = Subclass.Extension;
 
-    ClassAddon.$parent = Subclass.Class.ClassTypeAddon;
+    //if (ClassExtension.$parent && ClassExtension.$parent.addStaticMethods) {
+    //    ClassExtension.$parent.addStaticMethods.call(ClassExtension);
+    //}
 
-    ClassAddon.initialize = function(classInst)
+    ClassExtension.initialize = function(classInst)
     {
         this.$parent.initialize.apply(this, arguments);
 
         // Defining interfaces storage
 
-        classInst.getEvent('onClassInit').addListener(function(evt)
+        classInst.getEvent('onInitialize').addListener(function(evt)
         {
             /**
              * List of interfaces class names
              *
-             * @type {Array<Subclass.Class.Interface.Interface>}
+             * @type {Array<Subclass.Class.Type.Interface.Interface>}
              * @private
              */
             this._interfaces = [];
@@ -63,20 +60,6 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
                     addClassName(classes, className);
                 }
             }
-        });
-
-        // Added ability to check if current class is instance of class with specified name if it's interface
-
-        classInst.getEvent('onIsInstanceOf').addListener(function(evt, className)
-        {
-            if (
-                this.isImplements
-                && this.isImplements(className)
-            ) {
-                evt.stopPropagation();
-                return true;
-            }
-            return false;
         });
     };
 
@@ -245,16 +228,25 @@ Subclass.Class.Type.Interface.Addon.ClassAddon = function() {
         return false;
     };
 
-    // Registering addon for Class class type
+    // Registering extension
 
-    Class.registerAddon(ClassAddon);
+    Subclass.Module.onInit.push(function()
+    {
+        // Registering extension for Class class type
 
-    // Registering addon for AbstractClass class type
+        if (!Class.hasExtension(ClassExtension)) {
+            Class.registerExtension(ClassExtension);
+        }
+        // Registering extension for AbstractClass class type
 
-    if (Subclass.ClassManager.issetClassType('AbstractClass')) {
-        var AbstractClass = Subclass.Class.Type.AbstractClass.AbstractClass;
-        AbstractClass.registerAddon(ClassAddon);
-    }
+        if (
+            Subclass.ClassManager.issetClassType('AbstractClass')
+            && !AbstractClass.hasExtension(ClassExtension)
+        ) {
+            var AbstractClass = Subclass.Class.Type.AbstractClass.AbstractClass;
+            AbstractClass.registerExtension(ClassExtension);
+        }
+    });
 
-    return ClassAddon;
+    return ClassExtension;
 }();

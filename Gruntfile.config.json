@@ -13,6 +13,8 @@
       "main": {
         "files_first": [
           "Subclass.js",
+          "Extension.js",
+          "Extendable.js",
           "Module.js",
           "ModuleAPI.js",
           "ClassManager.js"

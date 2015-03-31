@@ -4,6 +4,11 @@
 Subclass.Class.Type.Interface = {};
 
 /**
+ * @namespace
+ */
+Subclass.Class.Type.Interface.Extension = {};
+
+/**
  * @class
  * @extends {Subclass.Class.ClassType}
  */
@@ -25,9 +30,11 @@ Subclass.Class.Type.Interface.Interface = (function()
         Interface.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Subclass.Class.ClassType.addStaticMethods.call(Interface);
-
     Interface.$parent = Subclass.Class.ClassType;
+
+    //if (Interface.$parent && Interface.$parent.addStaticMethods) {
+    //    Interface.$parent.addStaticMethods.call(Interface);
+    //}
 
     /**
      * @inheritDoc

@@ -11,6 +11,10 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
 
     AbstractClassBuilder.$parent = Subclass.Class.Type.Class.ClassBuilder;
 
+    //if (AbstractClassBuilder.$parent && AbstractClassBuilder.$parent.addStaticMethods) {
+    //    AbstractClassBuilder.$parent.addStaticMethods.call(AbstractClassBuilder);
+    //}
+
     /**
      * Validates abstract methods argument
      *

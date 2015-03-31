@@ -14,6 +14,10 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
 
     AbstractClassDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
+    //if (AbstractClassDefinition.$parent && AbstractClassDefinition.$parent.addStaticMethods) {
+    //    AbstractClassDefinition.$parent.addStaticMethods.call(AbstractClassDefinition);
+    //}
+
     /**
      * Validates "$_abstract" attribute value
      *

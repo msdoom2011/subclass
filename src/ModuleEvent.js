@@ -28,6 +28,8 @@ Subclass.ModuleEvent = function()
 
     ModuleEvent.$parent = Subclass.Event.Event;
 
+
+
     /**
      * Returns event manager instance
      *

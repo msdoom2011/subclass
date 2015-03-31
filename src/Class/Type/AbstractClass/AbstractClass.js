@@ -25,12 +25,14 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
         AbstractClass.$parent.call(this, classManager, className, classDefinition);
     }
 
-    Subclass.Class.ClassType.addStaticMethods.call(AbstractClass);
-
     /**
      * @type {Subclass.Class.Type.Class.Class}
      */
     AbstractClass.$parent = Subclass.Class.Type.Class.Class;
+
+    //if (AbstractClass.$parent && AbstractClass.$parent.addStaticMethods) {
+    //    AbstractClass.$parent.addStaticMethods.call(AbstractClass);
+    //}
 
     /**
      * @inheritDoc

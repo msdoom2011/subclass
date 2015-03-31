@@ -11,6 +11,10 @@ Subclass.Class.Type.Trait.TraitBuilder = (function()
 
     TraitBuilder.$parent = Subclass.Class.ClassBuilder;
 
+    //if (TraitBuilder.$parent && TraitBuilder.$parent.addStaticMethods) {
+    //    TraitBuilder.$parent.addStaticMethods.call(TraitBuilder);
+    //}
+
     TraitBuilder.prototype.setStatic = undefined;
 
     TraitBuilder.prototype.getStatic = undefined;

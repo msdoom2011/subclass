@@ -11,6 +11,10 @@ Subclass.Class.Type.Interface.InterfaceBuilder = (function()
 
     InterfaceBuilder.$parent = Subclass.Class.ClassBuilder;
 
+    //if (InterfaceBuilder.$parent && InterfaceBuilder.$parent.addStaticMethods) {
+    //    InterfaceBuilder.$parent.addStaticMethods.call(InterfaceBuilder);
+    //}
+
     InterfaceBuilder.prototype.setConstructor = undefined;
 
     InterfaceBuilder.prototype.getConstructor = undefined;

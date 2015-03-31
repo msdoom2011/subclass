@@ -14,6 +14,10 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
 
     TraitDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
+    //if (TraitDefinition.$parent && TraitDefinition.$parent.addStaticMethods) {
+    //    TraitDefinition.$parent.addStaticMethods.call(TraitDefinition);
+    //}
+
     /**
      * Validates "$_abstract" attribute value
      *

@@ -301,6 +301,12 @@ Subclass.Module = (function()
                 $this.setReady();
             }
         );
+
+        // Invoking all module initializing callbacks
+
+        for (var i = 0; i < Subclass.Module.onInit.length; i++) {
+            Subclass.Module.onInit[i](this);
+        }
     }
 
     /**
@@ -818,3 +824,10 @@ Subclass.Module = (function()
     return Module;
 
 })();
+
+/**
+ * Array of function callbacks which will be invoked when module initializes
+ *
+ * @type {Array}
+ */
+Subclass.Module.onInit = [];

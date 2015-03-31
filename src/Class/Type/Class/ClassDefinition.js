@@ -14,6 +14,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 
     ClassDefinition.$parent = Subclass.Class.ClassDefinition;
 
+    //if (ClassDefinition.$parent && ClassDefinition.$parent.addStaticMethods) {
+    //    ClassDefinition.$parent.addStaticMethods.call(ClassDefinition);
+    //}
+
     /**
      * Validates "$_static" attribute value
      *
@@ -59,6 +63,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
     {
         return this.getData().$_static;
     };
+
+//***********************************************************
+//********************** TRAIT START ************************
+//***********************************************************
 
     /**
      * Validates "$_traits" attribute value
@@ -128,6 +136,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
     {
         return this.getData().$_traits;
     };
+
+//***********************************************************
+//********************** TRAIT END ************************
+//***********************************************************
 
 //==============================================
 //============== INTERFACE START ===============
@@ -220,12 +232,21 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
          */
         classDefinition.$_static = {};
 
+//***********************************************************
+//********************** TRAIT START ************************
+//***********************************************************
+
         /**
          * Array of traits names
          *
          * @type {string[]}
          */
         classDefinition.$_traits = [];
+
+//***********************************************************
+//********************** TRAIT END ************************
+//***********************************************************
+
 
 //==============================================
 //============== INTERFACE START ===============
@@ -242,6 +263,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 //============== INTERFACE END ===============
 //==============================================
 
+//***********************************************************
+//********************** TRAIT START ************************
+//***********************************************************
+
         /**
          * Checks if current class instance has specified trait
          *
@@ -252,6 +277,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         {
             return this.$_class.hasTrait(traitName);
         };
+
+//***********************************************************
+//********************** TRAIT END ************************
+//***********************************************************
 
 //==============================================
 //============== INTERFACE START ===============
@@ -388,6 +417,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 //============== INTERFACE END ===============
 //==============================================
 
+//***********************************************************
+//********************** TRAIT START ************************
+//***********************************************************
+
         var traits = this.getTraits();
 
         // Performing $_traits (Needs to be defined in ClassDefinition)
@@ -397,6 +430,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
                 classManager.loadClass(traits[i]);
             }
         }
+
+//***********************************************************
+//********************** TRAIT END ************************
+//***********************************************************
 
 //==============================================
 //============== INTERFACE START ===============

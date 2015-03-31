@@ -214,6 +214,8 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
 
     Subclass.Module.onInit.push(function()
     {
+        Class = Subclass.Tools.buildClassConstructor(Class);
+
         // Registering extension for Class class type
 
         if (!Class.hasExtension(ClassExtension)) {
@@ -221,12 +223,13 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
         }
         // Registering extension for AbstractClass class type
 
-        if (
-            Subclass.ClassManager.issetClassType('AbstractClass')
-            && !AbstractClass.hasExtension(ClassExtension)
-        ) {
+        if (Subclass.ClassManager.issetClassType('AbstractClass')) {
             var AbstractClass = Subclass.Class.Type.AbstractClass.AbstractClass;
-            AbstractClass.registerExtension(ClassExtension);
+            AbstractClass = Subclass.Tools.buildClassConstructor(AbstractClass);
+
+            if (!AbstractClass.hasExtension(ClassExtension)) {
+                AbstractClass.registerExtension(ClassExtension);
+            }
         }
     });
 

@@ -16,6 +16,9 @@ Subclass.Tools.CheckTools = (function()
          */
         buildClassConstructor: function(constructor)
         {
+            if (constructor.$built) {
+                return constructor;
+            }
             var constructorProto = constructor.prototype;
             var constructorProtoCopy = {};
             var constructorStatic = {};
@@ -51,47 +54,19 @@ Subclass.Tools.CheckTools = (function()
                 }
             }
 
-            //for (var propName in constructorProto) {
-            //    if (constructorProto.hasOwnProperty(propName)) {
-            //        constructorProtoCopy[propName] = constructorProto[propName];
-            //    }
-            //}
-            //for (propName in constructor) {
-            //    if (constructor.hasOwnProperty(propName)) {
-            //        constructorStaticCopy[propName] = constructor[propName];
-            //    }
-            //}
             if (constructor.$parent) {
                 var parentConstructor = this.buildClassConstructor(constructor.$parent);
                 constructorProto = Object.create(parentConstructor.prototype);
 
-                //if (constructor.$mixins) {
-                //    for (var i = 0; i < constructor.$mixins.length; i++) {
-                //        Subclass.Tools.extend(constructorProto, constructor.$mixins[i].prototype);
-                //    }
-                //}
                 extendStaticProperties(constructorStatic, parentConstructor);
 
                 if (constructor.$mixins) {
                     extendMixinsProto(constructorProto, constructor.$mixins);
                     extendMixinsStatic(constructor, constructor.$mixins);
                 }
-
-                //for (var staticPropName in parentConstructor) {
-                //    if (
-                //        parentConstructor.hasOwnProperty(staticPropName)
-                //        && ["$parent", "$mixins"].indexOf(staticPropName) < 0
-                //    ) {
-                //        constructorStatic[staticPropName] = parentConstructor[staticPropName];
-                //    }
-                //}
             } else if (constructor.$mixins) {
                 extendMixinsProto(constructorProto, constructor.$mixins);
                 extendMixinsStatic(constructor, constructor.$mixins);
-
-                //for (var j = 0; j < constructor.$mixins.length; j++) {
-                //    Subclass.Tools.extend(constructorProto, constructor.$mixins[j].prototype);
-                //}
             }
             constructor.prototype = Subclass.Tools.extend(
                 constructorProto,
@@ -104,20 +79,22 @@ Subclass.Tools.CheckTools = (function()
                 constructorStatic
             );
 
-            //for (propName in constructorStatic) {
-            //    if (
-            //        constructorStatic.hasOwnProperty(propName)
-            //        && ["$parent", "$mixins"].indexOf(propName) < 0
-            //    ) {
-            //        constructor[propName] = constructorStatic[propName];
-            //    }
-            //}
-
             Object.defineProperty(constructor.prototype, "constructor", {
                 enumerable: false,
                 configurable: true,
                 value: constructor
             });
+
+            Object.defineProperty(constructor, "$built", {
+                enumerable: false,
+                value: true
+            });
+
+            // This piece of (shit) code is needed only for Subclass classes
+
+            if (constructor.prototype instanceof Subclass.Extendable) {
+                constructor.$extensions = [];
+            }
 
             return constructor;
         },
@@ -158,13 +135,6 @@ Subclass.Tools.CheckTools = (function()
                     instance[propName] = properties[propName];
                 }
             }
-
-            //if (instance.getType && instance.getName() == 'AbstractClass' && instance.createDefinition) {
-            //    console.trace();
-            //    console.log(instance.getName());
-            //    console.log(instance instanceof Subclass.Class.ClassType);
-            //    console.log('----------');
-            //}
 
             return instance;
         }

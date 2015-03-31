@@ -96,39 +96,39 @@ Subclass.Class.ClassBuilder = (function()
         this.initialize();
     }
 
-    ClassBuilder.$parent = null;
+    ClassBuilder.$parent = Subclass.Extendable;
 
     ClassBuilder.$mixins = [Subclass.Event.EventableMixin];
 
     //ClassBuilder.addStaticMethods = function()
     //{
-        /**
-         * An array of class extensions
-         *
-         * @type {Array.<Function>}
-         */
-        this.$extensions = [];
-
-        /**
-         * Registers class extension
-         *
-         * @param {Function} classExtension
-         *      The constructor of class extension
-         */
-        this.registerExtension = function(classExtension)
-        {
-            this.$extensions.push(classExtension);
-        };
-
-        /**
-         * Returns all registered extensions
-         *
-         * @returns {Array.<Function>}
-         */
-        this.getExtensions = function()
-        {
-            return this.$extensions;
-        };
+    //    /**
+    //     * An array of class extensions
+    //     *
+    //     * @type {Array.<Function>}
+    //     */
+    //    ClassBuilder.$extensions = [];
+    //
+    //    /**
+    //     * Registers class extension
+    //     *
+    //     * @param {Function} classExtension
+    //     *      The constructor of class extension
+    //     */
+    //    ClassBuilder.registerExtension = function(classExtension)
+    //    {
+    //        this.$extensions.push(classExtension);
+    //    };
+    //
+    //    /**
+    //     * Returns all registered extensions
+    //     *
+    //     * @returns {Array.<Function>}
+    //     */
+    //    this.getExtensions = function()
+    //    {
+    //        return this.$extensions;
+    //    };
     //};
     //
     //if (ClassBuilder.$parent && ClassBuilder.$parent.addStaticMethods) {

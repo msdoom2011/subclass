@@ -14,7 +14,7 @@ Subclass.Extension = function()
          *
          * @param {Subclass.Extendable} classInst
          */
-        this.initialize = function(classInst)
+        Extension.initialize = function(classInst)
         {
             // Do some initialization operations
         };

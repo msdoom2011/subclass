@@ -179,7 +179,7 @@ Subclass.Class.ClassType = function()
          *
          * @returns {string}
          */
-        this.getClassTypeName = function ()
+        ClassType.getClassTypeName = function ()
         {
             Subclass.Error.create("NotImplementedMethod")
                 .method("getClassTypeName")
@@ -196,7 +196,7 @@ Subclass.Class.ClassType = function()
          *
          * @returns {Function}
          */
-        this.getBuilderClass = function()
+        ClassType.getBuilderClass = function()
         {
             Subclass.Error.create("NotImplementedMethod")
                 .method("getBuilderClass")
@@ -210,7 +210,7 @@ Subclass.Class.ClassType = function()
          * @returns {Function}
          *      Returns class type definition constructor function
          */
-        this.getDefinitionClass = function()
+        ClassType.getDefinitionClass = function()
         {
             return Subclass.Class.ClassDefinition;
         };
@@ -232,7 +232,6 @@ Subclass.Class.ClassType = function()
      */
     ClassType.prototype.initialize = function()
     {
-        console.dir(this.constructor);
         var extensions = this.constructor.getExtensions();
 
         for (var i = 0; i < extensions.length; i++) {

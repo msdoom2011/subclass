@@ -10,7 +10,7 @@ Subclass.Extendable = function()
      *
      * @type {Array.<Function>}
      */
-    this.$extensions = [];
+    Extendable.$extensions = [];
 
     /**
      * Registers class extension
@@ -18,7 +18,7 @@ Subclass.Extendable = function()
      * @param {Function} classExtension
      *      The constructor of class extension
      */
-    this.registerExtension = function(classExtension)
+    Extendable.registerExtension = function(classExtension)
     {
         this.$extensions.push(classExtension);
     };
@@ -28,7 +28,7 @@ Subclass.Extendable = function()
      *
      * @returns {Array.<Function>}
      */
-    this.getExtensions = function()
+    Extendable.getExtensions = function()
     {
         return this.$extensions;
     };
@@ -41,9 +41,17 @@ Subclass.Extendable = function()
      *
      * @returns {boolean}
      */
-    this.hasExtension = function(classExtension)
+    Extendable.hasExtension = function(classExtension)
     {
         return this.$extensions.indexOf(classExtension) >= 0
+    };
+
+    /**
+     * Clears all registered extensions
+     */
+    Extendable.clearExtensions = function()
+    {
+        this.$extensions = [];
     };
 
     return Extendable;

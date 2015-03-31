@@ -120,6 +120,8 @@ Subclass.Class.Type.Trait.Extension.ClassBuilderExtension = function() {
 
     Subclass.Module.onInit.push(function(module)
     {
+        ClassBuilder = Subclass.Tools.buildClassConstructor(ClassBuilder);
+
         if (!ClassBuilder.hasExtension(ClassBuilderExtension)) {
             ClassBuilder.registerExtension(ClassBuilderExtension);
         }

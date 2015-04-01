@@ -7,27 +7,15 @@ Subclass.Extension = function()
 
     Extension.$parent = null;
 
-    //Extension.addStaticMethods = function()
-    //{
-        /**
-         * Instance of any class which extends Subclass.Extendable class
-         *
-         * @param {Subclass.Extendable} classInst
-         */
-        Extension.initialize = function(classInst)
-        {
-            // Do some initialization operations
-        };
-    //};
-    //
-    //if (Extension.$parent && Extension.$parent.addStaticMethods) {
-    //    Extension.$parent.addStaticMethods.call(Extension);
-    //}
-    //
-    ///**
-    // * Adding static methods and properties
-    // */
-    //Extension.addStaticMethods();
+    /**
+     * Instance of any class which extends Subclass.Extendable class
+     *
+     * @param {Subclass.Extendable} classInst
+     */
+    Extension.initialize = function(classInst)
+    {
+        // Do some initialization operations
+    };
 
     return Extension;
 }();

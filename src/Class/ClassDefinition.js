@@ -33,9 +33,35 @@ Subclass.Class.ClassDefinition = (function()
          * @private
          */
         this._data = classDefinition;
+
+        /**
+         * @type {Object}
+         * @private
+         */
+        this._events = {};
+
+        // Initializing operations
+
+        this
+            .registerEvent('onInitialize')
+            .registerEvent('onGetBaseData')
+            .registerEvent('onProcessRelatedClasses')
+        ;
+        this.initialize();
     }
 
-    ClassDefinition.$parent = null;
+    ClassDefinition.$parent = Subclass.Extendable;
+
+    ClassDefinition.$mixins = [Subclass.Event.EventableMixin];
+
+    /**
+     * Initializes class definition
+     */
+    ClassDefinition.prototype.initialize = function()
+    {
+        this.initializeExtensions();
+        this.getEvent('onInitialize').trigger();
+    };
 
     /**
      * Returns class definition object
@@ -438,6 +464,8 @@ Subclass.Class.ClassDefinition = (function()
      * Returns class to which belongs specified method body
      *
      * @param {Function} methodFunc
+     *      The method function body
+     *
      * @returns {(Subclass.Class.ClassType|null)}
      */
     ClassDefinition.prototype.getMethodClass = function(methodFunc)
@@ -457,6 +485,34 @@ Subclass.Class.ClassDefinition = (function()
             ;
         }
         return null;
+    };
+
+    /**
+     * Returns class method by its name
+     *
+     * @param {string} methodName
+     *      The name of method
+     */
+    ClassDefinition.prototype.getMethod = function(methodName)
+    {
+        if (!this.issetMethod(methodName)) {
+            Subclass.Error.create(
+                'Trying to get non existent method "' + methodName + '" ' +
+                'from definition of class "' + this.getClass().getName() + '".'
+            );
+        }
+        return this.getMethods(true)[methodName];
+    };
+
+    /**
+     * Checks whether method with specified name exists
+     *
+     * @param {string} methodName
+     *      The name of method
+     */
+    ClassDefinition.prototype.issetMethod = function(methodName)
+    {
+        return this.getMethods(true).hasOwnProperty(methodName);
     };
 
     /**
@@ -541,9 +597,9 @@ Subclass.Class.ClassDefinition = (function()
      *
      * @returns {object}
      */
-    ClassDefinition.prototype.getBaseData = function()
+    ClassDefinition.prototype.createBaseData = function()
     {
-        return {
+        var data = {
 
             /**
              * Class name
@@ -754,6 +810,22 @@ Subclass.Class.ClassDefinition = (function()
             //    return this.$_class.getProperty(propertyName).getAPI(this);
             //}
         };
+
+        return data;
+    };
+
+    /**
+     * Returns base class definition data
+     *
+     * @returns {Object}
+     */
+    ClassDefinition.prototype.getBaseData = function()
+    {
+        var data = this.createBaseData();
+
+        this.getEvent("onGetBaseData").trigger(data);
+
+        return data;
     };
 
     /**
@@ -944,6 +1016,8 @@ Subclass.Class.ClassDefinition = (function()
         //        }
         //    }
         //}
+
+        this.getEvent('onProcessRelatedClasses').trigger();
     };
 
     return ClassDefinition;

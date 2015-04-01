@@ -59,7 +59,7 @@ Subclass.Class.ClassType = function()
          * The instance of class manager
          *
          * @type {Subclass.ClassManager}
-         * @protected
+         * @private
          */
         this._classManager = classManager;
 
@@ -67,23 +67,23 @@ Subclass.Class.ClassType = function()
          * The name of class
          *
          * @type {string}
-         * @protected
+         * @private
          */
         this._name = className;
 
         /**
          * The instance class definition
          *
-         * @type {Subclass.Class.ClassDefinition}
-         * @protected
+         * @type {(Object|Subclass.Class.ClassDefinition)}
+         * @private
          */
-        this._definition = this.createDefinition(classDefinition);
+        this._definition = classDefinition;
 
         /**
          * The class constructor function
          *
          * @type {(function|null)}
-         * @protected
+         * @private
          */
         this._constructor = null;
 
@@ -91,7 +91,7 @@ Subclass.Class.ClassType = function()
          * The instance of class which is parent of current class
          *
          * @type {(Subclass.Class.ClassType|null)}
-         * @protected
+         * @private
          */
         this._parent = null;
 
@@ -134,6 +134,10 @@ Subclass.Class.ClassType = function()
          */
         this._events = [];
 
+        /**
+         * Initializing operations
+         */
+
         this
             .registerEvent("onInitialize")
             .registerEvent("onCreateBefore")
@@ -144,11 +148,9 @@ Subclass.Class.ClassType = function()
             .registerEvent("onCreateInstanceAfter")
             .registerEvent("onGetClassChildren")
             .registerEvent("onGetClassParents")
+            .registerEvent("onSetParent")
         ;
 
-        /**
-         * Initializing operations
-         */
         this.initialize();
     }
 
@@ -166,64 +168,49 @@ Subclass.Class.ClassType = function()
      */
     ClassType.$mixins = [Subclass.Event.EventableMixin];
 
-    ///**
-    // * Defining static methods and properties
-    // */
-    //ClassType.addStaticMethods = function()
-    //{
-        /**
-         * Returns name of class type
-         *
-         * @example Example:
-         *      Subclass.Class.Trait.Trait.getClassTypeName(); // returns "Trait"
-         *
-         * @returns {string}
-         */
-        ClassType.getClassTypeName = function ()
-        {
-            Subclass.Error.create("NotImplementedMethod")
-                .method("getClassTypeName")
-                .apply()
-            ;
-        };
+    /**
+     * Returns name of class type
+     *
+     * @example Example:
+     *      Subclass.Class.Trait.Trait.getClassTypeName(); // returns "Trait"
+     *
+     * @returns {string}
+     */
+    ClassType.getClassTypeName = function ()
+    {
+        Subclass.Error.create("NotImplementedMethod")
+            .method("getClassTypeName")
+            .apply()
+        ;
+    };
 
-        /**
-         * Returns class builder constructor for specific class of current class type.
-         *
-         * @example Example:
-         *      Subclass.Class.Type.AbstractClass.AbstractClass.getBuilderClass();
-         *      // returns Subclass.Class.Type.AbstractClass.AbstractClassBuilder class constructor
-         *
-         * @returns {Function}
-         */
-        ClassType.getBuilderClass = function()
-        {
-            Subclass.Error.create("NotImplementedMethod")
-                .method("getBuilderClass")
-                .apply()
-            ;
-        };
+    /**
+     * Returns class builder constructor for specific class of current class type.
+     *
+     * @example Example:
+     *      Subclass.Class.Type.AbstractClass.AbstractClass.getBuilderClass();
+     *      // returns Subclass.Class.Type.AbstractClass.AbstractClassBuilder class constructor
+     *
+     * @returns {Function}
+     */
+    ClassType.getBuilderClass = function()
+    {
+        Subclass.Error.create("NotImplementedMethod")
+            .method("getBuilderClass")
+            .apply()
+        ;
+    };
 
-        /**
-         * Returns constructor for creating class definition instance
-         *
-         * @returns {Function}
-         *      Returns class type definition constructor function
-         */
-        ClassType.getDefinitionClass = function()
-        {
-            return Subclass.Class.ClassDefinition;
-        };
-    //};
-    //
-    //if (ClassType.$parent && ClassType.$parent.addStaticMethods) {
-    //    ClassType.$parent.addStaticMethods.call(ClassType);
-    //}
-    //
-    ///**
-    // * Adding static methods and properties
-    // */
-    //ClassType.addStaticMethods();
+    /**
+     * Returns constructor for creating class definition instance
+     *
+     * @returns {Function}
+     *      Returns class type definition constructor function
+     */
+    ClassType.getDefinitionClass = function()
+    {
+        return Subclass.Class.ClassDefinition;
+    };
 
     /**
      * Initializes class on creation stage.
@@ -232,13 +219,9 @@ Subclass.Class.ClassType = function()
      */
     ClassType.prototype.initialize = function()
     {
-        var extensions = this.constructor.getExtensions();
-
-        for (var i = 0; i < extensions.length; i++) {
-            extensions[i] = Subclass.Tools.buildClassConstructor(extensions[i]);
-            extensions[i].initialize(this);
-        }
+        this.initializeExtensions();
         this.getEvent('onInitialize').trigger();
+        this._definition = this.createDefinition(this._definition);
 
         var classDefinition = this.getDefinition();
             classDefinition.processRelatedClasses();
@@ -348,16 +331,16 @@ Subclass.Class.ClassType = function()
         var classManager = this.getClassManager();
         var classInst = classManager.getClass(className);
         var classInstChildren = classInst.getClassChildren();
-        var classInstParents = classInst.getClassParents();
+        var classParents = this.getClassParents();
 
-        for (var i = 0; i < classInstChildren.length; i++) {
+        for (var i = 0; i < classParents.length; i++) {
+            var parentClassInst = classManager.getClass(classParents[i]);
+            parentClassInst.addChildClass(className);
+        }
+        for (i = 0; i < classInstChildren.length; i++) {
             if (!this.hasChild(classInstChildren[i])) {
                 this.addChildClass(classInstChildren[i]);
             }
-        }
-        for (i = 0; i < classInstParents.length; i++) {
-            var parentClassInst = classManager.getClass(classInstParents[i]);
-            parentClassInst.addChildClass(className);
         }
     };
 
@@ -469,7 +452,7 @@ Subclass.Class.ClassType = function()
             } else {
                 addClassName(classes, parentName);
             }
-            parent.getClassParents(grouping, classes);
+            classes = parent.getClassParents(grouping, classes);
         }
         this.getEvent('onGetClassParents').trigger(classes, grouping);
 
@@ -504,6 +487,7 @@ Subclass.Class.ClassType = function()
                 .apply()
             ;
         }
+        this.getEvent('onSetParent').trigger(parentClassName);
     };
 
     /**

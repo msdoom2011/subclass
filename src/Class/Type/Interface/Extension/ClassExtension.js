@@ -11,10 +11,6 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
 
     ClassExtension.$parent = Subclass.Extension;
 
-    //if (ClassExtension.$parent && ClassExtension.$parent.addStaticMethods) {
-    //    ClassExtension.$parent.addStaticMethods.call(ClassExtension);
-    //}
-
     ClassExtension.initialize = function(classInst)
     {
         this.$parent.initialize.apply(this, arguments);
@@ -230,24 +226,12 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
 
     // Registering extension
 
-    Subclass.Module.onInit.push(function()
+    Subclass.Module.onInit(function(evt, module)
     {
         Class = Subclass.Tools.buildClassConstructor(Class);
 
-        // Registering extension for Class class type
-
         if (!Class.hasExtension(ClassExtension)) {
             Class.registerExtension(ClassExtension);
-        }
-        // Registering extension for AbstractClass class type
-
-        if (Subclass.ClassManager.issetClassType('AbstractClass')) {
-            var AbstractClass = Subclass.Class.Type.AbstractClass.AbstractClass;
-            AbstractClass = Subclass.Tools.buildClassConstructor(AbstractClass);
-
-            if (!AbstractClass.hasExtension(ClassExtension)) {
-                AbstractClass.registerExtension(ClassExtension);
-            }
         }
     });
 

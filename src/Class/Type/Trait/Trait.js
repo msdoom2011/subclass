@@ -38,10 +38,6 @@ Subclass.Class.Type.Trait.Trait = (function()
 
     Trait.$parent = Subclass.Class.Type.Class.Class;
 
-    //if (Trait.$parent && Trait.$parent.addStaticMethods) {
-    //    Trait.$parent.addStaticMethods.call(Trait);
-    //}
-
     /**
      * @inheritDoc
      */

@@ -2,7 +2,7 @@
  * @class
  * @constructor
  */
-Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
+Subclass.Class.Type.Trait.Extension.ClassDefinitionExtension = function() {
 
     function ClassDefinitionExtension(classInst)
     {
@@ -18,21 +18,21 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
         classInst.getEvent('onGetBaseData').addListener(function(evt, data)
         {
             /**
-             * Array of interfaces names
+             * Array of traits names
              *
              * @type {string[]}
              */
-            data.$_implements = [];
+            data.$_traits = [];
 
             /**
-             * Checks if current class implements specified interface
+             * Checks if current class instance has specified trait
              *
-             * @param {string} interfaceName
+             * @param {string} traitName
              * @returns {boolean}
              */
-            data.isImplements = function (interfaceName)
+            data.hasTrait = function (traitName)
             {
-                return this.$_class.isImplements(interfaceName);
+                return this.$_class.hasTrait(traitName);
             };
         });
 
@@ -40,11 +40,11 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
         {
             var classInst = this.getClass();
             var classManager = classInst.getClassManager();
-            var interfaces = this.getImplements();
+            var traits = this.getTraits();
 
-            if (interfaces && this.validateImplements(interfaces)) {
-                for (var i = 0; i < interfaces.length; i++) {
-                    classManager.loadClass(interfaces[i]);
+            if (traits && this.validateTraits(traits)) {
+                for (var i = 0; i < traits.length; i++) {
+                    classManager.loadClass(traits[i]);
                 }
             }
         });
@@ -53,21 +53,21 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
     var ClassDefinition = Subclass.Class.Type.Class.ClassDefinition;
 
     /**
-     * Validates "$_implements" attribute value
+     * Validates "$_traits" attribute value
      *
-     * @param {*} interfaces
+     * @param {*} traits
      * @returns {boolean}
      * @throws {Error}
      */
-    ClassDefinition.prototype.validateImplements = function(interfaces)
+    ClassDefinition.prototype.validateTraits = function(traits)
     {
         try {
-            if (interfaces && !Array.isArray(interfaces)) {
+            if (traits && !Array.isArray(traits)) {
                 throw 'error';
             }
-            if (interfaces) {
-                for (var i = 0; i < interfaces.length; i++) {
-                    if (typeof interfaces[i] != 'string') {
+            if (traits) {
+                for (var i = 0; i < traits.length; i++) {
+                    if (typeof traits[i] != 'string') {
                         throw 'error';
                     }
                 }
@@ -75,9 +75,9 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
         } catch (e) {
             if (e == 'error') {
                 Subclass.Error.create('InvalidClassOption')
-                    .option('$_implements')
+                    .option('$_traits')
                     .className(this.getClass().getName())
-                    .received(interfaces)
+                    .received(traits)
                     .expected('an array of strings')
                     .apply()
                 ;
@@ -89,36 +89,36 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
     };
 
     /**
-     * Sets "$_implements" attribute value
+     * Sets "$_traits" attribute value
      *
-     * @param {string[]} interfaces
+     * @param {string[]} traits
      *
-     *      List of the interfaces witch current one will implement.
+     *      List of the classes which properties and method current one will contain.
      *
      *      Example: [
-     *         "Namespace/Of/Interface1",
-     *         "Namespace/Of/Interface2",
+     *         "Namespace/Of/Trait1",
+     *         "Namespace/Of/Trait2",
      *         ...
      *      ]
      */
-    ClassDefinition.prototype.setImplements = function(interfaces)
+    ClassDefinition.prototype.setTraits = function(traits)
     {
-        this.validateImplements(interfaces);
-        this.getData().$_implements = interfaces || [];
+        this.validateTraits(traits);
+        this.getData().$_traits = traits || [];
 
-        if (interfaces) {
-            this.getClass().addInterfaces(interfaces);
+        if (traits) {
+            this.getClass().addTraits(traits);
         }
     };
 
     /**
-     * Return "$_implements" attribute value
+     * Return "$_traits" attribute value
      *
      * @returns {string[]}
      */
-    ClassDefinition.prototype.getImplements = function()
+    ClassDefinition.prototype.getTraits = function()
     {
-        return this.getData().$_implements;
+        return this.getData().$_traits;
     };
 
 

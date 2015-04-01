@@ -14,10 +14,6 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
 
     AbstractClassDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
-    //if (AbstractClassDefinition.$parent && AbstractClassDefinition.$parent.addStaticMethods) {
-    //    AbstractClassDefinition.$parent.addStaticMethods.call(AbstractClassDefinition);
-    //}
-
     /**
      * Validates "$_abstract" attribute value
      *
@@ -86,9 +82,9 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
     /**
      * @inheritDoc
      */
-    AbstractClassDefinition.prototype.getBaseData = function ()
+    AbstractClassDefinition.prototype.createBaseData = function ()
     {
-        var classDefinition = AbstractClassDefinition.$parent.prototype.getBaseData();
+        var classDefinition = AbstractClassDefinition.$parent.prototype.createBaseData();
 
         /**
          * Object that contains abstract methods

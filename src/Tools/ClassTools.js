@@ -68,6 +68,7 @@ Subclass.Tools.CheckTools = (function()
                 extendMixinsProto(constructorProto, constructor.$mixins);
                 extendMixinsStatic(constructor, constructor.$mixins);
             }
+
             constructor.prototype = Subclass.Tools.extend(
                 constructorProto,
                 constructorProtoCopy
@@ -93,7 +94,7 @@ Subclass.Tools.CheckTools = (function()
             // This piece of (shit) code is needed only for Subclass classes
 
             if (constructor.prototype instanceof Subclass.Extendable) {
-                constructor.$extensions = [];
+                constructor.$extensions = Subclass.Tools.copy(constructor.$extensions);
             }
 
             return constructor;

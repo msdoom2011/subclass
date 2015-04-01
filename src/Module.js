@@ -204,7 +204,7 @@ Subclass.Module = (function()
         // Registering events
 
         this.getEventManager()
-            .registerEvent('onModuleInit')
+            .registerEvent('onInit')
             .registerEvent('onReady')
             .registerEvent('onReadyBefore')
             .registerEvent('onReadyAfter')
@@ -293,7 +293,11 @@ Subclass.Module = (function()
         //this.getServiceManager().initialize();
 
         var eventManager = this.getEventManager();
-        eventManager.getEvent('onModuleInit').triggerPrivate();
+
+        for (var i = 0; i < Module._initializers.length; i++) {
+            eventManager.getEvent('onInit').addListener(Module._initializers[i]);
+        }
+        eventManager.getEvent('onInit').triggerPrivate(this);
 
         // Calling onReady callback
         eventManager.getEvent('onLoadingEnd')
@@ -301,13 +305,32 @@ Subclass.Module = (function()
                 $this.setReady();
             }
         );
-
-        // Invoking all module initializing callbacks
-
-        for (var i = 0; i < Subclass.Module.onInit.length; i++) {
-            Subclass.Module.onInit[i](this);
-        }
     }
+
+    /**
+     * Array of function callbacks which will be invoked when module initializes
+     *
+     * @type {Array}
+     */
+    Module._initializers = [];
+
+    /**
+     * Adds new initializer to module
+     */
+    Module.onInit = function(callback)
+    {
+        if (!callback || typeof callback != 'function') {
+            Subclass.Error.create("InvalidArgument")
+                .argument("the callback function", false)
+                .expected("a function")
+                .received(callback)
+                .save()
+            ;
+        }
+        if (this._initializers.indexOf() < 0) {
+            this._initializers.push(callback);
+        }
+    };
 
     /**
      * Returns name of the module
@@ -824,10 +847,3 @@ Subclass.Module = (function()
     return Module;
 
 })();
-
-/**
- * Array of function callbacks which will be invoked when module initializes
- *
- * @type {Array}
- */
-Subclass.Module.onInit = [];

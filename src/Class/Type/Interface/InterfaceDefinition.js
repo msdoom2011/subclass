@@ -14,10 +14,6 @@ Subclass.Class.Type.Interface.InterfaceDefinition = (function()
 
     InterfaceDefinition.$parent = Subclass.Class.ClassDefinition;
 
-    //if (InterfaceDefinition.$parent && InterfaceDefinition.$parent.addStaticMethods) {
-    //    InterfaceDefinition.$parent.addStaticMethods.call(InterfaceDefinition);
-    //}
-
     ///**
     // * Validates "$_abstract" attribute value
     // *
@@ -73,7 +69,7 @@ Subclass.Class.Type.Interface.InterfaceDefinition = (function()
     /**
      * @inheritDoc
      */
-    InterfaceDefinition.prototype.getBaseData = function()
+    InterfaceDefinition.prototype.createBaseData = function()
     {
         return {
             /**

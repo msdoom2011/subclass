@@ -54,7 +54,13 @@ Subclass.Tools = (function()
                     if (!source.hasOwnProperty(propName) && !withInheritedProps) {
                         continue;
                     }
-                    target[propName] = source[propName];
+                    if (Array.isArray(source[propName])) {
+                        target[propName] = [];
+                        target[propName] = target[propName].concat(source[propName]);
+
+                    } else {
+                        target[propName] = source[propName];
+                    }
                 }
             }
             return target;
@@ -106,8 +112,8 @@ Subclass.Tools = (function()
             if (
                 !mergeArrays
                 || (
-                typeof mergeArrays != "boolean"
-                && typeof mergeArrays != "function"
+                    typeof mergeArrays != "boolean"
+                    && typeof mergeArrays != "function"
                 )
             ) {
                 mergeArrays = false;
@@ -147,8 +153,8 @@ Subclass.Tools = (function()
                     return false;
                 }
                 return !(
-                obj.constructor
-                && !obj.constructor.prototype.hasOwnProperty("isPrototypeOf")
+                    obj.constructor
+                    && !obj.constructor.prototype.hasOwnProperty("isPrototypeOf")
                 );
             }
 

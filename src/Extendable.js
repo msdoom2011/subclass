@@ -54,5 +54,18 @@ Subclass.Extendable = function()
         this.$extensions = [];
     };
 
+    /**
+     * Initializes extensions
+     */
+    Extendable.prototype.initializeExtensions = function()
+    {
+        var extensions = this.constructor.getExtensions();
+
+        for (var i = 0; i < extensions.length; i++) {
+            extensions[i] = Subclass.Tools.buildClassConstructor(extensions[i]);
+            extensions[i].initialize(this);
+        }
+    };
+
     return Extendable;
 }();

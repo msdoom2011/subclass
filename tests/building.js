@@ -21,12 +21,36 @@ describe("Defining classes using class builder:", function() {
 
         var AppInterfaceBase = app.alterClass("Interface/AppInterfaceBase")
             .setParent("Interface/TestInterface")
-            .save();
-
+            .save()
+        ;
         expect(AppInterfaceBase.getClassParents()).toContain("Interface/TestInterface");
 
         app.alterClass("Interface/AppInterfaceBase")
             .removeParent()
-            .save();
+            .save()
+        ;
+    });
+
+    it ("abstract classes", function() {
+        app.alterClass("Abstract/AppAbstractBase")
+            .addAbstractMethod("extraAbstract", function() {})
+            .save()
+        ;
+    });
+
+    it ("classes", function() {
+        app.alterClass("Class/AppClassBase")
+            .addBody({
+                extraAbstract: function() {
+                    // do something
+                }
+            })
+            .save()
+        ;
+        expect(app.getClass("Class/AppClassBase").getDefinition().issetMethod('extraAbstract')).toBe(true);
+        app.alterClass("Abstract/AppAbstractBase")
+            .removeAbstractMethod("extraAbstract")
+            .save()
+        ;
     });
 });

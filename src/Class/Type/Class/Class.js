@@ -51,10 +51,6 @@ Subclass.Class.Type.Class.Class = (function() {
 
     Class.$parent = Subclass.Class.ClassType;
 
-    //if (Class.$parent && Class.$parent.addStaticMethods) {
-    //    Class.$parent.addStaticMethods.call(Class);
-    //}
-
     /**
      * @inheritDoc
      */

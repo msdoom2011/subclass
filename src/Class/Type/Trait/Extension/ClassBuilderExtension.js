@@ -11,10 +11,6 @@ Subclass.Class.Type.Trait.Extension.ClassBuilderExtension = function() {
 
     ClassBuilderExtension.$parent = Subclass.Extension;
 
-    //if (ClassBuilderExtension.$parent && ClassBuilderExtension.$parent.addStaticMethods) {
-    //    ClassBuilderExtension.$parent.addStaticMethods.call(ClassBuilderExtension);
-    //}
-
     var ClassBuilder = Subclass.Class.Type.Class.ClassBuilder;
 
     /**
@@ -118,7 +114,7 @@ Subclass.Class.Type.Trait.Extension.ClassBuilderExtension = function() {
 
     // Registering extension for Class class type
 
-    Subclass.Module.onInit.push(function(module)
+    Subclass.Module.onInit(function(evt, module)
     {
         ClassBuilder = Subclass.Tools.buildClassConstructor(ClassBuilder);
 

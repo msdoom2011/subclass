@@ -32,10 +32,6 @@ Subclass.Class.Type.Interface.Interface = (function()
 
     Interface.$parent = Subclass.Class.ClassType;
 
-    //if (Interface.$parent && Interface.$parent.addStaticMethods) {
-    //    Interface.$parent.addStaticMethods.call(Interface);
-    //}
-
     /**
      * @inheritDoc
      */

@@ -14,10 +14,6 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 
     ClassDefinition.$parent = Subclass.Class.ClassDefinition;
 
-    //if (ClassDefinition.$parent && ClassDefinition.$parent.addStaticMethods) {
-    //    ClassDefinition.$parent.addStaticMethods.call(ClassDefinition);
-    //}
-
     /**
      * Validates "$_static" attribute value
      *
@@ -64,166 +60,12 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         return this.getData().$_static;
     };
 
-//***********************************************************
-//********************** TRAIT START ************************
-//***********************************************************
-
-    /**
-     * Validates "$_traits" attribute value
-     *
-     * @param {*} traits
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateTraits = function(traits)
-    {
-        try {
-            if (traits && !Array.isArray(traits)) {
-                throw 'error';
-            }
-            if (traits) {
-                for (var i = 0; i < traits.length; i++) {
-                    if (typeof traits[i] != 'string') {
-                        throw 'error';
-                    }
-                }
-            }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_traits')
-                    .className(this.getClass().getName())
-                    .received(traits)
-                    .expected('an array of strings')
-                    .apply()
-                ;
-            } else {
-                throw e;
-            }
-        }
-        return true;
-    };
-
-    /**
-     * Sets "$_traits" attribute value
-     *
-     * @param {string[]} traits
-     *
-     *      List of the classes which properties and method current one will contain.
-     *
-     *      Example: [
-     *         "Namespace/Of/Trait1",
-     *         "Namespace/Of/Trait2",
-     *         ...
-     *      ]
-     */
-    ClassDefinition.prototype.setTraits = function(traits)
-    {
-        this.validateTraits(traits);
-        this.getData().$_traits = traits || [];
-
-        if (traits) {
-            this.getClass().addTraits(traits);
-        }
-    };
-
-    /**
-     * Return "$_traits" attribute value
-     *
-     * @returns {string[]}
-     */
-    ClassDefinition.prototype.getTraits = function()
-    {
-        return this.getData().$_traits;
-    };
-
-//***********************************************************
-//********************** TRAIT END ************************
-//***********************************************************
-
-//==============================================
-//============== INTERFACE START ===============
-//==============================================
-
-    /**
-     * Validates "$_implements" attribute value
-     *
-     * @param {*} interfaces
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateImplements = function(interfaces)
-    {
-        try {
-            if (interfaces && !Array.isArray(interfaces)) {
-                throw 'error';
-            }
-            if (interfaces) {
-                for (var i = 0; i < interfaces.length; i++) {
-                    if (typeof interfaces[i] != 'string') {
-                        throw 'error';
-                    }
-                }
-            }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_implements')
-                    .className(this.getClass().getName())
-                    .received(interfaces)
-                    .expected('an array of strings')
-                    .apply()
-                ;
-            } else {
-                throw e;
-            }
-        }
-        return true;
-    };
-
-    /**
-     * Sets "$_implements" attribute value
-     *
-     * @param {string[]} interfaces
-     *
-     *      List of the interfaces witch current one will implement.
-     *
-     *      Example: [
-     *         "Namespace/Of/Interface1",
-     *         "Namespace/Of/Interface2",
-     *         ...
-     *      ]
-     */
-    ClassDefinition.prototype.setImplements = function(interfaces)
-    {
-        this.validateImplements(interfaces);
-        this.getData().$_implements = interfaces || [];
-
-        if (interfaces) {
-            this.getClass().addInterfaces(interfaces);
-        }
-    };
-
-    /**
-     * Return "$_implements" attribute value
-     *
-     * @returns {string[]}
-     */
-    ClassDefinition.prototype.getImplements = function()
-    {
-        return this.getData().$_implements;
-    };
-
-//==============================================
-//============== INTERFACE END ===============
-//==============================================
-
     /**
      * @inheritDoc
      */
-    ClassDefinition.prototype.getBaseData = function ()
+    ClassDefinition.prototype.createBaseData = function ()
     {
-        var classDefinition = ClassDefinition.$parent.prototype.getBaseData();
+        var classDefinition = ClassDefinition.$parent.prototype.createBaseData();
 
         /**
          * Static properties and methods for current class constructor
@@ -231,76 +73,7 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
          * @type {Object}
          */
         classDefinition.$_static = {};
-
-//***********************************************************
-//********************** TRAIT START ************************
-//***********************************************************
-
-        /**
-         * Array of traits names
-         *
-         * @type {string[]}
-         */
-        classDefinition.$_traits = [];
-
-//***********************************************************
-//********************** TRAIT END ************************
-//***********************************************************
-
-
-//==============================================
-//============== INTERFACE START ===============
-//==============================================
-
-        /**
-         * Array of interfaces names
-         *
-         * @type {string[]}
-         */
-        classDefinition.$_implements = [];
-
-//==============================================
-//============== INTERFACE END ===============
-//==============================================
-
-//***********************************************************
-//********************** TRAIT START ************************
-//***********************************************************
-
-        /**
-         * Checks if current class instance has specified trait
-         *
-         * @param {string} traitName
-         * @returns {boolean}
-         */
-        classDefinition.hasTrait = function (traitName)
-        {
-            return this.$_class.hasTrait(traitName);
-        };
-
-//***********************************************************
-//********************** TRAIT END ************************
-//***********************************************************
-
-//==============================================
-//============== INTERFACE START ===============
-//==============================================
-
-        /**
-         * Checks if current class implements specified interface
-         *
-         * @param {string} interfaceName
-         * @returns {boolean}
-         */
-        classDefinition.isImplements = function (interfaceName)
-        {
-            return this.$_class.isImplements(interfaceName);
-        };
-
-//==============================================
-//============== INTERFACE END ===============
-//==============================================
-
+        //
         ///**
         // * Returns the property instance based on specified data type.
         // *
@@ -398,59 +171,6 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         //};
 
         return classDefinition;
-    };
-
-    ClassDefinition.prototype.processRelatedClasses = function()
-    {
-        ClassDefinition.$parent.prototype.processRelatedClasses.call(this);
-
-        var classInst = this.getClass();
-        var classManager = classInst.getClassManager();
-
-//==============================================
-//============== INTERFACE START ===============
-//==============================================
-
-        var interfaces = this.getImplements();
-
-//==============================================
-//============== INTERFACE END ===============
-//==============================================
-
-//***********************************************************
-//********************** TRAIT START ************************
-//***********************************************************
-
-        var traits = this.getTraits();
-
-        // Performing $_traits (Needs to be defined in ClassDefinition)
-
-        if (traits && this.validateTraits(traits)) {
-            for (var i = 0; i < traits.length; i++) {
-                classManager.loadClass(traits[i]);
-            }
-        }
-
-//***********************************************************
-//********************** TRAIT END ************************
-//***********************************************************
-
-//==============================================
-//============== INTERFACE START ===============
-//==============================================
-
-        // Performing $_implements (Needs to be defined in ClassDefinition)
-
-        if (interfaces && this.validateImplements(interfaces)) {
-            for (i = 0; i < interfaces.length; i++) {
-                classManager.loadClass(interfaces[i]);
-            }
-        }
-
-//==============================================
-//============== INTERFACE END ===============
-//==============================================
-
     };
 
     return ClassDefinition;

@@ -82,41 +82,6 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
     };
 
     /**
-     * Returns interface names list
-     *
-     * @throws {Error}
-     *
-     * @param {boolean} [withInherited=false]
-     *      Whether the inherited interfaces should be returned
-     *
-     * @returns {Array<Subclass.Class.Interface.Interface>}
-     */
-    Class.prototype.getInterfaces = function(withInherited)
-    {
-        if (withInherited !== true) {
-            return this._interfaces;
-        }
-        var classManager = this.getClassManager();
-        var interfaces = Subclass.Tools.copy(this._interfaces);
-
-        for (var i = 0; i < interfaces.length; i++) {
-            var interfaceParents = interfaces[i].getClassParents();
-
-            for (var j = 0; j < interfaceParents.length; j++) {
-                interfaces.push(classManager.getClass(interfaceParents[j]));
-            }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
-
-            if (parent.getInterfaces) {
-                interfaces = interfaces.concat(parent.getInterfaces(withInherited))
-            }
-        }
-        return interfaces;
-    };
-
-    /**
      * Adds new interface
      *
      * @param {string} interfaceName
@@ -188,6 +153,41 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
         this.addAbstractMethods(abstractMethods);
         this.getInterfaces().push(interfaceClass);
         //this.getInterfaces().push(interfaceName);
+    };
+
+    /**
+     * Returns interface names list
+     *
+     * @throws {Error}
+     *
+     * @param {boolean} [withInherited=false]
+     *      Whether the inherited interfaces should be returned
+     *
+     * @returns {Array<Subclass.Class.Interface.Interface>}
+     */
+    Class.prototype.getInterfaces = function(withInherited)
+    {
+        if (withInherited !== true) {
+            return this._interfaces;
+        }
+        var classManager = this.getClassManager();
+        var interfaces = Subclass.Tools.copy(this._interfaces);
+
+        for (var i = 0; i < interfaces.length; i++) {
+            var interfaceParents = interfaces[i].getClassParents();
+
+            for (var j = 0; j < interfaceParents.length; j++) {
+                interfaces.push(classManager.getClass(interfaceParents[j]));
+            }
+        }
+        if (this.hasParent()) {
+            var parent = this.getParent();
+
+            if (parent.getInterfaces) {
+                interfaces = interfaces.concat(parent.getInterfaces(withInherited))
+            }
+        }
+        return interfaces;
     };
 
     /**

@@ -146,9 +146,12 @@ Subclass.Class.ClassType = function()
             .registerEvent("onCreateInstanceBefore")
             .registerEvent("onCreateInstance")
             .registerEvent("onCreateInstanceAfter")
+            .registerEvent("onAddChildClass")
+            .registerEvent("onRemoveChildClass")
             .registerEvent("onGetClassChildren")
             .registerEvent("onGetClassParents")
             .registerEvent("onSetParent")
+            .registerEvent("onSetConstant")
         ;
 
         this.initialize();
@@ -342,6 +345,10 @@ Subclass.Class.ClassType = function()
                 this.addChildClass(classInstChildren[i]);
             }
         }
+        this
+            .getEvent('onAddChildClass')
+            .trigger(className)
+        ;
     };
 
     /**
@@ -379,6 +386,10 @@ Subclass.Class.ClassType = function()
         if (this.hasParent()) {
             this.getParent().removeChildClass(className);
         }
+        this
+            .getEvent('onRemoveChildClass')
+            .trigger(className)
+        ;
     };
 
     /**
@@ -405,8 +416,10 @@ Subclass.Class.ClassType = function()
             }
             classes[childClassType].push(childClassName);
         }
-        this.getEvent('onGetClassChildren').trigger(classes);
-
+        this
+            .getEvent('onGetClassChildren')
+            .trigger(classes)
+        ;
         return classes;
     };
 
@@ -454,8 +467,10 @@ Subclass.Class.ClassType = function()
             }
             classes = parent.getClassParents(grouping, classes);
         }
-        this.getEvent('onGetClassParents').trigger(classes, grouping);
-
+        this
+            .getEvent('onGetClassParents')
+            .trigger(classes, grouping)
+        ;
         return classes;
     };
 
@@ -487,7 +502,10 @@ Subclass.Class.ClassType = function()
                 .apply()
             ;
         }
-        this.getEvent('onSetParent').trigger(parentClassName);
+        this
+            .getEvent('onSetParent')
+            .trigger(parentClassName)
+        ;
     };
 
     /**
@@ -563,6 +581,11 @@ Subclass.Class.ClassType = function()
             writable: false,
             value: constantValue
         });
+
+        this
+            .getEvent('onSetConstant')
+            .trigger(constantName, constantValue)
+        ;
     };
 
     /**
@@ -701,11 +724,11 @@ Subclass.Class.ClassType = function()
     /**
      * Checks whether class constructor is created
      *
-     * @returns {Function}
+     * @returns {boolean}
      */
     ClassType.prototype.isConstructorCreated = function()
     {
-        return this._constructor;
+        return !!this._constructor;
     };
 
     /**

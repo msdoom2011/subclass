@@ -46,6 +46,12 @@ Subclass.Class.ClassDefinition = (function()
             .registerEvent('onInitialize')
             .registerEvent('onGetBaseData')
             .registerEvent('onProcessRelatedClasses')
+            .registerEvent('onNormalizeData')
+            .registerEvent('onValidateData')
+            .registerEvent('onProcessData')
+            .registerEvent('onGetNoMethods')
+            .registerEvent('onGetMethods')
+            .registerEvent('onGetMetaData')
         ;
         this.initialize();
     }
@@ -446,7 +452,11 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getMetaData = function(withInherited)
     {
-        return this._getDataPart('metaData', withInherited);
+        var metaData = this._getDataPart('metaData', withInherited);
+
+        this.getEvent('onGetMetaData').trigger(metaData);
+
+        return metaData;
     };
 
     /**
@@ -457,7 +467,11 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getMethods = function(withInherited)
     {
-        return this._getDataPart('methods', withInherited);
+        var methods = this._getDataPart('methods', withInherited);
+
+        this.getEvent('onGetMethods').trigger(methods);
+
+        return methods;
     };
 
     /**
@@ -524,7 +538,11 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.getNoMethods = function(withInherited)
     {
-        return this._getDataPart('noMethods', withInherited);
+        var noMethods = this._getDataPart('noMethods', withInherited);
+
+        this.getEvent('onGetNoMethods').trigger(noMethods);
+
+        return noMethods;
     };
 
     /**
@@ -835,6 +853,8 @@ Subclass.Class.ClassDefinition = (function()
     {
         // Do some manipulations with class definition data
 
+        this.getEvent('onNormalizeData').trigger();
+
 
         //-----------------------------------------------------------
         //var data = this.getData();
@@ -857,6 +877,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         // Do some validation manipulations with class definition data
 
+        this.getEvent('onValidateData').trigger();
 
         //-----------------------------------------------------------
         //var definition = this.getData();
@@ -896,6 +917,8 @@ Subclass.Class.ClassDefinition = (function()
                 this[setterMethod](definition[attrName]);
             }
         }
+
+        this.getEvent('onProcessData').trigger();
 
         ////Extending accessors
         //

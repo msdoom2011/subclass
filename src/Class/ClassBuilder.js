@@ -64,7 +64,7 @@ Subclass.Class.ClassBuilder = (function()
          * @type {string}
          * @private
          */
-        this._name = null;
+        this._name = className;
 
         /**
          * The plain object with definition of class
@@ -85,14 +85,18 @@ Subclass.Class.ClassBuilder = (function()
 
         // Initializing
 
-        if (classManager.issetClass(className)) {
-            this._setClass(className);
+        this
+            .registerEvent("onInitialize")
+            .registerEvent("onSetClass")
+            .registerEvent("onPrepareBody")
+            .registerEvent("onValidateBefore")
+            .registerEvent("onValidateAfter")
+            .registerEvent("onSaveBefore")
+            .registerEvent("onSaveAfter")
+            .registerEvent("onSaveAsBefore")
+            .registerEvent("onSaveAsAfter")
+        ;
 
-        } else {
-            this._name = className;
-        }
-
-        this.registerEvent("onInitialize");
         this.initialize();
     }
 
@@ -104,6 +108,10 @@ Subclass.Class.ClassBuilder = (function()
     {
         this.initializeExtensions();
         this.getEvent('onInitialize').trigger();
+
+        if (this.getClassManager().issetClass(this.getName())) {
+            this._setClass(this.getName());
+        }
     };
 
     /**
@@ -146,6 +154,7 @@ Subclass.Class.ClassBuilder = (function()
         this._setType(classInst.constructor.getClassTypeName());
         this._class = classInst;
         this._setDefinition(Subclass.Tools.copy(classDefinition));
+        this.getEvent('onSetClass').trigger(className);
 
         return this;
     };
@@ -684,6 +693,10 @@ Subclass.Class.ClassBuilder = (function()
                 delete classBody[propName];
             }
         }
+        this
+            .getEvent('onPrepareBody')
+            .trigger(classBody)
+        ;
         return classBody;
     };
 
@@ -887,12 +900,16 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype._validate = function()
     {
+        this.getEvent('onValidateBefore').trigger();
+
         if (!this.getName()) {
             Subclass.Error.create('The future class must be named.');
         }
         if (!this.getType()) {
             Subclass.Error.create('The type of the future class must be specified.');
         }
+        this.getEvent('onValidateAfter').trigger();
+
         return this;
     };
 
@@ -908,6 +925,7 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.save = function()
     {
         this._validate();
+        this.getEvent('onSaveBefore').trigger();
 
         if (this._class) {
             this._class.setDefinition(this.getDefinition());
@@ -919,6 +937,7 @@ Subclass.Class.ClassBuilder = (function()
             this.getDefinition()
         );
         classInst.getConstructor();
+        this.getEvent('onSaveAfter').trigger(classInst);
 
         return classInst;
     };
@@ -934,6 +953,7 @@ Subclass.Class.ClassBuilder = (function()
     ClassBuilder.prototype.saveAs = function(className)
     {
         this._validate();
+        this.getEvent('onSaveAsBefore').trigger();
 
         var classInst = this.getClassManager().addClass(
             this.getType(),
@@ -941,6 +961,7 @@ Subclass.Class.ClassBuilder = (function()
             this.getDefinition()
         );
         classInst.getConstructor();
+        this.getEvent('onSaveAsAfter').trigger(classInst);
 
         return classInst;
     };

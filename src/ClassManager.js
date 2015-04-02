@@ -172,13 +172,34 @@ Subclass.ClassManager = (function()
         // with classes from its parent modules
 
         if (privateClasses && withParentClasses) {
+        //if (withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
+        //    return mainModule.getRoot().getClassManager().getClasses(false, false, mainModule);
+
             if (mainModule.hasParent()) {
                 var parentModule = mainModule.getParent();
-                var parentClasses = parentModule.getClassManager().getClasses(true);
+                var parentClasses = parentModule.getClassManager().getClasses(true, true);
+
+
+
+
+                var parentPlugins = parentModule.getModuleStorage().getPlugins();
+
+                for (var i = 0; i < parentPlugins.length; i++) {
+                    if (parentPlugins[i] == mainModule) {
+                        continue;
+                    }
+                    var parentPluginClasses = parentPlugins[i].getClassManager().getClasses(true, false);
+                    Subclass.Tools.extend(parentClasses, parentPluginClasses);
+                }
+
+
+
 
                 Subclass.Tools.extend(classes, parentClasses);
             }
-            return Subclass.Tools.extend(classes, this._classes);
+            Subclass.Tools.extend(classes, this._classes);
+
+            return classes;
 
         // Returning classes from current module (without its plug-ins)
 
@@ -191,10 +212,12 @@ Subclass.ClassManager = (function()
         moduleStorage.eachModule(function(module) {
             if (module == mainModule) {
                 Subclass.Tools.extend(classes, $this.getClasses(true, withParentClasses));
+                //Subclass.Tools.extend(classes, $this.getClasses(true, false));
                 return;
             }
             var moduleClassManager = module.getClassManager();
             var moduleClasses = moduleClassManager.getClasses(false, withParentClasses);
+            //var moduleClasses = moduleClassManager.getClasses(false, false);
 
             Subclass.Tools.extend(classes, moduleClasses);
         });

@@ -452,15 +452,21 @@ Subclass.Module = (function()
      */
     Module.prototype.getRoot = function()
     {
-        var parent = this;
+        //var parent = this;
+        //
+        //if (arguments[0] && arguments[0] instanceof Subclass.Module) {
+        //    parent = arguments[0];
+        //}
+        //if (parent.hasParent()) {
+        //    parent = parent.getRoot(parent.getParent());
+        //}
 
-        if (arguments[0] && arguments[0] instanceof Subclass.Module) {
-            parent = arguments[0];
+        if (this.hasParent()) {
+            return this.getParent().getRoot();
         }
-        if (parent.hasParent()) {
-            parent = parent.getRoot(parent.getParent());
-        }
-        return parent
+        return this;
+
+        //return parent
     };
 
     /**

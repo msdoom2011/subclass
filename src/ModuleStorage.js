@@ -246,6 +246,25 @@ Subclass.ModuleStorage = (function()
     };
 
     /**
+     * Returns all plug-in module names of the current module
+     *
+     * @method getPluginNames
+     * @memberOf Subclass.ModuleStorage.prototype
+     *
+     * @returns {Array.<string>}
+     */
+    ModuleStorage.prototype.getPluginNames = function()
+    {
+        var plugins = this.getPlugins();
+        var names = [];
+
+        for (var i = 0; i < plugins.length; i++) {
+            names.push(plugins[i].getName());
+        }
+        return names;
+    };
+
+    /**
      * Sorts out each module by specified callback
      *
      * @method eachModule

@@ -358,7 +358,8 @@ Subclass.LoadManager = (function()
      */
     LoadManager.prototype.processStack = function()
     {
-        var moduleConfigs = this.getModule().getConfigManager();
+        var module = this.getModule();
+        var moduleConfigs = module.getConfigManager();
         var rootPath = moduleConfigs.getRootPath();
         var stackPortion = [];
         var $this = this;
@@ -386,9 +387,7 @@ Subclass.LoadManager = (function()
 
         // Triggering the event when processing the new portion of files
 
-        this.getModule().getEventManager().getEvent('onProcessLoadStack').trigger(
-            this._stack
-        );
+        module.getEventManager().getEvent('onProcessLoadStack').trigger(this._stack);
 
         // Loading files
 

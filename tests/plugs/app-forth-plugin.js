@@ -10,7 +10,7 @@ var appForthPlugin = Subclass.createModule('appForthPlugin', {
 
         $_extends: "Plugs/AbstractClass",
 
-        $_implements: ["Plugs/Interfaces"],
+        $_implements: ["Plugs/Interface"],
 
         $_traits: ["Plugs/Trait"],
 

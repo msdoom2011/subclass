@@ -1,1 +1,3 @@
-var app = Subclass.createModule("app");
+var app = Subclass.createModule("app", [
+    'appFirstPlugin'
+]);

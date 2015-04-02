@@ -30,10 +30,17 @@ Subclass.Class.Type.Trait.Trait = (function()
         Trait.$parent.call(this, classManager, className, classDefinition);
 
         delete this._abstractMethods;
-        delete this._interfaces;
         delete this._constants;
         delete this._created;
         delete this._traits;
+
+        if (Subclass.ClassManager.issetClassType('Interface')) {
+            //delete this._interfaces;
+            this.addInterfaces = undefined;
+            this.getInterfaces = undefined;
+            this.addInterface = undefined;
+            this.isImplements = undefined;
+        }
     }
 
     Trait.$parent = Subclass.Class.Type.Class.Class;

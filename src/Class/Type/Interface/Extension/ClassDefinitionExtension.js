@@ -9,11 +9,20 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
         ClassDefinitionExtension.$parent.apply(this, arguments);
     }
 
-    ClassDefinitionExtension.$parent = Subclass.Extension;
+    ClassDefinitionExtension.$parent = Subclass.Class.ClassExtension;
+
+    ClassDefinitionExtension.$config = {
+        classes: ["Class"]
+    };
 
     ClassDefinitionExtension.initialize = function(classInst)
     {
-        this.$parent.initialize.apply(this, arguments);
+        var performClasses = this.getConfig().classes;
+
+        if (performClasses.indexOf(classInst.getClass().getType()) < 0) {
+            return false;
+        }
+        ClassDefinitionExtension.$parent.initialize.apply(this, arguments);
 
         classInst.getEvent('onGetBaseData').addListener(function(evt, data)
         {

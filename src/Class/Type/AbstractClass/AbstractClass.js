@@ -4,6 +4,11 @@
 Subclass.Class.Type.AbstractClass = {};
 
 /**
+ * @namespace
+ */
+Subclass.Class.Type.AbstractClass.Extension = {};
+
+/**
  * @class
  * @extends {Subclass.Class.Type.Class.Class}
  */

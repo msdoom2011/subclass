@@ -9,11 +9,20 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
         ClassExtension.$parent.apply(this, arguments);
     }
 
-    ClassExtension.$parent = Subclass.Extension;
+    ClassExtension.$parent = Subclass.Class.ClassExtension;
+
+    ClassExtension.$config = {
+        classes: ["Class"]
+    };
 
     ClassExtension.initialize = function(classInst)
     {
-        this.$parent.initialize.apply(this, arguments);
+        var performClasses = this.getConfig().classes;
+
+        if (performClasses.indexOf(classInst.getType()) < 0) {
+            return false;
+        }
+        ClassExtension.$parent.initialize.apply(this, arguments);
 
         // Defining interfaces storage
 

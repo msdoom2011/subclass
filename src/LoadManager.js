@@ -409,7 +409,8 @@ Subclass.LoadManager = (function()
                 var newFileName = $this.getStackPortion()[0];
 
                 if (newFileName) {
-                    loadFile(newFileName)
+                    loadFile(newFileName);
+
                 } else {
                     $this.startLoading();
                 }

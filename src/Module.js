@@ -279,12 +279,15 @@ Subclass.Module = (function()
 
         var eventManager = this.getEventManager();
 
+        // Adding initialize callbacks from static scope
+
         for (var i = 0; i < Module._initializersBefore.length; i++) {
             eventManager.getEvent('onInitializeBefore').addListener(Module._initializersBefore[i]);
         }
         for (i = 0; i < Module._initializersAfter.length; i++) {
             eventManager.getEvent('onInitializeAfter').addListener(Module._initializersAfter[i]);
         }
+
         eventManager.getEvent('onInitializeBefore').triggerPrivate(this);
 
         this.initializeExtensions();
@@ -307,11 +310,10 @@ Subclass.Module = (function()
         eventManager.getEvent('onInitializeAfter').triggerPrivate(this);
 
         // Calling onReady callback
-        eventManager.getEvent('onLoadingEnd')
-            .addListener(1000, function(evt) {
-                $this.setReady();
-            }
-        );
+
+        eventManager.getEvent('onLoadingEnd').addListener(1000, function(evt) {
+            $this.setReady();
+        });
     }
 
     Module.$parent = Subclass.Extendable;

@@ -41,6 +41,7 @@ Subclass.Tools.LoadingTools = (function()
          */
         loadJS: function(fileName, callback)
         {
+
             var callbacks = _processLoadArguments(fileName, callback);
             var xmlhttp = new XMLHttpRequest();
             var documentScripts = document.querySelectorAll('script');

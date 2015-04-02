@@ -95,6 +95,10 @@ Subclass.ClassManager = (function()
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function(evt) {
             $this.checkForClones();
+            //$this.initializeClasses();
+        });
+
+        eventManager.getEvent('onReady').addListener(1000000, function(evt) {
             $this.initializeClasses();
         });
 
@@ -103,7 +107,7 @@ Subclass.ClassManager = (function()
 
         eventManager.getEvent('onAddPlugin').addListener(function(evt, pluginModule) {
             $this.checkForClones();
-            pluginModule.getClassManager().initializeClasses();
+            //pluginModule.getClassManager().initializeClasses();
         });
     };
 

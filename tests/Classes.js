@@ -129,3 +129,11 @@ describe("Checking definition of class", function() {
         expect(inst._destructed).toBe(2);
     });
 });
+
+describe("Checking plugins class", function() {
+    it ("existence", function() {
+
+        expect(app.issetClass('Plugs/Class')).toBe(true);
+
+    });
+});

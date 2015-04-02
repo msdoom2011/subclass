@@ -47,10 +47,10 @@ module.exports = function(config) {
       "src/*.js",
 
       // Tests
-      "tests/app-first-plugin/app-first-plugin.js",
-      "tests/app-forth-plugin/app-forth-plugin.js",
-      "tests/app-third-plugin/app-third-plugin.js",
-      "tests/app-second-plugin/app-second-plugin.js",
+      "tests/plugs/app-first-plugin.js",
+      "tests/plugs/app-forth-plugin.js",
+      "tests/plugs/app-third-plugin.js",
+      "tests/plugs/app-second-plugin.js",
       "tests/app/app.js",
       "tests/app/**/*.js",
       "tests/main.js",

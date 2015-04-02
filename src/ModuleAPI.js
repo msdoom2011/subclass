@@ -3,8 +3,7 @@
  * @constructor
  * @description
  *
- * This class contains all needed API to manipulation with classes,
- * services, parameters, services, events and module configuration.
+ * This class contains all needed API to manipulation with module
  *
  * @param {Subclass.Module} module
  *      An instance of module that will provide public API
@@ -248,6 +247,9 @@ Subclass.ModuleAPI = (function()
     {
         return this.getModule().getClassManager.apply(this.getModule(), arguments);
     };
+    //=========================================================================
+    //================================ SERVICE ================================
+    //=========================================================================
     //
     ///**
     // * The same as the {@link Subclass.Module#getServiceManager}
@@ -259,34 +261,6 @@ Subclass.ModuleAPI = (function()
     //{
     //    return this.getModule().getServiceManager.apply(this.getModule(), arguments);
     //};
-
-
-
-
-
-    //===========================================================
-    //======================== PARAMETER ========================
-    //===========================================================
-    //
-    ///**
-    // * The same as the {@link Subclass.Module#getParameterManager}
-    // *
-    // * @method getParameterManager
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.getParameterManager = function()
-    //{
-    //    return this.getModule().getParameterManager.apply(this.getModule(), arguments);
-    //};
-    //===========================================================
-    //======================== PARAMETER ========================
-    //===========================================================
-
-
-
-
-
-
     //
     ///**
     // * The same as the {@link Subclass.Service.ServiceManager#registerService}
@@ -329,78 +303,9 @@ Subclass.ModuleAPI = (function()
     //        arguments
     //    );
     //};
-    //
-
-
-
-
-
-    //===========================================================
-    //======================== PARAMETER ========================
-    //===========================================================
-    ///**
-    // * The same as the {@link Subclass.Parameter.ParameterManager#registerParameter}
-    // *
-    // * @method registerService
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.registerParameter = function()
-    //{
-    //    return this.getModule().getParameterManager().registerParameter.apply(
-    //        this.getModule().getParameterManager(),
-    //        arguments
-    //    );
-    //};
-    //
-    ///**
-    // * The same as the {@link Subclass.ConfigManager#setParameters}
-    // *
-    // * @method registerParameters
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.registerParameters = function()
-    //{
-    //    return this.getModule().getConfigManager().setParameters.apply(
-    //        this.getModule().getConfigManager(),
-    //        arguments
-    //    );
-    //};
-    //
-    ///**
-    // * The same as the {@link Subclass.Parameter.ParameterManager#setParameter}
-    // *
-    // * @method setParameter
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.setParameter = function()
-    //{
-    //    return this.getModule().getParameterManager().setParameter.apply(
-    //        this.getModule().getParameterManager(),
-    //        arguments
-    //    );
-    //};
-    //
-    ///**
-    // * The same as the {@link Subclass.Parameter.ParameterManager#getParameter}
-    // *
-    // * @method getParameter
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.getParameter = function(parameterName)
-    //{
-    //    return this.getModule().getParameterManager().getParameter.apply(
-    //        this.getModule().getParameterManager(),
-    //        arguments
-    //    );
-    //};
-    //===========================================================
-    //======================== PARAMETER ========================
-    //===========================================================
-
-
-
-
-
+    //=========================================================================
+    //================================ SERVICE ================================
+    //=========================================================================
     //
     ///**
     // * The same as the {@link Subclass.ConfigManager#setDataTypes}

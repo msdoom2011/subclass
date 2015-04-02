@@ -99,35 +99,17 @@ Subclass.ConfigManager = (function()
      * @example
      * ...
      *
-     * var moduleInst = new Subclass.createModule('myApp', {
-     *     autoload: false,
-     *     parameters: {
-     *         mode: "dev"
-     *     },
-     *     services: {
-     *         myService: {
-     *             className: "Path/To/MyService",
-     *             arguments: ["%mode%"]
-     *         }
-     *     }
-     * });
+     * var moduleInst = Subclass.createModule('myApp');
      *
      * ...
      * var moduleConfigs = moduleInst.getConfigManager();
      * var parameterManager = moduleInst.getParameterManager();
      *
      * moduleConfigs.setConfigs({ // or easily use moduleInst.setConfigs({...});
-     *     autoload: true,                        // will replace old value
      *     rootPath: "path/to/project/root/dir",  // adds new parameter
-     *     parameters: {
-     *         mode: "prod",                      // replaces old value
-     *         name: "some name"                  // adds new parameter to "parameters"
-     *     }
      * });
      *
-     * moduleConfigs.isAutoload();                // Returns true
      * moduleConfigs.getRootPath();               // Return "path/to/project/root/dir"
-     * parameterManager.issetParameter('name');   // Returns true
      * ...
      */
     ConfigManager.prototype.setConfigs = function (moduleConfigs)
@@ -152,27 +134,21 @@ Subclass.ConfigManager = (function()
             if (moduleConfigs.hasOwnProperty('files')) {
                 this.setFiles(moduleConfigs.files);
             }
-            //===========================================================
-            //======================== PARAMETER ========================
-            //===========================================================
-            //
-            //if (moduleConfigs.hasOwnProperty('parameters')) {
-            //    $this.setParameters(moduleConfigs.parameters);
-            //}
-            //
-            //===========================================================
-            //======================== PARAMETER ========================
-            //===========================================================
+            //=========================================================================
+            //================================ SERVICE ================================
+            //=========================================================================
             //
             //if (moduleConfigs.hasOwnProperty('services')) {
             //    $this.setServices(moduleConfigs.services);
             //}
+            //=========================================================================
+            //================================ SERVICE ================================
+            //=========================================================================
 
             for (var configName in moduleConfigs) {
                 if (
                     !moduleConfigs.hasOwnProperty(configName)
                     || [
-                        //'parameters',
                         //'services',
                         'pluginOf',
                         'files',
@@ -491,92 +467,15 @@ Subclass.ConfigManager = (function()
     //        .getTypeDefinitions()
     //    ;
     //};
-    //===========================================================
-    //======================== PARAMETER ========================
-    //===========================================================
-    ///**
-    // * Registers new parameters or redefines already existent with the same name.
-    // *
-    // * @method setParameters
-    // * @memberOf Subclass.ConfigManager.prototype
-    // *
-    // * @throws {Error}
-    // *      Throws error if trying to change value after the module became ready
-    // *
-    // * @param {Object} parameters
-    // *      A plain object with properties which hold
-    // *      properties whatever you need
-    // *
-    // * @example
-    // * ...
-    // *
-    // * var moduleConfigs = moduleInst.getConfigManager();
-    // *
-    // * // setting new parameters
-    // * moduleConfigs.setParameters({
-    // *      param1: "string value",
-    // *      param2: 1000,
-    // *      param3: { a: 10, b: "str" },
-    // *      ...
-    // * });
-    // * ...
-    // *
-    // * moduleInst.getParameter("param1"); // returns "string value"
-    // * moduleInst.getParameter("param2"); // returns 1000
-    // * moduleInst.getParameter("param3"); // returns { a: 10, b: "str" }
-    // * ...
-    // */
-    //ConfigManager.prototype.setParameters = function(parameters)
-    //{
-    //    this.checkModuleIsReady();
-    //
-    //    if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
-    //        Subclass.Error.create('InvalidModuleOption')
-    //            .option('parameters')
-    //            .module(this.getModule().getName())
-    //            .received(parameters)
-    //            .expected('a plain object')
-    //            .apply()
-    //        ;
-    //    }
-    //    var parameterManager = this.getModule().getParameterManager();
-    //
-    //    for (var paramName in parameters) {
-    //        if (!parameters.hasOwnProperty(paramName)) {
-    //            continue;
-    //        }
-    //        parameterManager.registerParameter(
-    //            paramName,
-    //            parameters[paramName]
-    //        );
-    //    }
-    //};
-    //
-    ///**
-    // * Returns all registered parameters in the form in which they were set
-    // *
-    // * @method getParameters
-    // * @memberOf Subclass.ConfigManager.prototype
-    // *
-    // * @returns {Object}
-    // */
-    //ConfigManager.prototype.getParameters = function()
-    //{
-    //    var parameters = this.getModule().getParameterManager().getParameters();
-    //    var parameterDefinitions = {};
-    //
-    //    for (var i = 0; i < parameters.length; i++) {
-    //        var parameterValue = parameters[i].getValue();
-    //        var parameterName = parameters[i].getName();
-    //
-    //        parameterDefinitions[parameterName] = Subclass.Tools.copy(parameterValue);
-    //    }
-    //    return parameterDefinitions;
-    //};
-    //===========================================================
-    //======================== PARAMETER ========================
-    //===========================================================
 
+
+
+
+
+    //
+    //=========================================================================
+    //================================ SERVICE ================================
+    //=========================================================================
     ///**
     // * Registers new services and redefines already existent ones with the same name.
     // *
@@ -692,6 +591,13 @@ Subclass.ConfigManager = (function()
     //    }
     //    return serviceDefinitions;
     //};
+    //=========================================================================
+    //================================ SERVICE ================================
+    //=========================================================================
+
+
+
+
 
     /**
      * Sets callback function which will invoked when all classes of the module
@@ -702,9 +608,8 @@ Subclass.ConfigManager = (function()
      * callbacks storage and will be invoked after other callback functions
      * which were registered earlier.<br><br>
      *
-     * If "autoload" configuration parameter was set in false and there were no classes
-     * registered in module at the moment and onReady callback function was not set earlier,
-     * the call of current method invokes specified callback immediately.
+     * If there were no classes registered in module at the moment and onReady callback
+     * function was not set earlier, the call of current method invokes specified callback immediately.
      *
      * @method setOnReady
      * @memberOf Subclass.ConfigManager.prototype

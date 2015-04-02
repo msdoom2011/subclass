@@ -7,7 +7,7 @@
     "dir": {
       "src": "<%= config.src_dir %>",
       "build": "<%= config.build_dir %>/lib",
-      "release": "<%= config.release_dir %>/lib"
+      "release": "<%= config.release_dir %>"
     },
     "content": {
       "main": {

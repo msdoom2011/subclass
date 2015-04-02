@@ -33,7 +33,7 @@ Subclass.EventManager = function()
     };
 
     /**
-    * Returns all registered services
+    * Returns all registered events
     *
     * @method getEvents
     * @memberOf Subclass.EventManager.prototype

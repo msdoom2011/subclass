@@ -50,6 +50,11 @@ Subclass.Class.Type.Trait.Extension.ClassDefinitionExtension = function() {
         });
     };
 
+
+    //=========================================================================
+    //========================== ADDING NEW METHODS ===========================
+    //=========================================================================
+
     var ClassDefinition = Subclass.Class.Type.Class.ClassDefinition;
 
     /**
@@ -122,9 +127,11 @@ Subclass.Class.Type.Trait.Extension.ClassDefinitionExtension = function() {
     };
 
 
-    // Registering extension
+    //=========================================================================
+    //======================== REGISTERING EXTENSION ==========================
+    //=========================================================================
 
-    Subclass.Module.onInit(function(evt, module)
+    Subclass.Module.onInitializeAfter(function(evt, module)
     {
         ClassDefinition = Subclass.Tools.buildClassConstructor(ClassDefinition);
 

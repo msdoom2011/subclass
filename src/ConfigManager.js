@@ -58,7 +58,25 @@ Subclass.ConfigManager = (function()
          * @private
          */
         this._files = [];
+
+        /**
+         * List of class manager events
+         *
+         * @type {Object}
+         * @private
+         */
+        this._events = {};
+
+
+        // Initializing operations
+
+        this.registerEvent('onInitialize');
+        this.getEvent('onInitialize').trigger();
     }
+
+    ConfigManager.$parent = Subclass.Extendable;
+
+    ConfigManager.$mixins = [Subclass.Event.EventableMixin];
 
     /**
      * Sets new module configs.
@@ -128,6 +146,28 @@ Subclass.ConfigManager = (function()
             ;
         }
         if (moduleConfigs) {
+            if (moduleConfigs.hasOwnProperty('pluginOf')) {
+                this.setPluginOf(moduleConfigs.pluginOf);
+            }
+            if (moduleConfigs.hasOwnProperty('files')) {
+                this.setFiles(moduleConfigs.files);
+            }
+            //===========================================================
+            //======================== PARAMETER ========================
+            //===========================================================
+            //
+            //if (moduleConfigs.hasOwnProperty('parameters')) {
+            //    $this.setParameters(moduleConfigs.parameters);
+            //}
+            //
+            //===========================================================
+            //======================== PARAMETER ========================
+            //===========================================================
+            //
+            //if (moduleConfigs.hasOwnProperty('services')) {
+            //    $this.setServices(moduleConfigs.services);
+            //}
+
             for (var configName in moduleConfigs) {
                 if (
                     !moduleConfigs.hasOwnProperty(configName)
@@ -151,18 +191,6 @@ Subclass.ConfigManager = (function()
                 }
                 this[setterName](moduleConfigs[configName]);
             }
-            if (moduleConfigs.hasOwnProperty('pluginOf')) {
-                this.setPluginOf(moduleConfigs.pluginOf);
-            }
-            if (moduleConfigs.hasOwnProperty('files')) {
-                this.setFiles(moduleConfigs.files);
-            }
-            //if (moduleConfigs.hasOwnProperty('parameters')) {
-            //    $this.setParameters(moduleConfigs.parameters);
-            //}
-            //if (moduleConfigs.hasOwnProperty('services')) {
-            //    $this.setServices(moduleConfigs.services);
-            //}
             if (moduleConfigs.hasOwnProperty('onReady')) {
                 $this.setOnReady(moduleConfigs.onReady);
             }
@@ -185,8 +213,7 @@ Subclass.ConfigManager = (function()
     /**
      * Sets a specific state would be current module a plug-in or not.
      *
-     * If module is marked as a plug-in then the configuration parameter "autoload"
-     * will forcibly set to false and modules registered onReady callback functions
+     * If module is marked as a plug-in then its registered onReady callback functions
      * will be invoked only when the root module becomes ready.
      *
      * @method setPlugin
@@ -202,7 +229,7 @@ Subclass.ConfigManager = (function()
      */
     ConfigManager.prototype.setPlugin = function(isPlugin)
     {
-        this._checkModuleIsReady();
+        this.checkModuleIsReady();
 
         if (typeof isPlugin != 'boolean') {
             Subclass.Error.create('InvalidModuleOption')
@@ -253,7 +280,7 @@ Subclass.ConfigManager = (function()
      */
     ConfigManager.prototype.setPluginOf = function(parentModuleName)
     {
-        this._checkModuleIsReady();
+        this.checkModuleIsReady();
 
         if (parentModuleName !== null && typeof parentModuleName != 'string') {
             Subclass.Error.create('InvalidModuleOption')
@@ -305,7 +332,7 @@ Subclass.ConfigManager = (function()
      */
     ConfigManager.prototype.setRootPath = function(rootPath)
     {
-        this._checkModuleIsReady();
+        this.checkModuleIsReady();
 
         if (typeof rootPath != 'string') {
             Subclass.Error.create('InvalidModuleOption')
@@ -355,7 +382,7 @@ Subclass.ConfigManager = (function()
      */
     ConfigManager.prototype.setFiles = function(files, callback)
     {
-        this._checkModuleIsReady();
+        this.checkModuleIsReady();
 
         if (!files || !Array.isArray(files)) {
             Subclass.Error.create(
@@ -441,7 +468,7 @@ Subclass.ConfigManager = (function()
     // */
     //ConfigManager.prototype.setDataTypes = function(propertyDefinitions)
     //{
-    //    this._checkModuleIsReady();
+    //    this.checkModuleIsReady();
     //    this.getModule()
     //        .getPropertyManager()
     //        .defineDataTypes(propertyDefinitions)
@@ -464,7 +491,9 @@ Subclass.ConfigManager = (function()
     //        .getTypeDefinitions()
     //    ;
     //};
-    //
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
     ///**
     // * Registers new parameters or redefines already existent with the same name.
     // *
@@ -499,7 +528,7 @@ Subclass.ConfigManager = (function()
     // */
     //ConfigManager.prototype.setParameters = function(parameters)
     //{
-    //    this._checkModuleIsReady();
+    //    this.checkModuleIsReady();
     //
     //    if (!parameters || !Subclass.Tools.isPlainObject(parameters)) {
     //        Subclass.Error.create('InvalidModuleOption')
@@ -544,7 +573,10 @@ Subclass.ConfigManager = (function()
     //    }
     //    return parameterDefinitions;
     //};
-    //
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
+
     ///**
     // * Registers new services and redefines already existent ones with the same name.
     // *
@@ -615,7 +647,7 @@ Subclass.ConfigManager = (function()
     // */
     //ConfigManager.prototype.setServices = function(services)
     //{
-    //    this._checkModuleIsReady();
+    //    this.checkModuleIsReady();
     //
     //    if (!services || !Subclass.Tools.isPlainObject(services)) {
     //        Subclass.Error.create('InvalidModuleOption')
@@ -687,7 +719,7 @@ Subclass.ConfigManager = (function()
      */
     ConfigManager.prototype.setOnReady = function(callback)
     {
-        this._checkModuleIsReady();
+        this.checkModuleIsReady();
 
         if (typeof callback != "function") {
             Subclass.Error.create('InvalidArgument')
@@ -728,11 +760,11 @@ Subclass.ConfigManager = (function()
     /**
      * Ensures that the module is not ready
      *
-     * @method _checkModuleIsReady
+     * @method checkModuleIsReady
      * @private
      * @ignore
      */
-    ConfigManager.prototype._checkModuleIsReady = function()
+    ConfigManager.prototype.checkModuleIsReady = function()
     {
         if (this.getModule().isReady()) {
             Subclass.Error.create('Can\'t change configs in ready module.');
@@ -740,5 +772,4 @@ Subclass.ConfigManager = (function()
     };
 
     return ConfigManager;
-
 })();

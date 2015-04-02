@@ -20,15 +20,15 @@ module.exports = function(config) {
       "src/Subclass.js",
       "src/Extension.js",
       "src/Extendable.js",
-      "src/Module.js",
-      "src/ModuleAPI.js",
-      "src/ClassManager.js",
       "src/Tools/Tools.js",
       "src/Tools/**/*.js",
       "src/Error/ErrorManager.js",
       "src/Error/**/*.js",
       "src/Event/Event.js",
-      "src/Event/**/*.js",
+      "src/Event/*.js",
+      "src/Module.js",
+      "src/ModuleAPI.js",
+      "src/ClassManager.js",
       "src/Class/ClassType.js",
       "src/Class/ClassDefinition.js",
       "src/Class/ClassLoader.js",
@@ -43,6 +43,7 @@ module.exports = function(config) {
       "src/Class/Type/Trait/**/*.js",
       "src/Class/Type/**/*.js",
       "src/Class/**/*.js",
+      "src/Event/Helper/**/*.js",
       "src/*.js",
 
       // Tests
@@ -53,9 +54,7 @@ module.exports = function(config) {
       "tests/interfaces.js",
       "tests/traits.js",
       "tests/abstracts.js",
-      "tests/classes.js",
-      //"tests/builder/BuiltInterfaces.js",
-      //"tests/builder/BuiltClasses.js"
+      "tests/classes.js"
     ],
 
 

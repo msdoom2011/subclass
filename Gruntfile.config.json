@@ -1,5 +1,5 @@
 {
-  "name": "Subclass",
+  "name": "subclass",
   "src_dir": "src",
   "build_dir": "build",
   "release_dir": "release",
@@ -14,7 +14,9 @@
         "files_first": [
           "Subclass.js",
           "Extension.js",
-          "Extendable.js",
+          "Extendable.js"
+        ],
+        "files_middle": [
           "Module.js",
           "ModuleAPI.js",
           "ClassManager.js"
@@ -59,9 +61,12 @@
       },
       "event": {
         "dir": "Event",
-        "files": [
+        "files_first": [
           "<%= config.lib.content.event.dir %>/Event.js",
-          "<%= config.lib.content.event.dir %>/**/*.js"
+          "<%= config.lib.content.event.dir %>/*.js"
+        ],
+        "files_rest": [
+          "<%= config.lib.content.event.dir %>/Helper/**/*.js"
         ]
       }
     },
@@ -69,8 +74,10 @@
       "<%= config.lib.content.main.files_first %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.error.files %>",
-      "<%= config.lib.content.event.files %>",
+      "<%= config.lib.content.event.files_first %>",
+      "<%= config.lib.content.main.files_middle %>",
       "<%= config.lib.content.class.files %>",
+      "<%= config.lib.content.event.files_rest %>",
       "<%= config.lib.content.main.files_rest %>"
     ],
     "files_release": {

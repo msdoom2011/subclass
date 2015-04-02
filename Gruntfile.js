@@ -121,7 +121,14 @@ module.exports = function(grunt) {
                 files: [{
                     src: [
                         "<%= config.lib.files_release.minimized %>",
-                        "tests/**/*.js"
+                        "tests/app/app.js",
+                        "tests/app/**/*.js",
+                        "tests/main.js",
+                        "tests/building.js",
+                        "tests/interfaces.js",
+                        "tests/traits.js",
+                        "tests/abstracts.js",
+                        "tests/classes.js"
                     ]
                 }]
             }
@@ -157,7 +164,7 @@ module.exports = function(grunt) {
         "copy:build_lib",
         "copy:build_demo",
         "index:build",
-        //"karma:build"
+        "karma:build"
     ]);
 
     grunt.registerTask("release", [
@@ -168,7 +175,7 @@ module.exports = function(grunt) {
         "uglify:release",
         'minimize:release',
         "index:release",
-        //"karma:release"
+        "karma:release"
     ]);
 
     grunt.registerTask("doc", [

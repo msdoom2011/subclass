@@ -104,6 +104,10 @@
  *                                       invoked when all module classes
  *                                       will be loaded.
  *
+ //===========================================================
+ //======================== PARAMETER ========================
+ //===========================================================
+ //
  //* parameters   {Object}    opt          Object with parameters which can
  //*                                       be used in service definitions
  //*                                       or in any other places of the
@@ -122,6 +126,11 @@
  //*                                         ...
  //*                                       };
  //*
+ //===========================================================
+ //======================== PARAMETER ========================
+ //===========================================================
+ //
+ //
  //* services     {Object}    opt          List of service definitions.
  //*                                       To see more about service
  //*                                       definition configuration look at
@@ -204,7 +213,9 @@ Subclass.Module = (function()
         // Registering events
 
         this.getEventManager()
-            .registerEvent('onInit')
+            .registerEvent('onInitializeBefore')
+            .registerEvent('onInitialize')
+            .registerEvent('onInitializeAfter')
             .registerEvent('onReady')
             .registerEvent('onReadyBefore')
             .registerEvent('onReadyAfter')
@@ -251,6 +262,13 @@ Subclass.Module = (function()
         // */
         //this._serviceManager = new Subclass.Service.ServiceManager(this);
         //
+
+
+
+        //===========================================================
+        //======================== PARAMETER ========================
+        //===========================================================
+        //
         ///**
         // * Parameter manager instance
         // *
@@ -258,6 +276,10 @@ Subclass.Module = (function()
         // * @private
         // */
         //this._parameterManager = new Subclass.Parameter.ParameterManager(this);
+        //
+        //===========================================================
+        //======================== PARAMETER ========================
+        //===========================================================
 
         /**
          * Module configuration
@@ -286,18 +308,40 @@ Subclass.Module = (function()
 
         // Initializing module
 
+        var eventManager = this.getEventManager();
+
+        for (var i = 0; i < Module._initializersBefore.length; i++) {
+            eventManager.getEvent('onInitializeBefore').addListener(Module._initializersBefore[i]);
+        }
+        for (i = 0; i < Module._initializersAfter.length; i++) {
+            eventManager.getEvent('onInitializeAfter').addListener(Module._initializersAfter[i]);
+        }
+        eventManager.getEvent('onInitializeBefore').triggerPrivate(this);
+
+        this.initializeExtensions();
+        eventManager.getEvent('onInitialize').triggerPrivate(this);
+
         this.setConfigs(moduleConfigs);
         this.getClassManager().initialize();
+
+
+
+        //===========================================================
+        //======================== PARAMETER ========================
+        //===========================================================
+        //
         //this.getPropertyManager().initialize();
+        //
+        //===========================================================
+        //======================== PARAMETER ========================
+        //===========================================================
+
+
+
         this.getLoadManager().initialize();
         //this.getServiceManager().initialize();
 
-        var eventManager = this.getEventManager();
-
-        for (var i = 0; i < Module._initializers.length; i++) {
-            eventManager.getEvent('onInit').addListener(Module._initializers[i]);
-        }
-        eventManager.getEvent('onInit').triggerPrivate(this);
+        eventManager.getEvent('onInitializeAfter').triggerPrivate(this);
 
         // Calling onReady callback
         eventManager.getEvent('onLoadingEnd')
@@ -307,17 +351,30 @@ Subclass.Module = (function()
         );
     }
 
+    Module.$parent = Subclass.Extendable;
+
     /**
      * Array of function callbacks which will be invoked when module initializes
+     * before module configuration options was processed
      *
      * @type {Array}
+     * @static
      */
-    Module._initializers = [];
+    Module._initializersBefore = [];
+
+    /**
+     * Array of function callbacks which will be invoked when module
+     * initializes after module configuration options was processed
+     *
+     * @type {Array}
+     * @static
+     */
+    Module._initializersAfter = [];
 
     /**
      * Adds new initializer to module
      */
-    Module.onInit = function(callback)
+    Module.onInitializeBefore = function(callback)
     {
         if (!callback || typeof callback != 'function') {
             Subclass.Error.create("InvalidArgument")
@@ -327,8 +384,26 @@ Subclass.Module = (function()
                 .save()
             ;
         }
-        if (this._initializers.indexOf() < 0) {
-            this._initializers.push(callback);
+        if (this._initializersBefore.indexOf() < 0) {
+            this._initializersBefore.push(callback);
+        }
+    };
+
+    /**
+     * Adds new initializer to module
+     */
+    Module.onInitializeAfter = function(callback)
+    {
+        if (!callback || typeof callback != 'function') {
+            Subclass.Error.create("InvalidArgument")
+                .argument("the callback function", false)
+                .expected("a function")
+                .received(callback)
+                .save()
+            ;
+        }
+        if (this._initializersAfter.indexOf() < 0) {
+            this._initializersAfter.push(callback);
         }
     };
 
@@ -557,6 +632,13 @@ Subclass.Module = (function()
     {
         return this._classManager;
     };
+
+
+
+
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
     //
     ///**
     // * Returns an instance of parameter manager which allows to register parameters,
@@ -572,6 +654,14 @@ Subclass.Module = (function()
     //    return this._parameterManager;
     //};
     //
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
+
+
+
+
+
     ///**
     // * Returns an instance of service manager which allows to register, build and
     // * get services throughout the project

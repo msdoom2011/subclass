@@ -12,6 +12,11 @@ Subclass.Class.Type.Interface.Extension.ClassBuilderExtension = function() {
 
     ClassBuilderExtension.$parent = Subclass.Extension;
 
+
+    //=========================================================================
+    //========================== ADDING NEW METHODS ===========================
+    //=========================================================================
+
     var ClassBuilder = Subclass.Class.Type.Class.ClassBuilder;
 
     /**
@@ -113,9 +118,12 @@ Subclass.Class.Type.Interface.Extension.ClassBuilderExtension = function() {
         return this.getDefinition().$_implements || [];
     };
 
-    // Registering extension for Class class type
 
-    Subclass.Module.onInit(function(evt, module)
+    //=========================================================================
+    //======================== REGISTERING EXTENSION ==========================
+    //=========================================================================
+
+    Subclass.Module.onInitializeAfter(function(evt, module)
     {
         ClassBuilder = Subclass.Tools.buildClassConstructor(ClassBuilder);
 

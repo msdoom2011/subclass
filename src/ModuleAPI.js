@@ -22,7 +22,26 @@ Subclass.ModuleAPI = (function()
          * @type {Subclass.Module}
          */
         this._module = module;
+
+        /**
+         * Module api events
+         *
+         * @type {Array}
+         * @private
+         */
+        this._events = [];
+
+
+        // Initialization operations
+
+        this.registerEvent('onInitialize');
+        this.initializeExtensions();
+        this.getEvent('onInitialize').trigger();
     }
+
+    ModuleAPI.$parent = Subclass.Extendable;
+
+    ModuleAPI.$mixins = [Subclass.Event.EventableMixin];
 
     /**
      * Returns module instance
@@ -240,6 +259,14 @@ Subclass.ModuleAPI = (function()
     //{
     //    return this.getModule().getServiceManager.apply(this.getModule(), arguments);
     //};
+
+
+
+
+
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
     //
     ///**
     // * The same as the {@link Subclass.Module#getParameterManager}
@@ -251,6 +278,15 @@ Subclass.ModuleAPI = (function()
     //{
     //    return this.getModule().getParameterManager.apply(this.getModule(), arguments);
     //};
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
+
+
+
+
+
+
     //
     ///**
     // * The same as the {@link Subclass.Service.ServiceManager#registerService}
@@ -294,6 +330,14 @@ Subclass.ModuleAPI = (function()
     //    );
     //};
     //
+
+
+
+
+
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
     ///**
     // * The same as the {@link Subclass.Parameter.ParameterManager#registerParameter}
     // *
@@ -349,6 +393,14 @@ Subclass.ModuleAPI = (function()
     //        arguments
     //    );
     //};
+    //===========================================================
+    //======================== PARAMETER ========================
+    //===========================================================
+
+
+
+
+
     //
     ///**
     // * The same as the {@link Subclass.ConfigManager#setDataTypes}

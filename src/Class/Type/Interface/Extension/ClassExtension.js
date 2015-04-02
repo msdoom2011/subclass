@@ -59,6 +59,11 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
         });
     };
 
+
+    //=========================================================================
+    //========================== ADDING NEW METHODS ===========================
+    //=========================================================================
+
     var Class = Subclass.Class.Type.Class.Class;
 
     /**
@@ -224,9 +229,12 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
         return false;
     };
 
-    // Registering extension
 
-    Subclass.Module.onInit(function(evt, module)
+    //=========================================================================
+    //======================== REGISTERING EXTENSION ==========================
+    //=========================================================================
+
+    Subclass.Module.onInitializeAfter(function(evt, module)
     {
         Class = Subclass.Tools.buildClassConstructor(Class);
 

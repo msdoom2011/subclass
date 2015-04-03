@@ -10,12 +10,29 @@
 window.Subclass = (function()
 {
     /**
+     * Reports whether the SubclassJS was initialized
+     *
+     * @type {boolean}
+     * @private
+     */
+    var _initialized = false;
+
+    /**
      * Collection of registered modules
      *
      * @type {Array.<Subclass.Module>}
      * @private
      */
     var _modules = [];
+
+    /**
+     * Collection of registered SubclassJS plugins
+     *
+     * @type {Object.<Function>}
+     * @private
+     */
+    var _plugins = {};
+
 
     return {
 
@@ -93,6 +110,10 @@ window.Subclass = (function()
             if (!modulePlugins) {
                 modulePlugins = [];
             }
+
+            // Initializes SubclassJS
+
+            this._initialize();
 
             // If for registering module exists plugins
 
@@ -216,6 +237,90 @@ window.Subclass = (function()
                 }
             }
             return false;
+        },
+
+        /**
+         * Registers new SubclassJS plug-in
+         *
+         * @method registerPlugin
+         * @memberOf Subclass
+         * @static
+         *
+         * @param {string} pluginClass
+         *      The name of SubclassJS plug-in
+         */
+        registerPlugin: function(pluginClass)
+        {
+            if (typeof pluginClass != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the SubclassJS plugin constructor', false)
+                    .expected('a function')
+                    .received(pluginClass)
+                    .apply()
+                ;
+            }
+            var pluginClassConstructor = Subclass.Tools.buildClassConstructor(pluginClass);
+            var pluginName = pluginClassConstructor.getName();
+
+            _plugins[pluginName] = pluginClassConstructor;
+        },
+
+        /**
+         * Checks whether SubclassJS plug-in with specified name is registered
+         *
+         * @method issetPlugin
+         * @memberOf Subclass
+         *
+         * @param {string} pluginName
+         *      The name of SubclassJS plug-in
+         */
+        issetPlugin: function(pluginName)
+        {
+            return _plugins.hasOwnProperty(pluginName);
+        },
+
+        /**
+         * Returns all registered SubclassJS plug-ins
+         *
+         * @method getPlugins
+         * @memberOf Subclass
+         *
+         * @returns {Object.<Function>}
+         */
+        getPlugins: function()
+        {
+            return _plugins;
+        },
+
+        /**
+         * Initializes SubclassJS
+         *
+         * @method _initialize
+         * @private
+         * @static
+         */
+        _initialize: function()
+        {
+            if (_initialized) {
+                return;
+            }
+            for (var pluginName in _plugins) {
+                if (!_plugins.hasOwnProperty(pluginName)) {
+                    continue;
+                }
+                var plugin = _plugins[pluginName];
+                var pluginDependencies = plugin.getDependencies();
+
+                for (var i = 0; i < pluginDependencies.length; i++) {
+                    if (!Subclass.issetPlugin(pluginDependencies[i])) {
+                        Subclass.Error.create(
+                            'The SubclassJS plug-in "' + pluginName + '" ' +
+                            'requires the "' + pluginDependencies + '" plug-in to be installed.'
+                        );
+                    }
+                }
+                _initialized = true;
+            }
         }
     };
 })();

@@ -566,7 +566,8 @@ Subclass.Class.ClassDefinition = (function()
     {
         if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
             Subclass.Error.create(
-                'Trying to get not existent class definition part data "' + typeName + '".'
+                'Trying to get not existent ' +
+                'class definition part data "' + typeName + '".'
             );
         }
         if (withInherited !== true) {
@@ -596,10 +597,13 @@ Subclass.Class.ClassDefinition = (function()
 
                     )) || (typeName == 'methods' && (
                         typeof definition[propName] != 'function'
-                        || propName.match(/^\$_/i)
-
+                        || (
+                            propName.match(/^\$_/i)
+                            && propName != '$_constructor'
+                        )
                     )) || (typeName == 'metaData' && (
                         !propName.match(/^\$_/i)
+                        || propName == '$_constructor'
                     ))
                 )
             ) {
@@ -667,16 +671,6 @@ Subclass.Class.ClassDefinition = (function()
             // * @type {Object}
             // */
             //$_properties: {},
-
-            /**
-             * Class constructor
-             *
-             * @param [arguments] Any class constructor arguments
-             */
-            $_constructor: function()
-            {
-                // Do something
-            },
 
             /**
              * Returns class manager instance

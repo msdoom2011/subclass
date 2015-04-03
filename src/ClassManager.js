@@ -95,10 +95,6 @@ Subclass.ClassManager = (function()
 
         eventManager.getEvent('onLoadingEnd').addListener(100, function(evt) {
             $this.checkForClones();
-            //$this.initializeClasses();
-        });
-
-        eventManager.getEvent('onReady').addListener(1000000, function(evt) {
             $this.initializeClasses();
         });
 
@@ -107,7 +103,7 @@ Subclass.ClassManager = (function()
 
         eventManager.getEvent('onAddPlugin').addListener(function(evt, pluginModule) {
             $this.checkForClones();
-            //pluginModule.getClassManager().initializeClasses();
+            pluginModule.getClassManager().initializeClasses();
         });
     };
 
@@ -168,38 +164,10 @@ Subclass.ClassManager = (function()
             withParentClasses = true;
         }
 
-        // Returning classes from current module (without its plug-ins)
-        // with classes from its parent modules
+        // Returning classes from current module with classes from its parent modules
 
-        if (privateClasses && withParentClasses) {
-        //if (withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
-        //    return mainModule.getRoot().getClassManager().getClasses(false, false, mainModule);
-
-            if (mainModule.hasParent()) {
-                var parentModule = mainModule.getParent();
-                var parentClasses = parentModule.getClassManager().getClasses(true, true);
-
-
-
-
-                var parentPlugins = parentModule.getModuleStorage().getPlugins();
-
-                for (var i = 0; i < parentPlugins.length; i++) {
-                    if (parentPlugins[i] == mainModule) {
-                        continue;
-                    }
-                    var parentPluginClasses = parentPlugins[i].getClassManager().getClasses(true, false);
-                    Subclass.Tools.extend(parentClasses, parentPluginClasses);
-                }
-
-
-
-
-                Subclass.Tools.extend(classes, parentClasses);
-            }
-            Subclass.Tools.extend(classes, this._classes);
-
-            return classes;
+        if (withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
+            return mainModule.getRoot().getClassManager().getClasses(false, false, mainModule);
 
         // Returning classes from current module (without its plug-ins)
 
@@ -211,13 +179,11 @@ Subclass.ClassManager = (function()
 
         moduleStorage.eachModule(function(module) {
             if (module == mainModule) {
-                Subclass.Tools.extend(classes, $this.getClasses(true, withParentClasses));
-                //Subclass.Tools.extend(classes, $this.getClasses(true, false));
+                Subclass.Tools.extend(classes, $this.getClasses(true, false));
                 return;
             }
             var moduleClassManager = module.getClassManager();
-            var moduleClasses = moduleClassManager.getClasses(false, withParentClasses);
-            //var moduleClasses = moduleClassManager.getClasses(false, false);
+            var moduleClasses = moduleClassManager.getClasses(false, false);
 
             Subclass.Tools.extend(classes, moduleClasses);
         });

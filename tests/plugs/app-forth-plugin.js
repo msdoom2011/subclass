@@ -14,6 +14,16 @@ var appForthPlugin = Subclass.createModule('appForthPlugin', {
 
         $_traits: ["Plugs/Trait"],
 
+        play: function()
+        {
+            return true;
+        },
+
+        run: function()
+        {
+            return true;
+        },
+
         walk: function()
         {
             return true;

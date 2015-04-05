@@ -597,13 +597,10 @@ Subclass.Class.ClassDefinition = (function()
 
                     )) || (typeName == 'methods' && (
                         typeof definition[propName] != 'function'
-                        || (
-                            propName.match(/^\$_/i)
-                            && propName != '$_constructor'
-                        )
+                        || propName.match(/^\$_/i)
+
                     )) || (typeName == 'metaData' && (
                         !propName.match(/^\$_/i)
-                        || propName == '$_constructor'
                     ))
                 )
             ) {

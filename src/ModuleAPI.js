@@ -247,65 +247,6 @@ Subclass.ModuleAPI = (function()
     {
         return this.getModule().getClassManager.apply(this.getModule(), arguments);
     };
-    //=========================================================================
-    //================================ SERVICE ================================
-    //=========================================================================
-    //
-    ///**
-    // * The same as the {@link Subclass.Module#getServiceManager}
-    // *
-    // * @method getServiceManager
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.getServiceManager = function()
-    //{
-    //    return this.getModule().getServiceManager.apply(this.getModule(), arguments);
-    //};
-    //
-    ///**
-    // * The same as the {@link Subclass.Service.ServiceManager#registerService}
-    // *
-    // * @method registerService
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.registerService = function()
-    //{
-    //    return this.getModule().getServiceManager().registerService.apply(
-    //        this.getModule().getServiceManager(),
-    //        arguments
-    //    );
-    //};
-    //
-    ///**
-    // * The same as the {@link Subclass.ConfigManager#setServices}
-    // *
-    // * @method registerServices
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.registerServices = function()
-    //{
-    //    return this.getModule().getConfigManager().setServices.apply(
-    //        this.getModule().getConfigManager(),
-    //        arguments
-    //    );
-    //};
-    //
-    ///**
-    // * The same as the {@link Subclass.Service.ServiceManager#getService}
-    // *
-    // * @method getService
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.getService = function()
-    //{
-    //    return this.getModule().getServiceManager().getService.apply(
-    //        this.getModule().getServiceManager(),
-    //        arguments
-    //    );
-    //};
-    //=========================================================================
-    //================================ SERVICE ================================
-    //=========================================================================
     //
     ///**
     // * The same as the {@link Subclass.ConfigManager#setDataTypes}

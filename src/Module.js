@@ -104,35 +104,6 @@
  *                                       invoked when all module classes
  *                                       will be loaded.
  *
- //
- //
- //=========================================================================
- //================================ SERVICE ================================
- //=========================================================================
- //* services     {Object}    opt          List of service definitions.
- //*                                       To see more about service
- //*                                       definition configuration look at
- //*                                       {@link Subclass.Service.Service}
- //*
- //*                                       Example:
- //*
- //*                                       var moduleConfigs = {
- //*                                         ...
- //*                                         services: {
- //*                                           foo: {
- //*                                             className: "Path/Of/FooClass",
- //*                                             arguments: ["%mode%]
- //*                                           },
- //*                                           bar: {
- //*                                             className: "Path/Of/BarClass"
- //*                                           },
- //*                                           ...
- //*                                         },
- //*                                         ...
- //*                                       };
- //=========================================================================
- //================================ SERVICE ================================
- //=========================================================================
  * </pre>
  */
 Subclass.Module = (function()
@@ -234,21 +205,6 @@ Subclass.Module = (function()
          * @private
          */
         this._classManager = Subclass.Tools.createClassInstance(Subclass.ClassManager, this);
-        //=========================================================================
-        //================================ SERVICE ================================
-        //=========================================================================
-        //
-        ///**
-        // * Service manager instance
-        // *
-        // * @type {Subclass.Service.ServiceManager}
-        // * @private
-        // */
-        //this._serviceManager = new Subclass.Service.ServiceManager(this);
-        //
-        //=========================================================================
-        //================================ SERVICE ================================
-        //=========================================================================
 
         /**
          * Module configuration
@@ -296,16 +252,6 @@ Subclass.Module = (function()
         this.setConfigs(moduleConfigs);
         this.getClassManager().initialize();
         this.getLoadManager().initialize();
-        //=========================================================================
-        //================================ SERVICE ================================
-        //=========================================================================
-        //
-        //this.getServiceManager().initialize();
-        //
-        //=========================================================================
-        //================================ SERVICE ================================
-        //=========================================================================
-
 
         eventManager.getEvent('onInitializeAfter').triggerPrivate(this);
 
@@ -515,10 +461,14 @@ Subclass.Module = (function()
      *
      * @method setConfigs
      * @memberOf Subclass.Module.prototype
+     *
+     * @returns {Subclass.Module}
      */
     Module.prototype.setConfigs = function(configs)
     {
-        return this.getConfigManager().setConfigs(configs);
+        this.getConfigManager().setConfigs(configs);
+
+        return this;
     };
 
     /**
@@ -603,25 +553,6 @@ Subclass.Module = (function()
     {
         return this._classManager;
     };
-    //=========================================================================
-    //================================ SERVICE ================================
-    //=========================================================================
-    ///**
-    // * Returns an instance of service manager which allows to register, build and
-    // * get services throughout the project
-    // *
-    // * @method getServiceManager
-    // * @memberOf Subclass.Module.prototype
-    // *
-    // * @returns {Subclass.Service.ServiceManager}
-    // */
-    //Module.prototype.getServiceManager = function()
-    //{
-    //    return this._serviceManager;
-    //};
-    //=========================================================================
-    //================================ SERVICE ================================
-    //=========================================================================
 
     /**
      * The same as the {@link Subclass.ConfigManager#setOnReady}
@@ -631,10 +562,14 @@ Subclass.Module = (function()
      *
      * @param {Function} callback
      *      The callback function
+     *
+     * @returns {Subclass.Module}
      */
     Module.prototype.onReady = function(callback)
     {
         this.getConfigManager().setOnReady(callback);
+
+        return this;
     };
 
     /**
@@ -646,10 +581,14 @@ Subclass.Module = (function()
      *
      * @method triggerOnReady
      * @memberOf Subclass.Module.prototype
+     *
+     * @returns {Subclass.Module}
      */
     Module.prototype.triggerOnReady = function()
     {
         this.getEventManager().getEvent('onReady').trigger();
+
+        return this;
     };
 
     /**
@@ -790,6 +729,8 @@ Subclass.Module = (function()
      *      The callback function which will be invoked when plug-in module becomes ready.
      *      It is actual only if the module files (the second argument) was specified.
      *      Otherwise it will never be invoked.
+     *
+     * @returns {Subclass.Module}
      */
     Module.prototype.addPlugin = function(moduleName, moduleFile, callback)
     {
@@ -866,6 +807,8 @@ Subclass.Module = (function()
                 });
             }
         }
+
+        return this;
     };
 
     /**

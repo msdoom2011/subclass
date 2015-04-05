@@ -100,6 +100,17 @@
  //*                                         ...
  //*                                       };
  *
+ * onConfig     {Function}  opt          Callback function that will be
+ *                                       invoked before any of registered
+ *                                       module content will be initialized
+ *                                       (i.e. classes).
+ *
+ *                                       Subscribing listeners to this
+ *                                       event is good opportunity to modify
+ *                                       configuration of any registered
+ *                                       parts of application (i.e. classes)
+ *                                       by its plug-ins.
+ *
  * onReady      {Function}  opt          Callback function that will be
  *                                       invoked when all module classes
  *                                       will be loaded.
@@ -552,6 +563,24 @@ Subclass.Module = (function()
     Module.prototype.getClassManager = function()
     {
         return this._classManager;
+    };
+
+    /**
+     * The same as the {@link Subclass.ConfigManager#setOnConfig}
+     *
+     * @method onConfig
+     * @memberOf Subclass.Module.prototype
+     *
+     * @param {Function} callback
+     *      The callback function
+     *
+     * @returns {Subclass.Module}
+     */
+    Module.prototype.onConfig = function(callback)
+    {
+        this.getConfigManager().setOnConfig(callback);
+
+        return this;
     };
 
     /**

@@ -458,7 +458,39 @@ Subclass.ConfigManager = (function()
     //};
     //
     /**
-     * Sets callback function which will invoked when all classes of the module
+     * Sets callback function which will be invoked before all registered user application
+     * parts (i.e. classes) will be configured.
+     *
+     * It is a good opportunity to modify its configuration using plugins of application.
+     *
+     * @method setOnConfig
+     * @memberOf Subclass.ConfigManager.prototype
+     *
+     * @throws {Error}
+     *      Throws error if:<br />
+     *      - trying to change value after the module became ready<br />
+     *      - specified not function argument value
+     *
+     * @param callback
+     */
+    ConfigManager.prototype.setOnConfig = function(callback)
+    {
+        this.checkModuleIsReady();
+
+        if (typeof callback != "function") {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the callback', false)
+                .received(callback)
+                .expected('a function')
+                .apply()
+            ;
+        }
+
+        //TODO
+    };
+
+    /**
+     * Sets callback function which will be invoked after the all classes of the module
      * will be loaded (if configuration parameter "autoload" was set in true) and registered.<br><br>
      *
      * It is the same as "onReady" parameter in module configuration. If it was defined

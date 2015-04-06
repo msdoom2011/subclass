@@ -198,8 +198,17 @@ Subclass.LoadManager = (function()
             && this.isStackEmpty()
         ) {
             this._loadingEndTimeout = setTimeout(function() {
-                $this.getModule().getEventManager().getEvent('onLoadingEnd').triggerPrivate();
+                var module = $this.getModule();
+                var eventManager = module.getEventManager();
                 $this._loading = false;
+
+                if (module.isRoot()) {
+                    module.setConfigured();
+                }
+                eventManager
+                    .getEvent('onLoadingEnd')
+                    .triggerPrivate()
+                ;
             }, 10);
         }
     };

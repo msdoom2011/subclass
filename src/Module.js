@@ -179,10 +179,9 @@ Subclass.Module = (function()
             .registerEvent('onInitializeBefore')
             .registerEvent('onInitialize')
             .registerEvent('onInitializeAfter')
-            .registerEvent('onReady')
-            .registerEvent('onReadyBefore')
-            .registerEvent('onReadyAfter')
             .registerEvent('onAddPlugin')
+            .registerEvent('onConfig')
+            .registerEvent('onReady')
         ;
 
         /**
@@ -224,6 +223,14 @@ Subclass.Module = (function()
          * @private
          */
         this._configManager = Subclass.Tools.createClassInstance(Subclass.ConfigManager, this);
+
+        /**
+         * Reports whether module was configured
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._configured = false;
 
         /**
          * Checks whether module is prepared for ready
@@ -409,21 +416,10 @@ Subclass.Module = (function()
      */
     Module.prototype.getRoot = function()
     {
-        //var parent = this;
-        //
-        //if (arguments[0] && arguments[0] instanceof Subclass.Module) {
-        //    parent = arguments[0];
-        //}
-        //if (parent.hasParent()) {
-        //    parent = parent.getRoot(parent.getParent());
-        //}
-
-        if (this.hasParent()) {
-            return this.getParent().getRoot();
-        }
-        return this;
-
-        //return parent
+        return this.hasParent()
+            ? this.getParent().getRoot()
+            : this
+        ;
     };
 
     /**
@@ -579,6 +575,51 @@ Subclass.Module = (function()
     Module.prototype.onConfig = function(callback)
     {
         this.getConfigManager().setOnConfig(callback);
+        this.setConfigured();
+
+        return this;
+    };
+
+    /**
+     * Makes module be configured
+     *
+     * @method setConfigured
+     * @memberOf Subclass.Module.prototype
+     */
+    Module.prototype.setConfigured = function()
+    {
+        this.triggerOnConfig();
+        this._configured = true;
+    };
+
+    /**
+     * Reports wheter the module was configured
+     *
+     * @method isConfigured
+     * @memberOf Subclass.Module.prototype
+     *
+     * @returns {boolean}
+     */
+    Module.prototype.isConfigured = function()
+    {
+        return this._configured;
+    };
+
+    /**
+     * Invokes registered onConfig callback functions forcibly.<br /><br />
+     *
+     * If current module contains plug-ins then will be invoked onConfig callbacks
+     * from current module first and then will be invoked onConfig callbacks
+     * from plug-ins in order as they were added to the current module.
+     *
+     * @method triggerOnConfig
+     * @memberOf Subclass.Module.prototype
+     *
+     * @returns {Subclass.Module}
+     */
+    Module.prototype.triggerOnConfig = function()
+    {
+        this.getEventManager().getEvent('onConfig').trigger();
 
         return this;
     };
@@ -684,9 +725,10 @@ Subclass.Module = (function()
                     && this.getRoot().isReady()
                 )
             ) {
-                this.getEventManager().getEvent('onReadyBefore').trigger();
+                if (!this.getRoot().isConfigured()) {
+                    this.setConfigured();
+                }
                 this.triggerOnReady();
-                this.getEventManager().getEvent('onReadyAfter').trigger();
             }
         }
     };
@@ -717,25 +759,19 @@ Subclass.Module = (function()
     {
         var moduleStorage = this.getModuleStorage();
         var plugins = moduleStorage.getPlugins();
-        var result = true;
 
         if (moduleStorage.hasLazyModules()) {
             return false;
         }
-
         for (var i = 0; i < plugins.length; i++) {
             if (
-                result
-                && (
-                    !plugins[i].isPrepared()
-                    || !plugins[i].isPluginsReady()
-                )
+                !plugins[i].isPrepared()
+                || !plugins[i].isPluginsReady()
             ) {
-                result = false;
-                break;
+                return false;
             }
         }
-        return result;
+        return true;
     };
 
     /**

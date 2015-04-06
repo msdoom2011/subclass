@@ -485,8 +485,10 @@ Subclass.ConfigManager = (function()
                 .apply()
             ;
         }
+        var eventManager = this.getModule().getEventManager();
+        var onConfigEvent = eventManager.getEvent('onConfig');
 
-        //TODO
+        onConfigEvent.addListener(callback);
     };
 
     /**
@@ -548,7 +550,8 @@ Subclass.ConfigManager = (function()
             && !classManager.isEmpty()
             && !classManager.isLoading()
         ) {
-            module.setReady();
+            //module.setReady();
+            eventManager.getEvent('onLoadingEnd').trigger();
         }
     };
 

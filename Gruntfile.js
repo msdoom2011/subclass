@@ -121,6 +121,7 @@ module.exports = function(grunt) {
                 files: [{
                     src: [
                         "<%= config.lib.files_release.minimized %>",
+                        "tests/index.js",
                         "tests/plugs/app-first-plugin.js",
                         "tests/plugs/app-forth-plugin.js",
                         "tests/plugs/app-third-plugin.js",

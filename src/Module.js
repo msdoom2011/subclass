@@ -179,9 +179,11 @@ Subclass.Module = (function()
             .registerEvent('onInitializeBefore')
             .registerEvent('onInitialize')
             .registerEvent('onInitializeAfter')
-            .registerEvent('onAddPlugin')
             .registerEvent('onConfig')
             .registerEvent('onReady')
+            .registerEvent('onReadyBefore')
+            .registerEvent('onReadyAfter')
+            .registerEvent('onAddPlugin')
         ;
 
         /**
@@ -575,7 +577,6 @@ Subclass.Module = (function()
     Module.prototype.onConfig = function(callback)
     {
         this.getConfigManager().setOnConfig(callback);
-        this.setConfigured();
 
         return this;
     };
@@ -725,10 +726,12 @@ Subclass.Module = (function()
                     && this.getRoot().isReady()
                 )
             ) {
-                if (!this.getRoot().isConfigured()) {
+                if (!this.isConfigured()) {
                     this.setConfigured();
                 }
+                this.getEventManager().getEvent('onReadyBefore').trigger();
                 this.triggerOnReady();
+                this.getEventManager().getEvent('onReadyAfter').trigger();
             }
         }
     };

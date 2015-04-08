@@ -150,6 +150,39 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
+     * The same as the {@link Subclass.Module#onConfig}
+     *
+     * @method onConfig
+     * @memberOf Subclass.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.onConfig = function()
+    {
+        return this.getModule().onConfig.apply(this.getModule(), arguments);
+    };
+
+    /**
+     * The same as the {@link Subclass.Module#triggerOnConfig}
+     *
+     * @method triggerOnConfig
+     * @memberOf Subclass.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.triggerOnConfig = function()
+    {
+        return this.getModule().triggerOnConfig.apply(this.getModule(), arguments);
+    };
+
+    /**
+     * The same as the {@link Subclass.Module#isConfigured}
+     *
+     * @method isConfigured
+     * @memberOf Subclass.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.isConfigured = function()
+    {
+        return this.getModule().isConfigured.apply(this.getModule(), arguments);
+    };
+
+    /**
      * The same as the {@link Subclass.Module#onReady}
      *
      * @method onReady

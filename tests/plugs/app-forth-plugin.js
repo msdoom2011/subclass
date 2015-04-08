@@ -1,5 +1,8 @@
 var appForthPlugin = Subclass.createModule('appForthPlugin', {
-    pluginOf: 'appSecondPlugin'
+    pluginOf: 'appSecondPlugin',
+    onConfig: function() {
+        configuredModules.push('appForthPlugin');
+    }
 });
 
 !function() {

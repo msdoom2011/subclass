@@ -36,6 +36,27 @@ Subclass.Event.EventData = function()
     }
 
     /**
+     * Returns the event object instance
+     *
+     * @returns {Subclass.Event.Event}
+     */
+    EventData.prototype.getEvent = function()
+    {
+        return this._event;
+    };
+
+    /**
+     * Returns the object for which current event was triggered
+     * (matches with "this" variable in event listener callback function)
+     *
+     * @returns {Object}
+     */
+    EventData.prototype.getTarget = function()
+    {
+        return this._target;
+    };
+
+    /**
      * Starts event propagation
      */
     EventData.prototype.startPropagation = function()

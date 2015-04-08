@@ -6,6 +6,10 @@ var appFirstPlugin = Subclass.createModule('appFirstPlugin', {
 
     var plug = appFirstPlugin;
 
+    plug.onConfig(function(evt) {
+        configuredModules.push('appFirstPlugin');
+    });
+
     plug.registerAbstractClass("Plugs/AbstractClassBase", {
 
         $_abstract: {

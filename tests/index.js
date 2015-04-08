@@ -1,0 +1,2 @@
+var configuredModules = [];
+var app;

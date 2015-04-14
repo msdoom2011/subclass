@@ -223,6 +223,8 @@ Subclass.ClassManager = (function()
      */
     ClassManager.prototype.getClassLocations = function(className)
     {
+        //@TODO The searching of class locations should perform from the ROOT module
+
         var moduleStorage = this.getModule().getModuleStorage();
         var locations = [];
 
@@ -288,36 +290,6 @@ Subclass.ClassManager = (function()
             className,
             classDefinition
         );
-
-        //var createInstance = true;
-        //
-        //if (arguments[3] === false) {
-        //    createInstance = false;
-        //}
-        //if (classConstructor.$parent) {
-        //    var parentClassConstructor = this.createClass(
-        //        classConstructor.$parent,
-        //        className,
-        //        classDefinition,
-        //        false
-        //    );
-        //
-        //    var classConstructorProto = Object.create(parentClassConstructor.prototype);
-        //
-        //    classConstructorProto = Subclass.Tools.extend(
-        //        classConstructorProto,
-        //        classConstructor.prototype
-        //    );
-        //
-        //    classConstructor.prototype = classConstructorProto;
-        //    classConstructor.prototype.constructor = classConstructor;
-        //}
-        //
-        //if (createInstance) {
-        //    return new classConstructor(this, className, classDefinition);
-        //}
-        //
-        //return classConstructor;
     };
 
     /**
@@ -405,14 +377,6 @@ Subclass.ClassManager = (function()
             Subclass.Error.create('Trying to call to none existed class "' + className + '".');
         }
         return this.getClasses()[className];
-
-        //var classInst = this.getClasses()[className];
-        //
-        //if (classInst.createConstructorOnGet()) {
-        //    classInst.getConstructor();
-        //}
-        //
-        //return classInst;
     };
 
     /**
@@ -582,10 +546,6 @@ Subclass.ClassManager = (function()
     {
         var classBuilderConstructor = null;
 
-        //var createInstance = true;
-        //
-        //if (!arguments[2]) {
-
         if (!classType && className && !this.issetClass(className)) {
             Subclass.Error.create(
                 'Can\'t alter definition of class "' + className + '". ' +
@@ -601,46 +561,12 @@ Subclass.ClassManager = (function()
                 .getBuilderClass()
             ;
         }
-
-        //}
-        //else {
-        //    classBuilderConstructor = arguments[2];
-        //}
-        //if (arguments[3] === false) {
-        //    createInstance = false;
-        //}
-
         return Subclass.Tools.createClassInstance(
             classBuilderConstructor,
             this,
             classType,
             className
         );
-
-        //if (classBuilderConstructor.$parent) {
-        //    var parentClassBuilderConstructor = this.createClassBuilder(
-        //        classType,
-        //        className,
-        //        classBuilderConstructor.$parent,
-        //        false
-        //    );
-        //
-        //    var classBuilderConstructorProto = Object.create(parentClassBuilderConstructor.prototype);
-        //
-        //    classBuilderConstructorProto = Subclass.Tools.extend(
-        //        classBuilderConstructorProto,
-        //        classBuilderConstructor.prototype
-        //    );
-        //
-        //    classBuilderConstructor.prototype = classBuilderConstructorProto;
-        //    classBuilderConstructor.prototype.constructor = classBuilderConstructor;
-        //}
-        //
-        //if (createInstance) {
-        //    return new classBuilderConstructor(this, classType, className);
-        //}
-        //
-        //return classBuilderConstructor;
     };
 
 
@@ -813,6 +739,5 @@ Subclass.ClassManager = (function()
     };
 
     return ClassManager;
-
 })();
 

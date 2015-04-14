@@ -477,25 +477,23 @@ Subclass.Class.ClassDefinition = (function()
     /**
      * Returns class to which belongs specified method body
      *
-     * @param {Function} methodFunc
-     *      The method function body
+     * @param {Function} methodName
+     *      The name of class method
      *
      * @returns {(Subclass.Class.ClassType|null)}
      */
-    ClassDefinition.prototype.getMethodClass = function(methodFunc)
+    ClassDefinition.prototype.getMethodClass = function(methodName)
     {
         var classInst = this.getData();
 
-        for (var propName in classInst) {
-            if (classInst.hasOwnProperty(propName)) {
-                return this.getClass();
-            }
+        if (classInst.hasOwnProperty(methodName)) {
+            return this.getClass();
         }
         if (this.getClass().hasParent()) {
             return this.getClass()
                 .getParent()
                 .getDefinition()
-                .getMethodClass(methodFunc)
+                .getMethodClass(methodName)
             ;
         }
         return null;
@@ -756,7 +754,7 @@ Subclass.Class.ClassDefinition = (function()
                     .getParent()
                     .getClass()
                     .getDefinition()
-                    .getMethodClass(this[methodName])
+                    .getMethodClass(methodName)
                 ;
                 if (!parentClass) {
                     Subclass.Error.create(

@@ -105,6 +105,20 @@ Subclass.ClassManager = (function()
             $this.checkForClones();
             pluginModule.getClassManager().initializeClasses();
         });
+
+        // Start loading classes
+
+        setTimeout(function() {
+            if (!module.isRoot()) {
+                return;
+            }
+            var classesLength = Object.keys($this.getClasses()).length;
+            var standardClassesLength = Object.keys(ClassManager.getClasses()).length;
+
+            if (classesLength == standardClassesLength) {
+                module.getLoadManager().startLoading();
+            }
+        }, 20);
     };
 
     /**

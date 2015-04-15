@@ -111,7 +111,6 @@ Subclass.LoadManager = (function()
                 }
             });
         });
-
     };
 
     /**
@@ -138,10 +137,15 @@ Subclass.LoadManager = (function()
         var module = this.getModule();
         var $this = this;
 
-        if (module.isPlugin() && (!module.getParent() || !module.getRoot().isPrepared())) {
+        if (
+            module.isPlugin()
+            && (
+                !module.getParent()
+                || !module.getRoot().isPrepared()
+            )
+        ) {
             return;
         }
-
         $this._loading = true;
         $this._loadingPause = false;
         $this.processStack();
@@ -209,7 +213,7 @@ Subclass.LoadManager = (function()
                     .getEvent('onLoadingEnd')
                     .triggerPrivate()
                 ;
-            }, 10);
+            }, 20);
         }
     };
 

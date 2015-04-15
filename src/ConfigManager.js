@@ -527,32 +527,10 @@ Subclass.ConfigManager = (function()
             ;
         }
         var module = this.getModule();
-        var classManager = module.getClassManager();
         var eventManager = module.getEventManager();
         var onReadyEvent = eventManager.getEvent('onReady');
-        var triggerable = true;
-
-        // If onReady callback was registered earlier just add new listener
-
-        if (onReadyEvent.hasListeners()) {
-            triggerable = false;
-        }
 
         onReadyEvent.addListener(callback);
-
-        // Triggers onReady event if allows to trigger current event
-        // and where registered any classes
-        // and there are no classes that are in loading process
-
-        if (
-            triggerable
-            && module.isPrepared()
-            && !classManager.isEmpty()
-            && !classManager.isLoading()
-        ) {
-            //module.setReady();
-            eventManager.getEvent('onLoadingEnd').trigger();
-        }
     };
 
     /**

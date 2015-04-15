@@ -166,7 +166,7 @@ Subclass.ClassManager = (function()
 
         // Returning classes from current module with classes from its parent modules
 
-        if (withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
+        if (!privateClasses && withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
             return mainModule.getRoot().getClassManager().getClasses(false, false, mainModule);
 
         // Returning classes from current module (without its plug-ins)
@@ -192,23 +192,6 @@ Subclass.ClassManager = (function()
     };
 
     /**
-     * Initializes registered classes
-     *
-     * @method initializeClasses
-     * @memberOf Subclass.ClassManager.prototype
-     */
-    ClassManager.prototype.initializeClasses = function()
-    {
-        var classes = this.getClasses();
-
-        for (var className in classes) {
-            if (classes.hasOwnProperty(className)) {
-                classes[className].createConstructor();
-            }
-        }
-    };
-
-    /**
      * Returns module names where is defined class with specified name.<br /><br />
      *
      * It is especially actual if class with specified name is defined
@@ -223,16 +206,22 @@ Subclass.ClassManager = (function()
      */
     ClassManager.prototype.getClassLocations = function(className)
     {
-        //@TODO The searching of class locations should perform from the ROOT module
-
-        var moduleStorage = this.getModule().getModuleStorage();
+        var mainModule = this.getModule().getRoot();
         var locations = [];
+
+        if (arguments[1]) {
+            mainModule = arguments[1];
+        }
+        var moduleStorage = this.getModule().getModuleStorage();
 
         moduleStorage.eachModule(function(module) {
             var classManager = module.getClassManager();
 
             if (classManager.issetClass(className, true)) {
                 locations.push(module.getName());
+            }
+            if (module == mainModule) {
+                return;
             }
             if (module.hasPlugins()) {
                 var pluginModuleStorage = module.getModuleStorage();
@@ -241,7 +230,7 @@ Subclass.ClassManager = (function()
                 for (var i = 0; i < plugins.length; i++) {
                     var subPlugin = plugins[i];
                     var subPluginManager = subPlugin.getClassManager();
-                    var subPluginLocations = subPluginManager.getClassLocations(className);
+                    var subPluginLocations = subPluginManager.getClassLocations(className, subPlugin);
 
                     locations = locations.concat(subPluginLocations);
                 }
@@ -249,6 +238,23 @@ Subclass.ClassManager = (function()
         });
 
         return locations;
+    };
+
+    /**
+     * Initializes registered classes
+     *
+     * @method initializeClasses
+     * @memberOf Subclass.ClassManager.prototype
+     */
+    ClassManager.prototype.initializeClasses = function()
+    {
+        var classes = this.getClasses();
+
+        for (var className in classes) {
+            if (classes.hasOwnProperty(className)) {
+                classes[className].createConstructor();
+            }
+        }
     };
 
     /**

@@ -107,38 +107,6 @@ Subclass.Class.Type.Trait.Trait = (function()
     {
         return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
     };
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Trait.prototype.isInstanceOf = function()
-    //{
-    //    return Subclass.Class.ClassType.prototype.isInstanceOf.apply(this, arguments);
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Trait.prototype.setInstanceCreated = function()
-    //{
-    //    return Subclass.Class.ClassType.prototype.setInstanceCreated.apply(this, arguments);
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Trait.prototype.addChildClass = function()
-    //{
-    //    return Subclass.Class.ClassType.prototype.addChildClass.apply(this, arguments);
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Trait.prototype.getClassParents = function()
-    //{
-    //    return Subclass.Class.ClassType.prototype.getClassParents.apply(this, arguments);
-    //};
 
     Trait.prototype.getAbstractMethods = undefined;
 
@@ -165,6 +133,10 @@ Subclass.Class.Type.Trait.Trait = (function()
     Trait.prototype.setConstant = undefined;
 
     Trait.prototype.getConstants = undefined;
+
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     //
     ///**
     // * @inheritDoc
@@ -188,6 +160,10 @@ Subclass.Class.Type.Trait.Trait = (function()
     // * @inheritDoc
     // */
     //Trait.prototype.attachProperties = function() {};
+    //
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * @inheritDoc

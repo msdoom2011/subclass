@@ -111,12 +111,18 @@ Subclass.Class.ClassType = function()
          */
         this._children = [];
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //
         ///**
         // * @type {Object}
         // * @protected
         // */
         //this._properties = {};
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         /**
          * Reports whether the instance of current class was created
@@ -216,7 +222,8 @@ Subclass.Class.ClassType = function()
     };
 
     /**
-     * Initializes class on creation stage.
+     * Initializes class on creation stage.<br /><br />
+     *
      * Current method invokes automatically right at the end of the class type constructor.
      * It can contain different manipulations with class definition or other manipulations that is needed
      */
@@ -605,6 +612,9 @@ Subclass.Class.ClassType = function()
         }
         return constants;
     };
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     //
     ///**
     // * Returns all typed properties in current class definition instance
@@ -693,6 +703,9 @@ Subclass.Class.ClassType = function()
     //    }
     //    return true;
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * Returns constructor function for current class type
@@ -748,7 +761,7 @@ Subclass.Class.ClassType = function()
         var baseClassDefinition = classDefinition.getBaseData();
         classDefinition.normalizeData();
 
-        this.getEvent('onCreateBefore').trigger();
+        this.getEvent('onCreateBefore').trigger(classDefinition);
 
         classDefinition.setData(Subclass.Tools.extend(
             baseClassDefinition,
@@ -757,7 +770,6 @@ Subclass.Class.ClassType = function()
         classDefinition.validateData();
         classDefinition.processData();
 
-        this.getEvent('onCreate').trigger();
 
         // Creating constructor
 
@@ -772,9 +784,19 @@ Subclass.Class.ClassType = function()
             classConstructor.prototype = classConstructorProto;
         }
 
+        this.getEvent('onCreate').trigger(classConstructor);
+
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //this.attachProperties(classConstructor.prototype);
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
+
         Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
         Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
+
         Object.defineProperty(classConstructor.prototype, "constructor", {
             enumerable: false,
             configurable: true,
@@ -786,7 +808,7 @@ Subclass.Class.ClassType = function()
         classConstructor.prototype.$_class = this;
 
         this._constructor = classConstructor;
-        this.getEvent('onCreateAfter').trigger();
+        this.getEvent('onCreateAfter').trigger(classConstructor);
 
         return classConstructor;
     };
@@ -802,6 +824,13 @@ Subclass.Class.ClassType = function()
     //    return true;
     //};
     //
+
+
+
+
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     ///**
     // * Creates and attaches class typed properties
     // *
@@ -818,6 +847,9 @@ Subclass.Class.ClassType = function()
     //        classProperties[propName].attach(context);
     //    }
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * Creates class instance of current class type
@@ -832,14 +864,35 @@ Subclass.Class.ClassType = function()
             args.push(arguments[i]);
         }
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var classManager = this.getClassManager();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         var classConstructor = this.getConstructor();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var classProperties = this.getProperties(true);
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         var classInstance = new classConstructor();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var setterName;
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         this.getEvent('onCreateInstanceBefore', classInstance);
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         // Attaching hashed typed properties
 
         //for (var propertyName in classProperties) {
@@ -867,6 +920,9 @@ Subclass.Class.ClassType = function()
         //        property.setIsModified(false);
         //    }
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         // Adding no methods to class instance
 
@@ -884,8 +940,11 @@ Subclass.Class.ClassType = function()
         Object.seal(classInstance);
 
 
-        // Setting required classes to alias typed properties
-
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
+        //// Setting required classes to alias typed properties
+        //
         //if (classInstance.$_requires) {
         //    if (Subclass.Tools.isPlainObject(classInstance.$_requires)) {
         //        for (var alias in classInstance.$_requires) {
@@ -900,6 +959,9 @@ Subclass.Class.ClassType = function()
         //        }
         //    }
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         if (classInstance.$_constructor) {
             classInstance.$_constructor.apply(classInstance, args);
@@ -967,6 +1029,9 @@ Subclass.Class.ClassType = function()
     };
 
 
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     /*************************************************/
     /*        Performing register operations         */
     /*************************************************/
@@ -983,6 +1048,9 @@ Subclass.Class.ClassType = function()
     //    "className",
     //    "class_name"
     //]);
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     return ClassType;
 

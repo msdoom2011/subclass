@@ -377,6 +377,9 @@ Subclass.ConfigManager = (function()
         return !!this._files.length;
     };
 
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     ///**
     // * Defines custom data types relying on existent property types
     // * registered in Subclass.Property.PropertyManager.
@@ -457,6 +460,9 @@ Subclass.ConfigManager = (function()
     //    ;
     //};
     //
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     /**
      * Sets callback function which will be invoked before all registered user application
      * parts (i.e. classes) will be configured.

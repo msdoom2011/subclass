@@ -73,6 +73,10 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
          * @type {Object}
          */
         classDefinition.$_static = {};
+
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //
         ///**
         // * Returns the property instance based on specified data type.
@@ -169,6 +173,9 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         //    }
         //    return value;
         //};
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         return classDefinition;
     };

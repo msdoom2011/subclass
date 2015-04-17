@@ -96,11 +96,18 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
         delete classDefinition.hasTrait;
         delete classDefinition.isImplements;
         delete classDefinition.getCopy;
+
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //delete classDefinition.issetProperty;
         //delete classDefinition.getProperty;
         //delete classDefinition._getDataTypeProperty;
         //delete classDefinition.value;
         //delete classDefinition.result;
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         return classDefinition;
     };

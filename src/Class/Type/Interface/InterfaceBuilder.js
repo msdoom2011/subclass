@@ -17,6 +17,10 @@ Subclass.Class.Type.Interface.InterfaceBuilder = (function()
 
     InterfaceBuilder.prototype.removeConstructor = undefined;
 
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
+    //
     //InterfaceBuilder.prototype.setProperties = undefined;
     //
     //InterfaceBuilder.prototype.addProperties = undefined;
@@ -24,6 +28,10 @@ Subclass.Class.Type.Interface.InterfaceBuilder = (function()
     //InterfaceBuilder.prototype.getProperties = undefined;
     //
     //InterfaceBuilder.prototype.removeProperty = undefined;
+    //
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     return InterfaceBuilder;
 

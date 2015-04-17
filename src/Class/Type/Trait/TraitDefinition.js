@@ -15,48 +15,6 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
     TraitDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
     /**
-     * Validates "$_abstract" attribute value
-     *
-     * @param {*} value
-     * @throws {Error}
-     */
-    TraitDefinition.prototype.validateAbstract = function(value)
-    {
-        Subclass.Error.create(
-            'You can\'t specify abstract method by the property "$_abstract". ' +
-            'All methods specified in interface are abstract by default.'
-        );
-    };
-
-    /**
-     * Validate "$_implements" attribute value
-     *
-     * @param {*} value
-     * @throws {Error}
-     */
-    TraitDefinition.prototype.validateImplements = function(value)
-    {
-        Subclass.Error.create(
-            'The trait "' + this.getClass().getName() + '" ' +
-            'can\'t implements any interfaces.'
-        );
-    };
-
-    /**
-     * Validates "$_traits" attribute value
-     *
-     * @param {*} value
-     * @throws {Error}
-     */
-    TraitDefinition.prototype.validateTraits = function(value)
-    {
-        Subclass.Error.create(
-            'The trait "' + this.getName() + '" can\'t contains another traits. ' +
-            'You can extend this one from another trait instead.'
-        );
-    };
-
-    /**
      * @inheritDoc
      */
     TraitDefinition.prototype.createBaseData = function()
@@ -67,14 +25,7 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
              *
              * @type {string}
              */
-            $_extends: null,
-
-            /**
-             * Static properties and methods for current class constructor
-             *
-             * @type {Object}
-             */
-            $_static: {}
+            $_extends: null
         };
     };
 

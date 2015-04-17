@@ -258,6 +258,9 @@ Subclass.ModuleAPI = (function()
     {
         return this.getModule().getLoadManager.apply(this.getModule(), arguments);
     };
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     //
     ///**
     // * The same as the {@link Subclass.Module#getPropertyManager}
@@ -269,6 +272,9 @@ Subclass.ModuleAPI = (function()
     //{
     //    return this.getModule().getPropertyManager.apply(this.getModule(), arguments);
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * The same as the {@link Subclass.Module#getClassManager}
@@ -280,6 +286,10 @@ Subclass.ModuleAPI = (function()
     {
         return this.getModule().getClassManager.apply(this.getModule(), arguments);
     };
+
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     //
     ///**
     // * The same as the {@link Subclass.ConfigManager#setDataTypes}
@@ -294,6 +304,9 @@ Subclass.ModuleAPI = (function()
     //        arguments
     //    );
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * The same as the {@link Subclass.Module#getRoot}

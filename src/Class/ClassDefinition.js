@@ -180,6 +180,10 @@ Subclass.Class.ClassDefinition = (function()
      *         ...
      *      ]
      *
+     /******************************************************************
+     /********************** SUBCLASS PROPERTY *************************
+     /******************************************************************
+     //*
      //*      2. As an object with pairs key/value where key is an class alias and value is a class name.
      //*
      //*      Example:
@@ -188,13 +192,19 @@ Subclass.Class.ClassDefinition = (function()
      //*         classAlias2: "Namespace/Of/Class2",
      //*         ...
      //*      }
-     */
+     /******************************************************************
+     /********************** SUBCLASS PROPERTY *************************
+     /******************************************************************
+    */
     ClassDefinition.prototype.setRequires = function(requires)
     {
         this.validateRequires(requires);
         this.getData().$_requires = requires || null;
 
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var classInst = this.getClass();
         //
         //if (requires && Subclass.Tools.isPlainObject(requires)) {
@@ -208,6 +218,9 @@ Subclass.Class.ClassDefinition = (function()
         //        });
         //    }
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
     };
 
     /**
@@ -326,6 +339,9 @@ Subclass.Class.ClassDefinition = (function()
         return this._constants;
     };
 
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     ///**
     // * Validates "$_properties" option value
     // *
@@ -443,6 +459,9 @@ Subclass.Class.ClassDefinition = (function()
     //{
     //    return this.getData().$_properties;
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * Returns all properties which names started from symbols "$_"
@@ -616,7 +635,7 @@ Subclass.Class.ClassDefinition = (function()
      */
     ClassDefinition.prototype.createBaseData = function()
     {
-        var data = {
+        return {
 
             /**
              * Class name
@@ -660,12 +679,18 @@ Subclass.Class.ClassDefinition = (function()
              */
             $_constants: null,
 
+            /******************************************************************/
+            /********************** SUBCLASS PROPERTY *************************/
+            /******************************************************************/
             ///**
             // * List of class typed properties
             // *
             // * @type {Object}
             // */
             //$_properties: {},
+            /******************************************************************/
+            /********************** SUBCLASS PROPERTY *************************/
+            /******************************************************************/
 
             /**
              * Returns class manager instance
@@ -794,6 +819,9 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 return copyInst;
             }
+            /******************************************************************/
+            /********************** SUBCLASS PROPERTY *************************/
+            /******************************************************************/
             //
             ///**
             // * Checks if property is typed
@@ -816,9 +844,10 @@ Subclass.Class.ClassDefinition = (function()
             //{
             //    return this.$_class.getProperty(propertyName).getAPI(this);
             //}
+            /******************************************************************/
+            /********************** SUBCLASS PROPERTY *************************/
+            /******************************************************************/
         };
-
-        return data;
     };
 
     /**
@@ -842,9 +871,13 @@ Subclass.Class.ClassDefinition = (function()
     {
         // Do some manipulations with class definition data
 
-        this.getEvent('onNormalizeData').trigger();
+        this.getEvent('onNormalizeData').trigger(this.getData());
 
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
+        //
         //-----------------------------------------------------------
         //var data = this.getData();
         //
@@ -854,6 +887,9 @@ Subclass.Class.ClassDefinition = (function()
         //) {
         //    data["$_properties"] = this.normalizeProperties(data["$_properties"]);
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
     };
 
     /**
@@ -866,8 +902,12 @@ Subclass.Class.ClassDefinition = (function()
     {
         // Do some validation manipulations with class definition data
 
-        this.getEvent('onValidateData').trigger();
+        this.getEvent('onValidateData').trigger(this.getData());
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
+        //
         //-----------------------------------------------------------
         //var definition = this.getData();
         //var classInst = this.getClass();
@@ -883,13 +923,16 @@ Subclass.Class.ClassDefinition = (function()
         //        );
         //    }
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         return true;
     };
 
     /**
      * Processes class definition. Getting info from classDefinition.
      */
-    ClassDefinition.prototype.processData = function ()
+    ClassDefinition.prototype.processData = function()
     {
         var definition = this.getData();
 
@@ -907,13 +950,22 @@ Subclass.Class.ClassDefinition = (function()
             }
         }
 
-        this.getEvent('onProcessData').trigger();
+        this.getEvent('onProcessData').trigger(definition);
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         ////Extending accessors
         //
         //this.processPropertyAccessors();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
     };
 
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     ///**
     // * Extends class constructor with specific methods.
     // *
@@ -956,6 +1008,9 @@ Subclass.Class.ClassDefinition = (function()
     //        }
     //    }
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * Searches for the names of classes which are needed to be loaded
@@ -964,11 +1019,23 @@ Subclass.Class.ClassDefinition = (function()
     {
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var propertyManager = classManager.getModule().getPropertyManager();
         //var dataTypeManager = propertyManager.getDataTypeManager();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         var requires = this.getRequires();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var properties = this.getProperties();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         var parentClass = this.getExtends();
 
         // Performing $_requires option
@@ -993,6 +1060,9 @@ Subclass.Class.ClassDefinition = (function()
             classManager.loadClass(parentClass);
         }
 
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //// Performing $_properties option
         //
         //if (properties && Subclass.Tools.isPlainObject(properties)) {
@@ -1028,6 +1098,9 @@ Subclass.Class.ClassDefinition = (function()
         //        }
         //    }
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         this.getEvent('onProcessRelatedClasses').trigger();
     };

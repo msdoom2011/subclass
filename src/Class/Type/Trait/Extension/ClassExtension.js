@@ -30,6 +30,9 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
         }
         ClassExtension.$parent.initialize.apply(this, arguments);
 
+        // Registering new events
+
+        classInst.registerEvent('onAddTrait');
 
         // Defining interfaces storage
 
@@ -157,7 +160,13 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
         }
         var traitClass = this.getClassManager().getClass(traitName);
         var traitClassDefinition = traitClass.getDefinition();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //var traitClassProperties = traitClass.getProperties();
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         var traitProps = {};
 
         traitClass.addChildClass(this.getName());
@@ -169,6 +178,11 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
             );
         }
 
+        this.getEvent('onAddTrait').trigger(traitClass);
+
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //for (var propName in traitClassProperties) {
         //    if (!traitClassProperties.hasOwnProperty(propName)) {
         //        continue;
@@ -176,6 +190,9 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
         //    var property = traitClassProperties[propName];
         //    this.addProperty(propName, property.getDefinition().getData());
         //}
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         // Copying all static properties to current class
 

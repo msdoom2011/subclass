@@ -65,7 +65,10 @@
  *                                         ...
  *                                       };
  *
- //* dataTypes    {Object}    opt          Object, which keys are the type
+ /****************************************************************** /
+/********************** SUBCLASS PROPERTY ************************* /
+/****************************************************************** /
+//* dataTypes    {Object}    opt          Object, which keys are the type
  //*                                       names and values are
  //*                                       its definitions.
  //*
@@ -99,7 +102,10 @@
  //*                                         },
  //*                                         ...
  //*                                       };
- *
+/****************************************************************** /
+/********************** SUBCLASS PROPERTY ************************* /
+/****************************************************************** /
+*
  * onConfig     {Function}  opt          Callback function that will be
  *                                       invoked before any of registered
  *                                       module content will be initialized
@@ -201,6 +207,9 @@ Subclass.Module = (function()
          * @private
          */
         this._moduleStorage = Subclass.Tools.createClassInstance(Subclass.ModuleStorage, this, modulePlugins);
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
         //
         ///**
         // * Property manager instance
@@ -209,6 +218,9 @@ Subclass.Module = (function()
         // * @private
         // */
         //this._propertyManager = new Subclass.Property.PropertyManager(this);
+        /******************************************************************/
+        /********************** SUBCLASS PROPERTY *************************/
+        /******************************************************************/
 
         /**
          * Class manager instance
@@ -534,6 +546,9 @@ Subclass.Module = (function()
     {
         return this._loadManager;
     };
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
     //
     ///**
     // * Returns an instance of property manager which allows to register
@@ -548,6 +563,9 @@ Subclass.Module = (function()
     //{
     //    return this._propertyManager;
     //};
+    /******************************************************************/
+    /********************** SUBCLASS PROPERTY *************************/
+    /******************************************************************/
 
     /**
      * Returns class manager instance that allows to register, process, and get

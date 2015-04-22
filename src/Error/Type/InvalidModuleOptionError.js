@@ -20,7 +20,7 @@ Subclass.Error.InvalidModuleOptionError = (function()
 {
     function InvalidModuleOptionError(message)
     {
-        Subclass.Error.ErrorBase.call(this, message);
+        InvalidModuleOptionError.$parent.call(this, message);
     }
 
     InvalidModuleOptionError.$parent = Subclass.Error.ErrorBase;
@@ -45,27 +45,6 @@ Subclass.Error.InvalidModuleOptionError = (function()
     {
         return "InvalidModuleOption";
     };
-    //
-    ///**
-    // * Returns all available error type options
-    // *
-    // * @method getOptions
-    // * @memberOf Subclass.Module.Error.InvalidModuleOptionError
-    // * @static
-    // *
-    // * @returns {Array}
-    // */
-    //InvalidModuleOptionError.getOptions = function()
-    //{
-    //    var options = Subclass.Error.getOptions();
-    //
-    //    return options.concat([
-    //        'option',
-    //        'module',
-    //        'expected',
-    //        'received'
-    //    ]);
-    //};
 
     /**
      * Returns required error fields

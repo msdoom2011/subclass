@@ -15,6 +15,7 @@ Subclass.Error.ErrorBase = function()
         if (!message) {
             message = undefined;
         }
+
         /**
          * The message of error
          *

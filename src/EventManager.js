@@ -78,7 +78,7 @@ Subclass.EventManager = function()
     EventManager.prototype.registerEvent = function(eventName)
     {
         if (this.issetEvent(eventName, true)) {
-            Subclass.Error.create('Event with name "' + eventName + '" already exists.');
+            return this;
         }
         this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.ModuleEvent,
             this,

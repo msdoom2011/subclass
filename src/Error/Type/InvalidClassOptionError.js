@@ -19,7 +19,7 @@ Subclass.Error.InvalidClassOptionError = (function()
 {
     function InvalidClassOptionError(message)
     {
-        Subclass.Error.ErrorBase.call(this, message);
+        InvalidClassOptionError.$parent.call(this, message);
     }
 
     InvalidClassOptionError.$parent = Subclass.Error.ErrorBase;
@@ -44,27 +44,6 @@ Subclass.Error.InvalidClassOptionError = (function()
     {
         return "InvalidClassOption";
     };
-    //
-    ///**
-    // * Returns all available error type options
-    // *
-    // * @method getOptions
-    // * @memberOf Subclass.Class.Error.InvalidClassOptionError
-    // * @static
-    // *
-    // * @returns {Array}
-    // */
-    //InvalidClassOptionError.getOptions = function()
-    //{
-    //    var options = Subclass.Error.getOptions();
-    //
-    //    return options.concat([
-    //        'className',
-    //        'expected',
-    //        'received',
-    //        'option'
-    //    ]);
-    //};
 
     /**
      * Returns required error fields

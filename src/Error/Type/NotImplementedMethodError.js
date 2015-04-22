@@ -17,7 +17,7 @@ Subclass.Error.NotImplementedMethodError = (function()
 {
     function NotImplementedMethodError(message)
     {
-        Subclass.Error.ErrorBase.call(this, message);
+        NotImplementedMethodError.$parent.call(this, message);
     }
 
     NotImplementedMethodError.$parent = Subclass.Error.ErrorBase;
@@ -40,25 +40,6 @@ Subclass.Error.NotImplementedMethodError = (function()
     {
         return "NotImplementedMethod";
     };
-    //
-    ///**
-    // * Returns all available error type options
-    // *
-    // * @method getOptions
-    // * @memberOf Subclass.Error.NotImplementedMethodError
-    // * @static
-    // *
-    // * @returns {Array}
-    // */
-    //NotImplementedMethodError.getOptions = function()
-    //{
-    //    var options = Subclass.Error.getOptions();
-    //
-    //    return options.concat([
-    //        'className',
-    //        'method'
-    //    ]);
-    //};
 
     /**
      * Returns required error fields

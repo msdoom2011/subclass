@@ -18,7 +18,7 @@ Subclass.Error.Type.InvalidArgumentError = (function()
 {
     function InvalidArgumentError(message)
     {
-        Subclass.Error.ErrorBase.call(this, message);
+        InvalidArgumentError.$parent.call(this, message);
     }
 
     InvalidArgumentError.$parent = Subclass.Error.ErrorBase;
@@ -42,26 +42,6 @@ Subclass.Error.Type.InvalidArgumentError = (function()
     {
         return "InvalidArgument";
     };
-    //
-    ///**
-    // * Returns all available error type options
-    // *
-    // * @method getOptions
-    // * @memberOf Subclass.Error.InvalidArgumentError
-    // * @static
-    // *
-    // * @returns {Array}
-    // */
-    //InvalidArgumentError.getOptions = function()
-    //{
-    //    var options = Subclass.Error.getOptions();
-    //
-    //    return options.concat([
-    //        'argument',
-    //        'expected',
-    //        'received'
-    //    ]);
-    //};
 
     /**
      * Returns required error fields

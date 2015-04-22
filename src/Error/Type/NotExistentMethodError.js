@@ -17,7 +17,7 @@ Subclass.Error.NotExistentMethodError = (function()
 {
     function NotExistentMethodError(message)
     {
-        Subclass.Error.ErrorBase.call(this, message);
+        NotExistentMethodError.$parent.call(this, message);
     }
 
     NotExistentMethodError.$parent = Subclass.Error.ErrorBase;
@@ -40,25 +40,6 @@ Subclass.Error.NotExistentMethodError = (function()
     {
         return "NotExistentMethod";
     };
-    //
-    ///**
-    // * Returns all available error type options
-    // *
-    // * @method getOptions
-    // * @memberOf Subclass.Error.NotExistentMethodError
-    // * @static
-    // *
-    // * @returns {Array}
-    // */
-    //NotExistentMethodError.getOptions = function()
-    //{
-    //    var options = Subclass.Error.getOptions();
-    //
-    //    return options.concat([
-    //        'className',
-    //        'method'
-    //    ]);
-    //};
 
     /**
      * Returns required error fields

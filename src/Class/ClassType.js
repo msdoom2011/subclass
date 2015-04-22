@@ -888,7 +888,7 @@ Subclass.Class.ClassType = function()
         /********************** SUBCLASS PROPERTY *************************/
         /******************************************************************/
 
-        this.getEvent('onCreateInstanceBefore', classInstance);
+        this.getEvent('onCreateInstanceBefore').trigger(classInstance);
 
         /******************************************************************/
         /********************** SUBCLASS PROPERTY *************************/
@@ -935,7 +935,7 @@ Subclass.Class.ClassType = function()
             classInstance[propName] = Subclass.Tools.copy(classNoMethods[propName]);
         }
 
-        this.getEvent('onCreateInstance', classInstance);
+        this.getEvent('onCreateInstance').trigger(classInstance);
 
         Object.seal(classInstance);
 
@@ -970,7 +970,7 @@ Subclass.Class.ClassType = function()
         // Telling that instance of current class was created
 
         this.setInstanceCreated();
-        this.getEvent('onCreateInstanceAfter', classInstance);
+        this.getEvent('onCreateInstanceAfter').trigger(classInstance);
 
         return classInstance;
     };

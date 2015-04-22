@@ -16,7 +16,7 @@ Subclass.Error.MissedArgumentError = (function()
 {
     function MissedArgumentError(message)
     {
-        Subclass.Error.ErrorBase.call(this, message);
+        MissedArgumentError.$parent.call(this, message);
     }
 
     MissedArgumentError.$parent = Subclass.Error.ErrorBase;
@@ -38,24 +38,6 @@ Subclass.Error.MissedArgumentError = (function()
     {
         return "MissedArgument";
     };
-    //
-    ///**
-    // * Returns all available error type options
-    // *
-    // * @method getOptions
-    // * @memberOf Subclass.Error.InvalidArgumentError
-    // * @static
-    // *
-    // * @returns {Array}
-    // */
-    //MissedArgumentError.getOptions = function()
-    //{
-    //    var options = Subclass.Error.getOptions();
-    //
-    //    return options.concat([
-    //        'argument'
-    //    ]);
-    //};
 
     /**
      * Returns required error fields

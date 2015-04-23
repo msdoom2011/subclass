@@ -106,28 +106,32 @@ describe("Checking definition of class", function() {
     it ("class/AppClass", function() {
         var AppClass = app.getClass('Class/AppClass');
         var AppInterface = app.getClass('Interface/AppInterface');
-        var inst = AppClass.createInstance("NewApp", "Creating new app", AppInterface.MODE_DEV);
+        var classInst = AppClass.createInstance("NewApp", "Creating new app", AppInterface.MODE_DEV);
         var addons = ['addon1', 'addon2'];
+        var instances = [classInst, classInst.getCopy()];
 
-        expect(inst.getName()).toBe('NewApp');
-        expect(inst.getGoal()).toBe('Creating new app');
-        expect(inst.getMode()).toBe(AppInterface.MODE_DEV);
-        expect(inst.configuredMethod()).toBe(true);
+        for (var j = 0; j < instances.length; j++) {
+            var inst = instances[j];
+            expect(inst.getName()).toBe('NewApp');
+            expect(inst.getGoal()).toBe('Creating new app');
+            expect(inst.getMode()).toBe(AppInterface.MODE_DEV);
+            expect(inst.configuredMethod()).toBe(true);
 
-        for (var i = 0; i < addons.length; i++) {
-            expect(inst.getAddons()).toContain(addons[i]);
+            for (var i = 0; i < addons.length; i++) {
+                expect(inst.getAddons()).toContain(addons[i]);
+            }
+            inst.removeAddons();
+            expect(inst.getAddons().length).toBe(0);
+
+            inst.addAddon('addonNew');
+            expect(inst.getAddons()).toContain("addonNew");
+
+            expect(inst.playWithDance()).toBe(true);
+            expect(inst.playWithStop()).toBe(false);
+
+            inst.destruct();
+            expect(inst._destructed).toBe(2);
         }
-        inst.removeAddons();
-        expect(inst.getAddons().length).toBe(0);
-
-        inst.addAddon('addonNew');
-        expect(inst.getAddons()).toContain("addonNew");
-
-        expect(inst.playWithDance()).toBe(true);
-        expect(inst.playWithStop()).toBe(false);
-
-        inst.destruct();
-        expect(inst._destructed).toBe(2);
     });
 });
 

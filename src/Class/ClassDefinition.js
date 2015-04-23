@@ -806,17 +806,22 @@ Subclass.Class.ClassDefinition = (function()
              * Returns copy of current class instance
              *
              * @returns {Object}
+             * @TODO NEEDS TO BE TESTED
              */
             getCopy: function()
             {
                 var copyInst = new this.constructor();
+                var props = Object.getOwnPropertyNames(this);
 
-                for (var propName in this) {
-                    if (!this.hasOwnProperty(propName)) {
-                        continue;
-                    }
-                    copyInst[propName] = this[propName];
+                for (var i = 0; i < props.length; i++) {
+                    copyInst[props[i]] = this[props[i]];
                 }
+                //for (var propName in this) {
+                //    if (!this.hasOwnProperty(propName)) {
+                //        continue;
+                //    }
+                //    copyInst[propName] = this[propName];
+                //}
                 return copyInst;
             }
             /******************************************************************/

@@ -316,7 +316,7 @@ Subclass.Tools = (function()
                     }
                 }
             }
-            if (Array.isPlainObject(arg1)) {
+            if (this.isPlainObject(arg1)) {
                 if (Object.keys(arg1).length != Object.keys(arg2).length) {
                     return false;
                 }

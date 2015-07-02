@@ -116,6 +116,7 @@ describe("Checking definition of class", function() {
             expect(inst.getGoal()).toBe('Creating new app');
             expect(inst.getMode()).toBe(AppInterface.MODE_DEV);
             expect(inst.configuredMethod()).toBe(true);
+            expect(inst.traitMethod()).toBe(1000);
 
             for (var i = 0; i < addons.length; i++) {
                 expect(inst.getAddons()).toContain(addons[i]);

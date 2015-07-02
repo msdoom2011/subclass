@@ -8,5 +8,10 @@ app.registerTrait("Trait/AppTraitBase", {
     playWithStop: function()
     {
         return true;
+    },
+
+    traitMethod: function()
+    {
+        return 1000;
     }
 });

@@ -72,7 +72,8 @@ describe("Checking definition of trait", function() {
 
         checkMethods(AppTraitBase, [
             'playWithDance',
-            'playWithStop'
+            'playWithStop',
+            'traitMethod'
         ]);
     });
 
@@ -82,6 +83,7 @@ describe("Checking definition of trait", function() {
         checkMethods(AppTrait, [
             'playWithDance',
             'playWithStop',
+            'traitMethod',
             'extraAction'
         ]);
     });

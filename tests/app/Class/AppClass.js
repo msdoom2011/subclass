@@ -28,5 +28,10 @@ app.registerClass("Class/AppClass", {
     playWithStop: function()
     {
         return false;
+    },
+
+    traitMethod: function()
+    {
+        return this.callParent('traitMethod');
     }
 });

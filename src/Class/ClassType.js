@@ -146,9 +146,9 @@ Subclass.Class.ClassType = function()
 
         this
             .registerEvent("onInitialize")
-            .registerEvent("onCreateBefore")
-            .registerEvent("onCreate")
-            .registerEvent("onCreateAfter")
+            .registerEvent("onCreateClassBefore")
+            .registerEvent("onCreateClass")
+            .registerEvent("onCreateClassAfter")
             .registerEvent("onCreateInstanceBefore")
             .registerEvent("onCreateInstance")
             .registerEvent("onCreateInstanceAfter")
@@ -761,7 +761,7 @@ Subclass.Class.ClassType = function()
         var baseClassDefinition = classDefinition.getBaseData();
         classDefinition.normalizeData();
 
-        this.getEvent('onCreateBefore').trigger(classDefinition);
+        this.getEvent('onCreateClassBefore').trigger(classDefinition);
 
         classDefinition.setData(Subclass.Tools.extend(
             baseClassDefinition,
@@ -784,7 +784,7 @@ Subclass.Class.ClassType = function()
             classConstructor.prototype = classConstructorProto;
         }
 
-        this.getEvent('onCreate').trigger(classConstructor);
+        this.getEvent('onCreateClass').trigger(classConstructor);
 
         /******************************************************************/
         /********************** SUBCLASS PROPERTY *************************/
@@ -808,7 +808,7 @@ Subclass.Class.ClassType = function()
         classConstructor.prototype.$_class = this;
 
         this._constructor = classConstructor;
-        this.getEvent('onCreateAfter').trigger(classConstructor);
+        this.getEvent('onCreateClassAfter').trigger(classConstructor);
 
         return classConstructor;
     };

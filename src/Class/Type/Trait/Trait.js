@@ -30,7 +30,7 @@ Subclass.Class.Type.Trait.Trait = (function()
         Trait.$parent.call(this, classManager, className, classDefinition);
 
         delete this._abstractMethods;
-        delete this._constants;
+        //delete this._constants;
         delete this._created;
         delete this._traits;
 
@@ -127,12 +127,12 @@ Subclass.Class.Type.Trait.Trait = (function()
     //Trait.prototype.addInterface = undefined;
     //
     //Trait.prototype.isImplements = undefined;
-
-    Trait.prototype.setConstants = undefined;
-
-    Trait.prototype.setConstant = undefined;
-
-    Trait.prototype.getConstants = undefined;
+    //
+    //Trait.prototype.setConstants = undefined;
+    //
+    //Trait.prototype.setConstant = undefined;
+    //
+    //Trait.prototype.getConstants = undefined;
 
     /******************************************************************/
     /********************** SUBCLASS PROPERTY *************************/

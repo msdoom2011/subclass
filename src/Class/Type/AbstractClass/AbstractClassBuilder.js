@@ -92,7 +92,7 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
      *
      * @param {string} methodName
      * @param {Function} methodFunction
-     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
      */
     AbstractClassBuilder.prototype.addAbstractMethod = function(methodName, methodFunction)
     {

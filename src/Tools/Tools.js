@@ -291,6 +291,9 @@ Subclass.Tools = (function()
          */
         isEqual: function (arg1, arg2)
         {
+            if (typeof arg1 == 'function' && typeof arg2 == 'function') {
+                return true;
+            }
             if (typeof arg1 !== 'object' && typeof arg2 !== 'object') {
                 return arg1 === arg2;
             }
@@ -315,16 +318,20 @@ Subclass.Tools = (function()
                         return false;
                     }
                 }
+                return true;
             }
             if (this.isPlainObject(arg1)) {
                 if (Object.keys(arg1).length != Object.keys(arg2).length) {
                     return false;
                 }
                 for (var propName in arg1) {
-                    if (this.isEqual(arg1[propName], arg2[propName]) === false) {
-                        return false;
+                    if (arg1.hasOwnProperty(propName)) {
+                        if (this.isEqual(arg1[propName], arg2[propName]) === false) {
+                            return false;
+                        }
                     }
                 }
+                return true;
             }
             return arg1 == arg2;
         },

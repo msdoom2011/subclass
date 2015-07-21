@@ -51,6 +51,23 @@ Subclass.Tools.PropertyTools = (function()
         generateCheckerName: function (propertyName)
         {
             return _generateAccessorName("is", propertyName);
+        },
+
+        /**
+         * Returns name of checker function for the class property with specified name
+         *
+         * @method generateCheckerName
+         * @memberOf Subclass.Tools
+         * @static
+         *
+         * @param {string} propertyName
+         *      A name of the class typed property defined in $_properties parameter
+         *
+         * @returns {string}
+         */
+        generateValidatorName: function (propertyName)
+        {
+            return _generateAccessorName("validate", propertyName);
         }
     });
 
@@ -68,8 +85,8 @@ Subclass.Tools.PropertyTools = (function()
      */
     function _generateAccessorName(accessorType, propertyName)
     {
-        if (['get', 'set', 'is'].indexOf(accessorType) < 0) {
-            Subclass.Error.create('Invalid accessor type! It can be only "get", "set" or "is".');
+        if (['get', 'set', 'is', 'validate'].indexOf(accessorType) < 0) {
+            Subclass.Error.create('Invalid accessor type! It can be only "get", "set", "is" or "validate".');
         }
         var propNameParts = propertyName.split("_");
 

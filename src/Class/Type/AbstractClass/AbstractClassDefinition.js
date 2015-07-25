@@ -15,6 +15,17 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
     AbstractClassDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
     /**
+     * @inheritDoc
+     */
+    AbstractClassDefinition.prototype.validateFinal = function(isFinal)
+    {
+        Subclass.Error.create(
+            'Abstract class definition cannot contain $_final option ' +
+            'and consequently can\'t be final.'
+        )
+    };
+
+    /**
      * Validates "$_abstract" attribute value
      *
      * @param {*} value
@@ -84,32 +95,36 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
      */
     AbstractClassDefinition.prototype.createBaseData = function ()
     {
-        var classDefinition = AbstractClassDefinition.$parent.prototype.createBaseData();
+        return {
 
-        /**
-         * Object that contains abstract methods
-         * @type {{}}
-         */
-        classDefinition.$_abstract = {};
+            /**
+             * Required classes
+             *
+             * @type {(string[]|Object.<string>|null)}
+             */
+            $_requires: null,
 
-        delete classDefinition.getClassManager;
-        delete classDefinition.hasTrait;
-        delete classDefinition.isImplements;
-        delete classDefinition.getCopy;
+            /**
+             * Parent class name
+             *
+             * @type {string}
+             */
+            $_extends: null,
 
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //delete classDefinition.issetProperty;
-        //delete classDefinition.getProperty;
-        //delete classDefinition._getDataTypeProperty;
-        //delete classDefinition.value;
-        //delete classDefinition.result;
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
+            /**
+             * Constants list
+             *
+             * @type {Object}
+             */
+            $_constants: null,
 
-        return classDefinition;
+            /**
+             * Object that contains abstract methods
+             *
+             * @type {Object}
+             */
+            $_abstract: {}
+        }
     };
 
     return AbstractClassDefinition;

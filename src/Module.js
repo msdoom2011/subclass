@@ -65,47 +65,6 @@
  *                                         ...
  *                                       };
  *
- /****************************************************************** /
-/********************** SUBCLASS PROPERTY ************************* /
-/****************************************************************** /
-//* dataTypes    {Object}    opt          Object, which keys are the type
- //*                                       names and values are
- //*                                       its definitions.
- //*
- //*                                       It allows to create the new data
- //*                                       types based on the default
- //*                                       (registered) data types using
- //*                                       configuration whatever you need.
- //*
- //*                                       Also you may to change
- //*                                       configuration of the default
- //*                                       data types.
- //*
- //*                                       Example:
- //*
- //*                                       var moduleConfigs = {
- //*                                         ...
- //*                                         dataTypes: {
- //*
- //*                                           // creating the new type
- //*                                           percents: {
- //*                                             type: "string",
- //*                                             pattern: /^[0-9]+%$/
- //*                                           },
- //*
- //*                                           // altering existent type
- //*                                           number: {
- //*                                             type: "number",
- //*                                             nullable: false,
- //*                                             default: 100
- //*                                           }
- //*                                         },
- //*                                         ...
- //*                                       };
-/****************************************************************** /
-/********************** SUBCLASS PROPERTY ************************* /
-/****************************************************************** /
-*
  * onConfig     {Function}  opt          Callback function that will be
  *                                       invoked before any of registered
  *                                       module content will be initialized
@@ -207,20 +166,6 @@ Subclass.Module = (function()
          * @private
          */
         this._moduleStorage = Subclass.Tools.createClassInstance(Subclass.ModuleStorage, this, modulePlugins);
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //
-        ///**
-        // * Property manager instance
-        // *
-        // * @type {Subclass.Property.PropertyManager}
-        // * @private
-        // */
-        //this._propertyManager = new Subclass.Property.PropertyManager(this);
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
 
         /**
          * Class manager instance
@@ -546,26 +491,6 @@ Subclass.Module = (function()
     {
         return this._loadManager;
     };
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
-    //
-    ///**
-    // * Returns an instance of property manager which allows to register
-    // * custom data types and creates typed property instance by its definition.
-    // *
-    // * @method getPropertyManager
-    // * @memberOf Subclass.Module.prototype
-    // *
-    // * @returns {Subclass.Property.PropertyManager}
-    // */
-    //Module.prototype.getPropertyManager = function()
-    //{
-    //    return this._propertyManager;
-    //};
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
 
     /**
      * Returns class manager instance that allows to register, process, and get

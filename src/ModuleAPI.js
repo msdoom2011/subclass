@@ -258,23 +258,6 @@ Subclass.ModuleAPI = (function()
     {
         return this.getModule().getLoadManager.apply(this.getModule(), arguments);
     };
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
-    //
-    ///**
-    // * The same as the {@link Subclass.Module#getPropertyManager}
-    // *
-    // * @method getPropertyManager
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.getPropertyManager = function()
-    //{
-    //    return this.getModule().getPropertyManager.apply(this.getModule(), arguments);
-    //};
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
 
     /**
      * The same as the {@link Subclass.Module#getClassManager}
@@ -286,27 +269,6 @@ Subclass.ModuleAPI = (function()
     {
         return this.getModule().getClassManager.apply(this.getModule(), arguments);
     };
-
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
-    //
-    ///**
-    // * The same as the {@link Subclass.ConfigManager#setDataTypes}
-    // *
-    // * @method registerDataTypes
-    // * @memberOf Subclass.ModuleAPI.prototype
-    // */
-    //ModuleAPI.prototype.registerDataTypes = function()
-    //{
-    //    return this.getModule().getConfigManager().setDataTypes.apply(
-    //        this.getModule().getConfigManager(),
-    //        arguments
-    //    );
-    //};
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
 
     /**
      * The same as the {@link Subclass.Module#getRoot}

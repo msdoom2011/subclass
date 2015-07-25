@@ -15,6 +15,58 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
     ClassDefinition.$parent = Subclass.Class.ClassDefinition;
 
     /**
+     * Validates "$_final" option value
+     *
+     * @param {*} isFinal
+     * @returns {boolean}
+     * @throws {Error}
+     */
+    ClassDefinition.prototype.validateFinal = function(isFinal)
+    {
+        if (typeof isFinal != 'boolean') {
+            Subclass.Error.create('InvalidClassOption')
+                .option('$_final')
+                .received(isFinal)
+                .className(this.getClass().getName())
+                .expected('a boolean')
+                .apply()
+            ;
+        }
+        return true;
+    };
+
+    /**
+     * Sets "$_final" option value
+     *
+     * @param {boolean} isFinal
+     */
+    ClassDefinition.prototype.setFinal = function(isFinal)
+    {
+        this.validateFinal(isFinal);
+        this.getData().$_final = isFinal;
+    };
+
+    /**
+     * Returns "$_final" option value
+     *
+     * @returns {boolean}
+     */
+    ClassDefinition.prototype.getFinal = function()
+    {
+        return this.getData().$_final;
+    };
+
+    /**
+     * @alias {Subclass.Class.Type.Class.ClassDefinition.prototype#getFinal}
+     *
+     * @returns {boolean}
+     */
+    ClassDefinition.prototype.isFinal = function()
+    {
+        return this.getFinal();
+    };
+
+    /**
      * Validates "$_static" attribute value
      *
      * @param {*} value
@@ -68,114 +120,18 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
         var classDefinition = ClassDefinition.$parent.prototype.createBaseData();
 
         /**
+         * Makes class final. It means that it can't be parent for any another class
+         *
+         * @type {boolean}
+         */
+        classDefinition.$_final = false;
+
+        /**
          * Static properties and methods for current class constructor
          *
          * @type {Object}
          */
         classDefinition.$_static = {};
-
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //
-        ///**
-        // * Returns the property instance based on specified data type.
-        // *
-        // * @param {(string|{type:{string}})} dataType
-        // * @returns {Subclass.Property.PropertyAPI}
-        // * @private
-        // */
-        //classDefinition._getDataTypeProperty = function(dataType)
-        //{
-        //    var classManager = this.getClassManager();
-        //    var propertyManager = classManager.getModule().getPropertyManager();
-        //    var property;
-        //
-        //    if (
-        //        dataType &&
-        //        typeof dataType == 'object'
-        //        && dataType.type &&
-        //        typeof dataType.type == 'string'
-        //    ) {
-        //        return propertyManager.createProperty('test', dataType).getAPI(this);
-        //
-        //    } else if (!dataType || typeof dataType != 'string') {
-        //        Subclass.Error.create("InvalidArgument")
-        //            .argument('the data type', false)
-        //            .received(dataType)
-        //            .expected('a string')
-        //            .apply()
-        //        ;
-        //    }
-        //
-        //    if (this.issetProperty(dataType)) {
-        //        property = this.getProperty(dataType);
-        //
-        //    } else {
-        //        var dataTypeManager = propertyManager.getDataTypeManager();
-        //
-        //        if (dataTypeManager.issetType(dataType)) {
-        //            property = dataTypeManager.getType(dataType).getAPI(this);
-        //        }
-        //    }
-        //    if (!property) {
-        //        Subclass.Error.create(
-        //            'Specified non existent or data type which ' +
-        //            'can\'t be used in data type validation.'
-        //        );
-        //    }
-        //    return property;
-        //};
-        //
-        ///**
-        // * Validates and returns default value if the value is undefined
-        // * or returns the same value as was specified if it's valid
-        // *
-        // * @param {(string|{type:{string}})} dataType
-        // * @param {*} value
-        // * @param {*} [valueDefault]
-        // * @returns {*}
-        // */
-        //classDefinition.value = function(dataType, value, valueDefault)
-        //{
-        //    var property = this._getDataTypeProperty(dataType);
-        //    dataType = typeof dataType == 'object' ? dataType.type : dataType;
-        //
-        //    if (value === undefined && arguments.length == 3) {
-        //        return valueDefault;
-        //
-        //    } else if (value === undefined) {
-        //        return property.getDefaultValue();
-        //
-        //    } else if (!property.isValueValid(value)) {
-        //        Subclass.Error.create(
-        //            'Specified invalid value that is not corresponds to data type "' + dataType + '".'
-        //        );
-        //    }
-        //
-        //    return value;
-        //};
-        //
-        ///**
-        // * Validates and returns (if valid)
-        // * @param dataType
-        // * @param value
-        // */
-        //classDefinition.result = function(dataType, value)
-        //{
-        //    var property = this._getDataTypeProperty(dataType);
-        //    dataType = typeof dataType == 'object' ? dataType.type : dataType;
-        //
-        //    if (!property.isValueValid(value)) {
-        //        Subclass.Error.create(
-        //            'Trying to return not valid value that is not corresponds to data type "' + dataType + '".'
-        //        );
-        //    }
-        //    return value;
-        //};
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
 
         return classDefinition;
     };

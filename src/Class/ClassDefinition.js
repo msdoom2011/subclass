@@ -169,58 +169,21 @@ Subclass.Class.ClassDefinition = (function()
      *
      * @param {Object.<string>} requires
      *
-     *      List of the classes that current one requires. It can be specified in two ways:
+     * List of the classes that current one requires. It can be specified in two ways:
      *
-     *      1. As an array of class names:
+     * 1. As an array of class names:
      *
-     *      Example:
-     *      [
-     *         "Namespace/Of/Class1",
-     *         "Namespace/Of/Class2",
-     *         ...
-     *      ]
-     *
-     /******************************************************************
-     /********************** SUBCLASS PROPERTY *************************
-     /******************************************************************
-     //*
-     //*      2. As an object with pairs key/value where key is an class alias and value is a class name.
-     //*
-     //*      Example:
-     //*      {
-     //*         classAlias1: "Namespace/Of/Class1",
-     //*         classAlias2: "Namespace/Of/Class2",
-     //*         ...
-     //*      }
-     /******************************************************************
-     /********************** SUBCLASS PROPERTY *************************
-     /******************************************************************
+     * Example:
+     * [
+     *    "Namespace/Of/Class1",
+     *    "Namespace/Of/Class2",
+     *    ...
+     * ]
     */
     ClassDefinition.prototype.setRequires = function(requires)
     {
         this.validateRequires(requires);
         this.getData().$_requires = requires || null;
-
-
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //var classInst = this.getClass();
-        //
-        //if (requires && Subclass.Tools.isPlainObject(requires)) {
-        //    for (var alias in requires) {
-        //        if (!requires.hasOwnProperty(alias)) {
-        //            continue;
-        //        }
-        //        classInst.addProperty(alias, {
-        //            type: "untyped",
-        //            className: requires[alias]
-        //        });
-        //    }
-        //}
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
     };
 
     /**
@@ -338,130 +301,6 @@ Subclass.Class.ClassDefinition = (function()
     {
         return this._constants;
     };
-
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
-    ///**
-    // * Validates "$_properties" option value
-    // *
-    // * @param {*} properties
-    // * @returns {boolean}
-    // * @throws {Error}
-    // */
-    //ClassDefinition.prototype.validateProperties = function(properties)
-    //{
-    //    if (properties && typeof properties != 'object') {
-    //        Subclass.Error.create('InvalidClassOption')
-    //            .option('$_properties')
-    //            .received(properties)
-    //            .className(this.getClass().getName())
-    //            .expected('a plain object with property definitions')
-    //            .apply()
-    //        ;
-    //
-    //    } else if (properties) {
-    //        for (var propName in properties) {
-    //            if (!properties.hasOwnProperty(propName)) {
-    //                continue;
-    //            }
-    //            if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
-    //                Subclass.Error.create(
-    //                    'Specified not allowed typed property name "' + propName + '" in option "$_properties" ' +
-    //                    'in definition of class "' + this.getClass().getName() + '".'
-    //                );
-    //            }
-    //            if (!properties[propName] || !Subclass.Tools.isPlainObject(properties[propName])) {
-    //                Subclass.Error.create('InvalidClassOption')
-    //                    .option('$_properties')
-    //                    .received(properties)
-    //                    .className(this.getClass().getName())
-    //                    .expected('a plain object with property definitions')
-    //                    .apply()
-    //                ;
-    //            }
-    //            if (!properties[propName].type) {
-    //                Subclass.Error.create(
-    //                    'Trying to set not valid definition of typed property "' + propName + '" in option "$_properties" ' +
-    //                    'in definition of class "' + this.getClass().getName() + '". ' +
-    //                    'Required property "type" was missed.'
-    //                );
-    //            }
-    //        }
-    //    }
-    //    return true;
-    //};
-    //
-    ///**
-    // * Normalizes property definitions.
-    // * Brings all property definitions to the single form.
-    // *
-    // * @param {Object} properties
-    // *      The object with property definitions
-    // *
-    // * @returns {Object}
-    // */
-    //ClassDefinition.prototype.normalizeProperties = function(properties)
-    //{
-    //    var classManager = this.getClass().getClassManager();
-    //    var propertyManager = classManager.getModule().getPropertyManager();
-    //
-    //    if (properties && Subclass.Tools.isPlainObject(properties)) {
-    //        for (var propertyName in properties) {
-    //            if (properties.hasOwnProperty(propertyName)) {
-    //                properties[propertyName] = propertyManager.normalizePropertyDefinition(
-    //                    properties[propertyName]
-    //                );
-    //            }
-    //        }
-    //    }
-    //    return properties;
-    //};
-    //
-    ///**
-    // * Sets "$_properties" option value
-    // *
-    // * @param {Object.<Object>} properties
-    // *
-    // *      List of the property definitions
-    // *
-    // *      Example: {
-    // *         propName1: { type: "string", value: "init value" },
-    // *         propName2: { type: "boolean" },
-    // *         ...
-    // *      }
-    // */
-    //ClassDefinition.prototype.setProperties = function(properties)
-    //{
-    //    this.normalizeProperties(properties);
-    //    this.validateProperties(properties);
-    //    this.getData().$_properties = properties || {};
-    //
-    //    if (properties) {
-    //        for (var propName in properties) {
-    //            if (!properties.hasOwnProperty(propName)) {
-    //                continue;
-    //            }
-    //            this.getClass().addProperty(
-    //                propName,
-    //                properties[propName]
-    //            );
-    //        }
-    //    }
-    //};
-    //
-    ///**
-    // * Return "$_properties" option value
-    // *
-    // * @returns {Object.<Object>}
-    // */
-    //ClassDefinition.prototype.getProperties = function()
-    //{
-    //    return this.getData().$_properties;
-    //};
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
 
     /**
      * Returns all properties which names started from symbols "$_"
@@ -638,27 +477,6 @@ Subclass.Class.ClassDefinition = (function()
         return {
 
             /**
-             * Class name
-             *
-             * @type {string}
-             */
-            $_className: null,
-
-            /**
-             * Class type
-             *
-             * @type {string}
-             */
-            $_classType: null,
-
-            /**
-             * Class definition closure
-             *
-             * @type {Subclass.Class.ClassType}
-             */
-            $_class: null,
-
-            /**
              * Required classes
              *
              * @type {(string[]|Object.<string>|null)}
@@ -678,19 +496,6 @@ Subclass.Class.ClassDefinition = (function()
              * @type {Object}
              */
             $_constants: null,
-
-            /******************************************************************/
-            /********************** SUBCLASS PROPERTY *************************/
-            /******************************************************************/
-            ///**
-            // * List of class typed properties
-            // *
-            // * @type {Object}
-            // */
-            //$_properties: {},
-            /******************************************************************/
-            /********************** SUBCLASS PROPERTY *************************/
-            /******************************************************************/
 
             /**
              * Returns class manager instance
@@ -744,20 +549,16 @@ Subclass.Class.ClassDefinition = (function()
             },
 
             /**
-             * Returns parent class definition instance
+             * Returns parent class
              *
-             * @returns {Object} Prototype of parent class.
+             * @returns {Object} parent class.
              */
             getParent: function ()
             {
-                if (!this.$_class.getParent()) {
-                    return null;
+                if (this.$_class.hasParent()) {
+                    return this.$_class.getParent();
                 }
-                return this.$_class
-                    .getParent()
-                    .getConstructor()
-                    .prototype
-                ;
+                return null;
             },
 
             /**
@@ -777,7 +578,6 @@ Subclass.Class.ClassDefinition = (function()
                 }
                 var parentClass = this
                     .getParent()
-                    .getClass()
                     .getDefinition()
                     .getMethodClass(methodName)
                 ;
@@ -806,7 +606,6 @@ Subclass.Class.ClassDefinition = (function()
              * Returns copy of current class instance
              *
              * @returns {Object}
-             * @TODO NEEDS TO BE TESTED
              */
             getCopy: function()
             {
@@ -816,42 +615,8 @@ Subclass.Class.ClassDefinition = (function()
                 for (var i = 0; i < props.length; i++) {
                     copyInst[props[i]] = this[props[i]];
                 }
-                //for (var propName in this) {
-                //    if (!this.hasOwnProperty(propName)) {
-                //        continue;
-                //    }
-                //    copyInst[propName] = this[propName];
-                //}
                 return copyInst;
             }
-            /******************************************************************/
-            /********************** SUBCLASS PROPERTY *************************/
-            /******************************************************************/
-            //
-            ///**
-            // * Checks if property is typed
-            // *
-            // * @param {string} propertyName
-            // * @returns {boolean}
-            // */
-            //issetProperty: function(propertyName)
-            //{
-            //    return this.$_class.issetProperty(propertyName);
-            //},
-            //
-            ///**
-            // * Returns property api object
-            // *
-            // * @param {string} propertyName
-            // * @returns {Subclass.Property.PropertyAPI}
-            // */
-            //getProperty: function(propertyName)
-            //{
-            //    return this.$_class.getProperty(propertyName).getAPI(this);
-            //}
-            /******************************************************************/
-            /********************** SUBCLASS PROPERTY *************************/
-            /******************************************************************/
         };
     };
 
@@ -863,6 +628,34 @@ Subclass.Class.ClassDefinition = (function()
     ClassDefinition.prototype.getBaseData = function()
     {
         var data = this.createBaseData();
+
+        // Because many class types redefine methods #createBaseData without
+        // calling its parent realisation some required properties can lose.
+        // To avoid it, the required properties were placed here.
+
+        /**
+         * Class name
+         *
+         * @type {string}
+         */
+        data.$_className = null;
+
+        /**
+         * Class type
+         *
+         * @type {string}
+         */
+        data.$_classType = null;
+
+        /**
+         * Class definition closure
+         *
+         * @type {Subclass.Class.ClassType}
+         */
+        data.$_class = null;
+
+
+        // Triggering event handlers
 
         this.getEvent("onGetBaseData").trigger(data);
 
@@ -877,24 +670,6 @@ Subclass.Class.ClassDefinition = (function()
         // Do some manipulations with class definition data
 
         this.getEvent('onNormalizeData').trigger(this.getData());
-
-
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //
-        //-----------------------------------------------------------
-        //var data = this.getData();
-        //
-        //if (
-        //    data.hasOwnProperty('$_properties')
-        //    && Subclass.Tools.isPlainObject(data["$_properties"])
-        //) {
-        //    data["$_properties"] = this.normalizeProperties(data["$_properties"]);
-        //}
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
     };
 
     /**
@@ -909,28 +684,6 @@ Subclass.Class.ClassDefinition = (function()
 
         this.getEvent('onValidateData').trigger(this.getData());
 
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //
-        //-----------------------------------------------------------
-        //var definition = this.getData();
-        //var classInst = this.getClass();
-        //
-        //for (var propName in definition) {
-        //    if (!definition.hasOwnProperty(propName)) {
-        //        continue;
-        //    }
-        //    if (!Subclass.Property.PropertyManager.isPropertyNameAllowed(propName)) {
-        //        Subclass.Error.create(
-        //            'Trying to define property with not allowed name "' + propName + '" ' +
-        //            'in class "' + classInst.getName() + '".'
-        //        );
-        //    }
-        //}
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
         return true;
     };
 
@@ -956,66 +709,7 @@ Subclass.Class.ClassDefinition = (function()
         }
 
         this.getEvent('onProcessData').trigger(definition);
-
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        ////Extending accessors
-        //
-        //this.processPropertyAccessors();
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
     };
-
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
-    ///**
-    // * Extends class constructor with specific methods.
-    // *
-    // * If getter or setter of any typed property was redefined in the class definition
-    // * the new methods will generated. For setter it's gonna be "<setterOrGetterName>Default"
-    // * where "<setterOrGetterName>" is name of redefined setter or getter name.
-    // *
-    // * These methods allows to interact with private properties through redefined getters and setters.
-    // *
-    // * @returns {Function}
-    // */
-    //ClassDefinition.prototype.processPropertyAccessors = function()
-    //{
-    //    var classProperties = this.getClass().getProperties();
-    //    var classDefinition = this.getData();
-    //
-    //    for (var propertyName in classProperties) {
-    //        if (!classProperties.hasOwnProperty(propertyName)) {
-    //            continue;
-    //        }
-    //        var property = classProperties[propertyName];
-    //
-    //        if (!property.getDefinition().isAccessors()) {
-    //            continue;
-    //        }
-    //        var accessors = {
-    //            Getter: Subclass.Tools.generateGetterName(propertyName),
-    //            Setter: Subclass.Tools.generateSetterName(propertyName)
-    //        };
-    //
-    //        for (var accessorType in accessors) {
-    //            if (!accessors.hasOwnProperty(accessorType)) {
-    //                continue;
-    //            }
-    //            var accessorName = accessors[accessorType];
-    //
-    //            if (classDefinition[accessorName]) {
-    //                classDefinition[accessorName + "Default"] = property['generate' + accessorType]();
-    //            }
-    //        }
-    //    }
-    //};
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
 
     /**
      * Searches for the names of classes which are needed to be loaded
@@ -1024,23 +718,7 @@ Subclass.Class.ClassDefinition = (function()
     {
         var classInst = this.getClass();
         var classManager = classInst.getClassManager();
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //var propertyManager = classManager.getModule().getPropertyManager();
-        //var dataTypeManager = propertyManager.getDataTypeManager();
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-
         var requires = this.getRequires();
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //var properties = this.getProperties();
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
         var parentClass = this.getExtends();
 
         // Performing $_requires option
@@ -1064,48 +742,6 @@ Subclass.Class.ClassDefinition = (function()
         if (parentClass && this.validateExtends(parentClass)) {
             classManager.loadClass(parentClass);
         }
-
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
-        //// Performing $_properties option
-        //
-        //if (properties && Subclass.Tools.isPlainObject(properties)) {
-        //    for (var propName in properties) {
-        //        if (!properties.hasOwnProperty(propName)) {
-        //            continue;
-        //        }
-        //        var propertyDefinition = propertyManager.normalizePropertyDefinition(properties[propName]);
-        //
-        //        if (typeof propertyDefinition != 'object') {
-        //            continue;
-        //        }
-        //        var propertyTypeName = propertyDefinition.type;
-        //
-        //        if (dataTypeManager.issetType(propertyTypeName)) {
-        //            var dataTypeDefinition = Subclass.Tools.copy(dataTypeManager.getTypeDefinition(propertyTypeName));
-        //            propertyTypeName = dataTypeDefinition.type;
-        //
-        //            propertyDefinition = Subclass.Tools.extendDeep(dataTypeDefinition, propertyDefinition);
-        //            propertyDefinition.type = propertyTypeName;
-        //        }
-        //        var propertyType = Subclass.Property.PropertyManager.getPropertyType(propertyDefinition.type);
-        //
-        //        if (!propertyType.parseRelatedClasses) {
-        //            continue;
-        //        }
-        //        var requiredClasses = propertyType.parseRelatedClasses(propertyDefinition);
-        //
-        //        if (requiredClasses && requiredClasses.length) {
-        //            for (i = 0; i < requiredClasses.length; i++) {
-        //                classManager.loadClass(requiredClasses[i]);
-        //            }
-        //        }
-        //    }
-        //}
-        /******************************************************************/
-        /********************** SUBCLASS PROPERTY *************************/
-        /******************************************************************/
 
         this.getEvent('onProcessRelatedClasses').trigger();
     };

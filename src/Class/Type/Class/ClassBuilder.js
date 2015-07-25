@@ -12,6 +12,45 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
     ClassBuilder.$parent = Subclass.Class.ClassBuilder;
 
     /**
+     * Makes class either final or not
+     *
+     * @method setFinal
+     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+     *
+     * @throws {Error}
+     *      Throws error if specified invalid definition of final option
+     *
+     * @param {boolean} isFinal
+     */
+    ClassBuilder.prototype.setFinal = function(isFinal)
+    {
+        if (typeof isFinal != 'boolean') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('is final option value', false)
+                .expected('a boolean')
+                .received(isFinal)
+                .apply()
+            ;
+        }
+        this.getDefinition().$_final = isFinal;
+
+        return this;
+    };
+
+    /**
+     * Returns $_final option value
+     *
+     * @method getFinal
+     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+     *
+     * @returns {boolean}
+     */
+    ClassBuilder.prototype.getFinal = function()
+    {
+        return this.getDefinition().$_final;
+    };
+
+    /**
      * Sets static properties and methods of the class
      *
      * @method setStaticProperties
@@ -29,14 +68,14 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
      * ...
      *
      * app.buildClass("Class")
-     *      .setName("Foo/Bar/TestClass")
-     *      .setStatic({
-     *          staticProp: "static value",
-     *          staticMethod: function() {
-     *              alert(this.staticProp);
-     *          }
-     *      })
-     *      .save()
+     *     .setName("Foo/Bar/TestClass")
+     *     .setStatic({
+     *         staticProp: "static value",
+     *         staticMethod: function() {
+     *             alert(this.staticProp);
+     *         }
+     *     })
+     *     .save()
      * ;
      * ...
      *

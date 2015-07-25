@@ -11,6 +11,10 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
 
     AbstractClassBuilder.$parent = Subclass.Class.Type.Class.ClassBuilder;
 
+    AbstractClassBuilder.prototype.setFinal = undefined;
+
+    AbstractClassBuilder.prototype.getFinal = undefined;
+
     /**
      * Validates abstract methods argument
      *

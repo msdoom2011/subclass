@@ -20,6 +20,7 @@ Subclass.Class.Type.Interface.InterfaceDefinition = (function()
     InterfaceDefinition.prototype.createBaseData = function()
     {
         return {
+            
             /**
              * Parent class name
              *

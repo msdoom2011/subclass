@@ -22,7 +22,7 @@ Subclass.Class.Type.Class.Class = (function() {
      */
     function Class(classManager, className, classDefinition)
     {
-        Class.$parent.call(this, classManager, className, classDefinition);
+        Class.$parent.apply(this, arguments);
 
         /**
          * List of abstract methods (functions with needed arguments)
@@ -153,6 +153,16 @@ Subclass.Class.Type.Class.Class = (function() {
             Subclass.Error.create(
                 'The class "' + this.getName() + '" can be inherited ' +
                 'only from another class or abstract class.'
+            );
+        }
+        if (
+            this._parent
+            && this._parent.constructor == Class
+            && this._parent.getDefinition().isFinal()
+        ) {
+            Subclass.Error.create(
+                'The class "' + this.getName() + '" can\'t extend the final class ' +
+                '"' + this._parent.getName() + '"'
             );
         }
     };

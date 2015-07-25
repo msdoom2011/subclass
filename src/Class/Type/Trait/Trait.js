@@ -30,7 +30,6 @@ Subclass.Class.Type.Trait.Trait = (function()
         Trait.$parent.call(this, classManager, className, classDefinition);
 
         delete this._abstractMethods;
-        //delete this._constants;
         delete this._created;
         delete this._traits;
 
@@ -111,59 +110,6 @@ Subclass.Class.Type.Trait.Trait = (function()
     Trait.prototype.getAbstractMethods = undefined;
 
     Trait.prototype.addAbstractMethods = undefined;
-
-    //Trait.prototype.addTraits = undefined;
-    //
-    //Trait.prototype.getTraits = undefined;
-    //
-    //Trait.prototype.addTrait = undefined;
-    //
-    //Trait.prototype.hasTrait = undefined;
-    //
-    //Trait.prototype.addInterfaces = undefined;
-    //
-    //Trait.prototype.getInterfaces = undefined;
-    //
-    //Trait.prototype.addInterface = undefined;
-    //
-    //Trait.prototype.isImplements = undefined;
-    //
-    //Trait.prototype.setConstants = undefined;
-    //
-    //Trait.prototype.setConstant = undefined;
-    //
-    //Trait.prototype.getConstants = undefined;
-
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Trait.prototype.getProperties = function()
-    //{
-    //    var properties = {};
-    //
-    //    if (this.hasParent()) {
-    //        var parentClass = this.getParent();
-    //        var parentProperties = parentClass.getProperties();
-    //        properties = Subclass.Tools.extend({}, parentProperties);
-    //    }
-    //    return Subclass.Tools.extend(
-    //        properties,
-    //        this._properties
-    //    );
-    //};
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Trait.prototype.attachProperties = function() {};
-    //
-    /******************************************************************/
-    /********************** SUBCLASS PROPERTY *************************/
-    /******************************************************************/
 
     /**
      * @inheritDoc

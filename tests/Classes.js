@@ -110,6 +110,11 @@ describe("Checking definition of class", function() {
         var addons = ['addon1', 'addon2'];
         var instances = [classInst, classInst.getCopy()];
 
+        expect(classInst.isInstanceOf('Class/AppClass')).toBe(true);
+        expect(classInst.isInstanceOf('Interface/AppInterface')).toBe(true);
+        expect(classInst.isInstanceOf(AppClass)).toBe(true);
+        expect(classInst.isInstanceOf(AppInterface)).toBe(true);
+
         for (var j = 0; j < instances.length; j++) {
             var inst = instances[j];
             expect(inst.getName()).toBe('NewApp');

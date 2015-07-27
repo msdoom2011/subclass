@@ -35,7 +35,7 @@ Subclass.Error.InvalidClassOptionError = (function()
      * Returns the name of error type
      *
      * @method getName
-     * @memberOf Subclass.Class.Error.InvalidClassOptionError
+     * @memberOf Subclass.Error.InvalidClassOptionError
      * @static
      *
      * @returns {string}
@@ -49,7 +49,7 @@ Subclass.Error.InvalidClassOptionError = (function()
      * Returns required error fields
      *
      * @method getRequiredOptions
-     * @memberOf Subclass.Class.Error.InvalidClassOptionError
+     * @memberOf Subclass.Error.InvalidClassOptionError
      * @static
      *
      * @returns {Array}

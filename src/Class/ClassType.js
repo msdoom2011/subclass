@@ -776,24 +776,36 @@ Subclass.Class.ClassType = function()
     /**
      * Checks if current class is instance of another class
      *
-     * @param {string} className
+     * @param {string|Subclass.Class.ClassType} className
      * @return {boolean}
      */
     ClassType.prototype.isInstanceOf = function (className)
     {
-        if (!className || typeof className != 'string') {
+        if (
+            !className
+            || (
+                typeof className != 'string'
+                && typeof className != 'object'
+            ) || (
+                typeof className == 'object'
+                && !(className instanceof Subclass.Class.ClassType)
+            )
+        ) {
             Subclass.Error.create('InvalidArgument')
                 .argument("the name of class", false)
                 .received(className)
-                .expected("a string")
+                .expected("a string or an instance of Subclass.Class.ClassType")
                 .apply()
             ;
         }
+        if (typeof className == 'object') {
+            className = className.getName();
+        }
         if (this.getName() == className) {
             return true;
+
         }
-        var classParents = this.getClassParents();
-        return classParents.indexOf(className) >= 0
+        return this.getClassParents().indexOf(className) >= 0;
     };
 
     return ClassType;

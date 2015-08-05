@@ -68,7 +68,8 @@ Subclass.Error.NotExistentMethodError = (function()
         var message = NotExistentMethodError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
-            message += 'The method "' + this.className() + '#' + this.method() + '" does not exist.';
+            message += 'The ' + (this.isMethodStatic() ? 'static ' : '') + 'method ';
+            message += '"' + this.className() + '#' + this.method() + '" does not exist.';
         }
 
         return message;

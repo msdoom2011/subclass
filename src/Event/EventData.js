@@ -33,6 +33,14 @@ Subclass.Event.EventData = function()
          * @private
          */
         this._stopped = false;
+
+        /**
+         * Reports whether invoking default event listener prevented
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._defaultPrevented = false;
     }
 
     /**
@@ -80,6 +88,32 @@ Subclass.Event.EventData = function()
     EventData.prototype.isPropagationStopped = function()
     {
         return this._stopped;
+    };
+
+    /**
+     * Prevents call of default event listener
+     */
+    EventData.prototype.preventDefault = function()
+    {
+        this._defaultPrevented = true;
+    };
+
+    /**
+     * Allows call of default event listener
+     */
+    EventData.prototype.allowDefault = function()
+    {
+        this._defaultPrevented = false;
+    };
+
+    /**
+     * Reports whether allows call of default event listener
+     *
+     * @returns {boolean}
+     */
+    EventData.prototype.isDefaultPrevented = function()
+    {
+        return this._defaultPrevented;
     };
 
     /**

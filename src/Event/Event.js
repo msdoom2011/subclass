@@ -69,6 +69,14 @@ Subclass.Event.Event = (function()
          * @private
          */
         this._listeners = [];
+
+        /**
+         * Default event listener which invokes in the least
+         *
+         * @type {null|function}
+         * @private
+         */
+        this._defaultListener = null;
     }
 
     /**
@@ -95,6 +103,37 @@ Subclass.Event.Event = (function()
     Event.prototype.getContext = function()
     {
         return this._context;
+    };
+
+    /**
+     * Sets default event listener which will be invoked in the least
+     *
+     * @param {function} listener
+     * @returns {Subclass.Event.Event}
+     */
+    Event.prototype.setDefaultListener = function(listener)
+    {
+        if (typeof listener != 'function') {
+            Subclass.Error.create('InvalidArgument')
+                .argument('the default event listener', false)
+                .expected('a function')
+                .received(listener)
+                .apply()
+            ;
+        }
+        this._defaultListener = listener;
+
+        return this;
+    };
+
+    /**
+     * Returns default event listener
+     *
+     * @returns {null|Function}
+     */
+    Event.prototype.getDefaultListener = function()
+    {
+        return this._defaultListener;
     };
 
     /**
@@ -256,7 +295,13 @@ Subclass.Event.Event = (function()
     {
         var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
         var eventData = Subclass.Tools.createClassInstance(Subclass.Event.EventData, this, this.getContext());
+        var context = this.getContext();
+        var args = [eventData];
         var priorities = [];
+
+        for (var k = 0; k < listenerArgs.length; k++) {
+            args.push(listenerArgs[k]);
+        }
 
         // Preparing event listeners
 
@@ -281,28 +326,31 @@ Subclass.Event.Event = (function()
 
         // Invoking event listener callback function in order with priorities
 
-        for (i = 0; i < priorities.length; i++) {
+        loop: for (i = 0; i < priorities.length; i++) {
             for (var j = 0; j < listeners.length; j++) {
                 listener = listeners[j];
 
                 if (!listener[uniqueFieldName] && listener.getPriority() == priorities[i]) {
                     listener[uniqueFieldName] = true;
-                    var args = [eventData];
 
-                    for (var k = 0; k < listenerArgs.length; k++) {
-                        args.push(listenerArgs[k]);
-                    }
-                    var result = listener.getCallback().apply(
-                        this.getContext(),
-                        args
-                    );
+                    var result = listener.getCallback().apply(context, args);
                     eventData.addResult(result);
 
                     if (eventData.isPropagationStopped()) {
-                        break;
+                        break loop;
                     }
                 }
             }
+        }
+
+        // Invoking default event listener
+
+        if (
+            this.getDefaultListener()
+            && !eventData.isPropagationStopped()
+            && !eventData.isDefaultPrevented()
+        ) {
+            this.getDefaultListener().apply(context, args);
         }
 
         // Removing helper fields from listeners

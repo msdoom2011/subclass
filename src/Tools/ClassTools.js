@@ -93,7 +93,7 @@ Subclass.Tools.CheckTools = (function()
 
             // This piece of (shit) code is needed only for Subclass classes
 
-            if (constructor.prototype instanceof Subclass.Extendable) {
+            if (Subclass.Extendable && constructor.prototype instanceof Subclass.Extendable) {
                 constructor.$extensions = Subclass.Tools.copy(constructor.$extensions);
             }
 

@@ -68,7 +68,8 @@ Subclass.Error.NotImplementedMethodError = (function()
         var message = NotImplementedMethodError.$parent.prototype.buildMessage.call(this);
 
         if (!message) {
-            message += 'The method "' + this.className() + '#' + this.method() + '" ';
+            message += 'The ' + (this.isMethodStatic() ? 'static ' : '') + 'method ';
+            message += '"' + this.className() + '#' + this.method() + '" ';
             message += 'is abstract and should be implemented.';
         }
 

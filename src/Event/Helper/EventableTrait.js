@@ -18,7 +18,8 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
          *      eventName: [
          *          {
          *              priority: {number},
-         *              callback: {function}
+         *              callback: {function},
+         *              uniqueHash: {Object}
          *          },
          *          ...
          *      ],

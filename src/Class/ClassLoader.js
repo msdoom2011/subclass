@@ -98,7 +98,7 @@ Subclass.Class.ClassLoader = (function()
      *
      * @param className
      *      The name of class. It should be compatible with the file path where
-     *      it is located relative to "rootPath" configuration option of module.
+     *      it is located relative to "rootPath" setting option of module.
      *
      * @param {Function} callback
      *      The callback function which will be invoked after the class will be loaded

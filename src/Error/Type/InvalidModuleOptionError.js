@@ -74,7 +74,7 @@ Subclass.Error.InvalidModuleOptionError = (function()
 
         if (!message) {
             message += 'Invalid value of option "' + this.option() + '" ';
-            message += 'in configuration of module "' + this.module() + '". ';
+            message += 'in settings of module "' + this.module() + '". ';
             message += this.hasExpected() ? ('It must be ' + this.expected() + '. ') : "";
             message += this.hasReceived() ? this.received() : ""
         }

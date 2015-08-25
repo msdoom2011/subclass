@@ -3,22 +3,22 @@
  * @constructor
  * @description
  *
- * The class which holds and manages module configuration.
- * It can validate, set and get configuration parameters.<br /><br />
+ * The class which holds and manages module settings.
+ * It can validate, set and get settings parameters.<br /><br />
  *
- * To see the list of available configuration parameters
+ * To see the list of available setting parameters
  * look at description of {@link Subclass.Module}
  * class constructor parameters.
  *
  * @param {Subclass.Module} module
  *      The module instance
  */
-Subclass.ConfigManager = (function()
+Subclass.SettingsManager = function()
 {
     /**
-     * @alias Subclass.ConfigManager
+     * @alias Subclass.SettingsManager
      */
-    function ConfigManager(module)
+    function SettingsManager(module)
     {
         /**
          * Instance of subclass module
@@ -74,27 +74,27 @@ Subclass.ConfigManager = (function()
         this.getEvent('onInitialize').trigger();
     }
 
-    ConfigManager.$parent = Subclass.Extendable;
+    SettingsManager.$parent = Subclass.Extendable;
 
-    ConfigManager.$mixins = [Subclass.Event.EventableMixin];
+    SettingsManager.$mixins = [Subclass.Event.EventableMixin];
 
     /**
-     * Sets new module configs.
+     * Sets new module settings.
      *
-     * New configuration parameters will rewrite earlier ones, for example,
-     * specified in module constructor or in earlier call of ConfigManager#setConfigs method.
+     * New setting parameters will rewrite earlier ones, for example,
+     * specified in module constructor or in earlier call of SettingsManager#setSettings method.
      *
-     * @method setConfigs
-     * @memberOf Subclass.ConfigManager.prototype
+     * @method setSettings
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *     Throws error when:<br />
      *     - if module is ready;<br />
      *     - specified argument is not a plain object;<br />
-     *     - in configuration object specified non agreed parameter.
+     *     - in settings object specified non agreed parameter.
      *
-     * @param {Object} moduleConfigs
-     *     Object with module configuration parameters
+     * @param {Object} moduleSettings
+     *     Object with module setting parameters
      *
      * @example
      * ...
@@ -102,75 +102,75 @@ Subclass.ConfigManager = (function()
      * var moduleInst = Subclass.createModule('myApp');
      *
      * ...
-     * var moduleConfigs = moduleInst.getConfigManager();
+     * var moduleSettings = moduleInst.getSettingsManager();
      * var parameterManager = moduleInst.getParameterManager();
      *
-     * moduleConfigs.setConfigs({ // or easily use moduleInst.setConfigs({...});
+     * moduleSettings.setSettings({ // or easily use moduleInst.setSettings({...});
      *     rootPath: "path/to/project/root/dir",  // adds new parameter
      * });
      *
-     * moduleConfigs.getRootPath();               // Return "path/to/project/root/dir"
+     * moduleSettings.getRootPath();               // Return "path/to/project/root/dir"
      * ...
      */
-    ConfigManager.prototype.setConfigs = function (moduleConfigs)
+    SettingsManager.prototype.setSettings = function (moduleSettings)
     {
         var $this = this;
 
         if (this.getModule().isReady()) {
-            Subclass.Error.create('Can\'t change configs in ready module.');
+            Subclass.Error.create('Can\'t change settings in ready module.');
         }
-        if (moduleConfigs && !Subclass.Tools.isPlainObject(moduleConfigs)) {
+        if (moduleSettings && !Subclass.Tools.isPlainObject(moduleSettings)) {
             Subclass.Error.create('InvalidArgument')
-                .argument("the module configuration", false)
-                .received(moduleConfigs)
+                .argument("the module settings", false)
+                .received(moduleSettings)
                 .expected("a plain object")
                 .apply()
             ;
         }
-        if (moduleConfigs) {
-            if (moduleConfigs.hasOwnProperty('pluginOf')) {
-                this.setPluginOf(moduleConfigs.pluginOf);
+        if (moduleSettings) {
+            if (moduleSettings.hasOwnProperty('pluginOf')) {
+                this.setPluginOf(moduleSettings.pluginOf);
             }
-            if (moduleConfigs.hasOwnProperty('files')) {
-                this.setFiles(moduleConfigs.files);
+            if (moduleSettings.hasOwnProperty('files')) {
+                this.setFiles(moduleSettings.files);
             }
 
-            for (var configName in moduleConfigs) {
+            for (var settingName in moduleSettings) {
                 if (
-                    !moduleConfigs.hasOwnProperty(configName)
+                    !moduleSettings.hasOwnProperty(settingName)
                     || [
                         'pluginOf',
                         'files',
                         'onReady'
-                    ].indexOf(configName) >= 0
+                    ].indexOf(settingName) >= 0
                 ) {
                     continue;
                 }
-                var setterName = "set" + configName[0].toUpperCase() + configName.substr(1);
+                var setterName = "set" + settingName[0].toUpperCase() + settingName.substr(1);
 
                 if (!this[setterName]) {
                     Subclass.Error.create(
-                        'Configuration option "' + configName + '" is not allowed ' +
+                        'Setting option "' + settingName + '" is not allowed ' +
                         'by the module.'
                     );
                 }
-                this[setterName](moduleConfigs[configName]);
+                this[setterName](moduleSettings[settingName]);
             }
-            if (moduleConfigs.hasOwnProperty('onReady')) {
-                $this.setOnReady(moduleConfigs.onReady);
+            if (moduleSettings.hasOwnProperty('onReady')) {
+                $this.setOnReady(moduleSettings.onReady);
             }
         }
     };
 
     /**
-     * Returns module instance to which current configuration manager belongs
+     * Returns module instance to which current settings manager belongs
      *
      * @method getModule
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @returns {Subclass.Module}
      */
-    ConfigManager.prototype.getModule = function()
+    SettingsManager.prototype.getModule = function()
     {
         return this._module;
     };
@@ -182,7 +182,7 @@ Subclass.ConfigManager = (function()
      * will be invoked only when the root module becomes ready.
      *
      * @method setPlugin
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -192,7 +192,7 @@ Subclass.ConfigManager = (function()
      * @param {boolean} isPlugin
      *      Should be current module a plugin or not
      */
-    ConfigManager.prototype.setPlugin = function(isPlugin)
+    SettingsManager.prototype.setPlugin = function(isPlugin)
     {
         this.checkModuleIsReady();
 
@@ -212,30 +212,30 @@ Subclass.ConfigManager = (function()
      * Reports whether the current module is a plug-in of another module or not
      *
      * @method getPlugin
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @returns {boolean}
      */
-    ConfigManager.prototype.getPlugin = function()
+    SettingsManager.prototype.getPlugin = function()
     {
         return this._plugin;
     };
 
     /**
      * @method isPlugin
-     * @memberOf Subclass.ConfigManager.prototype
-     * @alias Subclass.ConfigManager#getPlugin
+     * @memberOf Subclass.SettingsManager.prototype
+     * @alias Subclass.SettingsManager#getPlugin
      */
-    ConfigManager.prototype.isPlugin = ConfigManager.prototype.getPlugin;
+    SettingsManager.prototype.isPlugin = SettingsManager.prototype.getPlugin;
 
     /**
      * Marks current module that it should be a plug-in of the module with specified name.
      *
-     * If was specified name of parent module then the module configuration parameter
+     * If was specified name of parent module then the module setting parameter
      * "plugin" will forcibly set to true.
      *
      * @method setPluginOf
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *      Throws error if specified argument is not string or null
@@ -243,7 +243,7 @@ Subclass.ConfigManager = (function()
      * @param {string} parentModuleName
      *      A name of the parent module
      */
-    ConfigManager.prototype.setPluginOf = function(parentModuleName)
+    SettingsManager.prototype.setPluginOf = function(parentModuleName)
     {
         this.checkModuleIsReady();
 
@@ -264,21 +264,20 @@ Subclass.ConfigManager = (function()
      * Returns name of the parent module if current one is a plug-in of the specified module
      *
      * @method getPluginOf
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @returns {(string|null)}
      */
-    ConfigManager.prototype.getPluginOf = function()
+    SettingsManager.prototype.getPluginOf = function()
     {
         return this._pluginOf;
     };
 
     /**
      * Sets root directory path of the project.
-     * It's required if autoload configuration parameter is turned on.
      *
      * @method setRootPath
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -291,11 +290,11 @@ Subclass.ConfigManager = (function()
      * @example
      *
      * ...
-     * var moduleConfigs = moduleInst.getConfigManager();
-     *     moduleConfigs.setRootPath("path/to/the/directory/root");
+     * var moduleSettings = moduleInst.getSettingsManager();
+     *     moduleSettings.setRootPath("path/to/the/directory/root");
      * ...
      */
-    ConfigManager.prototype.setRootPath = function(rootPath)
+    SettingsManager.prototype.setRootPath = function(rootPath)
     {
         this.checkModuleIsReady();
 
@@ -315,11 +314,11 @@ Subclass.ConfigManager = (function()
      * Returns root directory path of the project
      *
      * @method getRootPath
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @returns {(string|null)}
      */
-    ConfigManager.prototype.getRootPath = function()
+    SettingsManager.prototype.getRootPath = function()
     {
         return this._rootPath;
     };
@@ -328,7 +327,7 @@ Subclass.ConfigManager = (function()
      * Sets and loads specified files.
      *
      * @method setFiles
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -345,13 +344,13 @@ Subclass.ConfigManager = (function()
      *      The callback function which will invoked after
      *      the specified main file will loaded
      */
-    ConfigManager.prototype.setFiles = function(files, callback)
+    SettingsManager.prototype.setFiles = function(files, callback)
     {
         this.checkModuleIsReady();
 
         if (!files || !Array.isArray(files)) {
             Subclass.Error.create(
-                "Trying to set invalid files array in module configuration set. " +
+                "Trying to set invalid files array in module settings set. " +
                 "It must contain the names of files."
             );
         }
@@ -368,23 +367,23 @@ Subclass.ConfigManager = (function()
      * Reports whether current module loads some files
      *
      * @method hasFiles
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @returns {boolean}
      */
-    ConfigManager.prototype.hasFiles = function()
+    SettingsManager.prototype.hasFiles = function()
     {
         return !!this._files.length;
     };
 
     /**
      * Sets callback function which will be invoked before all registered user application
-     * parts (i.e. classes) will be configured.
+     * parts (i.e. classes) will be set upped.
      *
-     * It is a good opportunity to modify its configuration using plugins of application.
+     * It is a good opportunity to modify its settings using plugins of application.
      *
-     * @method setOnConfig
-     * @memberOf Subclass.ConfigManager.prototype
+     * @method setOnSetup
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -393,7 +392,7 @@ Subclass.ConfigManager = (function()
      *
      * @param callback
      */
-    ConfigManager.prototype.setOnConfig = function(callback)
+    SettingsManager.prototype.setOnSetup = function(callback)
     {
         this.checkModuleIsReady();
 
@@ -406,17 +405,17 @@ Subclass.ConfigManager = (function()
             ;
         }
         var eventManager = this.getModule().getEventManager();
-        var onConfigEvent = eventManager.getEvent('onConfig');
+        var onSetupEvent = eventManager.getEvent('onSetup');
 
-        onConfigEvent.addListener(callback);
+        onSetupEvent.addListener(callback);
     };
 
     /**
      * Sets callback function which will be invoked after the all classes of the module
-     * will be loaded (if configuration parameter "autoload" was set in true) and registered.<br><br>
+     * will be loaded and registered.<br><br>
      *
-     * It is the same as "onReady" parameter in module configuration. If it was defined
-     * in module configuration too the new callback function will be added to the onReady
+     * It is the same as "onReady" parameter in module settings. If it was defined
+     * in module settings too the new callback function will be added to the onReady
      * callbacks storage and will be invoked after other callback functions
      * which were registered earlier.<br><br>
      *
@@ -424,7 +423,7 @@ Subclass.ConfigManager = (function()
      * function was not set earlier, the call of current method invokes specified callback immediately.
      *
      * @method setOnReady
-     * @memberOf Subclass.ConfigManager.prototype
+     * @memberOf Subclass.SettingsManager.prototype
      *
      * @throws {Error}
      *      Throws error if:<br />
@@ -434,7 +433,7 @@ Subclass.ConfigManager = (function()
      * @param {Function} callback
      *      Callback function which will do some initializing manipulations
      */
-    ConfigManager.prototype.setOnReady = function(callback)
+    SettingsManager.prototype.setOnReady = function(callback)
     {
         this.checkModuleIsReady();
 
@@ -460,12 +459,12 @@ Subclass.ConfigManager = (function()
      * @private
      * @ignore
      */
-    ConfigManager.prototype.checkModuleIsReady = function()
+    SettingsManager.prototype.checkModuleIsReady = function()
     {
         if (this.getModule().isReady()) {
-            Subclass.Error.create('Can\'t change configs in ready module.');
+            Subclass.Error.create('Can\'t change settings in ready module.');
         }
     };
 
-    return ConfigManager;
-})();
+    return SettingsManager;
+}();

@@ -1,7 +1,7 @@
 app = Subclass.createModule("app", [
     'appFirstPlugin'
 ], {
-    onConfig: function() {
+    onSetup: function() {
         configuredModules.push('app');
 
         // Changing Class/AppClass class definition

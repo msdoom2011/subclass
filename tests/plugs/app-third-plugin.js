@@ -1,6 +1,6 @@
 var appThirdPlugin = Subclass.createModule('appThirdPlugin', {
     plugin: true,
-    onConfig: function(evt)
+    onSetup: function(evt)
     {
         configuredModules.push('appThirdPlugin');
     }

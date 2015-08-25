@@ -691,7 +691,7 @@ Subclass.ClassManager = (function()
         this._classTypes[classTypeName] = classTypeConstructor;
 
         /**
-         * Registering new config
+         * Registering new class type
          *
          * @param {string} className
          * @param {Object} classDefinition

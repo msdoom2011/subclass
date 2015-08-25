@@ -207,7 +207,7 @@ Subclass.LoadManager = (function()
                 $this._loading = false;
 
                 if (module.isRoot()) {
-                    module.setConfigured();
+                    module.setSetupped();
                 }
                 eventManager
                     .getEvent('onLoadingEnd')
@@ -237,7 +237,7 @@ Subclass.LoadManager = (function()
      * @memberOf Subclass.LoadManager.prototype
      *
      * @param {string} fileName
-     *      The name of file relative to the "rootPath" module config option.
+     *      The name of file relative to the "rootPath" module settings option.
      *      Also it is possible to specify an absolute path using the "^" symbol at the start of the path.
      *
      * @param {function} [callback]
@@ -372,8 +372,8 @@ Subclass.LoadManager = (function()
     LoadManager.prototype.processStack = function()
     {
         var module = this.getModule();
-        var moduleConfigs = module.getConfigManager();
-        var rootPath = moduleConfigs.getRootPath();
+        var moduleSettings = module.getSettingsManager();
+        var rootPath = moduleSettings.getRootPath();
         var stackPortion = [];
         var $this = this;
 

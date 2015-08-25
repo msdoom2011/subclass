@@ -150,36 +150,36 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module#onConfig}
+     * The same as the {@link Subclass.Module#onSetup}
      *
-     * @method onConfig
+     * @method onSetup
      * @memberOf Subclass.ModuleAPI.prototype
      */
-    ModuleAPI.prototype.onConfig = function()
+    ModuleAPI.prototype.onSetup = function()
     {
-        return this.getModule().onConfig.apply(this.getModule(), arguments);
+        return this.getModule().onSetup.apply(this.getModule(), arguments);
     };
 
     /**
-     * The same as the {@link Subclass.Module#triggerOnConfig}
+     * The same as the {@link Subclass.Module#triggerOnSetup}
      *
-     * @method triggerOnConfig
+     * @method triggerOnSetup
      * @memberOf Subclass.ModuleAPI.prototype
      */
-    ModuleAPI.prototype.triggerOnConfig = function()
+    ModuleAPI.prototype.triggerOnSetup = function()
     {
-        return this.getModule().triggerOnConfig.apply(this.getModule(), arguments);
+        return this.getModule().triggerOnSetup.apply(this.getModule(), arguments);
     };
 
     /**
-     * The same as the {@link Subclass.Module#isConfigured}
+     * The same as the {@link Subclass.Module#isSetupped}
      *
-     * @method isConfigured
+     * @method isSetupped
      * @memberOf Subclass.ModuleAPI.prototype
      */
-    ModuleAPI.prototype.isConfigured = function()
+    ModuleAPI.prototype.isSetupped = function()
     {
-        return this.getModule().isConfigured.apply(this.getModule(), arguments);
+        return this.getModule().isSetupped.apply(this.getModule(), arguments);
     };
 
     /**
@@ -216,25 +216,25 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.Module#setConfigs}
+     * The same as the {@link Subclass.Module#setSettings}
      *
-     * @method setConfigs
+     * @method setSettings
      * @memberOf Subclass.ModuleAPI.prototype
      */
-    ModuleAPI.prototype.setConfigs = function()
+    ModuleAPI.prototype.setSettings = function()
     {
-        return this.getModule().setConfigs.apply(this.getModule(), arguments);
+        return this.getModule().setSettings.apply(this.getModule(), arguments);
     };
 
     /**
-     * The same as the {@link Subclass.Module#getConfigManager}
+     * The same as the {@link Subclass.Module#getSettingsManager}
      *
-     * @method getConfigManager
+     * @method getSettingsManager
      * @memberOf Subclass.ModuleAPI.prototype
      */
-    ModuleAPI.prototype.getConfigManager = function()
+    ModuleAPI.prototype.getSettingsManager = function()
     {
-        return this.getModule().getConfigManager.apply(this.getModule(), arguments);
+        return this.getModule().getSettingsManager.apply(this.getModule(), arguments);
     };
 
     /**

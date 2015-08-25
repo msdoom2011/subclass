@@ -20,8 +20,8 @@
  * @param {string[]} [modulePlugins=[]]
  *      Array with names of another modules which are plugins for current one
  *
- * @param {Object} [moduleConfigs={}]
- *      Module configuration object. Allowed configs are: <pre>
+ * @param {Object} [moduleSettings={}]
+ *      Module settings object. Allowed options are: <pre>
  *
  * plugin       {boolean}   opt   false  Tells that current module is
  *                                       a plugin and its onReady callback
@@ -52,7 +52,7 @@
  *
  *                                       Example:
  *
- *                                       var moduleConfigs = {
+ *                                       var moduleSettings = {
  *                                         rootPath: "/asserts/scripts/app/",
  *                                         files: [
  *
@@ -65,7 +65,7 @@
  *                                         ...
  *                                       };
  *
- * onConfig     {Function}  opt          Callback function that will be
+ * onSetup      {Function}  opt          Callback function that will be
  *                                       invoked before any of registered
  *                                       module content will be initialized
  *                                       (i.e. classes).
@@ -82,12 +82,12 @@
  *
  * </pre>
  */
-Subclass.Module = (function()
+Subclass.Module = function()
 {
     /**
      * @alias Subclass.Module
      */
-    function Module(moduleName, modulePlugins, moduleConfigs)
+    function Module(moduleName, modulePlugins, moduleSettings)
     {
         var $this = this;
 
@@ -99,8 +99,8 @@ Subclass.Module = (function()
                 .apply()
             ;
         }
-        if (!moduleConfigs) {
-            moduleConfigs = {};
+        if (!moduleSettings) {
+            moduleSettings = {};
         }
         if (!modulePlugins) {
             modulePlugins = [];
@@ -144,7 +144,7 @@ Subclass.Module = (function()
             .registerEvent('onInitializeBefore')
             .registerEvent('onInitialize')
             .registerEvent('onInitializeAfter')
-            .registerEvent('onConfig')
+            .registerEvent('onSetup')
             .registerEvent('onReady')
             .registerEvent('onReadyBefore')
             .registerEvent('onReadyAfter')
@@ -176,20 +176,20 @@ Subclass.Module = (function()
         this._classManager = Subclass.Tools.createClassInstance(Subclass.ClassManager, this);
 
         /**
-         * Module configuration
+         * Module settings
          *
-         * @type {Subclass.ConfigManager}
+         * @type {Subclass.SettingsManager}
          * @private
          */
-        this._configManager = Subclass.Tools.createClassInstance(Subclass.ConfigManager, this);
+        this._settingsManager = Subclass.Tools.createClassInstance(Subclass.SettingsManager, this);
 
         /**
-         * Reports whether module was configured
+         * Reports whether module was setupped
          *
          * @type {boolean}
          * @private
          */
-        this._configured = false;
+        this._setupped = false;
 
         /**
          * Checks whether module is prepared for ready
@@ -226,7 +226,7 @@ Subclass.Module = (function()
         this.initializeExtensions();
         eventManager.getEvent('onInitialize').triggerPrivate(this);
 
-        this.setConfigs(moduleConfigs);
+        this.setSettings(moduleSettings);
         this.getClassManager().initialize();
         this.getLoadManager().initialize();
 
@@ -243,7 +243,7 @@ Subclass.Module = (function()
 
     /**
      * Array of function callbacks which will be invoked when module initializes
-     * before module configuration options was processed
+     * before module setting options was processed
      *
      * @type {Array}
      * @static
@@ -252,7 +252,7 @@ Subclass.Module = (function()
 
     /**
      * Array of function callbacks which will be invoked when module
-     * initializes after module configuration options was processed
+     * initializes after module setting options was processed
      *
      * @type {Array}
      * @static
@@ -405,7 +405,7 @@ Subclass.Module = (function()
      */
     Module.prototype.isPlugin = function()
     {
-        return this.getConfigManager().isPlugin();
+        return this.getSettingsManager().isPlugin();
     };
 
     /**
@@ -423,31 +423,31 @@ Subclass.Module = (function()
     };
 
     /**
-     * The same as the {@link Subclass.ConfigManager#setConfigs}
+     * The same as the {@link Subclass.SettingsManager#setSettings}
      *
-     * @method setConfigs
+     * @method setSettings
      * @memberOf Subclass.Module.prototype
      *
      * @returns {Subclass.Module}
      */
-    Module.prototype.setConfigs = function(configs)
+    Module.prototype.setSettings = function(settings)
     {
-        this.getConfigManager().setConfigs(configs);
+        this.getSettingsManager().setSettings(settings);
 
         return this;
     };
 
     /**
-     * Returns an instance of manager that holds and processes module configuration.
+     * Returns an instance of manager that holds and processes module settings.
      *
-     * @method getConfigManager
+     * @method getSettingsManager
      * @memberOf Subclass.Module.prototype
      *
-     * @returns {Subclass.ConfigManager}
+     * @returns {Subclass.SettingsManager}
      */
-    Module.prototype.getConfigManager = function()
+    Module.prototype.getSettingsManager = function()
     {
-        return this._configManager;
+        return this._settingsManager;
     };
 
     /**
@@ -507,9 +507,9 @@ Subclass.Module = (function()
     };
 
     /**
-     * The same as the {@link Subclass.ConfigManager#setOnConfig}
+     * The same as the {@link Subclass.SettingsManager#setOnSetup}
      *
-     * @method onConfig
+     * @method onSetup
      * @memberOf Subclass.Module.prototype
      *
      * @param {Function} callback
@@ -517,59 +517,59 @@ Subclass.Module = (function()
      *
      * @returns {Subclass.Module}
      */
-    Module.prototype.onConfig = function(callback)
+    Module.prototype.onSetup = function(callback)
     {
-        this.getConfigManager().setOnConfig(callback);
+        this.getSettingsManager().setOnSetup(callback);
 
         return this;
     };
 
     /**
-     * Makes module be configured
+     * Makes module be setupped
      *
-     * @method setConfigured
+     * @method setSetupped
      * @memberOf Subclass.Module.prototype
      */
-    Module.prototype.setConfigured = function()
+    Module.prototype.setSetupped = function()
     {
-        this.triggerOnConfig();
-        this._configured = true;
+        this.triggerOnSetup();
+        this._setupped = true;
     };
 
     /**
-     * Reports wheter the module was configured
+     * Reports wheter the module was setupped
      *
-     * @method isConfigured
+     * @method isSetupped
      * @memberOf Subclass.Module.prototype
      *
      * @returns {boolean}
      */
-    Module.prototype.isConfigured = function()
+    Module.prototype.isSetupped = function()
     {
-        return this._configured;
+        return this._setupped;
     };
 
     /**
-     * Invokes registered onConfig callback functions forcibly.<br /><br />
+     * Invokes registered onSetup callback functions forcibly.<br /><br />
      *
-     * If current module contains plug-ins then will be invoked onConfig callbacks
-     * from current module first and then will be invoked onConfig callbacks
+     * If current module contains plug-ins then will be invoked onSetup callbacks
+     * from current module first and then will be invoked onSetup callbacks
      * from plug-ins in order as they were added to the current module.
      *
-     * @method triggerOnConfig
+     * @method triggerOnSetup
      * @memberOf Subclass.Module.prototype
      *
      * @returns {Subclass.Module}
      */
-    Module.prototype.triggerOnConfig = function()
+    Module.prototype.triggerOnSetup = function()
     {
-        this.getEventManager().getEvent('onConfig').trigger();
+        this.getEventManager().getEvent('onSetup').trigger();
 
         return this;
     };
 
     /**
-     * The same as the {@link Subclass.ConfigManager#setOnReady}
+     * The same as the {@link Subclass.SettingsManager#setOnReady}
      *
      * @method onReady
      * @memberOf Subclass.Module.prototype
@@ -581,7 +581,7 @@ Subclass.Module = (function()
      */
     Module.prototype.onReady = function(callback)
     {
-        this.getConfigManager().setOnReady(callback);
+        this.getSettingsManager().setOnReady(callback);
 
         return this;
     };
@@ -669,8 +669,8 @@ Subclass.Module = (function()
                     && this.getRoot().isReady()
                 )
             ) {
-                if (!this.isConfigured()) {
-                    this.setConfigured();
+                if (!this.isSetupped()) {
+                    this.setSetupped();
                 }
                 this.getEventManager().getEvent('onReadyBefore').trigger();
                 this.triggerOnReady();
@@ -837,4 +837,4 @@ Subclass.Module = (function()
 
     return Module;
 
-})();
+}();

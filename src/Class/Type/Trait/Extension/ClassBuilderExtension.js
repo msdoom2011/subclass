@@ -93,7 +93,7 @@ Subclass.Class.Type.Trait.Extension.ClassBuilderExtension = function() {
      * Adds new trait
      *
      * @param {string[]} traitName
-     * @returns {Subclass.Class.Type.Config.ConfigBuilder}
+     * @returns {Subclass.Class.Type.Trait.TraitBuilder}
      */
     ClassBuilder.prototype.addTrait = function(traitName)
     {

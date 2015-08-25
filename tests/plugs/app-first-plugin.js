@@ -6,7 +6,7 @@ var appFirstPlugin = Subclass.createModule('appFirstPlugin', {
 
     var plug = appFirstPlugin;
 
-    plug.onConfig(function(evt) {
+    plug.onSetup(function(evt) {
         configuredModules.push('appFirstPlugin');
     });
 

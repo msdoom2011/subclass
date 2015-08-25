@@ -50,8 +50,8 @@ window.Subclass = (function()
          *      objects like: { name: "pluginModuleName", file: "file/of/module.js" }
          *      to automatically load it during initializing module.
          *
-         * @param {Object} [moduleConfigs = {}]
-         *      A configuration of the creating module
+         * @param {Object} [moduleSettings = {}]
+         *      Settings of the creating module
          *
          * @returns {Subclass.ModuleAPI}
          * @memberOf Subclass
@@ -63,14 +63,14 @@ window.Subclass = (function()
          * // The simplest way to create module
          * var app = Subclass.createModule("app");
          *
-         * // Creating module with configuration and without plugins
+         * // Creating module with settings and without plugins
          * var app = Subclass.createModule("app", {
-         *      // Optional module configuration
+         *      // Optional module settings
          * });
          *
          * // Creating module with plugins which are loaded to the document at the moment
          * var app = Subclass.createModule("app", ["plugin1", "plugin2"], {
-         *      // Optional module configuration
+         *      // Optional module settings
          * });
          *
          * // Creating module with plugins which are not loaded to the document at the moment
@@ -83,7 +83,7 @@ window.Subclass = (function()
          *          file: "file/of/plugin2.js"
          *      }
          * ], {
-         *      // Optional module configuration
+         *      // Optional module settings
          * });
          *
          * // Creating module with loaded and not loaded plugins to the document at the moment
@@ -98,13 +98,13 @@ window.Subclass = (function()
          *          file: "path/to/file/of/plugin4.js"
          *      }
          * ], {
-         *      // Optional module configuration
+         *      // Optional module settings
          * });
          */
-        createModule: function(moduleName, modulePlugins, moduleConfigs)
+        createModule: function(moduleName, modulePlugins, moduleSettings)
         {
             if (Subclass.Tools.isPlainObject(modulePlugins)) {
-                moduleConfigs = modulePlugins;
+                moduleSettings = modulePlugins;
                 modulePlugins = [];
             }
             if (!modulePlugins) {
@@ -119,7 +119,7 @@ window.Subclass = (function()
 
             for (var i = 0; i < _modules.length; i++) {
                 var registeredModuleName = _modules[i].getName();
-                var pluginOf = _modules[i].getConfigManager().getPluginOf();
+                var pluginOf = _modules[i].getSettingsManager().getPluginOf();
 
                 if (pluginOf == moduleName) {
                     modulePlugins.push(registeredModuleName);
@@ -158,7 +158,7 @@ window.Subclass = (function()
             var module = Subclass.Tools.createClassInstance(Subclass.Module,
                 moduleName,
                 modulePlugins,
-                moduleConfigs
+                moduleSettings
             );
             _modules.push(module);
 

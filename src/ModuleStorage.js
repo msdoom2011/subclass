@@ -174,7 +174,7 @@ Subclass.ModuleStorage = (function()
      *
      * @param {string[]} moduleNames
      *      Array of module names. Each module should be marked as a plugin
-     *      (by the "plugin" or "pluginOf" configuration parameters)
+     *      (by the "plugin" or "pluginOf" setting parameters)
      *
      * @returns {Array.<Subclass.Module>}
      * @private
@@ -187,9 +187,9 @@ Subclass.ModuleStorage = (function()
 
         for (var i = 0; i < moduleNames.length; i++) {
             var childModule = Subclass.getModule(moduleNames[i]).getModule();
-            var childModuleConfigs = childModule.getConfigManager();
+            var childModuleSettings = childModule.getSettingsManager();
 
-            if (!childModuleConfigs.isPlugin()) {
+            if (!childModuleSettings.isPlugin()) {
                 Subclass.Error.create(
                     'Specified in plugins module "' + moduleNames[i] + '" ' +
                     'that is not a plugin.'

@@ -93,7 +93,7 @@ Subclass.ClassManager = (function()
 
         // Checking for classes with the same name in module (and its plug-ins)
 
-        eventManager.getEvent('onLoadingEnd').addListener(100, function(evt) {
+        eventManager.getEvent('onLoadingEnd').addListener(function(evt) {
             $this.checkForClones();
             $this.initializeClasses();
         });

@@ -11,7 +11,7 @@ Subclass.Class.Type.AbstractClass.Extension.ClassExtension = function()
 
     ClassExtension.$parent = Subclass.Extension;
 
-    Subclass.Module.onInitializeAfter(function(evt, module)
+    Subclass.Module.onInitializeBefore(function(evt, module)
     {
         if (Subclass.ClassManager.issetClassType('Interface')) {
             var interfaceClassExtension = Subclass.Class.Type.Interface.Extension.ClassExtension;

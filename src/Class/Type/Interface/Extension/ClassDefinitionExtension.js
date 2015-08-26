@@ -140,7 +140,7 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
     //======================== REGISTERING EXTENSION ==========================
     //=========================================================================
 
-    Subclass.Module.onInitializeAfter(function(evt, module)
+    Subclass.Module.onInitializeBefore(function(evt, module)
     {
         ClassDefinition = Subclass.Tools.buildClassConstructor(ClassDefinition);
 

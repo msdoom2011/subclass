@@ -123,7 +123,6 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
 
         var interfaceClassConstructor = interfaceClass.getConstructor();
         var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
-        //var interfaceClassProperties = interfaceClass.getClassDefinitionProperties();
         var abstractMethods = {};
 
         if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
@@ -133,40 +132,16 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
             );
         }
 
-        // Add interface properties
-
-        //for (var propName in interfaceClassProperties) {
-        //    if (!interfaceClassProperties.hasOwnProperty(propName)) {
-        //        continue;
-        //    }
-        //    this.addProperty(
-        //        propName,
-        //        interfaceClassProperties[propName]
-        //    );
-        //}
-
         // Add all interface prototype properties (with inherited)
 
         loop: for (var methodName in interfaceClassConstructorProto) {
             if (typeof interfaceClassConstructorProto[methodName] != 'function') {
                 continue;
             }
-            //for (propName in interfaceClassProperties) {
-            //    if (!interfaceClassProperties.hasOwnProperty(propName)) {
-            //        continue;
-            //    }
-            //    var setterName = Subclass.Tools.generateSetterName(propName);
-            //    var getterName = Subclass.Tools.generateGetterName(propName);
-            //
-            //    if (methodName == setterName || methodName == getterName) {
-            //        continue loop;
-            //    }
-            //}
             abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
         }
         this.addAbstractMethods(abstractMethods);
         this.getInterfaces().push(interfaceClass);
-        //this.getInterfaces().push(interfaceName);
     };
 
     /**
@@ -243,7 +218,7 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
     //======================== REGISTERING EXTENSION ==========================
     //=========================================================================
 
-    Subclass.Module.onInitializeAfter(function(evt, module)
+    Subclass.Module.onInitializeBefore(function(evt, module)
     {
         Class = Subclass.Tools.buildClassConstructor(Class);
 

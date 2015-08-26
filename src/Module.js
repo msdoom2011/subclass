@@ -141,6 +141,7 @@ Subclass.Module = function()
         // Registering events
 
         this.getEventManager()
+            .registerEvent('onCreate')
             .registerEvent('onInitializeBefore')
             .registerEvent('onInitialize')
             .registerEvent('onInitializeAfter')
@@ -214,13 +215,17 @@ Subclass.Module = function()
 
         // Adding initialize callbacks from static scope
 
-        for (var i = 0; i < Module._initializersBefore.length; i++) {
+        for (var i = 0; i < Module._creaters.length; i++) {
+            eventManager.getEvent('onCreate').addListener(Module._creaters[i]);
+        }
+        for (i = 0; i < Module._initializersBefore.length; i++) {
             eventManager.getEvent('onInitializeBefore').addListener(Module._initializersBefore[i]);
         }
         for (i = 0; i < Module._initializersAfter.length; i++) {
             eventManager.getEvent('onInitializeAfter').addListener(Module._initializersAfter[i]);
         }
 
+        eventManager.getEvent('onCreate').triggerPrivate(this);
         eventManager.getEvent('onInitializeBefore').triggerPrivate(this);
 
         this.initializeExtensions();
@@ -234,12 +239,21 @@ Subclass.Module = function()
 
         // Calling onReady callback
 
-        eventManager.getEvent('onLoadingEnd').addListener(1000, function(evt) {
+        eventManager.getEvent('onLoadingEnd').addListener(-1000000, function(evt) {
             $this.setReady();
         });
     }
 
     Module.$parent = Subclass.Extendable;
+
+    /**
+     * Array of function callbacks which will be invoked when module has just created
+     * before initialization
+     *
+     * @type {Array}
+     * @static
+     */
+    Module._creaters = [];
 
     /**
      * Array of function callbacks which will be invoked when module initializes
@@ -274,6 +288,24 @@ Subclass.Module = function()
         }
         if (this._initializersBefore.indexOf() < 0) {
             this._initializersBefore.push(callback);
+        }
+    };
+
+    /**
+     * Adds new initializer to module
+     */
+    Module.onCreate = function(callback)
+    {
+        if (!callback || typeof callback != 'function') {
+            Subclass.Error.create("InvalidArgument")
+                .argument("the callback function", false)
+                .expected("a function")
+                .received(callback)
+                .save()
+            ;
+        }
+        if (this._creaters.indexOf() < 0) {
+            this._creaters.push(callback);
         }
     };
 

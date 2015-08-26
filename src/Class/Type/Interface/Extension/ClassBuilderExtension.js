@@ -123,7 +123,7 @@ Subclass.Class.Type.Interface.Extension.ClassBuilderExtension = function() {
     //======================== REGISTERING EXTENSION ==========================
     //=========================================================================
 
-    Subclass.Module.onInitializeAfter(function(evt, module)
+    Subclass.Module.onInitializeBefore(function(evt, module)
     {
         ClassBuilder = Subclass.Tools.buildClassConstructor(ClassBuilder);
 

@@ -369,12 +369,12 @@ Subclass.ClassManager = (function()
             );
         }
         var classTypeConstructor = Subclass.ClassManager.getClassType(classTypeName);
-        var classInstance = this.createClass(classTypeConstructor, className, classDefinition);
+        var classTypeInstance = this.createClass(classTypeConstructor, className, classDefinition);
 
-        this._classes[className] = classInstance;
+        this._classes[className] = classTypeInstance;
         this.getLoader().setClassLoaded(className);
 
-        return classInstance;
+        return classTypeInstance;
     };
 
     /**

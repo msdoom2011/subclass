@@ -228,7 +228,7 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
     //======================== REGISTERING EXTENSION ==========================
     //=========================================================================
 
-    Subclass.Module.onInitializeAfter(function(evt, module)
+    Subclass.Module.onInitializeBefore(function(evt, module)
     {
         Class = Subclass.Tools.buildClassConstructor(Class);
 

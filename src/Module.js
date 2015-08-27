@@ -185,6 +185,14 @@ Subclass.Module = function()
         this._settingsManager = Subclass.Tools.createClassInstance(Subclass.SettingsManager, this);
 
         /**
+         * Instance of string parser
+         *
+         * @type {Subclass.Parser.ParserManager}
+         * @private
+         */
+        this._parserManager = Subclass.Tools.createClassInstance(Subclass.Parser.ParserManager, this);
+
+        /**
          * Reports whether module was setupped
          *
          * @type {boolean}
@@ -480,6 +488,17 @@ Subclass.Module = function()
     Module.prototype.getSettingsManager = function()
     {
         return this._settingsManager;
+    };
+
+    /**
+     * Returns an instance of manager which allows to parse and normalize strings which
+     * contain some pattern injections
+     *
+     * @returns {Subclass.Parser.ParserManager}
+     */
+    Module.prototype.getParserManager = function()
+    {
+        return this._parserManager;
     };
 
     /**

@@ -53,4 +53,27 @@ describe("Defining classes using class builder:", function() {
             .save()
         ;
     });
+
+    it ("anonymous classes", function() {
+        var anonymousClass = app.buildClass('Class')
+            .setBody({
+                _psix: null,
+
+                setPsix: function(psix)
+                {
+                    this._psix = psix;
+                },
+
+                getPsix: function()
+                {
+                    return this._psix;
+                }
+            })
+            .create()
+        ;
+        var inst = anonymousClass.createInstance();
+        expect(inst.getPsix()).toBe(null);
+        inst.setPsix(100);
+        expect(inst.getPsix()).toBe(100);
+    });
 });

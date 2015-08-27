@@ -91,6 +91,8 @@ Subclass.Class.ClassBuilder = (function()
             .registerEvent("onPrepareBody")
             .registerEvent("onValidateBefore")
             .registerEvent("onValidateAfter")
+            .registerEvent("onCreateBefore")
+            .registerEvent("onCreateAfter")
             .registerEvent("onSaveBefore")
             .registerEvent("onSaveAfter")
             .registerEvent("onSaveAsBefore")
@@ -109,7 +111,7 @@ Subclass.Class.ClassBuilder = (function()
         this.initializeExtensions();
         this.getEvent('onInitialize').trigger();
 
-        if (this.getClassManager().issetClass(this.getName())) {
+        if (this.getName() && this.getClassManager().issetClass(this.getName())) {
             this._setClass(this.getName());
         }
     };
@@ -697,15 +699,42 @@ Subclass.Class.ClassBuilder = (function()
     {
         this.getEvent('onValidateBefore').trigger();
 
-        if (!this.getName()) {
-            Subclass.Error.create('The future class must be named.');
-        }
         if (!this.getType()) {
             Subclass.Error.create('The type of the future class must be specified.');
         }
         this.getEvent('onValidateAfter').trigger();
 
         return this;
+    };
+
+    /**
+     * Creates class type instance without its registration,
+     * i.e. creates anonymous class
+     *
+     * @method create
+     * @memberOf Subclass.Class.ClassBuilder.prototype
+     *
+     * @returns {Subclass.Class.ClassType}
+     */
+    ClassBuilder.prototype.create = function()
+    {
+        this._validate();
+        this.getEvent('onCreateBefore').trigger();
+
+        if (this._class) {
+            this._class.setDefinition(this.getDefinition());
+            return this._class;
+        }
+
+        var classTypeConstructor = Subclass.ClassManager.getClassType(this.getType());
+        var classTypeInstance = this.getClassManager().createClass(
+            classTypeConstructor,
+            this.getName() || ('AnonymousClass_' + String(Math.round(Math.random() * (new Date).valueOf() / 100000))),
+            this.getDefinition()
+        );
+        this.getEvent('onCreateAfter').trigger(classTypeInstance);
+
+        return classTypeInstance;
     };
 
     /**
@@ -719,6 +748,9 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.save = function()
     {
+        if (!this.getName()) {
+            Subclass.Error.create('The future class must be named.');
+        }
         this._validate();
         this.getEvent('onSaveBefore').trigger();
 
@@ -726,15 +758,15 @@ Subclass.Class.ClassBuilder = (function()
             this._class.setDefinition(this.getDefinition());
             return this._class;
         }
-        var classInst = this.getClassManager().addClass(
+        var classTypeInst = this.getClassManager().addClass(
             this.getType(),
             this.getName(),
             this.getDefinition()
         );
-        classInst.getConstructor();
-        this.getEvent('onSaveAfter').trigger(classInst);
+        classTypeInst.getConstructor();
+        this.getEvent('onSaveAfter').trigger(classTypeInst);
 
-        return classInst;
+        return classTypeInst;
     };
 
     /**
@@ -747,6 +779,9 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype.saveAs = function(className)
     {
+        if (!this.getName()) {
+            Subclass.Error.create('The future class must be named.');
+        }
         this._validate();
         this.getEvent('onSaveAsBefore').trigger();
 

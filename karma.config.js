@@ -29,6 +29,8 @@ module.exports = function(config) {
       "src/Module.js",
       "src/ModuleAPI.js",
       "src/ClassManager.js",
+      "src/Parser/ParserManager.js",
+      "src/Parser/**/*.js",
       "src/Class/ClassType.js",
       "src/Class/ClassDefinition.js",
       "src/Class/ClassLoader.js",

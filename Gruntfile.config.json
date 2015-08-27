@@ -59,6 +59,13 @@
           "<%= config.lib.content.error.dir %>/**/*.js"
         ]
       },
+      "parser": {
+        "dir": "Parser",
+        "files": [
+          "<%= config.lib.content.parser.dir %>/ParserManager.js",
+          "<%= config.lib.content.parser.dir %>/**/*.js"
+        ]
+      },
       "event": {
         "dir": "Event",
         "files_first": [
@@ -74,6 +81,7 @@
       "<%= config.lib.content.main.files_first %>",
       "<%= config.lib.content.tools.files %>",
       "<%= config.lib.content.error.files %>",
+      "<%= config.lib.content.parser.files %>",
       "<%= config.lib.content.event.files_first %>",
       "<%= config.lib.content.main.files_middle %>",
       "<%= config.lib.content.class.files %>",

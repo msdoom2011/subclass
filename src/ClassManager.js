@@ -507,7 +507,7 @@ Subclass.ClassManager = (function()
      * @param {string} classType
      *      The type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
      *
-     * @param {string} className
+     * @param {string} [className]
      *      The name of creating class
      *
      * @returns {Subclass.Class.ClassBuilder}

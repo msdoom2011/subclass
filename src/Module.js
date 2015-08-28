@@ -247,6 +247,11 @@ Subclass.Module = function()
 
         // Calling onReady callback
 
+        eventManager.getEvent('onLoadingEnd').addListener(1000000, function(evt) {
+            if ($this.isRoot()) {
+                $this.setSetupped();
+            }
+        });
         eventManager.getEvent('onLoadingEnd').addListener(-1000000, function(evt) {
             $this.setReady();
         });

@@ -206,9 +206,6 @@ Subclass.LoadManager = (function()
                 var eventManager = module.getEventManager();
                 $this._loading = false;
 
-                if (module.isRoot()) {
-                    module.setSetupped();
-                }
                 eventManager
                     .getEvent('onLoadingEnd')
                     .triggerPrivate()
@@ -345,22 +342,37 @@ Subclass.LoadManager = (function()
      */
     LoadManager.prototype.removeFromStack = function(fileName)
     {
-        var stackItem = this.getStackItem(fileName);
-        var stackItemIndex = this.getStackItemIndex(fileName);
+        var mainModule = this.getModule().getRoot();
 
-        if (!stackItem || stackItemIndex === false) {
-            return;
+        if (arguments[1]) {
+            mainModule = this.getModule();
         }
 
-        this.getModule().getEventManager().getEvent('onRemoveFromLoadStack').trigger(
-            stackItem,
-            stackItemIndex
-        );
+        var loadManager = mainModule.getLoadManager();
+        var stackItem = loadManager.getStackItem(fileName);
+        var stackItemIndex = loadManager.getStackItemIndex(fileName);
 
-        if (stackItem.xmlhttp) {
-            stackItem.xmlhttp.abort();
+        if (stackItem && stackItemIndex !== false) {
+            mainModule.getEventManager().getEvent('onRemoveFromLoadStack').trigger(
+                stackItem,
+                stackItemIndex
+            );
+
+            if (stackItem.xmlhttp) {
+                stackItem.xmlhttp.abort();
+            }
+            loadManager._stack.splice(stackItemIndex, 1);
         }
-        this._stack.splice(stackItemIndex, 1);
+
+        // Removing from stack from all modules
+
+        var moduleStorage = mainModule.getModuleStorage();
+
+        moduleStorage.eachModule(function (module, moduleName) {
+            if (module != mainModule) {
+                module.getLoadManager().removeFromStack(fileName, true);
+            }
+        });
     };
 
     /**

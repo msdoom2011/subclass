@@ -3,16 +3,16 @@
 var app = Subclass.createModule('app', [
     //{
     //    name: 'appPlugin1',
-    //    file: "/SubclassJS/build/demo/js/plugs/plugin1"
+    //    file: "/Subclass/build/demo/js/plugs/plugin1"
     //},
     //'appPlugin1',
     //'appPlugin2',
     //{
     //    name: 'appPlugin2',
-    //    file: "/SubclassJS/build/demo/js/plugs/plugin2"
+    //    file: "/Subclass/build/demo/js/plugs/plugin2"
     //}
 ], {
-    rootPath: "/subclass/SubclassJS/build/demo/js/app/",
+    rootPath: "/subclass/Subclass/build/demo/js/app/",
     files: ["appClasses.js"],
     //dataTypes: {
     //    percents: { type: "string", pattern: /^[a-z]+%$/ },

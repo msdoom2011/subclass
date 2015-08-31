@@ -12,7 +12,7 @@ Subclass.SubclassPlugin = function() {
     SubclassPlugin.$parent = null;
 
     /**
-     * Returns tha name of SubclassJS plugin
+     * Returns tha name of Subclass plugin
      */
     SubclassPlugin.getName = function()
     {
@@ -24,7 +24,7 @@ Subclass.SubclassPlugin = function() {
     };
 
     /**
-     * Returns list of SubclassJS plugin names which is needed by current plugin
+     * Returns list of Subclass plugin names which is needed by current plugin
      */
     SubclassPlugin.getDependencies = function()
     {

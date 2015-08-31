@@ -5,12 +5,12 @@
  * @namespace
  * @description
  *      The basic class for creating new application
- *      based on SubclassJS framework.
+ *      based on Subclass framework.
  */
 window.Subclass = (function()
 {
     /**
-     * Reports whether the SubclassJS was initialized
+     * Reports whether the Subclass was initialized
      *
      * @type {boolean}
      * @private
@@ -26,7 +26,7 @@ window.Subclass = (function()
     var _modules = [];
 
     /**
-     * Collection of registered SubclassJS plugins
+     * Collection of registered Subclass plugins
      *
      * @type {Object.<Function>}
      * @private
@@ -111,7 +111,7 @@ window.Subclass = (function()
                 modulePlugins = [];
             }
 
-            // Initializes SubclassJS
+            // Initializes Subclass
 
             this._initialize();
 
@@ -240,20 +240,20 @@ window.Subclass = (function()
         },
 
         /**
-         * Registers new SubclassJS plug-in
+         * Registers new Subclass plug-in
          *
          * @method registerPlugin
          * @memberOf Subclass
          * @static
          *
          * @param {string} pluginClass
-         *      The name of SubclassJS plug-in
+         *      The name of Subclass plug-in
          */
         registerPlugin: function(pluginClass)
         {
             if (typeof pluginClass != 'function') {
                 Subclass.Error.create('InvalidArgument')
-                    .argument('the SubclassJS plugin constructor', false)
+                    .argument('the Subclass plugin constructor', false)
                     .expected('a function')
                     .received(pluginClass)
                     .apply()
@@ -266,13 +266,13 @@ window.Subclass = (function()
         },
 
         /**
-         * Checks whether SubclassJS plug-in with specified name is registered
+         * Checks whether Subclass plug-in with specified name is registered
          *
          * @method issetPlugin
          * @memberOf Subclass
          *
          * @param {string} pluginName
-         *      The name of SubclassJS plug-in
+         *      The name of Subclass plug-in
          */
         issetPlugin: function(pluginName)
         {
@@ -280,7 +280,7 @@ window.Subclass = (function()
         },
 
         /**
-         * Returns all registered SubclassJS plug-ins
+         * Returns all registered Subclass plug-ins
          *
          * @method getPlugins
          * @memberOf Subclass
@@ -293,7 +293,7 @@ window.Subclass = (function()
         },
 
         /**
-         * Initializes SubclassJS
+         * Initializes Subclass
          *
          * @method _initialize
          * @private
@@ -314,7 +314,7 @@ window.Subclass = (function()
                 for (var i = 0; i < pluginDependencies.length; i++) {
                     if (!Subclass.issetPlugin(pluginDependencies[i])) {
                         Subclass.Error.create(
-                            'The SubclassJS plug-in "' + pluginName + '" ' +
+                            'The Subclass plug-in "' + pluginName + '" ' +
                             'requires the "' + pluginDependencies + '" plug-in to be installed.'
                         );
                     }

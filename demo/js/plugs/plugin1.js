@@ -1,7 +1,7 @@
 var appPlugin1 = Subclass.createModule('appPlugin1', {
     //plugin: true,
     pluginOf: "app",
-    rootPath: "/SubclassJS/build/demo/js/plugs/",
+    rootPath: "/Subclass/build/demo/js/plugs/",
     dataTypes: {
         percents: { type: "string", pattern: /^\d+%$/ }
     },

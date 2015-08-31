@@ -1,11 +1,34 @@
 {
-  "name": "SubclassJS",
+  "name": "subclass",
   "version": "0.1.0",
   "authors": [
-    "Dmitriy Osipishin | <msdoom2011@gmail.com>"
+    "Dmitry Osipishin | <msdoom2011@gmail.com>"
   ],
   "description": "A javascript framework for creating project using OOP structural elements like classes, abstract classes, interfaces, traits and config classes with ability to define typed properties in them.",
-  "main": "Gruntfile.js",
+  "main": "release/subclass.js",
+  "moduleType": "globals",
+  "keywords": [
+    "subclass",
+    "class",
+    "inheritance",
+    "structure",
+    "autoloading",
+    "OOP"
+  ],
   "license": "MIT",
-  "private": true
+  "ignore": [
+    "build",
+    "release/demo",
+    "demo",
+    "doc",
+    "node_modules",
+    "src",
+    "tests",
+    "**/.*",
+    "Gruntfile.config.json",
+    "Gruntfile.js",
+    "karma.config.js",
+    "package.json",
+    "TODO.txt"
+  ]
 }

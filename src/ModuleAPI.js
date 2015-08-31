@@ -78,14 +78,14 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
-     * The same as the {@link Subclass.ClassManager#getClass}
+     * The same as the {@link Subclass.ClassManager#get}
      *
      * @method getClass
      * @memberOf Subclass.ModuleAPI.prototype
      */
     ModuleAPI.prototype.getClass = function()
     {
-        return this.getModule().getClassManager().getClass.apply(
+        return this.getModule().getClassManager().get.apply(
             this.getModule().getClassManager(),
             arguments
         );
@@ -99,7 +99,7 @@ Subclass.ModuleAPI = (function()
      */
     ModuleAPI.prototype.issetClass = function()
     {
-        return this.getModule().getClassManager().issetClass.apply(
+        return this.getModule().getClassManager().isset.apply(
             this.getModule().getClassManager(),
             arguments
         );
@@ -113,7 +113,7 @@ Subclass.ModuleAPI = (function()
      */
     ModuleAPI.prototype.buildClass = function()
     {
-        return this.getModule().getClassManager().buildClass.apply(
+        return this.getModule().getClassManager().build.apply(
             this.getModule().getClassManager(),
             arguments
         );
@@ -127,23 +127,23 @@ Subclass.ModuleAPI = (function()
      */
     ModuleAPI.prototype.alterClass = function()
     {
-        return this.getModule().getClassManager().alterClass.apply(
+        return this.getModule().getClassManager().alter.apply(
             this.getModule().getClassManager(),
             arguments
         );
     };
 
     /**
-     * The same as the {@link Subclass.ClassManager#copyClass}
+     * The same as the {@link Subclass.ClassManager#copy}
      *
-     * @method alterClass
+     * @method copyClass
      * @memberOf Subclass.ModuleAPI.prototype
      *
      * @returns {Subclass.Class.ClassType}
      */
     ModuleAPI.prototype.copyClass = function()
     {
-        return this.getModule().getClassManager().copyClass.apply(
+        return this.getModule().getClassManager().copy.apply(
             this.getModule().getClassManager(),
             arguments
         );

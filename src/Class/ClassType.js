@@ -281,7 +281,7 @@ Subclass.Class.ClassType = function()
         var classManager = this.getClassManager();
 
         for (var i = 0; i < classParents.length; i++) {
-            var parentClass = classManager.getClass(classParents[i]);
+            var parentClass = classManager.get(classParents[i]);
                 parentClass.removeChildClass(this.getName());
         }
         this.constructor.call(
@@ -326,12 +326,12 @@ Subclass.Class.ClassType = function()
         this._children.push(className);
 
         var classManager = this.getClassManager();
-        var classInst = classManager.getClass(className);
+        var classInst = classManager.get(className);
         var classInstChildren = classInst.getClassChildren();
         var classParents = this.getClassParents();
 
         for (var i = 0; i < classParents.length; i++) {
-            var parentClassInst = classManager.getClass(classParents[i]);
+            var parentClassInst = classManager.get(classParents[i]);
             parentClassInst.addChildClass(className);
         }
         for (i = 0; i < classInstChildren.length; i++) {
@@ -403,7 +403,7 @@ Subclass.Class.ClassType = function()
 
         for (var i = 0; i < this._children.length; i++) {
             var childClassName = this._children[i];
-            var childClassType = this.getClassManager().getClass(this._children[i]).getType();
+            var childClassType = this.getClassManager().get(this._children[i]).getType();
 
             if (!classes.hasOwnProperty(childClassType)) {
                 classes[childClassType] = [];
@@ -479,7 +479,7 @@ Subclass.Class.ClassType = function()
             Subclass.Tools.create("Trying to set class as the parent for itself.")
         }
         if (typeof parentClassName == 'string') {
-            this._parent = this.getClassManager().getClass(parentClassName);
+            this._parent = this.getClassManager().get(parentClassName);
             this._parent.addChildClass(this.getName());
 
         } else if (parentClassName === null) {
@@ -752,7 +752,7 @@ Subclass.Class.ClassType = function()
         var classParents = this.getClassParents();
 
         for (var i = 0; i < classParents.length; i++) {
-            classManager.getClass(classParents[i]).setInstanceCreated();
+            classManager.get(classParents[i]).setInstanceCreated();
         }
         this._created = true;
     };

@@ -127,7 +127,7 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
             var traitParents = traits[i].getClassParents();
 
             for (var j = 0; j < traitParents.length; j++) {
-                traits.push(classManager.getClass(traitParents[j]));
+                traits.push(classManager.get(traitParents[j]));
             }
         }
         if (this.hasParent()) {
@@ -158,7 +158,7 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
                 .apply()
             ;
         }
-        var traitClass = this.getClassManager().getClass(traitName);
+        var traitClass = this.getClassManager().get(traitName);
         var traitClassDefinition = traitClass.getDefinition();
         var traitProps = {};
 

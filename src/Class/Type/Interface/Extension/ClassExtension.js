@@ -111,7 +111,7 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
                 .apply()
             ;
         }
-        var interfaceClass = this.getClassManager().getClass(interfaceName);
+        var interfaceClass = this.getClassManager().get(interfaceName);
         interfaceClass.addChildClass(this.getName());
 
         if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
@@ -166,7 +166,7 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
             var interfaceParents = interfaces[i].getClassParents();
 
             for (var j = 0; j < interfaceParents.length; j++) {
-                interfaces.push(classManager.getClass(interfaceParents[j]));
+                interfaces.push(classManager.get(interfaceParents[j]));
             }
         }
         if (this.hasParent()) {

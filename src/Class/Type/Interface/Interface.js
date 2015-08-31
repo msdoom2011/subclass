@@ -117,7 +117,7 @@ Subclass.Class.Type.Interface.Interface = (function()
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(Interface);
+    Subclass.ClassManager.registerType(Interface);
 
     return Interface;
 

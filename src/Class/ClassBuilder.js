@@ -111,7 +111,7 @@ Subclass.Class.ClassBuilder = (function()
         this.initializeExtensions();
         this.getEvent('onInitialize').trigger();
 
-        if (this.getName() && this.getClassManager().issetClass(this.getName())) {
+        if (this.getName() && this.getClassManager().isset(this.getName())) {
             this._setClass(this.getName());
         }
     };
@@ -142,7 +142,7 @@ Subclass.Class.ClassBuilder = (function()
      */
     ClassBuilder.prototype._setClass = function(className)
     {
-        var classInst = this.getClassManager().getClass(className);
+        var classInst = this.getClassManager().get(className);
         var classDefinition = classInst.getDefinition().getData();
 
         if (classInst.wasInstanceCreated()) {
@@ -726,8 +726,8 @@ Subclass.Class.ClassBuilder = (function()
             return this._class;
         }
 
-        var classTypeConstructor = Subclass.ClassManager.getClassType(this.getType());
-        var classTypeInstance = this.getClassManager().createClass(
+        var classTypeConstructor = Subclass.ClassManager.getType(this.getType());
+        var classTypeInstance = this.getClassManager().create(
             classTypeConstructor,
             this.getName() || ('AnonymousClass_' + String(Math.round(Math.random() * (new Date).valueOf() / 100000))),
             this.getDefinition()
@@ -758,7 +758,7 @@ Subclass.Class.ClassBuilder = (function()
             this._class.setDefinition(this.getDefinition());
             return this._class;
         }
-        var classTypeInst = this.getClassManager().addClass(
+        var classTypeInst = this.getClassManager().add(
             this.getType(),
             this.getName(),
             this.getDefinition()
@@ -785,7 +785,7 @@ Subclass.Class.ClassBuilder = (function()
         this._validate();
         this.getEvent('onSaveAsBefore').trigger();
 
-        var classInst = this.getClassManager().addClass(
+        var classInst = this.getClassManager().add(
             this.getType(),
             className,
             this.getDefinition()

@@ -33,7 +33,7 @@ Subclass.Class.Type.Trait.Trait = (function()
         delete this._created;
         delete this._traits;
 
-        if (Subclass.ClassManager.issetClassType('Interface')) {
+        if (Subclass.ClassManager.issetType('Interface')) {
             //delete this._interfaces;
             this.addInterfaces = undefined;
             this.getInterfaces = undefined;
@@ -121,7 +121,7 @@ Subclass.Class.Type.Trait.Trait = (function()
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(Trait);
+    Subclass.ClassManager.registerType(Trait);
 
     return Trait;
 

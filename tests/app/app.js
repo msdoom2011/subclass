@@ -6,7 +6,7 @@ app = Subclass.createModule("app", [
 
         // Changing Class/AppClass class definition
 
-        var AppClass = this.getClassManager().getClass('Class/AppClass');
+        var AppClass = this.getClassManager().get('Class/AppClass');
         var definition = AppClass.getDefinition().getData();
 
         definition.configuredMethod = function() {

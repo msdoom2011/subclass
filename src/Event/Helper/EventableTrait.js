@@ -4,7 +4,7 @@
  * @name Subclass.Event.EventableTrait
  * @extends {Subclass.Event.EventableInterface}
  */
-Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
+Subclass.ClassManager.register('Trait', 'Subclass/Event/EventableTrait', {
 
     /**
      * Collection of registered events

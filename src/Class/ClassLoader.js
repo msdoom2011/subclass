@@ -39,7 +39,7 @@ Subclass.Class.ClassLoader = (function()
             .addListener(function(evt, fileName, callback) {
                 var className = fileName.replace(/\.js$/, '');
 
-                if (classManager.issetClass(className)) {
+                if (classManager.isset(className)) {
                     loadManager.removeFromStack(fileName);
                 }
             })
@@ -53,7 +53,7 @@ Subclass.Class.ClassLoader = (function()
                     var fileName = stackItems[i].file;
                     var className = fileName.replace(/\.js$/, '');
 
-                    if (classManager.issetClass(className)) {
+                    if (classManager.isset(className)) {
                         loadManager.removeFromStack(fileName);
                     }
                 }
@@ -109,7 +109,7 @@ Subclass.Class.ClassLoader = (function()
         var loadManager = this.getLoadManager();
         var fileName = className + ".js";
 
-        if (classManager.issetClass(className)) {
+        if (classManager.isset(className)) {
             return;
         }
         if (callback && typeof callback != 'function') {
@@ -121,7 +121,7 @@ Subclass.Class.ClassLoader = (function()
             ;
         }
         loadManager.loadFile(fileName, function() {
-            if (!classManager.issetClass(className)) {
+            if (!classManager.isset(className)) {
                 Subclass.Error.create('The class "' + className + '" was not loaded.');
             }
             if (callback) {

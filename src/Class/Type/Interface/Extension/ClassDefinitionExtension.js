@@ -53,7 +53,7 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
 
             if (interfaces && this.validateImplements(interfaces)) {
                 for (var i = 0; i < interfaces.length; i++) {
-                    classManager.loadClass(interfaces[i]);
+                    classManager.load(interfaces[i]);
                 }
             }
         });

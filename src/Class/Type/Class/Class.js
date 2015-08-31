@@ -148,7 +148,7 @@ Subclass.Class.Type.Class.Class = (function() {
         if (
             this._parent
             && this._parent.constructor != Class
-            && this._parent.constructor != Subclass.ClassManager.getClassType('AbstractClass')
+            && this._parent.constructor != Subclass.ClassManager.getType('AbstractClass')
         ) {
             Subclass.Error.create(
                 'The class "' + this.getName() + '" can be inherited ' +
@@ -367,7 +367,7 @@ Subclass.Class.Type.Class.Class = (function() {
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(Class);
+    Subclass.ClassManager.registerType(Class);
 
     return Class;
 

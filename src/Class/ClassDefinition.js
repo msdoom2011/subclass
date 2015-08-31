@@ -727,12 +727,12 @@ Subclass.Class.ClassDefinition = (function()
             if (Subclass.Tools.isPlainObject(requires)) {
                 for (var alias in requires) {
                     if (requires.hasOwnProperty(alias)) {
-                        classManager.loadClass(requires[alias]);
+                        classManager.load(requires[alias]);
                     }
                 }
             } else if (Array.isArray(requires)) {
                 for (var i = 0; i < requires.length; i++) {
-                    classManager.loadClass(requires[i]);
+                    classManager.load(requires[i]);
                 }
             }
         }
@@ -740,7 +740,7 @@ Subclass.Class.ClassDefinition = (function()
         // Performing $_extends option
 
         if (parentClass && this.validateExtends(parentClass)) {
-            classManager.loadClass(parentClass);
+            classManager.load(parentClass);
         }
 
         this.getEvent('onProcessRelatedClasses').trigger();

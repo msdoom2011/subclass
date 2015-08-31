@@ -101,7 +101,7 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
     /*         Registering new class type            */
     /*************************************************/
 
-    Subclass.ClassManager.registerClassType(AbstractClass);
+    Subclass.ClassManager.registerType(AbstractClass);
 
     return AbstractClass;
 

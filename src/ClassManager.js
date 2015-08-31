@@ -72,13 +72,13 @@ Subclass.ClassManager = (function()
                 for (var className in defaultClasses[classTypeName]) {
                     if (
                         !defaultClasses[classTypeName].hasOwnProperty(className)
-                        || this.issetClass(className)
+                        || this.isset(className)
                     ) {
                         continue;
                     }
                     var classDefinition = defaultClasses[classTypeName][className];
 
-                    this.addClass(
+                    this.add(
                         classTypeName,
                         className,
                         classDefinition
@@ -119,6 +119,23 @@ Subclass.ClassManager = (function()
                 module.getLoadManager().startLoading();
             }
         }, 20);
+    };
+
+    /**
+     * Initializes registered classes
+     *
+     * @method initializeClasses
+     * @memberOf Subclass.ClassManager.prototype
+     */
+    ClassManager.prototype.initializeClasses = function()
+    {
+        var classes = this.getClasses();
+
+        for (var className in classes) {
+            if (classes.hasOwnProperty(className)) {
+                classes[className].createConstructor();
+            }
+        }
     };
 
     /**
@@ -206,19 +223,32 @@ Subclass.ClassManager = (function()
     };
 
     /**
+     * Checks whether class manager contains any class
+     *
+     * @method isEmpty
+     * @memberOf Subclass.ClassManager.prototype
+     *
+     * @returns {boolean}
+     */
+    ClassManager.prototype.isEmpty = function()
+    {
+        return Subclass.Tools.isEmpty(this._classes);
+    };
+
+    /**
      * Returns module names where is defined class with specified name.<br /><br />
      *
      * It is especially actual if class with specified name is defined
      * at once in several modules. So it's convenient to use for searching
      * classes with the same name defined in multiple modules.
      *
-     * @method getClassLocations
+     * @method findLocations
      * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
      * @returns {string[]}
      */
-    ClassManager.prototype.getClassLocations = function(className)
+    ClassManager.prototype.findLocations = function(className)
     {
         var mainModule = this.getModule().getRoot();
         var locations = [];
@@ -231,7 +261,7 @@ Subclass.ClassManager = (function()
         moduleStorage.eachModule(function(module) {
             var classManager = module.getClassManager();
 
-            if (classManager.issetClass(className, true)) {
+            if (classManager.isset(className, true)) {
                 locations.push(module.getName());
             }
             if (module == mainModule) {
@@ -243,8 +273,8 @@ Subclass.ClassManager = (function()
 
                 for (var i = 0; i < plugins.length; i++) {
                     var subPlugin = plugins[i];
-                    var subPluginManager = subPlugin.getClassManager();
-                    var subPluginLocations = subPluginManager.getClassLocations(className, subPlugin);
+                    var subPluginClassManager = subPlugin.getClassManager();
+                    var subPluginLocations = subPluginClassManager.findLocations(className, subPlugin);
 
                     locations = locations.concat(subPluginLocations);
                 }
@@ -252,176 +282,6 @@ Subclass.ClassManager = (function()
         });
 
         return locations;
-    };
-
-    /**
-     * Initializes registered classes
-     *
-     * @method initializeClasses
-     * @memberOf Subclass.ClassManager.prototype
-     */
-    ClassManager.prototype.initializeClasses = function()
-    {
-        var classes = this.getClasses();
-
-        for (var className in classes) {
-            if (classes.hasOwnProperty(className)) {
-                classes[className].createConstructor();
-            }
-        }
-    };
-
-    /**
-     * The same as the {@link Subclass.Class.ClassLoader#loadClass}
-     *
-     * @method loadClass
-     * @memberOf Subclass.ClassManager.prototype
-     * @alias Subclass.Class.ClassLoader#loadClass
-     */
-    ClassManager.prototype.loadClass = function()
-    {
-        var classLoader = this.getLoader();
-
-        classLoader.loadClass.apply(classLoader, arguments);
-    };
-
-    /**
-     * Creates the instance of class definition
-     *
-     * @method createClass
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {Function} classConstructor
-     *      Class constructor of specific class type
-     *
-     * @param {string} className
-     *      A name of the future class
-     *
-     * @param {Object} classDefinition
-     *      A definition of the creating class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.createClass = function(classConstructor, className, classDefinition)
-    {
-        return Subclass.Tools.createClassInstance(
-            classConstructor,
-            this,
-            className,
-            classDefinition
-        );
-    };
-
-    /**
-     * Adds a new class
-     *
-     * @method addClass
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:
-     *      - The class type name was not specified
-     *      - Specified non existent class type name
-     *      - Missed or not valid the name class
-     *      - Missed or not valid the definition of class
-     *      - Trying to redefine already existent class
-     *
-     * @param {string} classTypeName
-     *      The name of class type (i.e. "Class", "AbstractClass", "Interface" etc.)
-     *
-     * @param {string} className
-     *      The name of future class
-     *
-     * @param {object} classDefinition
-     *      The object with definition of the creating class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.addClass = function(classTypeName, className, classDefinition)
-    {
-        if (!classTypeName) {
-            Subclass.Error.create(
-                'Trying to register the class "' + className + '" ' +
-                'without specifying class type.'
-            );
-        }
-        if (!Subclass.ClassManager.issetClassType(classTypeName)) {
-            Subclass.Error.create(
-                'Trying to register the class "' + className + '" ' +
-                'of unknown class type "' + classTypeName + '".'
-            );
-        }
-        if (!className || typeof className != 'string') {
-            Subclass.Error.create(
-                'Trying to register the class with wrong name "' + className + '".'
-            );
-        }
-        if (!classDefinition || typeof classDefinition != 'object') {
-            Subclass.Error.create(
-                'Trying to register the class "' + className + '" ' +
-                'with empty or not valid class definition.'
-            );
-        }
-        if (this.issetClass(className)) {
-            Subclass.Error.create(
-                'Trying to define class with already ' +
-                'existed class name "' + className + '".'
-            );
-        }
-        var classTypeConstructor = Subclass.ClassManager.getClassType(classTypeName);
-        var classTypeInstance = this.createClass(classTypeConstructor, className, classDefinition);
-
-        this._classes[className] = classTypeInstance;
-        this.getLoader().setClassLoaded(className);
-
-        return classTypeInstance;
-    };
-
-    /**
-     * Returns the class definition instance
-     *
-     * @method getClass
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if trying to get non existent class definition instance
-     *
-     * @param {string} className
-     *      The name of needed class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.getClass = function(className)
-    {
-        if (!this.issetClass(className)) {
-            Subclass.Error.create('Trying to call to none existed class "' + className + '".');
-        }
-        return this.getClasses()[className];
-    };
-
-    /**
-     * Checks if class with specified name was ever registered
-     *
-     * @method issetClass
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {string} className
-     *      The name of needed class
-     *
-     * @param {boolean} [privateClasses=false]
-     *      If it's true then the checking will be performed only between classes
-     *      from current module without classes from its plugins
-     *
-     * @returns {boolean}
-     */
-    ClassManager.prototype.issetClass = function(className, privateClasses)
-    {
-        var withParentClasses = true;
-
-        if (privateClasses === true) {
-            withParentClasses = false;
-        }
-        return !!this.getClasses(privateClasses, withParentClasses)[className];
     };
 
     /**
@@ -451,12 +311,12 @@ Subclass.ClassManager = (function()
             for (var className in moduleClasses) {
                 if (
                     !moduleClasses.hasOwnProperty(className)
-                    || ClassManager.issetClass(className)
+                    || ClassManager.isset(className)
                 ) {
                     continue;
                 }
                 if (classes[className]) {
-                    var classLocations = $this.getClassLocations(className);
+                    var classLocations = $this.findLocations(className);
 
                     Subclass.Error.create(
                         'Multiple class definition detected. Class "' + className + '" defined ' +
@@ -469,39 +329,163 @@ Subclass.ClassManager = (function()
     };
 
     /**
-     * Checks whether class manager contains any class
+     * The same as the {@link Subclass.Class.ClassLoader#loadClass}
      *
-     * @method isEmpty
+     * @method load
      * @memberOf Subclass.ClassManager.prototype
-     *
-     * @returns {boolean}
+     * @alias Subclass.Class.ClassLoader#loadClass
      */
-    ClassManager.prototype.isEmpty = function()
+    ClassManager.prototype.load = function()
     {
-        return Subclass.Tools.isEmpty(this._classes);
+        var classLoader = this.getLoader();
+
+        classLoader.loadClass.apply(classLoader, arguments);
     };
 
     /**
-     * Modifies existed class definition
+     * Creates the instance of class definition
      *
-     * @method alterClass
+     * @method create
+     * @memberOf Subclass.ClassManager.prototype
+     *
+     * @param {Function} classConstructor
+     *      Class constructor of specific class type
+     *
+     * @param {string} className
+     *      A name of the future class
+     *
+     * @param {Object} classDefinition
+     *      A definition of the creating class
+     *
+     * @returns {Subclass.Class.ClassType}
+     */
+    ClassManager.prototype.create = function(classConstructor, className, classDefinition)
+    {
+        return Subclass.Tools.createClassInstance(
+            classConstructor,
+            this,
+            className,
+            classDefinition
+        );
+    };
+
+    /**
+     * Adds a new class
+     *
+     * @method add
+     * @memberOf Subclass.ClassManager.prototype
+     *
+     * @throws {Error}
+     *      Throws error if:
+     *      - The class type name was not specified
+     *      - Specified non existent class type name
+     *      - Missed or not valid the name class
+     *      - Missed or not valid the definition of class
+     *      - Trying to redefine already existent class
+     *
+     * @param {string} classTypeName
+     *      The name of class type (i.e. "Class", "AbstractClass", "Interface" etc.)
+     *
+     * @param {string} className
+     *      The name of future class
+     *
+     * @param {object} classDefinition
+     *      The object with definition of the creating class
+     *
+     * @returns {Subclass.Class.ClassType}
+     */
+    ClassManager.prototype.add = function(classTypeName, className, classDefinition)
+    {
+        if (!classTypeName) {
+            Subclass.Error.create(
+                'Trying to register the class "' + className + '" ' +
+                'without specifying class type.'
+            );
+        }
+        if (!Subclass.ClassManager.issetType(classTypeName)) {
+            Subclass.Error.create(
+                'Trying to register the class "' + className + '" ' +
+                'of unknown class type "' + classTypeName + '".'
+            );
+        }
+        if (!className || typeof className != 'string') {
+            Subclass.Error.create(
+                'Trying to register the class with wrong name "' + className + '".'
+            );
+        }
+        if (!classDefinition || typeof classDefinition != 'object') {
+            Subclass.Error.create(
+                'Trying to register the class "' + className + '" ' +
+                'with empty or not valid class definition.'
+            );
+        }
+        if (this.isset(className)) {
+            Subclass.Error.create(
+                'Trying to define class with already ' +
+                'existed class name "' + className + '".'
+            );
+        }
+        var classTypeConstructor = Subclass.ClassManager.getType(classTypeName);
+        var classTypeInstance = this.create(classTypeConstructor, className, classDefinition);
+
+        this._classes[className] = classTypeInstance;
+        this.getLoader().setClassLoaded(className);
+
+        return classTypeInstance;
+    };
+
+    /**
+     * Returns the class definition instance
+     *
+     * @method get
+     * @memberOf Subclass.ClassManager.prototype
+     *
+     * @throws {Error}
+     *      Throws error if trying to get non existent class definition instance
+     *
+     * @param {string} className
+     *      The name of needed class
+     *
+     * @returns {Subclass.Class.ClassType}
+     */
+    ClassManager.prototype.get = function(className)
+    {
+        if (!this.isset(className)) {
+            Subclass.Error.create('Trying to call to none existed class "' + className + '".');
+        }
+        return this.getClasses()[className];
+    };
+
+    /**
+     * Checks if class with specified name was ever registered
+     *
+     * @method isset
      * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
-     *      The name of class
+     *      The name of needed class
      *
-     * @returns {Subclass.Class.ClassBuilder}
+     * @param {boolean} [privateClasses=false]
+     *      If it's true then the checking will be performed only between classes
+     *      from current module without classes from its plugins
+     *
+     * @returns {boolean}
      */
-    ClassManager.prototype.alterClass = function(className)
+    ClassManager.prototype.isset = function(className, privateClasses)
     {
-        return this.createClassBuilder(null, className);
+        var withParentClasses = true;
+
+        if (privateClasses === true) {
+            withParentClasses = false;
+        }
+        return !!this.getClasses(privateClasses, withParentClasses)[className];
     };
 
     /**
      * Builds the new class of specified class type.
      * Creates the class builder instance.
      *
-     * @method buildClass
+     * @method build
      * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} classType
@@ -512,15 +496,31 @@ Subclass.ClassManager = (function()
      *
      * @returns {Subclass.Class.ClassBuilder}
      */
-    ClassManager.prototype.buildClass = function(classType, className)
+    ClassManager.prototype.build = function(classType, className)
     {
-        return this.createClassBuilder(classType, className);
+        return this.createBuilder(classType, className);
+    };
+
+    /**
+     * Modifies existed class definition
+     *
+     * @method alter
+     * @memberOf Subclass.ClassManager.prototype
+     *
+     * @param {string} className
+     *      The name of class
+     *
+     * @returns {Subclass.Class.ClassBuilder}
+     */
+    ClassManager.prototype.alter = function(className)
+    {
+        return this.createBuilder(null, className);
     };
 
     /**
      * Registers and returns copy of specified class with specified name
      *
-     * @method copyClass
+     * @method copy
      * @memberOf Subclass.ClassManager.prototype
      *
      * @param {string} className
@@ -531,11 +531,11 @@ Subclass.ClassManager = (function()
      *
      * @returns {Subclass.Class.ClassType}
      */
-    ClassManager.prototype.copyClass = function(className, classNameNew)
+    ClassManager.prototype.copy = function(className, classNameNew)
     {
-        var classInst = this.getClass(className);
+        var classInst = this.get(className);
         var classDefinition = classInst.getDefinition().getData();
-        var replicaInst = this.addClass(
+        var replicaInst = this.add(
             classInst.getType(),
             classNameNew,
             classDefinition
@@ -548,7 +548,7 @@ Subclass.ClassManager = (function()
     /**
      * Creates the instance of class builder
      *
-     * @method createClassBuilder
+     * @method createBuilder
      * @memberOf Subclass.ClassManager.prototype
      *
      * @throws {Error}
@@ -562,22 +562,22 @@ Subclass.ClassManager = (function()
      *      The name class you want to alter.
      *      If it is missing the creating of new class definition will be started.
      */
-    ClassManager.prototype.createClassBuilder = function(classType, className)
+    ClassManager.prototype.createBuilder = function(classType, className)
     {
         var classBuilderConstructor = null;
 
-        if (!classType && className && !this.issetClass(className)) {
+        if (!classType && className && !this.isset(className)) {
             Subclass.Error.create(
                 'Can\'t alter definition of class "' + className + '". ' +
                 'It does not exists.'
             );
         }
         if (!classType && className) {
-            classBuilderConstructor = this.getClass(className).constructor.getBuilderClass();
+            classBuilderConstructor = this.get(className).constructor.getBuilderClass();
 
         } else {
             classBuilderConstructor = Subclass.ClassManager
-                .getClassType(classType)
+                .getType(classType)
                 .getBuilderClass()
             ;
         }
@@ -623,7 +623,7 @@ Subclass.ClassManager = (function()
      * Registers the new class.
      * The classes registered by this way will be available in every created module.
      *
-     * @method registerClass
+     * @method register
      * @memberOf Subclass.ClassManager
      *
      * @throws {Error}
@@ -639,9 +639,9 @@ Subclass.ClassManager = (function()
      * @param {Object} classDefinition
      *      The object with definition of future class
      */
-    ClassManager.registerClass = function(classTypeName, className, classDefinition)
+    ClassManager.register = function(classTypeName, className, classDefinition)
     {
-        if (this.issetClass(className)) {
+        if (this.isset(className)) {
             Subclass.Error.create('The class "' + className + '" is already registered.');
         }
         if (!this._classes[classTypeName]) {
@@ -654,7 +654,7 @@ Subclass.ClassManager = (function()
      * Checks whether class with passed name was ever registered.
      * It performs checking only in the common registered classes.
      *
-     * @method issetClass
+     * @method isset
      * @memberOf Subclass.ClassManager
      *
      * @param {string} className
@@ -662,7 +662,7 @@ Subclass.ClassManager = (function()
      *
      * @returns {boolean}
      */
-    ClassManager.issetClass = function(className)
+    ClassManager.isset = function(className)
     {
         for (var classTypeName in this._classes) {
             if (!this._classes.hasOwnProperty(classTypeName)) {
@@ -678,13 +678,13 @@ Subclass.ClassManager = (function()
     /**
      * Registers the new class type
      *
-     * @method registerClassType
+     * @method registerType
      * @memberOf Subclass.ClassManager
      *
      * @param {Function} classTypeConstructor
      *      The constructor of registering class type factory
      */
-    ClassManager.registerClassType = function(classTypeConstructor)
+    ClassManager.registerType = function(classTypeConstructor)
     {
         var classTypeName = classTypeConstructor.getClassTypeName();
 
@@ -698,7 +698,7 @@ Subclass.ClassManager = (function()
          */
         Subclass.ModuleAPI.prototype["register" + classTypeName] = function (className, classDefinition)
         {
-            return this.getModule().getClassManager().addClass(
+            return this.getModule().getClassManager().add(
                 classTypeConstructor.getClassTypeName(),
                 className,
                 classDefinition
@@ -709,7 +709,7 @@ Subclass.ClassManager = (function()
     /**
      * Returns the class type factory constructor
      *
-     * @method getClassType
+     * @method getType
      * @memberOf Subclass.ClassManager
      *
      * @throws {Error}
@@ -721,9 +721,9 @@ Subclass.ClassManager = (function()
      *
      * @returns {Function}
      */
-    ClassManager.getClassType = function(classTypeName)
+    ClassManager.getType = function(classTypeName)
     {
-        if (!this.issetClassType(classTypeName)) {
+        if (!this.issetType(classTypeName)) {
             Subclass.Error.create('Trying to get non existed class type factory "' + classTypeName + '".');
         }
         return this._classTypes[classTypeName];
@@ -732,7 +732,7 @@ Subclass.ClassManager = (function()
     /**
      * Checks if exists specified class type
      *
-     * @method issetClassType
+     * @method issetType
      * @memberOf Subclass.ClassManager
      *
      * @param {string} classTypeName
@@ -740,7 +740,7 @@ Subclass.ClassManager = (function()
      *
      * @returns {boolean}
      */
-    ClassManager.issetClassType = function(classTypeName)
+    ClassManager.issetType = function(classTypeName)
     {
         return !!this._classTypes[classTypeName];
     };
@@ -748,14 +748,14 @@ Subclass.ClassManager = (function()
     /**
      * Returns names of all registered class types
      *
-     * @method getClassType
+     * @method getTypes
      * @memberOf Subclass.ClassManager
      *
-     * @returns {Array.<string>}
+     * @returns {Object.<Function>}
      */
-    ClassManager.getClassTypes = function()
+    ClassManager.getTypes = function()
     {
-        return Object.keys(this._classTypes);
+        return this._classTypes;
     };
 
     return ClassManager;

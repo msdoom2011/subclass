@@ -53,7 +53,7 @@ Subclass.Class.Type.Trait.Extension.ClassDefinitionExtension = function() {
 
             if (traits && this.validateTraits(traits)) {
                 for (var i = 0; i < traits.length; i++) {
-                    classManager.loadClass(traits[i]);
+                    classManager.load(traits[i]);
                 }
             }
         });

@@ -3,7 +3,7 @@
  * @constructor
  * @name Subclass.Event.EventableInterface
  */
-Subclass.ClassManager.registerClass('Interface', 'Subclass/Event/EventableInterface',
+Subclass.ClassManager.register('Interface', 'Subclass/Event/EventableInterface',
 {
     /**
      * Registers the new event

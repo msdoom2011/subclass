@@ -462,12 +462,36 @@ Subclass.LoadManager = (function()
      */
     LoadManager.prototype.isInStack = function(fileName)
     {
-        for (var i = 0; i < this._stack.length; i++) {
-            if (this._stack[i].file == fileName) {
+        var mainModule = this.getModule().getRoot();
+
+        if (arguments[1]) {
+            mainModule = this.getModule();
+        }
+
+        var loadManager = mainModule.getLoadManager();
+
+        for (var i = 0; i < loadManager._stack.length; i++) {
+            if (loadManager._stack[i].file == fileName) {
                 return true;
             }
         }
-        return false;
+
+        // Searching file with specified name in all modules
+
+        var moduleStorage = mainModule.getModuleStorage();
+        var result = false;
+
+        moduleStorage.eachModule(function (module, moduleName) {
+            if (module != mainModule) {
+                result = module.getLoadManager().removeFromStack(fileName, true);
+
+                if (result) {
+                    return false;
+                }
+            }
+        });
+
+        return result;
     };
 
     /**

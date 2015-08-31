@@ -1,8 +1,8 @@
 {
-  "name": "SubclassJS",
+  "name": "Subclass",
   "version": "0.1.0",
-  "homepage": "https://github.com/msdoom2011/subclassjs",
-  "repository": "git@github.com:msdoom2011/subclassjs.git",
+  "homepage": "https://github.com/msdoom2011/subclass",
+  "repository": "git@github.com:msdoom2011/subclass.git",
   "description": "A javascript framework for creating project using OOP structural elements like classes, abstract classes, interfaces, traits and config classes with ability to define typed properties in them.",
   "author": {
     "name": "Dmitriy Osipishin",

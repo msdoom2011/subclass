@@ -33,7 +33,7 @@ Subclass.ClassManager.registerClass('Interface', 'Subclass/Event/EventableInterf
      *
      * @returns {Subclass.Event.EventableInterface}
      */
-    invokeEvent: function(eventName) {},
+    triggerEvent: function(eventName) {},
 
     /**
      * Adds new listener to event

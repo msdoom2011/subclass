@@ -6,42 +6,34 @@
  */
 Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
 
-    $_properties: {
+    /**
+     * Collection of registered events
+     *
+     * @type {Object}
+     * @example
+     *
+     * events: {
+     *      eventName: [
+     *          {
+     *              priority: {number},
+     *              callback: {function},
+     *              hash: {Object}
+     *          },
+     *          ...
+     *      ],
+     *      ...
+     * }
+     */
+    _events: {},
 
-        /**
-         * Registered events
-         *
-         * @type {Object}
-         * @example
-         *
-         * events: {
-         *      eventName: [
-         *          {
-         *              priority: {number},
-         *              callback: {function},
-         *              uniqueHash: {Object}
-         *          },
-         *          ...
-         *      ],
-         *      ...
-         * }
-         */
-        events: {
-            type: 'objectCollection',
-            nullable: false,
-            proto: {
-                type: 'arrayCollection',
-                nullable: false,
-                proto: {
-                    type: "map",
-                    schema: {
-                        priority: { type: "number" },
-                        callback: { type: "function" },
-                        uniqueHash: { type: "object", default: {} }
-                    }
-                }
-            }
-        }
+    /**
+     * Returns collection of registered events
+     *
+     * @returns {Object}
+     */
+    getEvents: function()
+    {
+        return this._events;
     },
 
     /**
@@ -57,7 +49,7 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
                 .apply()
             ;
         }
-        this.getEvents().addItem(eventName);
+        this.getEvents()[eventName] = [];
 
         return this;
     },
@@ -65,13 +57,13 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
     /**
      * @inheritDoc
      */
-    invokeEvent: function(eventName)
+    triggerEvent: function(eventName)
     {
-        if (!this.getEvents().issetItem(eventName)) {
+        if (!this.getEvents().hasOwnProperty(eventName)) {
             Subclass.Error.create('There is not event named "' + eventName + '".');
         }
         var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
-        var eventListeners = this.getEvents().getItem(eventName);
+        var eventListeners = this.getEvents()[eventName];
         var eventListenerArgs = [];
         var priorities = [];
         var $this = this;
@@ -80,10 +72,11 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
             eventListenerArgs.push(arguments[i]);
         }
 
-        eventListeners.eachItem(function(eventListener, key) {
+        for (i = 0; i < eventListeners.length; i++) {
+            var eventListener = eventListeners[i];
             priorities.push(eventListener.priority);
-            eventListener.uniqueHash[uniqueFieldName] = false;
-        });
+            eventListener.hash[uniqueFieldName] = false;
+        }
 
         priorities = priorities.sort(function(a, b) {
             a = parseInt(a);
@@ -96,19 +89,21 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
         });
 
         for (i = 0; i < priorities.length; i++) {
-            eventListeners.eachItem(function(eventListener) {
-                if (!eventListener.uniqueHash[uniqueFieldName] && eventListener.priority == priorities[i]) {
-                    eventListener.uniqueHash[uniqueFieldName] = true;
+            for (var j = 0; j < eventListeners.length; j++) {
+                eventListener = eventListeners[j];
+
+                if (!eventListener.hash[uniqueFieldName] && eventListener.priority == priorities[i]) {
+                    eventListener.hash[uniqueFieldName] = true;
 
                     if (eventListener.callback.apply($this, eventListenerArgs) === false) {
                         return false;
                     }
                 }
-            });
+            }
         }
-        eventListeners.eachItem(function(eventListener) {
-            delete eventListener.uniqueHash[uniqueFieldName];
-        });
+        for (i = 0; i < eventListeners.length; i++) {
+            delete eventListeners[i].hash[uniqueFieldName];
+        }
 
         return this;
     },
@@ -130,19 +125,20 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
                 .apply()
             ;
         }
-        if (!this.getEvents().issetItem(eventName)) {
+        if (!this.getEvents().hasOwnProperty(eventName)) {
             Subclass.Error.create('There is not event named "' + eventName + '".');
         }
         if (!priority && typeof priority != 'number') {
-            priority = this.getEvents().getItem(eventName).getLength();
+            priority = this.getEvents()[eventName].length;
         }
 
         var eventListener = {
             priority: priority,
-            callback: listener
+            callback: listener,
+            hash: {}
         };
 
-        this.getEvents().getItem(eventName).addItem(eventListener);
+        this.getEvents()[eventName].push(eventListener);
 
         return this;
     },
@@ -152,20 +148,26 @@ Subclass.ClassManager.registerClass('Trait', 'Subclass/Event/EventableTrait', {
      */
     removeEventListener: function(eventName, listener)
     {
-        this.getEvents().eachItem(function(value, key) {
+        var events = this.getEvents();
+
+        for (var evtName in events) {
+            if (!events.hasOwnProperty(evtName)) {
+                continue;
+            }
+            var listeners = events[evtName];
             var listenerIndex;
 
-            value.eachItem(function(item, index) {
-                if (item.callback == listener) {
-                    listenerIndex = index;
-                    return false;
+            for (var i = 0; i < listeners.length; i++) {
+                if (listeners[i].callback == listener) {
+                    listenerIndex = i;
+                    break;
                 }
-            });
-            if (listenerIndex) {
-                value.removeItem(listenerIndex);
-                return false;
             }
-        });
+            if (listenerIndex) {
+                listeners.splice(listenerIndex, 1);
+                break;
+            }
+        }
 
         return this;
     }

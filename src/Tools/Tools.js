@@ -198,8 +198,8 @@ Subclass.Tools = (function()
                                 if (
                                     !comparator
                                     || (
-                                    typeof comparator == 'function'
-                                    && !isEqual(target[propName], source[propName][k])
+                                        typeof comparator == 'function'
+                                        && !isEqual(target[propName], source[propName][k])
                                     )
                                 ) {
                                     target[propName].push(source[propName][k]);

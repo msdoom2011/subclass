@@ -71,6 +71,7 @@ Subclass.SettingsManager = function()
         // Initializing operations
 
         this.registerEvent('onInitialize');
+        this.initializeExtensions();
         this.getEvent('onInitialize').trigger();
     }
 

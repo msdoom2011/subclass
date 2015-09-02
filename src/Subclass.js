@@ -198,15 +198,15 @@ window.Subclass = (function()
         },
 
         /**
-         * Returns public API for the module with specified name
-         *
-         * @param {string} moduleName
-         *      A name of module which you want to receive
-         *
-         * @returns {Subclass.ModuleAPI}
-         * @memberOf Subclass
-         * @static
-         */
+        * Returns public API for the module with specified name
+        *
+        * @param {string} moduleName
+        *      A name of module which you want to receive
+        *
+        * @returns {Subclass.ModuleAPI}
+        * @memberOf Subclass
+        * @static
+        */
         getModule: function(moduleName)
         {
             if (!this.issetModule(moduleName)) {

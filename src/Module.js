@@ -637,6 +637,10 @@ Subclass.Module = function()
      */
     Module.prototype.onReady = function(callback)
     {
+        if (this.isReady()) {
+            callback.apply(this);
+            return this;
+        }
         this.getSettingsManager().setOnReady(callback);
 
         return this;

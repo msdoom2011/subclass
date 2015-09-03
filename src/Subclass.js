@@ -315,7 +315,7 @@ window.Subclass = (function()
                     if (!Subclass.issetPlugin(pluginDependencies[i])) {
                         Subclass.Error.create(
                             'The Subclass plug-in "' + pluginName + '" ' +
-                            'requires the "' + pluginDependencies + '" plug-in to be installed.'
+                            'requires the "' + pluginDependencies.join('", "') + '" plug-in(s) to be uploaded.'
                         );
                     }
                 }

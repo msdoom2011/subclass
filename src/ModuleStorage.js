@@ -14,9 +14,6 @@
  *
  * @param {string[]} pluginModuleNames
  *      Array of plug-in module names
- *
- * @param {string[]} lazyModuleNames
- *      Array of plug-in module names which are in loading process at the moment
  */
 Subclass.ModuleStorage = (function()
 {

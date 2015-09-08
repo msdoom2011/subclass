@@ -838,7 +838,7 @@ Subclass.Module = function()
                 $this.addPlugin(moduleName);
             });
 
-            return;
+            return this;
         }
 
         var eventManager = this.getEventManager();

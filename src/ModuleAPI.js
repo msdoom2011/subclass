@@ -271,6 +271,17 @@ Subclass.ModuleAPI = (function()
     };
 
     /**
+     * The same as the {@link Subclass.Module#getModuleStorage}
+     *
+     * @method getModuleStorage
+     * @memberOf Subclass.ModuleAPI.prototype
+     */
+    ModuleAPI.prototype.getModuleStorage = function()
+    {
+        return this.getModule().getModuleStorage.apply(this.getModule(), arguments);
+    };
+
+    /**
      * The same as the {@link Subclass.Module#getRoot}
      *
      * @method getRootModule

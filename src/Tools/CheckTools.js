@@ -18,7 +18,6 @@ Subclass.Tools.CheckTools = (function()
         {
             return (
                 !value
-                || parseFloat(value) === 0
                 || (this.isObject(value) && Object.keys(value).length == 0)
                 || (this.isArray(value) && value.length == 0)
             );

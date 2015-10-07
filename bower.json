@@ -29,6 +29,7 @@
     "src",
     "tests",
     "**/.*",
+    "bower.json",
     "Gruntfile.config.json",
     "Gruntfile.js",
     "karma.config.js",

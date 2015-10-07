@@ -33,6 +33,7 @@
     "Gruntfile.js",
     "karma.config.js",
     "package.json",
-    "TODO.txt"
+    "TODO.txt",
+    "LICENSE"
   ]
 }

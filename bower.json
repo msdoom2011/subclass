@@ -1,5 +1,5 @@
 {
-  "name": "subclass",
+  "name": "subclass-framework",
   "version": "0.1.0",
   "authors": [
     "Dmitry Osipishin | <msdoom2011@gmail.com>"
@@ -11,8 +11,12 @@
     "subclass",
     "class",
     "inheritance",
+    "abstract class",
+    "mixin",
+    "trait",
     "structure",
     "autoloading",
+    "patterns",
     "OOP"
   ],
   "license": "MIT",

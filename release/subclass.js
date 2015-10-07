@@ -1,8 +1,8 @@
 /**
- * Subclass - v0.1.0 - 2015-09-18
- * https://github.com/msdoom2011/subclass
+ * Subclass - v0.1.0 - 2015-10-07
+ * https://github.com/msdoom2011/subclass-framework
  *
- * Copyright (c) 2015 Dmitriy Osipishin | msdoom2011@gmail.com
+ * Copyright (c) 2015 Dmitry Osipishin | msdoom2011@gmail.com
  */
 (function() {
 "use strict";
@@ -1026,7 +1026,6 @@ Subclass.Tools.CheckTools = (function()
         {
             return (
                 !value
-                //|| parseFloat(value) === 0
                 || (this.isObject(value) && Object.keys(value).length == 0)
                 || (this.isArray(value) && value.length == 0)
             );

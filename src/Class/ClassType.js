@@ -208,604 +208,607 @@ Subclass.Class.ClassType = function()
         return Subclass.Class.ClassDefinition;
     };
 
-    /**
-     * Initializes class on creation stage.<br /><br />
-     *
-     * Current method invokes automatically right at the end of the class type constructor.
-     * It can contain different manipulations with class definition or other manipulations that is needed
-     */
-    ClassType.prototype.initialize = function()
-    {
-        this.initializeExtensions();
-        this.getEvent('onInitialize').trigger();
-        this._definition = this.createDefinition(this._definition);
+    ClassType.prototype = {
 
-        var classDefinition = this.getDefinition();
-            classDefinition.processRelatedClasses();
-    };
-
-    /**
-     * Returns name of class type
-     *
-     * @returns {string}
-     */
-    ClassType.prototype.getType = function()
-    {
-        return this.constructor.getClassTypeName();
-    };
-
-    /**
-     * Returns class manager instance
-     *
-     * @returns {Subclass.ClassManager}
-     */
-    ClassType.prototype.getClassManager = function ()
-    {
-        return this._classManager;
-    };
-
-    /**
-     * Returns name of the current class instance
-     *
-     * @returns {string}
-     */
-    ClassType.prototype.getName = function()
-    {
-        return this._name;
-    };
-
-    /**
-     * Creates and returns class definition instance.
-     *
-     * @param {Object} classDefinition
-     * @returns {Subclass.Class.ClassDefinition}
-     */
-    ClassType.prototype.createDefinition = function(classDefinition)
-    {
-        return Subclass.Tools.createClassInstance(
-            this.constructor.getDefinitionClass(),
-            this,
-            classDefinition
-        );
-    };
-
-    /**
-     * Sets class definition
-     *
-     * @param {Object} classDefinition
-     */
-    ClassType.prototype.setDefinition = function(classDefinition)
-    {
-        var classChildren = this.getClassChildren();
-        var classParents = this.getClassParents();
-        var classManager = this.getClassManager();
-
-        for (var i = 0; i < classParents.length; i++) {
-            var parentClass = classManager.get(classParents[i]);
-                parentClass.removeChildClass(this.getName());
-        }
-        this.constructor.call(
-            this,
-            this.getClassManager(),
-            this.getName(),
-            classDefinition
-        );
-        this._children = classChildren;
-        this.createConstructor();
-    };
-
-    /**
-     * Returns class definition object
-     *
-     * @returns {Subclass.Class.ClassDefinition}
-     */
-    ClassType.prototype.getDefinition = function()
-    {
-        return this._definition;
-    };
-
-    /**
-     * Adds name of child class to current class
-     *
-     * @param {string} className
-     *      The name of class
-     */
-    ClassType.prototype.addChildClass = function(className)
-    {
-        if (!className || typeof className != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of child class', false)
-                .expected('a string')
-                .received(className)
-                .apply()
-            ;
-        }
-        if (this.hasChild(className)) {
-            return;
-        }
-        this._children.push(className);
-
-        var classManager = this.getClassManager();
-        var classInst = classManager.get(className);
-        var classInstChildren = classInst.getClassChildren();
-        var classParents = this.getClassParents();
-
-        for (var i = 0; i < classParents.length; i++) {
-            var parentClassInst = classManager.get(classParents[i]);
-            parentClassInst.addChildClass(className);
-        }
-        for (i = 0; i < classInstChildren.length; i++) {
-            if (!this.hasChild(classInstChildren[i])) {
-                this.addChildClass(classInstChildren[i]);
-            }
-        }
-        this
-            .getEvent('onAddChildClass')
-            .trigger(className)
-        ;
-    };
-
-    /**
-     * Checks whether current class has children with specified class name
-     *
-     * @param {string} className
-     * @returns {boolean}
-     */
-    ClassType.prototype.hasChild = function(className)
-    {
-        return this._children.indexOf(className) >= 0;
-    };
-
-    /**
-     * Removes name of child class from current class
-     *
-     * @param {string} className
-     *      The name of class
-     */
-    ClassType.prototype.removeChildClass = function(className)
-    {
-        if (!className || typeof className != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of child class', false)
-                .expected('a string')
-                .received(className)
-                .apply()
-            ;
-        }
-        var classIndex = this._children.indexOf(className);
-
-        if (classIndex >= 0) {
-            this._children.splice(classIndex, 1);
-        }
-        if (this.hasParent()) {
-            this.getParent().removeChildClass(className);
-        }
-        this
-            .getEvent('onRemoveChildClass')
-            .trigger(className)
-        ;
-    };
-
-    /**
-     * Returns array of children class names which inherits current class
-     *
-     * @param {boolean} [grouping=false]
-     *      Whether the class names should be grouped
-     *
-     * @return {(string[]|Object)}
-     */
-    ClassType.prototype.getClassChildren = function(grouping)
-    {
-        if (grouping !== true) {
-            return this._children;
-        }
-        var classes = {};
-
-        for (var i = 0; i < this._children.length; i++) {
-            var childClassName = this._children[i];
-            var childClassType = this.getClassManager().get(this._children[i]).getType();
-
-            if (!classes.hasOwnProperty(childClassType)) {
-                classes[childClassType] = [];
-            }
-            classes[childClassType].push(childClassName);
-        }
-        this
-            .getEvent('onGetClassChildren')
-            .trigger(classes)
-        ;
-        return classes;
-    };
-
-    /**
-     * Returns chain of parent class names
-     *
-     * @param {boolean} [grouping=false]
-     *      Whether the class names should be grouped
-     *
-     * @returns {(string[]|Object)}
-     */
-    ClassType.prototype.getClassParents = function(grouping)
-    {
-        var classes = [];
-
-        function addClassName(classes, className)
+        /**
+         * Initializes class on creation stage.<br /><br />
+         *
+         * Current method invokes automatically right at the end of the class type constructor.
+         * It can contain different manipulations with class definition or other manipulations that is needed
+         */
+        initialize: function()
         {
-            if (classes.indexOf(className) < 0) {
-                classes.push(className);
+            this.initializeExtensions();
+            this.getEvent('onInitialize').trigger();
+            this._definition = this.createDefinition(this._definition);
+
+            var classDefinition = this.getDefinition();
+                classDefinition.processRelatedClasses();
+        },
+
+        /**
+         * Returns name of class type
+         *
+         * @returns {string}
+         */
+        getType: function()
+        {
+            return this.constructor.getClassTypeName();
+        },
+
+        /**
+         * Returns class manager instance
+         *
+         * @returns {Subclass.ClassManager}
+         */
+        getClassManager: function ()
+        {
+            return this._classManager;
+        },
+
+        /**
+         * Returns name of the current class instance
+         *
+         * @returns {string}
+         */
+        getName: function()
+        {
+            return this._name;
+        },
+
+        /**
+         * Creates and returns class definition instance.
+         *
+         * @param {Object} classDefinition
+         * @returns {Subclass.Class.ClassDefinition}
+         */
+        createDefinition: function(classDefinition)
+        {
+            return Subclass.Tools.createClassInstance(
+                this.constructor.getDefinitionClass(),
+                this,
+                classDefinition
+            );
+        },
+
+        /**
+         * Sets class definition
+         *
+         * @param {Object} classDefinition
+         */
+        setDefinition: function(classDefinition)
+        {
+            var classChildren = this.getClassChildren();
+            var classParents = this.getClassParents();
+            var classManager = this.getClassManager();
+
+            for (var i = 0; i < classParents.length; i++) {
+                var parentClass = classManager.get(classParents[i]);
+                    parentClass.removeChildClass(this.getName());
             }
-        }
-        if (grouping !== true) {
-            grouping = false;
-        }
-        if (grouping) {
-            classes = {};
-        }
-        if (arguments[1]) {
-            classes = arguments[1];
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
-            var parentName = parent.getName();
+            this.constructor.call(
+                this,
+                this.getClassManager(),
+                this.getName(),
+                classDefinition
+            );
+            this._children = classChildren;
+            this.createConstructor();
+        },
 
-            if (grouping) {
-                var parentType = parent.getType();
+        /**
+         * Returns class definition object
+         *
+         * @returns {Subclass.Class.ClassDefinition}
+         */
+        getDefinition: function()
+        {
+            return this._definition;
+        },
 
-                if (!classes.hasOwnProperty(parentType)) {
-                    classes[parentType] = [];
+        /**
+         * Adds name of child class to current class
+         *
+         * @param {string} className
+         *      The name of class
+         */
+        addChildClass: function(className)
+        {
+            if (!className || typeof className != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of child class', false)
+                    .expected('a string')
+                    .received(className)
+                    .apply()
+                ;
+            }
+            if (this.hasChild(className)) {
+                return;
+            }
+            this._children.push(className);
+
+            var classManager = this.getClassManager();
+            var classInst = classManager.get(className);
+            var classInstChildren = classInst.getClassChildren();
+            var classParents = this.getClassParents();
+
+            for (var i = 0; i < classParents.length; i++) {
+                var parentClassInst = classManager.get(classParents[i]);
+                parentClassInst.addChildClass(className);
+            }
+            for (i = 0; i < classInstChildren.length; i++) {
+                if (!this.hasChild(classInstChildren[i])) {
+                    this.addChildClass(classInstChildren[i]);
                 }
-                addClassName(classes[parentType], parentName);
+            }
+            this
+                .getEvent('onAddChildClass')
+                .trigger(className)
+            ;
+        },
+
+        /**
+         * Checks whether current class has children with specified class name
+         *
+         * @param {string} className
+         * @returns {boolean}
+         */
+        hasChild: function(className)
+        {
+            return this._children.indexOf(className) >= 0;
+        },
+
+        /**
+         * Removes name of child class from current class
+         *
+         * @param {string} className
+         *      The name of class
+         */
+        removeChildClass: function(className)
+        {
+            if (!className || typeof className != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of child class', false)
+                    .expected('a string')
+                    .received(className)
+                    .apply()
+                ;
+            }
+            var classIndex = this._children.indexOf(className);
+
+            if (classIndex >= 0) {
+                this._children.splice(classIndex, 1);
+            }
+            if (this.hasParent()) {
+                this.getParent().removeChildClass(className);
+            }
+            this
+                .getEvent('onRemoveChildClass')
+                .trigger(className)
+            ;
+        },
+
+        /**
+         * Returns array of children class names which inherits current class
+         *
+         * @param {boolean} [grouping=false]
+         *      Whether the class names should be grouped
+         *
+         * @return {(string[]|Object)}
+         */
+        getClassChildren: function(grouping)
+        {
+            if (grouping !== true) {
+                return this._children;
+            }
+            var classes = {};
+
+            for (var i = 0; i < this._children.length; i++) {
+                var childClassName = this._children[i];
+                var childClassType = this.getClassManager().get(this._children[i]).getType();
+
+                if (!classes.hasOwnProperty(childClassType)) {
+                    classes[childClassType] = [];
+                }
+                classes[childClassType].push(childClassName);
+            }
+            this
+                .getEvent('onGetClassChildren')
+                .trigger(classes)
+            ;
+            return classes;
+        },
+
+        /**
+         * Returns chain of parent class names
+         *
+         * @param {boolean} [grouping=false]
+         *      Whether the class names should be grouped
+         *
+         * @returns {(string[]|Object)}
+         */
+        getClassParents: function(grouping)
+        {
+            var classes = [];
+
+            function addClassName(classes, className)
+            {
+                if (classes.indexOf(className) < 0) {
+                    classes.push(className);
+                }
+            }
+            if (grouping !== true) {
+                grouping = false;
+            }
+            if (grouping) {
+                classes = {};
+            }
+            if (arguments[1]) {
+                classes = arguments[1];
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+                var parentName = parent.getName();
+
+                if (grouping) {
+                    var parentType = parent.getType();
+
+                    if (!classes.hasOwnProperty(parentType)) {
+                        classes[parentType] = [];
+                    }
+                    addClassName(classes[parentType], parentName);
+
+                } else {
+                    addClassName(classes, parentName);
+                }
+                classes = parent.getClassParents(grouping, classes);
+            }
+            this
+                .getEvent('onGetClassParents')
+                .trigger(classes, grouping)
+            ;
+            return classes;
+        },
+
+        /**
+         * Sets class parent
+         *
+         * @param {string} parentClassName
+         */
+        setParent: function (parentClassName)
+        {
+            if (parentClassName == this.getName()) {
+                Subclass.Tools.create("Trying to set class as the parent for itself.")
+            }
+            if (typeof parentClassName == 'string') {
+                this._parent = this.getClassManager().get(parentClassName);
+                this._parent.addChildClass(this.getName());
+
+            } else if (parentClassName === null) {
+                if (this.hasParent()) {
+                    this._parent.removeChildClass(this.getName());
+                }
+                this._parent = null;
 
             } else {
-                addClassName(classes, parentName);
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of parent class", false)
+                    .received(parentClassName)
+                    .expected('a name of parent class or null in class "' + this.getName() + '"')
+                    .apply()
+                ;
             }
-            classes = parent.getClassParents(grouping, classes);
-        }
-        this
-            .getEvent('onGetClassParents')
-            .trigger(classes, grouping)
-        ;
-        return classes;
-    };
+            this
+                .getEvent('onSetParent')
+                .trigger(parentClassName)
+            ;
+        },
 
-    /**
-     * Sets class parent
-     *
-     * @param {string} parentClassName
-     */
-    ClassType.prototype.setParent = function (parentClassName)
-    {
-        if (parentClassName == this.getName()) {
-            Subclass.Tools.create("Trying to set class as the parent for itself.")
-        }
-        if (typeof parentClassName == 'string') {
-            this._parent = this.getClassManager().get(parentClassName);
-            this._parent.addChildClass(this.getName());
+        /**
+         * Returns parent class instance
+         *
+         * @return {(Subclass.Class.ClassType|null)}
+         */
+        getParent: function ()
+        {
+            return this._parent;
+        },
 
-        } else if (parentClassName === null) {
-            if (this.hasParent()) {
-                this._parent.removeChildClass(this.getName());
+        /**
+         * Checks whether current class extends another one
+         *
+         * @returns {boolean}
+         */
+        hasParent: function()
+        {
+            return !!this._parent;
+        },
+
+        /**
+         * Sets constants of the class
+         *
+         * @param {Object} constants
+         *      The plain object which keys are names and values are values of constants
+         */
+        setConstants: function(constants)
+        {
+            if (!constants || !Subclass.Tools.isPlainObject(constants)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the constants definition', false)
+                    .expected('a plain object')
+                    .received(constants)
+                    .apply()
+                ;
             }
-            this._parent = null;
+            for (var constantName in constants) {
+                if (constants.hasOwnProperty(constantName)) {
+                    this.setConstant(constantName, constants[constantName]);
+                }
+            }
+        },
 
-        } else {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of parent class", false)
-                .received(parentClassName)
-                .expected('a name of parent class or null in class "' + this.getName() + '"')
+        /**
+         * Creates the new (or redefines) constant with specified name and value
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid constant name
+         *
+         * @param {string} constantName
+         *      The name of constant
+         *
+         * @param {*} constantValue
+         *      The value of constant
+         */
+        setConstant: function(constantName, constantValue)
+        {
+            if (!constantName || typeof constantName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of constant', false)
+                    .expected('a string')
+                    .received(constantName)
+                    .apply()
+                ;
+            }
+            this._constants.push(constantName);
+
+            Object.defineProperty(this, constantName, {
+                enumerable: true,
+                configurable: false,
+                writable: false,
+                value: constantValue
+            });
+
+            this
+                .getEvent('onSetConstant')
+                .trigger(constantName, constantValue)
+            ;
+        },
+
+        /**
+         * Returns class constants
+         *
+         * @param {boolean} [withInherited=false]
+         *
+         * @returns {Object}
+         */
+        getConstants: function(withInherited)
+        {
+            var constantNames = this._constants;
+            var constants = {};
+
+            for (var i = 0; i < constantNames.length; i++) {
+                constants[constantNames[i]] = this[constantNames[i]];
+            }
+            return constants;
+        },
+
+        /**
+         * Returns constructor function for current class type
+         *
+         * @returns {function} Returns named function
+         * @throws {Error}
+         */
+        getConstructorEmpty: function ()
+        {
+            Subclass.Error.create("NotImplementedMethod")
+                .method("getConstructorEmpty")
                 .apply()
             ;
-        }
-        this
-            .getEvent('onSetParent')
-            .trigger(parentClassName)
-        ;
-    };
+        },
 
-    /**
-     * Returns parent class instance
-     *
-     * @return {(Subclass.Class.ClassType|null)}
-     */
-    ClassType.prototype.getParent = function ()
-    {
-        return this._parent;
-    };
-
-    /**
-     * Checks whether current class extends another one
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.hasParent = function()
-    {
-        return !!this._parent;
-    };
-
-    /**
-     * Sets constants of the class
-     *
-     * @param {Object} constants
-     *      The plain object which keys are names and values are values of constants
-     */
-    ClassType.prototype.setConstants = function(constants)
-    {
-        if (!constants || !Subclass.Tools.isPlainObject(constants)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the constants definition', false)
-                .expected('a plain object')
-                .received(constants)
-                .apply()
-            ;
-        }
-        for (var constantName in constants) {
-            if (constants.hasOwnProperty(constantName)) {
-                this.setConstant(constantName, constants[constantName]);
+        /**
+         * Returns class constructor
+         *
+         * @returns {Function}
+         */
+        getConstructor: function ()
+        {
+            if (!this.isConstructorCreated()) {
+                this.createConstructor();
             }
-        }
-    };
-
-    /**
-     * Creates the new (or redefines) constant with specified name and value
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid constant name
-     *
-     * @param {string} constantName
-     *      The name of constant
-     *
-     * @param {*} constantValue
-     *      The value of constant
-     */
-    ClassType.prototype.setConstant = function(constantName, constantValue)
-    {
-        if (!constantName || typeof constantName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of constant', false)
-                .expected('a string')
-                .received(constantName)
-                .apply()
-            ;
-        }
-        this._constants.push(constantName);
-
-        Object.defineProperty(this, constantName, {
-            enumerable: true,
-            configurable: false,
-            writable: false,
-            value: constantValue
-        });
-
-        this
-            .getEvent('onSetConstant')
-            .trigger(constantName, constantValue)
-        ;
-    };
-
-    /**
-     * Returns class constants
-     *
-     * @param {boolean} [withInherited=false]
-     *
-     * @returns {Object}
-     */
-    ClassType.prototype.getConstants = function(withInherited)
-    {
-        var constantNames = this._constants;
-        var constants = {};
-
-        for (var i = 0; i < constantNames.length; i++) {
-            constants[constantNames[i]] = this[constantNames[i]];
-        }
-        return constants;
-    };
-
-    /**
-     * Returns constructor function for current class type
-     *
-     * @returns {function} Returns named function
-     * @throws {Error}
-     */
-    ClassType.prototype.getConstructorEmpty = function ()
-    {
-        Subclass.Error.create("NotImplementedMethod")
-            .method("getConstructorEmpty")
-            .apply()
-        ;
-    };
-
-    /**
-     * Returns class constructor
-     *
-     * @returns {Function}
-     */
-    ClassType.prototype.getConstructor = function ()
-    {
-        if (!this.isConstructorCreated()) {
-            this.createConstructor();
-        }
-        return this._constructor;
-    };
-
-    /**
-     * Checks whether class constructor is created
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.isConstructorCreated = function()
-    {
-        return !!this._constructor;
-    };
-
-    /**
-     * Generates and returns current class instance constructor
-     *
-     * @returns {function}
-     */
-    ClassType.prototype.createConstructor = function ()
-    {
-        if (this.isConstructorCreated()) {
             return this._constructor;
-        }
+        },
 
-        // Processing class definition
+        /**
+         * Checks whether class constructor is created
+         *
+         * @returns {boolean}
+         */
+        isConstructorCreated: function()
+        {
+            return !!this._constructor;
+        },
 
-        var classDefinition = this.getDefinition();
-        var baseClassDefinition = classDefinition.getBaseData();
-        classDefinition.normalizeData();
-
-        this.getEvent('onCreateClassBefore').trigger(classDefinition);
-
-        classDefinition.setData(Subclass.Tools.extend(
-            baseClassDefinition,
-            classDefinition.getData()
-        ));
-        classDefinition.validateData();
-        classDefinition.processData();
-
-
-        // Creating constructor
-
-        var classConstructor = this.getConstructorEmpty();
-        var parentClass = this.getParent();
-
-        if (parentClass) {
-            var parentClassConstructor = parentClass.getConstructor();
-            var classConstructorProto = Object.create(parentClassConstructor.prototype);
-
-            Subclass.Tools.extend(classConstructorProto, classConstructor.prototype);
-            classConstructor.prototype = classConstructorProto;
-        }
-
-        this.getEvent('onCreateClass').trigger(classConstructor);
-
-        Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
-        Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
-
-        Object.defineProperty(classConstructor.prototype, "constructor", {
-            enumerable: false,
-            configurable: true,
-            value: classConstructor
-        });
-
-        classConstructor.prototype.$_className = this.getName();
-        classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
-        classConstructor.prototype.$_class = this;
-
-        this._constructor = classConstructor;
-        this.getEvent('onCreateClassAfter').trigger(classConstructor);
-
-        return classConstructor;
-    };
-
-    /**
-     * Creates class instance of current class type
-     *
-     * @returns {object} Class instance
-     */
-    ClassType.prototype.createInstance = function()
-    {
-        var args = [];
-
-        for (var i = 0; i < arguments.length; i++) {
-            args.push(arguments[i]);
-        }
-
-        var classConstructor = this.getConstructor();
-        var classInstance = new classConstructor();
-
-        this.getEvent('onCreateInstanceBefore').trigger(classInstance);
-
-        // Adding no methods to class instance
-
-        var classNoMethods = this.getDefinition().getNoMethods(true);
-
-        for (var propName in classNoMethods) {
-            if (!classNoMethods.hasOwnProperty(propName)) {
-                continue;
+        /**
+         * Generates and returns current class instance constructor
+         *
+         * @returns {function}
+         */
+        createConstructor: function ()
+        {
+            if (this.isConstructorCreated()) {
+                return this._constructor;
             }
-            classInstance[propName] = Subclass.Tools.copy(classNoMethods[propName]);
+
+            // Processing class definition
+
+            var classDefinition = this.getDefinition();
+            var baseClassDefinition = classDefinition.getBaseData();
+            classDefinition.normalizeData();
+
+            this.getEvent('onCreateClassBefore').trigger(classDefinition);
+
+            classDefinition.setData(Subclass.Tools.extend(
+                baseClassDefinition,
+                classDefinition.getData()
+            ));
+            classDefinition.validateData();
+            classDefinition.processData();
+
+
+            // Creating constructor
+
+            var classConstructor = this.getConstructorEmpty();
+            var parentClass = this.getParent();
+
+            if (parentClass) {
+                var parentClassConstructor = parentClass.getConstructor();
+                var classConstructorProto = Object.create(parentClassConstructor.prototype);
+
+                Subclass.Tools.extend(classConstructorProto, classConstructor.prototype);
+                classConstructor.prototype = classConstructorProto;
+            }
+
+            this.getEvent('onCreateClass').trigger(classConstructor);
+
+            Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
+            Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
+
+            Object.defineProperty(classConstructor.prototype, "constructor", {
+                enumerable: false,
+                configurable: true,
+                value: classConstructor
+            });
+
+            classConstructor.prototype.$_className = this.getName();
+            classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
+            classConstructor.prototype.$_class = this;
+
+            this._constructor = classConstructor;
+            this.getEvent('onCreateClassAfter').trigger(classConstructor);
+
+            return classConstructor;
+        },
+
+        /**
+         * Creates class instance of current class type
+         *
+         * @returns {object} Class instance
+         */
+        createInstance: function()
+        {
+            var args = [];
+
+            for (var i = 0; i < arguments.length; i++) {
+                args.push(arguments[i]);
+            }
+
+            var classConstructor = this.getConstructor();
+            var classInstance = new classConstructor();
+
+            this.getEvent('onCreateInstanceBefore').trigger(classInstance);
+
+            // Adding no methods to class instance
+
+            var classNoMethods = this.getDefinition().getNoMethods(true);
+
+            for (var propName in classNoMethods) {
+                if (!classNoMethods.hasOwnProperty(propName)) {
+                    continue;
+                }
+                classInstance[propName] = Subclass.Tools.copy(classNoMethods[propName]);
+            }
+
+            this.getEvent('onCreateInstance').trigger(classInstance);
+
+            Object.seal(classInstance);
+
+            if (classInstance.$_constructor) {
+                classInstance.$_constructor.apply(classInstance, args);
+            }
+
+            // Telling that instance of current class was created
+
+            this.setInstanceCreated();
+            this.getEvent('onCreateInstanceAfter').trigger(classInstance);
+
+            return classInstance;
+        },
+
+        /**
+         * Sets state that the instance of current class was created
+         */
+        setInstanceCreated: function()
+        {
+            var classManager = this.getClassManager();
+            var classParents = this.getClassParents();
+
+            for (var i = 0; i < classParents.length; i++) {
+                classManager.get(classParents[i]).setInstanceCreated();
+            }
+            this._created = true;
+        },
+
+        /**
+         * Reports whether the instance of current class was ever created
+         *
+         * @returns {boolean}
+         */
+        wasInstanceCreated: function()
+        {
+            if (this._created) {
+                return true;
+            }
+            if (this.hasParent()) {
+                return this.getParent().wasInstanceCreated();
+            }
+            return false;
+        },
+
+        /**
+         * Checks if current class is instance of another class
+         *
+         * @param {string|Subclass.Class.ClassType} className
+         * @return {boolean}
+         */
+        isInstanceOf: function (className)
+        {
+            if (
+                !className
+                || (
+                    typeof className != 'string'
+                    && typeof className != 'object'
+                ) || (
+                    typeof className == 'object'
+                    && !(className instanceof Subclass.Class.ClassType)
+                )
+            ) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of class", false)
+                    .received(className)
+                    .expected("a string or an instance of Subclass.Class.ClassType")
+                    .apply()
+                ;
+            }
+            if (typeof className == 'object') {
+                className = className.getName();
+            }
+            if (this.getName() == className) {
+                return true;
+
+            }
+            return this.getClassParents().indexOf(className) >= 0;
         }
-
-        this.getEvent('onCreateInstance').trigger(classInstance);
-
-        Object.seal(classInstance);
-
-        if (classInstance.$_constructor) {
-            classInstance.$_constructor.apply(classInstance, args);
-        }
-
-        // Telling that instance of current class was created
-
-        this.setInstanceCreated();
-        this.getEvent('onCreateInstanceAfter').trigger(classInstance);
-
-        return classInstance;
-    };
-
-    /**
-     * Sets state that the instance of current class was created
-     */
-    ClassType.prototype.setInstanceCreated = function()
-    {
-        var classManager = this.getClassManager();
-        var classParents = this.getClassParents();
-
-        for (var i = 0; i < classParents.length; i++) {
-            classManager.get(classParents[i]).setInstanceCreated();
-        }
-        this._created = true;
-    };
-
-    /**
-     * Reports whether the instance of current class was ever created
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.wasInstanceCreated = function()
-    {
-        if (this._created) {
-            return true;
-        }
-        if (this.hasParent()) {
-            return this.getParent().wasInstanceCreated();
-        }
-        return false;
-    };
-
-    /**
-     * Checks if current class is instance of another class
-     *
-     * @param {string|Subclass.Class.ClassType} className
-     * @return {boolean}
-     */
-    ClassType.prototype.isInstanceOf = function (className)
-    {
-        if (
-            !className
-            || (
-                typeof className != 'string'
-                && typeof className != 'object'
-            ) || (
-                typeof className == 'object'
-                && !(className instanceof Subclass.Class.ClassType)
-            )
-        ) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of class", false)
-                .received(className)
-                .expected("a string or an instance of Subclass.Class.ClassType")
-                .apply()
-            ;
-        }
-        if (typeof className == 'object') {
-            className = className.getName();
-        }
-        if (this.getName() == className) {
-            return true;
-
-        }
-        return this.getClassParents().indexOf(className) >= 0;
     };
 
     return ClassType;

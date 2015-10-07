@@ -66,74 +66,77 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
 
     var ClassDefinition = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * Validates "$_implements" attribute value
-     *
-     * @param {*} interfaces
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateImplements = function(interfaces)
-    {
-        try {
-            if (interfaces && !Array.isArray(interfaces)) {
-                throw 'error';
-            }
-            if (interfaces) {
-                for (var i = 0; i < interfaces.length; i++) {
-                    if (typeof interfaces[i] != 'string') {
-                        throw 'error';
+    Subclass.Tools.extend(ClassDefinition.prototype, {
+
+        /**
+         * Validates "$_implements" attribute value
+         *
+         * @param {*} interfaces
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateImplements: function(interfaces)
+        {
+            try {
+                if (interfaces && !Array.isArray(interfaces)) {
+                    throw 'error';
+                }
+                if (interfaces) {
+                    for (var i = 0; i < interfaces.length; i++) {
+                        if (typeof interfaces[i] != 'string') {
+                            throw 'error';
+                        }
                     }
                 }
+            } catch (e) {
+                if (e == 'error') {
+                    Subclass.Error.create('InvalidClassOption')
+                        .option('$_implements')
+                        .className(this.getClass().getName())
+                        .received(interfaces)
+                        .expected('an array of strings')
+                        .apply()
+                    ;
+                } else {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_implements')
-                    .className(this.getClass().getName())
-                    .received(interfaces)
-                    .expected('an array of strings')
-                    .apply()
-                ;
-            } else {
-                throw e;
+            return true;
+        },
+
+        /**
+         * Sets "$_implements" attribute value
+         *
+         * @param {string[]} interfaces
+         *
+         *      List of the interfaces witch current one will implement.
+         *
+         *      Example: [
+         *         "Namespace/Of/Interface1",
+         *         "Namespace/Of/Interface2",
+         *         ...
+         *      ]
+         */
+        setImplements: function(interfaces)
+        {
+            this.validateImplements(interfaces);
+            this.getData().$_implements = interfaces || [];
+
+            if (interfaces) {
+                this.getClass().addInterfaces(interfaces);
             }
+        },
+
+        /**
+         * Return "$_implements" attribute value
+         *
+         * @returns {string[]}
+         */
+        getImplements: function()
+        {
+            return this.getData().$_implements;
         }
-        return true;
-    };
-
-    /**
-     * Sets "$_implements" attribute value
-     *
-     * @param {string[]} interfaces
-     *
-     *      List of the interfaces witch current one will implement.
-     *
-     *      Example: [
-     *         "Namespace/Of/Interface1",
-     *         "Namespace/Of/Interface2",
-     *         ...
-     *      ]
-     */
-    ClassDefinition.prototype.setImplements = function(interfaces)
-    {
-        this.validateImplements(interfaces);
-        this.getData().$_implements = interfaces || [];
-
-        if (interfaces) {
-            this.getClass().addInterfaces(interfaces);
-        }
-    };
-
-    /**
-     * Return "$_implements" attribute value
-     *
-     * @returns {string[]}
-     */
-    ClassDefinition.prototype.getImplements = function()
-    {
-        return this.getData().$_implements;
-    };
+    });
 
 
     //=========================================================================

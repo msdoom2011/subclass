@@ -24,75 +24,78 @@ Subclass.Error.ErrorBase = function()
         this._message = message;
     }
 
-    /**
-     * Builds error message.
-     * If error message was set it returns it.
-     * Otherwise the message will be built.
-     *
-     * @method buildMessage
-     * @memberOf Subclass.Error.prototype
-     *
-     * @returns {string}
-     */
-    ErrorBase.prototype.buildMessage = function()
-    {
-        if (this._message) {
-            return this._message;
+    ErrorBase.prototype = {
+
+        /**
+         * Builds error message.
+         * If error message was set it returns it.
+         * Otherwise the message will be built.
+         *
+         * @method buildMessage
+         * @memberOf Subclass.Error.prototype
+         *
+         * @returns {string}
+         */
+        buildMessage: function()
+        {
+            if (this._message) {
+                return this._message;
+            }
+            return "";
+        },
+
+        /**
+         * Sets/returns an error message.
+         *
+         * If the message argument was specified it will be set the error message.
+         * Otherwise it builds message by the {@link Subclass.Error#buildMessage} method and returns it.
+         *
+         * @method message
+         * @memberOf Subclass.Error.prototype
+         *
+         * @param {string} [message]
+         *      The error message.
+         *
+         * @returns {Subclass.Error}
+         */
+        message: function(message)
+        {
+            if (!arguments.length) {
+                return this.buildMessage();
+            }
+            if (message && typeof message != 'string') {
+                throw new Error('Specified invalid error message. It must be a string.');
+            }
+            this._message = message;
+
+            return this;
+        },
+
+        /**
+         * Checks whether the message option was specified
+         *
+         * @method hasMessage
+         * @memberOf Subclass.Error.prototype
+         *
+         * @returns {boolean}
+         */
+        hasMessage: function()
+        {
+            return this._message !== undefined;
+        },
+
+        /**
+         * Throws error
+         *
+         * @method apply
+         * @memberOf Subclass.Error.prototype
+         * @throws {Error}
+         */
+        apply: function()
+        {
+            Subclass.Error.ErrorBase.validateRequiredOptions(this);
+            throw new Error(this.message());
         }
-        return "";
-    };
-
-    /**
-     * Sets/returns an error message.
-     *
-     * If the message argument was specified it will be set the error message.
-     * Otherwise it builds message by the {@link Subclass.Error#buildMessage} method and returns it.
-     *
-     * @method message
-     * @memberOf Subclass.Error.prototype
-     *
-     * @param {string} [message]
-     *      The error message.
-     *
-     * @returns {Subclass.Error}
-     */
-    ErrorBase.prototype.message = function(message)
-    {
-        if (!arguments.length) {
-            return this.buildMessage();
-        }
-        if (message && typeof message != 'string') {
-            throw new Error('Specified invalid error message. It must be a string.');
-        }
-        this._message = message;
-
-        return this;
-    };
-
-    /**
-     * Checks whether the message option was specified
-     *
-     * @method hasMessage
-     * @memberOf Subclass.Error.prototype
-     *
-     * @returns {boolean}
-     */
-    ErrorBase.prototype.hasMessage = function()
-    {
-        return this._message !== undefined;
-    };
-
-    /**
-     * Throws error
-     *
-     * @method apply
-     * @memberOf Subclass.Error.prototype
-     * @throws {Error}
-     */
-    ErrorBase.prototype.apply = function()
-    {
-        Subclass.Error.ErrorBase.validateRequiredOptions(this);
-        throw new Error(this.message());
     };
 
 

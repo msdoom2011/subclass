@@ -42,6 +42,36 @@ window.Subclass = (function()
      */
     var _plugins = {};
 
+    /**
+     * Initializes Subclass
+     *
+     * @method _initialize
+     * @private
+     * @static
+     */
+    var _initialize = function()
+    {
+        if (_initialized) {
+            return;
+        }
+        for (var pluginName in _plugins) {
+            if (!_plugins.hasOwnProperty(pluginName)) {
+                continue;
+            }
+            var plugin = _plugins[pluginName];
+            var pluginDependencies = plugin.getDependencies();
+
+            for (var i = 0; i < pluginDependencies.length; i++) {
+                if (!Subclass.issetPlugin(pluginDependencies[i])) {
+                    Subclass.Error.create(
+                        'The Subclass plug-in "' + pluginName + '" ' +
+                        'requires the "' + pluginDependencies.join('", "') + '" plug-in(s) to be uploaded.'
+                    );
+                }
+            }
+            _initialized = true;
+        }
+    };
 
     return {
 
@@ -122,7 +152,7 @@ window.Subclass = (function()
 
             // Initializes Subclass
 
-            this._initialize();
+            _initialize();
 
             // If for registering module exists plugins
 
@@ -299,37 +329,6 @@ window.Subclass = (function()
         getPlugins: function()
         {
             return _plugins;
-        },
-
-        /**
-         * Initializes Subclass
-         *
-         * @method _initialize
-         * @private
-         * @static
-         */
-        _initialize: function()
-        {
-            if (_initialized) {
-                return;
-            }
-            for (var pluginName in _plugins) {
-                if (!_plugins.hasOwnProperty(pluginName)) {
-                    continue;
-                }
-                var plugin = _plugins[pluginName];
-                var pluginDependencies = plugin.getDependencies();
-
-                for (var i = 0; i < pluginDependencies.length; i++) {
-                    if (!Subclass.issetPlugin(pluginDependencies[i])) {
-                        Subclass.Error.create(
-                            'The Subclass plug-in "' + pluginName + '" ' +
-                            'requires the "' + pluginDependencies.join('", "') + '" plug-in(s) to be uploaded.'
-                        );
-                    }
-                }
-                _initialized = true;
-            }
         }
     };
 })();
@@ -1868,75 +1867,78 @@ Subclass.Error.ErrorBase = function()
         this._message = message;
     }
 
-    /**
-     * Builds error message.
-     * If error message was set it returns it.
-     * Otherwise the message will be built.
-     *
-     * @method buildMessage
-     * @memberOf Subclass.Error.prototype
-     *
-     * @returns {string}
-     */
-    ErrorBase.prototype.buildMessage = function()
-    {
-        if (this._message) {
-            return this._message;
+    ErrorBase.prototype = {
+
+        /**
+         * Builds error message.
+         * If error message was set it returns it.
+         * Otherwise the message will be built.
+         *
+         * @method buildMessage
+         * @memberOf Subclass.Error.prototype
+         *
+         * @returns {string}
+         */
+        buildMessage: function()
+        {
+            if (this._message) {
+                return this._message;
+            }
+            return "";
+        },
+
+        /**
+         * Sets/returns an error message.
+         *
+         * If the message argument was specified it will be set the error message.
+         * Otherwise it builds message by the {@link Subclass.Error#buildMessage} method and returns it.
+         *
+         * @method message
+         * @memberOf Subclass.Error.prototype
+         *
+         * @param {string} [message]
+         *      The error message.
+         *
+         * @returns {Subclass.Error}
+         */
+        message: function(message)
+        {
+            if (!arguments.length) {
+                return this.buildMessage();
+            }
+            if (message && typeof message != 'string') {
+                throw new Error('Specified invalid error message. It must be a string.');
+            }
+            this._message = message;
+
+            return this;
+        },
+
+        /**
+         * Checks whether the message option was specified
+         *
+         * @method hasMessage
+         * @memberOf Subclass.Error.prototype
+         *
+         * @returns {boolean}
+         */
+        hasMessage: function()
+        {
+            return this._message !== undefined;
+        },
+
+        /**
+         * Throws error
+         *
+         * @method apply
+         * @memberOf Subclass.Error.prototype
+         * @throws {Error}
+         */
+        apply: function()
+        {
+            Subclass.Error.ErrorBase.validateRequiredOptions(this);
+            throw new Error(this.message());
         }
-        return "";
-    };
-
-    /**
-     * Sets/returns an error message.
-     *
-     * If the message argument was specified it will be set the error message.
-     * Otherwise it builds message by the {@link Subclass.Error#buildMessage} method and returns it.
-     *
-     * @method message
-     * @memberOf Subclass.Error.prototype
-     *
-     * @param {string} [message]
-     *      The error message.
-     *
-     * @returns {Subclass.Error}
-     */
-    ErrorBase.prototype.message = function(message)
-    {
-        if (!arguments.length) {
-            return this.buildMessage();
-        }
-        if (message && typeof message != 'string') {
-            throw new Error('Specified invalid error message. It must be a string.');
-        }
-        this._message = message;
-
-        return this;
-    };
-
-    /**
-     * Checks whether the message option was specified
-     *
-     * @method hasMessage
-     * @memberOf Subclass.Error.prototype
-     *
-     * @returns {boolean}
-     */
-    ErrorBase.prototype.hasMessage = function()
-    {
-        return this._message !== undefined;
-    };
-
-    /**
-     * Throws error
-     *
-     * @method apply
-     * @memberOf Subclass.Error.prototype
-     * @throws {Error}
-     */
-    ErrorBase.prototype.apply = function()
-    {
-        Subclass.Error.ErrorBase.validateRequiredOptions(this);
-        throw new Error(this.message());
     };
 
 
@@ -3145,288 +3147,291 @@ Subclass.Event.Event = (function()
         this._defaultListener = null;
     }
 
-    /**
-     * Returns name of event
-     *
-     * @method getName
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @returns {string}
-     */
-    Event.prototype.getName = function()
-    {
-        return this._name;
-    };
+    Event.prototype = {
 
-    /**
-     * Returns event context for event listeners
-     *
-     * @method getContext
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @returns {Object}
-     */
-    Event.prototype.getContext = function()
-    {
-        return this._context;
-    };
+        /**
+         * Returns name of event
+         *
+         * @method getName
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @returns {string}
+         */
+        getName: function()
+        {
+            return this._name;
+        },
 
-    /**
-     * Sets default event listener which will be invoked in the least
-     *
-     * @param {function} listener
-     * @returns {Subclass.Event.Event}
-     */
-    Event.prototype.setDefaultListener = function(listener)
-    {
-        if (typeof listener != 'function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the default event listener', false)
-                .expected('a function')
-                .received(listener)
-                .apply()
-            ;
-        }
-        this._defaultListener = listener;
+        /**
+         * Returns event context for event listeners
+         *
+         * @method getContext
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @returns {Object}
+         */
+        getContext: function()
+        {
+            return this._context;
+        },
 
-        return this;
-    };
-
-    /**
-     * Returns default event listener
-     *
-     * @returns {null|Function}
-     */
-    Event.prototype.getDefaultListener = function()
-    {
-        return this._defaultListener;
-    };
-
-    /**
-     * Registers new listener to the event.<br /><br />
-     * Creates instance of {@link Subclass.Event.EventListener}
-     *
-     * @method addListener
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @param {(number|Function)} [priority]
-     *      Event listener invoke priority
-     *
-     * @param {Function} callback
-     *      Event listener callback function which will be invoked when event triggers.
-     *
-     * @returns {Subclass.Event.Event}
-     */
-    Event.prototype.addListener = function(priority, callback)
-    {
-        var listener = Subclass.Tools.createClassInstance(Subclass.Event.EventListener,
-            priority,
-            callback
-        );
-        this._listeners.push(listener);
-
-        return this;
-    };
-
-    /**
-     * Removes specified event listener by its callback function
-     *
-     * @method removeListener
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @param {Function} callback
-     *      Function which was early used in registering event listener
-     *
-     * @returns {Subclass.Event.Event}
-     */
-    Event.prototype.removeListener = function(callback)
-    {
-        var listener = this.getListenerByCallback(callback);
-
-        if (!listener) {
-            return this;
-        }
-
-        var listeners = this.getListeners();
-        var listenerIndex = listeners.indexOf(listener);
-
-        if (listenerIndex >= 0) {
-            listeners.splice(listenerIndex, 1);
-        }
-
-        return this;
-    };
-
-    /**
-     * Returns all registered event listeners
-     *
-     * @method getListeners
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @returns {Object.<Subclass.Event.EventListener>}
-     */
-    Event.prototype.getListeners = function()
-    {
-        return this._listeners;
-    };
-
-    /**
-     * Returns event listener by specified callback function
-     *
-     * @method getListenerByCallback
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @throws {Error}
-     *      Throws error if was specified not a function callback
-     *
-     * @param {Function} callback
-     *      Function which was early used in registering event listener
-     *
-     * @returns {(Subclass.Event.EventListener|null)}
-     */
-    Event.prototype.getListenerByCallback = function(callback)
-    {
-        if (!callback || typeof callback != 'Function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the callback", false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
-        }
-        var listeners = this.getListeners();
-
-        for (var i = 0; i < listeners.length; i++) {
-            if (listeners[i].getCallback() == callback) {
-                return listeners[i];
+        /**
+         * Sets default event listener which will be invoked in the least
+         *
+         * @param {function} listener
+         * @returns {Subclass.Event.Event}
+         */
+        setDefaultListener: function(listener)
+        {
+            if (typeof listener != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the default event listener', false)
+                    .expected('a function')
+                    .received(listener)
+                    .apply()
+                ;
             }
-        }
-        return null;
-    };
+            this._defaultListener = listener;
 
-    /**
-     * Checks whether current event contains any listeners
-     *
-     * @method hasListeners
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @return {boolean}
-     */
-    Event.prototype.hasListeners = function()
-    {
-        return !!this.getListeners().length;
-    };
+            return this;
+        },
 
-    /**
-     * Invokes all registered event listeners at order of descending its priorities.
-     * The greater priority - the earlier event listener will invoked.<br /><br />
-     *
-     * Will be invoked all listener callback functions from all modules (from current
-     * module and its plug-ins) of the event with name of current event.<br /><br />
-     *
-     * Each event listener callback function will receive as arguments all arguments from current method call.
-     * If listener callback function returns false then it will bring to stop propagation of event.
-     *
-     * @method trigger
-     * @memberOf Subclass.Event.Event.prototype
-     *
-     * @param [arguments]
-     *      Any number of any needed arguments
-     *
-     * @returns {Subclass.Event.EventData}
-     */
-    Event.prototype.trigger = function()
-    {
-        var listeners = this.getListeners();
+        /**
+         * Returns default event listener
+         *
+         * @returns {null|Function}
+         */
+        getDefaultListener: function()
+        {
+            return this._defaultListener;
+        },
 
-        return this._processTrigger(listeners, arguments);
-    };
+        /**
+         * Registers new listener to the event.<br /><br />
+         * Creates instance of {@link Subclass.Event.EventListener}
+         *
+         * @method addListener
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @param {(number|Function)} [priority]
+         *      Event listener invoke priority
+         *
+         * @param {Function} callback
+         *      Event listener callback function which will be invoked when event triggers.
+         *
+         * @returns {Subclass.Event.Event}
+         */
+        addListener: function(priority, callback)
+        {
+            var listener = Subclass.Tools.createClassInstance(Subclass.Event.EventListener,
+                priority,
+                callback
+            );
+            this._listeners.push(listener);
 
-    /**
-     * Invokes event listeners
-     *
-     * @method _processTriggger
-     *
-     * @param {Array.<Subclass.Event.EventListener>} listeners
-     *      An array of event listeners
-     *
-     * @param {Array} listenerArgs
-     *      Arguments which will be transferred to each even listener callback function
-     *
-     * @returns {Subclass.Event.EventData}
-     * @private
-     * @ignore
-     */
-    Event.prototype._processTrigger = function(listeners, listenerArgs)
-    {
-        var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
-        var eventData = Subclass.Tools.createClassInstance(Subclass.Event.EventData, this, this.getContext());
-        var context = this.getContext();
-        var args = [eventData];
-        var priorities = [];
+            return this;
+        },
 
-        for (var k = 0; k < listenerArgs.length; k++) {
-            args.push(listenerArgs[k]);
-        }
+        /**
+         * Removes specified event listener by its callback function
+         *
+         * @method removeListener
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @param {Function} callback
+         *      Function which was early used in registering event listener
+         *
+         * @returns {Subclass.Event.Event}
+         */
+        removeListener: function(callback)
+        {
+            var listener = this.getListenerByCallback(callback);
 
-        // Preparing event listeners
+            if (!listener) {
+                return this;
+            }
 
-        for (var i = 0; i < listeners.length; i++) {
-            var listener = listeners[i];
+            var listeners = this.getListeners();
+            var listenerIndex = listeners.indexOf(listener);
 
-            priorities.push(listener.getPriority());
-            listener[uniqueFieldName] = false;
-        }
+            if (listenerIndex >= 0) {
+                listeners.splice(listenerIndex, 1);
+            }
 
-        // Sorting priorities in descending order
+            return this;
+        },
 
-        priorities = priorities.sort(function(a, b) {
-            a = parseInt(a);
-            b = parseInt(b);
+        /**
+         * Returns all registered event listeners
+         *
+         * @method getListeners
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @returns {Object.<Subclass.Event.EventListener>}
+         */
+        getListeners: function()
+        {
+            return this._listeners;
+        },
 
-            if (a > b) return -1;
-            if (a < b) return 1;
+        /**
+         * Returns event listener by specified callback function
+         *
+         * @method getListenerByCallback
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @throws {Error}
+         *      Throws error if was specified not a function callback
+         *
+         * @param {Function} callback
+         *      Function which was early used in registering event listener
+         *
+         * @returns {(Subclass.Event.EventListener|null)}
+         */
+        getListenerByCallback: function(callback)
+        {
+            if (!callback || typeof callback != 'Function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the callback", false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
+                ;
+            }
+            var listeners = this.getListeners();
 
-            return 0;
-        });
+            for (var i = 0; i < listeners.length; i++) {
+                if (listeners[i].getCallback() == callback) {
+                    return listeners[i];
+                }
+            }
+            return null;
+        },
 
-        // Invoking event listener callback function in order with priorities
+        /**
+         * Checks whether current event contains any listeners
+         *
+         * @method hasListeners
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @return {boolean}
+         */
+        hasListeners: function()
+        {
+            return !!this.getListeners().length;
+        },
 
-        loop: for (i = 0; i < priorities.length; i++) {
-            for (var j = 0; j < listeners.length; j++) {
-                listener = listeners[j];
+        /**
+         * Invokes all registered event listeners at order of descending its priorities.
+         * The greater priority - the earlier event listener will invoked.<br /><br />
+         *
+         * Will be invoked all listener callback functions from all modules (from current
+         * module and its plug-ins) of the event with name of current event.<br /><br />
+         *
+         * Each event listener callback function will receive as arguments all arguments from current method call.
+         * If listener callback function returns false then it will bring to stop propagation of event.
+         *
+         * @method trigger
+         * @memberOf Subclass.Event.Event.prototype
+         *
+         * @param [arguments]
+         *      Any number of any needed arguments
+         *
+         * @returns {Subclass.Event.EventData}
+         */
+        trigger: function()
+        {
+            var listeners = this.getListeners();
 
-                if (!listener[uniqueFieldName] && listener.getPriority() == priorities[i]) {
-                    listener[uniqueFieldName] = true;
+            return this._processTrigger(listeners, arguments);
+        },
 
-                    var result = listener.getCallback().apply(context, args);
-                    eventData.addResult(result);
+        /**
+         * Invokes event listeners
+         *
+         * @method _processTriggger
+         *
+         * @param {Array.<Subclass.Event.EventListener>} listeners
+         *      An array of event listeners
+         *
+         * @param {Array} listenerArgs
+         *      Arguments which will be transferred to each even listener callback function
+         *
+         * @returns {Subclass.Event.EventData}
+         * @private
+         * @ignore
+         */
+        _processTrigger: function(listeners, listenerArgs)
+        {
+            var uniqueFieldName = '_passed_' + Math.round(new Date().getTime() * Math.random());
+            var eventData = Subclass.Tools.createClassInstance(Subclass.Event.EventData, this, this.getContext());
+            var context = this.getContext();
+            var args = [eventData];
+            var priorities = [];
 
-                    if (eventData.isPropagationStopped()) {
-                        break loop;
+            for (var k = 0; k < listenerArgs.length; k++) {
+                args.push(listenerArgs[k]);
+            }
+
+            // Preparing event listeners
+
+            for (var i = 0; i < listeners.length; i++) {
+                var listener = listeners[i];
+
+                priorities.push(listener.getPriority());
+                listener[uniqueFieldName] = false;
+            }
+
+            // Sorting priorities in descending order
+
+            priorities = priorities.sort(function(a, b) {
+                a = parseInt(a);
+                b = parseInt(b);
+
+                if (a > b) return -1;
+                if (a < b) return 1;
+
+                return 0;
+            });
+
+            // Invoking event listener callback function in order with priorities
+
+            loop: for (i = 0; i < priorities.length; i++) {
+                for (var j = 0; j < listeners.length; j++) {
+                    listener = listeners[j];
+
+                    if (!listener[uniqueFieldName] && listener.getPriority() == priorities[i]) {
+                        listener[uniqueFieldName] = true;
+
+                        var result = listener.getCallback().apply(context, args);
+                        eventData.addResult(result);
+
+                        if (eventData.isPropagationStopped()) {
+                            break loop;
+                        }
                     }
                 }
             }
+
+            // Invoking default event listener
+
+            if (
+                this.getDefaultListener()
+                && !eventData.isPropagationStopped()
+                && !eventData.isDefaultPrevented()
+            ) {
+                this.getDefaultListener().apply(context, args);
+            }
+
+            // Removing helper fields from listeners
+
+            for (i = 0; i < listeners.length; i++) {
+                listener = listeners[i];
+                delete listener[uniqueFieldName];
+            }
+
+            return eventData;
         }
-
-        // Invoking default event listener
-
-        if (
-            this.getDefaultListener()
-            && !eventData.isPropagationStopped()
-            && !eventData.isDefaultPrevented()
-        ) {
-            this.getDefaultListener().apply(context, args);
-        }
-
-        // Removing helper fields from listeners
-
-        for (i = 0; i < listeners.length; i++) {
-            listener = listeners[i];
-            delete listener[uniqueFieldName];
-        }
-
-        return eventData;
     };
 
     return Event;
@@ -3435,6 +3440,10 @@ Subclass.Event.Event = (function()
 
 // Source file: Event/EventData.js
 
+/**
+ * @class
+ * @constructor
+ */
 Subclass.Event.EventData = function()
 {
     function EventData(eventInst, target)
@@ -3480,132 +3489,135 @@ Subclass.Event.EventData = function()
         this._defaultPrevented = false;
     }
 
-    /**
-     * Returns the event object instance
-     *
-     * @returns {Subclass.Event.Event}
-     */
-    EventData.prototype.getEvent = function()
-    {
-        return this._event;
-    };
+    EventData.prototype = {
 
-    /**
-     * Returns the object for which current event was triggered
-     * (matches with "this" variable in event listener callback function)
-     *
-     * @returns {Object}
-     */
-    EventData.prototype.getTarget = function()
-    {
-        return this._target;
-    };
+        /**
+         * Returns the event object instance
+         *
+         * @returns {Subclass.Event.Event}
+         */
+        getEvent: function()
+        {
+            return this._event;
+        },
 
-    /**
-     * Starts event propagation
-     */
-    EventData.prototype.startPropagation = function()
-    {
-        this._stopped = false;
-    };
+        /**
+         * Returns the object for which current event was triggered
+         * (matches with "this" variable in event listener callback function)
+         *
+         * @returns {Object}
+         */
+        getTarget: function()
+        {
+            return this._target;
+        },
 
-    /**
-     * Stops event propagation
-     */
-    EventData.prototype.stopPropagation = function()
-    {
-        this._stopped = true;
-    };
+        /**
+         * Starts event propagation
+         */
+        startPropagation: function()
+        {
+            this._stopped = false;
+        },
 
-    /**
-     * Reports whether event propagation stopped
-     *
-     * @returns {boolean}
-     */
-    EventData.prototype.isPropagationStopped = function()
-    {
-        return this._stopped;
-    };
+        /**
+         * Stops event propagation
+         */
+        stopPropagation: function()
+        {
+            this._stopped = true;
+        },
 
-    /**
-     * Prevents call of default event listener
-     */
-    EventData.prototype.preventDefault = function()
-    {
-        this._defaultPrevented = true;
-    };
+        /**
+         * Reports whether event propagation stopped
+         *
+         * @returns {boolean}
+         */
+        isPropagationStopped: function()
+        {
+            return this._stopped;
+        },
 
-    /**
-     * Allows call of default event listener
-     */
-    EventData.prototype.allowDefault = function()
-    {
-        this._defaultPrevented = false;
-    };
+        /**
+         * Prevents call of default event listener
+         */
+        preventDefault: function()
+        {
+            this._defaultPrevented = true;
+        },
 
-    /**
-     * Reports whether allows call of default event listener
-     *
-     * @returns {boolean}
-     */
-    EventData.prototype.isDefaultPrevented = function()
-    {
-        return this._defaultPrevented;
-    };
+        /**
+         * Allows call of default event listener
+         */
+        allowDefault: function()
+        {
+            this._defaultPrevented = false;
+        },
 
-    /**
-     * Adds new event listener execution result
-     *
-     * @param {*} result
-     *      Event listener execution result
-     */
-    EventData.prototype.addResult = function(result)
-    {
-        this._results.push(result);
-    };
+        /**
+         * Reports whether allows call of default event listener
+         *
+         * @returns {boolean}
+         */
+        isDefaultPrevented: function()
+        {
+            return this._defaultPrevented;
+        },
 
-    /**
-     * Returns all results of event listeners executions
-     *
-     * @returns {Array.<*>}
-     */
-    EventData.prototype.getResults = function()
-    {
-        return this._results;
-    };
+        /**
+         * Adds new event listener execution result
+         *
+         * @param {*} result
+         *      Event listener execution result
+         */
+        addResult: function(result)
+        {
+            this._results.push(result);
+        },
 
-    /**
-     * Returns first result of event listeners executions
-     *
-     * @returns {*}
-     */
-    EventData.prototype.getFirstResult = function()
-    {
-        return this._results.length
-            ? this._results[0]
-            : undefined
-        ;
-    };
+        /**
+         * Returns all results of event listeners executions
+         *
+         * @returns {Array.<*>}
+         */
+        getResults: function()
+        {
+            return this._results;
+        },
 
-    /**
-     * Returns last result of event listeners executions
-     *
-     * @returns {*}
-     */
-    EventData.prototype.getLastResult = function()
-    {
-        return this._results.length
-            ? this._results[this._results.length - 1]
-            : undefined
-        ;
-    };
+        /**
+         * Returns first result of event listeners executions
+         *
+         * @returns {*}
+         */
+        getFirstResult: function()
+        {
+            return this._results.length
+                ? this._results[0]
+                : undefined
+            ;
+        },
 
-    /**
-     * Clears event listeners execution results
-     */
-    EventData.prototype.clearResults = function()
-    {
-        this._results = [];
+        /**
+         * Returns last result of event listeners executions
+         *
+         * @returns {*}
+         */
+        getLastResult: function()
+        {
+            return this._results.length
+                ? this._results[this._results.length - 1]
+                : undefined
+            ;
+        },
+
+        /**
+         * Clears event listeners execution results
+         */
+        clearResults: function()
+        {
+            this._results = [];
+        }
     };
 
     return EventData;
@@ -3679,30 +3691,33 @@ Subclass.Event.EventListener = (function()
         this._callback = callback;
     }
 
-    /**
-     * Returns event listener priority
-     *
-     * @method getPriority
-     * @memberOf Subclass.Event.EventListener.prototype
-     *
-     * @returns {number}
-     */
-    EventListener.prototype.getPriority = function()
-    {
-        return this._priority;
-    };
+    EventListener.prototype = {
 
-    /**
-     * Returns event listener callback
-     *
-     * @method getCallback
-     * @memberOf Subclass.Event.EventListener.prototype
-     *
-     * @returns {Function}
-     */
-    EventListener.prototype.getCallback = function()
-    {
-        return this._callback;
+        /**
+         * Returns event listener priority
+         *
+         * @method getPriority
+         * @memberOf Subclass.Event.EventListener.prototype
+         *
+         * @returns {number}
+         */
+        getPriority: function()
+        {
+            return this._priority;
+        },
+
+        /**
+         * Returns event listener callback
+         *
+         * @method getCallback
+         * @memberOf Subclass.Event.EventListener.prototype
+         *
+         * @returns {Function}
+         */
+        getCallback: function()
+        {
+            return this._callback;
+        }
     };
 
     return EventListener;
@@ -3738,85 +3753,88 @@ Subclass.Event.EventableMixin = (function()
         };
     }
 
-    /**
-     * Returns registered events
-     *
-     * @method getEvents
-     * @memberOf Subclass.Event.EventableMixin
-     *
-     * @returns {Object.<Subclass.Event.Event>}
-     */
-    EventableMixin.prototype.getEvents = function()
-    {
-        return this._events;
-    };
+    EventableMixin.prototype = {
 
-    /**
-     * Registers new event with specified name.<br />
-     * It's required step for further using every event.<br /><br />
-     *
-     * Creates instance of {@link Subclass.Event.Event}
-     *
-     * @method registerEvent
-     * @memberOf Subclass.Event.EventableMixin.prototype
-     *
-     * @throws {Error}
-     *      Throws if trying to register event with already existent event
-     *
-     * @param {string} eventName
-     *      A name of creating event
-     *
-     * @returns {Subclass.Event.EventableMixin}
-     */
-    EventableMixin.prototype.registerEvent = function(eventName)
-    {
-        if (this.issetEvent(eventName)) {
+        /**
+         * Returns registered events
+         *
+         * @method getEvents
+         * @memberOf Subclass.Event.EventableMixin
+         *
+         * @returns {Object.<Subclass.Event.Event>}
+         */
+        getEvents: function()
+        {
+            return this._events;
+        },
+
+        /**
+         * Registers new event with specified name.<br />
+         * It's required step for further using every event.<br /><br />
+         *
+         * Creates instance of {@link Subclass.Event.Event}
+         *
+         * @method registerEvent
+         * @memberOf Subclass.Event.EventableMixin.prototype
+         *
+         * @throws {Error}
+         *      Throws if trying to register event with already existent event
+         *
+         * @param {string} eventName
+         *      A name of creating event
+         *
+         * @returns {Subclass.Event.EventableMixin}
+         */
+        registerEvent: function(eventName)
+        {
+            if (this.issetEvent(eventName)) {
+                return this;
+            }
+            this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.Event.Event,
+                eventName,
+                this
+            );
+
             return this;
+        },
+
+        /**
+         * Returns registered event instance.
+         *
+         * @method getEvent
+         * @memberOf Subclass.Event.EventableMixin.prototype
+         *
+         * @throws {Error}
+         *      Throws error if trying to get event that was not registered
+         *
+         * @param {string} eventName
+         *      The name of event you want to get
+         *
+         * @returns {Subclass.Event.Event}
+         */
+        getEvent: function(eventName)
+        {
+            if (!this.issetEvent(eventName)) {
+                Subclass.Error.create('Trying to get non existent event "' + eventName + '".');
+            }
+            return this.getEvents()[eventName];
+        },
+
+        /**
+         * Checks whether event with specified name was registered
+         *
+         * @method issetEvent
+         * @memberOf Subclass.Event.EventableMixin.prototype
+         *
+         * @param {string} eventName
+         *      The name of interesting event
+         *
+         * @returns {boolean}
+         */
+        issetEvent: function(eventName)
+        {
+            return !!this.getEvents()[eventName];
         }
-        this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.Event.Event,
-            eventName,
-            this
-        );
-
-        return this;
-    };
-
-    /**
-     * Returns registered event instance.
-     *
-     * @method getEvent
-     * @memberOf Subclass.Event.EventableMixin.prototype
-     *
-     * @throws {Error}
-     *      Throws error if trying to get event that was not registered
-     *
-     * @param {string} eventName
-     *      The name of event you want to get
-     *
-     * @returns {Subclass.Event.Event}
-     */
-    EventableMixin.prototype.getEvent = function(eventName)
-    {
-        if (!this.issetEvent(eventName)) {
-            Subclass.Error.create('Trying to get non existent event "' + eventName + '".');
-        }
-        return this.getEvents()[eventName];
-    };
-
-    /**
-     * Checks whether event with specified name was registered
-     *
-     * @method issetEvent
-     * @memberOf Subclass.Event.EventableMixin.prototype
-     *
-     * @param {string} eventName
-     *      The name of interesting event
-     *
-     * @returns {boolean}
-     */
-    EventableMixin.prototype.issetEvent = function(eventName)
-    {
-        return !!this.getEvents()[eventName];
     };
 
     return EventableMixin;
@@ -3966,6 +3984,9 @@ Subclass.Module = function()
         this._eventManager = Subclass.Tools.createClassInstance(Subclass.EventManager, this);
 
         // Registering events
+        //
+        // It is necessary to register them immediately after event manager was created
+        // before the the creating of other managers in module
 
         this.getEventManager()
             .registerEvent('onCreate')
@@ -4038,42 +4059,7 @@ Subclass.Module = function()
 
         // Initializing module
 
-        var eventManager = this.getEventManager();
-
-        // Adding initialize callbacks from static scope
-
-        for (var i = 0; i < Module._creaters.length; i++) {
-            eventManager.getEvent('onCreate').addListener(Module._creaters[i]);
-        }
-        for (i = 0; i < Module._initializersBefore.length; i++) {
-            eventManager.getEvent('onInitializeBefore').addListener(Module._initializersBefore[i]);
-        }
-        for (i = 0; i < Module._initializersAfter.length; i++) {
-            eventManager.getEvent('onInitializeAfter').addListener(Module._initializersAfter[i]);
-        }
-
-        eventManager.getEvent('onCreate').triggerPrivate(this);
-        eventManager.getEvent('onInitializeBefore').triggerPrivate(this);
-
-        this.initializeExtensions();
-        eventManager.getEvent('onInitialize').triggerPrivate(this);
-
-        this.setSettings(moduleSettings);
-        this.getClassManager().initialize();
-        this.getLoadManager().initialize();
-
-        eventManager.getEvent('onInitializeAfter').triggerPrivate(this);
-
-        // Calling onReady callback
-
-        eventManager.getEvent('onLoadingEnd').addListener(1000000, function(evt) {
-            if ($this.isRoot()) {
-                $this.setSetupped();
-            }
-        });
-        eventManager.getEvent('onLoadingEnd').addListener(-1000000, function(evt) {
-            $this.setReady();
-        });
+        this.initialize(moduleSettings);
     }
 
     Module.$parent = Subclass.Extendable;
@@ -4159,548 +4145,598 @@ Subclass.Module = function()
         }
     };
 
-    /**
-     * Returns name of the module
-     *
-     * @method getName
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {string}
-     */
-    Module.prototype.getName = function()
-    {
-        return this._name;
-    };
+    Module.prototype = {
 
-    /**
-     * Sets parent module.<br />
-     * Allows to specify that the current module is a plugin relative to the parent module
-     *
-     * @method setParent
-     * @memberOf Subclass.Module.prototype
-     *
-     * @throws {Error}
-     *      Throws error if was specified not valid argument
-     *
-     * @param {(Subclass.Module|null)} parentModule
-     *      The parent module instance
-     */
-    Module.prototype.setParent = function(parentModule)
-    {
-        if (parentModule !== null && !(parentModule instanceof Subclass.Module)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the parent module instance", false)
-                .received(parentModule)
-                .expected('an instance of "Subclass.Module"')
-                .apply()
+        /**
+         * Initializes module
+         *
+         * @param {Object|null} moduleSettings
+         */
+        initialize: function(moduleSettings)
+        {
+            var eventManager = this.getEventManager();
+            var $this = this;
+
+            // Adding initialize callbacks from static scope
+
+            for (var i = 0; i < Module._creaters.length; i++) {
+                eventManager.getEvent('onCreate').addListener(Module._creaters[i]);
+            }
+            for (i = 0; i < Module._initializersBefore.length; i++) {
+                eventManager.getEvent('onInitializeBefore').addListener(Module._initializersBefore[i]);
+            }
+            for (i = 0; i < Module._initializersAfter.length; i++) {
+                eventManager.getEvent('onInitializeAfter').addListener(Module._initializersAfter[i]);
+            }
+
+            eventManager.getEvent('onCreate').triggerPrivate(this);
+            eventManager.getEvent('onInitializeBefore').triggerPrivate(this);
+
+            this.initializeExtensions();
+            eventManager.getEvent('onInitialize').triggerPrivate(this);
+
+            this.setSettings(moduleSettings);
+            this.getClassManager().initialize();
+            this.getLoadManager().initialize();
+
+            eventManager.getEvent('onInitializeAfter').triggerPrivate(this);
+
+            // Calling onReady callback
+
+            eventManager.getEvent('onLoadingEnd').addListener(1000000, function(evt) {
+                if ($this.isRoot()) {
+                    $this.setSetupped();
+                }
+            });
+            eventManager.getEvent('onLoadingEnd').addListener(-1000000, function(evt) {
+                $this.setReady();
+            });
+        },
+
+        /**
+         * Returns name of the module
+         *
+         * @method getName
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {string}
+         */
+        getName: function()
+        {
+            return this._name;
+        },
+
+        /**
+         * Sets parent module.<br />
+         * Allows to specify that the current module is a plugin relative to the parent module
+         *
+         * @method setParent
+         * @memberOf Subclass.Module.prototype
+         *
+         * @throws {Error}
+         *      Throws error if was specified not valid argument
+         *
+         * @param {(Subclass.Module|null)} parentModule
+         *      The parent module instance
+         */
+        setParent: function(parentModule)
+        {
+            if (parentModule !== null && !(parentModule instanceof Subclass.Module)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the parent module instance", false)
+                    .received(parentModule)
+                    .expected('an instance of "Subclass.Module"')
+                    .apply()
+                ;
+            }
+            this._parent = parentModule;
+        },
+
+        /**
+         * Returns parent module
+         *
+         * @method getParent
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {(Subclass.Module|null)}
+         */
+        getParent: function()
+        {
+            return this._parent;
+        },
+
+        /**
+         * Checks whether current module belongs to another module,
+         * i.e. is a plugin relative to another module
+         *
+         * @method hasParent
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        hasParent: function()
+        {
+            return !!this._parent;
+        },
+
+        /**
+         * Returns the root parent module.<br /><br />
+         *
+         * If module is a plugin it holds a link to the parent module.
+         * If parent in turn has a parent and so on, the module which is on the top
+         * of the inheritance chain is called a root module.
+         *
+         * @method getRoot
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        getRoot: function()
+        {
+            return this.hasParent()
+                ? this.getParent().getRoot()
+                : this
             ;
-        }
-        this._parent = parentModule;
-    };
+        },
 
-    /**
-     * Returns parent module
-     *
-     * @method getParent
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {(Subclass.Module|null)}
-     */
-    Module.prototype.getParent = function()
-    {
-        return this._parent;
-    };
+        /**
+         * Checks whether current module is root module,
+         * i.e. hasn't the parent module and isn't a plugin.
+         *
+         * @method isRoot
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        isRoot: function()
+        {
+            return !this.hasParent() && !this.isPlugin();
+        },
 
-    /**
-     * Checks whether current module belongs to another module,
-     * i.e. is a plugin relative to another module
-     *
-     * @method hasParent
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.hasParent = function()
-    {
-        return !!this._parent;
-    };
+        /**
+         * Checks whether current module is a plug-in.
+         *
+         * @method isPlugin
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {*}
+         */
+        isPlugin: function()
+        {
+            return this.getSettingsManager().isPlugin();
+        },
 
-    /**
-     * Returns the root parent module.<br /><br />
-     *
-     * If module is a plugin it holds a link to the parent module.
-     * If parent in turn has a parent and so on, the module which is on the top
-     * of the inheritance chain is called a root module.
-     *
-     * @method getRoot
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.getRoot = function()
-    {
-        return this.hasParent()
-            ? this.getParent().getRoot()
-            : this
-        ;
-    };
+        /**
+         * Returns the public api of the module which
+         * is an instance of class Subclass.ModuleAPI
+         *
+         * @method getAPI
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.ModuleAPI}
+         */
+        getAPI: function()
+        {
+            return this._api;
+        },
 
-    /**
-     * Checks whether current module is root module,
-     * i.e. hasn't the parent module and isn't a plugin.
-     *
-     * @method isRoot
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.isRoot = function()
-    {
-        return !this.hasParent() && !this.isPlugin();
-    };
+        /**
+         * The same as the {@link Subclass.SettingsManager#setSettings}
+         *
+         * @method setSettings
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        setSettings: function(settings)
+        {
+            this.getSettingsManager().setSettings(settings);
 
-    /**
-     * Checks whether current module is a plug-in.
-     *
-     * @method isPlugin
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {*}
-     */
-    Module.prototype.isPlugin = function()
-    {
-        return this.getSettingsManager().isPlugin();
-    };
-
-    /**
-     * Returns the public api of the module which
-     * is an instance of class Subclass.ModuleAPI
-     *
-     * @method getAPI
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.ModuleAPI}
-     */
-    Module.prototype.getAPI = function()
-    {
-        return this._api;
-    };
-
-    /**
-     * The same as the {@link Subclass.SettingsManager#setSettings}
-     *
-     * @method setSettings
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.setSettings = function(settings)
-    {
-        this.getSettingsManager().setSettings(settings);
-
-        return this;
-    };
-
-    /**
-     * Returns an instance of manager that holds and processes module settings.
-     *
-     * @method getSettingsManager
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.SettingsManager}
-     */
-    Module.prototype.getSettingsManager = function()
-    {
-        return this._settingsManager;
-    };
-
-    /**
-     * Returns an instance of manager that allows to register new events,
-     * subscribe listeners and triggers them at the appointed time
-     *
-     * @method getEventManager
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.EventManager}
-     */
-    Module.prototype.getEventManager = function()
-    {
-        return this._eventManager;
-    };
-
-    /**
-     * Returns an instance of manager that holds and can process all plugins (modules which
-     * names were specified earlier in module constructor as modulePlugins)
-     * and link on this module
-     *
-     * @method getModuleStorage
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.ModuleStorage}
-     */
-    Module.prototype.getModuleStorage = function()
-    {
-        return this._moduleStorage;
-    };
-
-    /**
-     * Returns the instance of load manager
-     *
-     * @method getLoadManager
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.LoadManager}
-     */
-    Module.prototype.getLoadManager = function()
-    {
-        return this._loadManager;
-    };
-
-    /**
-     * Returns class manager instance that allows to register, process, and get
-     * classes of different type: Class, AbstractClass, Interface, Trait, Config
-     *
-     * @method getClassManager
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.ClassManager}
-     */
-    Module.prototype.getClassManager = function()
-    {
-        return this._classManager;
-    };
-
-    /**
-     * The same as the {@link Subclass.SettingsManager#setOnSetup}
-     *
-     * @method onSetup
-     * @memberOf Subclass.Module.prototype
-     *
-     * @param {Function} callback
-     *      The callback function
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.onSetup = function(callback)
-    {
-        this.getSettingsManager().setOnSetup(callback);
-
-        return this;
-    };
-
-    /**
-     * Makes module be setupped
-     *
-     * @method setSetupped
-     * @memberOf Subclass.Module.prototype
-     */
-    Module.prototype.setSetupped = function()
-    {
-        this.triggerOnSetup();
-        this._setupped = true;
-    };
-
-    /**
-     * Reports wheter the module was setupped
-     *
-     * @method isSetupped
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.isSetupped = function()
-    {
-        return this._setupped;
-    };
-
-    /**
-     * Invokes registered onSetup callback functions forcibly.<br /><br />
-     *
-     * If current module contains plug-ins then will be invoked onSetup callbacks
-     * from current module first and then will be invoked onSetup callbacks
-     * from plug-ins in order as they were added to the current module.
-     *
-     * @method triggerOnSetup
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.triggerOnSetup = function()
-    {
-        this.getEventManager().getEvent('onSetup').trigger();
-
-        return this;
-    };
-
-    /**
-     * The same as the {@link Subclass.SettingsManager#setOnReady}
-     *
-     * @method onReady
-     * @memberOf Subclass.Module.prototype
-     *
-     * @param {Function} callback
-     *      The callback function
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.onReady = function(callback)
-    {
-        if (this.isReady()) {
-            callback.apply(this);
             return this;
-        }
-        this.getSettingsManager().setOnReady(callback);
+        },
 
-        return this;
-    };
+        /**
+         * Returns an instance of manager that holds and processes module settings.
+         *
+         * @method getSettingsManager
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.SettingsManager}
+         */
+        getSettingsManager: function()
+        {
+            return this._settingsManager;
+        },
 
-    /**
-     * Invokes registered onReady callback functions forcibly.<br /><br />
-     *
-     * If current module contains plug-ins then will be invoked onReady callbacks
-     * from current module first and then will be invoked onReady callbacks
-     * from plug-ins in order as they were added to the current module.
-     *
-     * @method triggerOnReady
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.triggerOnReady = function()
-    {
-        this.getEventManager().getEvent('onReady').trigger();
+        /**
+         * Returns an instance of manager that allows to register new events,
+         * subscribe listeners and triggers them at the appointed time
+         *
+         * @method getEventManager
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.EventManager}
+         */
+        getEventManager: function()
+        {
+            return this._eventManager;
+        },
 
-        return this;
-    };
+        /**
+         * Returns an instance of manager that holds and can process all plugins (modules which
+         * names were specified earlier in module constructor as modulePlugins)
+         * and link on this module
+         *
+         * @method getModuleStorage
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.ModuleStorage}
+         */
+        getModuleStorage: function()
+        {
+            return this._moduleStorage;
+        },
 
-    /**
-     * Sets that module is prepared
-     *
-     * @method setPrepared
-     * @memberOf Subclass.Module.prototype
-     */
-    Module.prototype.setPrepared = function()
-    {
-        this._prepared = true;
-    };
+        /**
+         * Returns the instance of load manager
+         *
+         * @method getLoadManager
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.LoadManager}
+         */
+        getLoadManager: function()
+        {
+            return this._loadManager;
+        },
 
-    /**
-     * Checks whether the module is prepared
-     *
-     * @method isPrepared
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.isPrepared = function()
-    {
-        return this._prepared;
-    };
+        /**
+         * Returns class manager instance that allows to register, process, and get
+         * classes of different type: Class, AbstractClass, Interface, Trait, Config
+         *
+         * @method getClassManager
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.ClassManager}
+         */
+        getClassManager: function()
+        {
+            return this._classManager;
+        },
 
-    /**
-     * Brings module to ready state and invokes registered onReady callback functions.
-     * It can be invoked only once otherwise nothing will happen.
-     *
-     * @method setReady
-     * @memberOf Subclass.Module.prototype
-     */
-    Module.prototype.setReady = function()
-    {
-        if (this.isReady()) {
-            return;
-        }
-        var loadManager = this.getLoadManager();
-        this.setPrepared();
+        /**
+         * The same as the {@link Subclass.SettingsManager#setOnSetup}
+         *
+         * @method onSetup
+         * @memberOf Subclass.Module.prototype
+         *
+         * @param {Function} callback
+         *      The callback function
+         *
+         * @returns {Subclass.Module}
+         */
+        onSetup: function(callback)
+        {
+            this.getSettingsManager().setOnSetup(callback);
 
-        if (
-            loadManager.isStackEmpty()
-            && this.isPluginsReady()
-        ) {
-            this._ready = true;
+            return this;
+        },
 
-            if (this.isPlugin() && this.hasParent()) {
-                var rootModule = this.getRoot();
-                var rootModuleStorage = rootModule.getModuleStorage();
+        /**
+         * Makes module be setupped
+         *
+         * @method setSetupped
+         * @memberOf Subclass.Module.prototype
+         */
+        setSetupped: function()
+        {
+            this.triggerOnSetup();
+            this._setupped = true;
+        },
 
-                if (rootModuleStorage.issetLazyModule(this.getName())) {
-                    rootModuleStorage.resolveLazyModule(this.getName());
-                }
-                if (!rootModule.isReady()) {
-                    return rootModule.setReady();
-                }
+        /**
+         * Reports wheter the module was setupped
+         *
+         * @method isSetupped
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        isSetupped: function()
+        {
+            return this._setupped;
+        },
+
+        /**
+         * Invokes registered onSetup callback functions forcibly.<br /><br />
+         *
+         * If current module contains plug-ins then will be invoked onSetup callbacks
+         * from current module first and then will be invoked onSetup callbacks
+         * from plug-ins in order as they were added to the current module.
+         *
+         * @method triggerOnSetup
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        triggerOnSetup: function()
+        {
+            this.getEventManager().getEvent('onSetup').trigger();
+
+            return this;
+        },
+
+        /**
+         * The same as the {@link Subclass.SettingsManager#setOnReady}
+         *
+         * @method onReady
+         * @memberOf Subclass.Module.prototype
+         *
+         * @param {Function} callback
+         *      The callback function
+         *
+         * @returns {Subclass.Module}
+         */
+        onReady: function(callback)
+        {
+            if (this.isReady()) {
+                callback.apply(this);
+                return this;
             }
-            if ((
-                    this.isRoot()
-                ) || (
-                    this.isPlugin()
-                    && this.hasParent()
-                    && this.getRoot().isReady()
-                )
-            ) {
-                if (!this.isSetupped()) {
-                    this.setSetupped();
-                }
-                this.getEventManager().getEvent('onReadyBefore').trigger();
-                this.triggerOnReady();
-                this.getEventManager().getEvent('onReadyAfter').trigger();
+            this.getSettingsManager().setOnReady(callback);
+
+            return this;
+        },
+
+        /**
+         * Invokes registered onReady callback functions forcibly.<br /><br />
+         *
+         * If current module contains plug-ins then will be invoked onReady callbacks
+         * from current module first and then will be invoked onReady callbacks
+         * from plug-ins in order as they were added to the current module.
+         *
+         * @method triggerOnReady
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        triggerOnReady: function()
+        {
+            this.getEventManager().getEvent('onReady').trigger();
+
+            return this;
+        },
+
+        /**
+         * Sets that module is prepared
+         *
+         * @method setPrepared
+         * @memberOf Subclass.Module.prototype
+         */
+        setPrepared: function()
+        {
+            this._prepared = true;
+        },
+
+        /**
+         * Checks whether the module is prepared
+         *
+         * @method isPrepared
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        isPrepared: function()
+        {
+            return this._prepared;
+        },
+
+        /**
+         * Brings module to ready state and invokes registered onReady callback functions.
+         * It can be invoked only once otherwise nothing will happen.
+         *
+         * @method setReady
+         * @memberOf Subclass.Module.prototype
+         */
+        setReady: function()
+        {
+            if (this.isReady()) {
+                return;
             }
-        }
-    };
+            var loadManager = this.getLoadManager();
+            this.setPrepared();
 
-    /**
-     * Checks if current class manager instance is ready and was
-     * initialized by invoking onReady registered callback functions
-     *
-     * @method isReady
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.isReady = function()
-    {
-        return this._ready;
-    };
-
-    /**
-     * Checks whether the all module plug-ins are ready
-     *
-     * @method isPluginsReady
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.isPluginsReady = function()
-    {
-        var moduleStorage = this.getModuleStorage();
-        var plugins = moduleStorage.getPlugins();
-
-        if (moduleStorage.hasLazyModules()) {
-            return false;
-        }
-        for (var i = 0; i < plugins.length; i++) {
             if (
-                !plugins[i].isPrepared()
-                || !plugins[i].isPluginsReady()
+                loadManager.isStackEmpty()
+                && this.isPluginsReady()
             ) {
+                this._ready = true;
+
+                if (this.isPlugin() && this.hasParent()) {
+                    var rootModule = this.getRoot();
+                    var rootModuleStorage = rootModule.getModuleStorage();
+
+                    if (rootModuleStorage.issetLazyModule(this.getName())) {
+                        rootModuleStorage.resolveLazyModule(this.getName());
+                    }
+                    if (!rootModule.isReady()) {
+                        return rootModule.setReady();
+                    }
+                }
+                if ((
+                        this.isRoot()
+                    ) || (
+                        this.isPlugin()
+                        && this.hasParent()
+                        && this.getRoot().isReady()
+                    )
+                ) {
+                    if (!this.isSetupped()) {
+                        this.setSetupped();
+                    }
+                    this.getEventManager().getEvent('onReadyBefore').trigger();
+                    this.triggerOnReady();
+                    this.getEventManager().getEvent('onReadyAfter').trigger();
+                }
+            }
+        },
+
+        /**
+         * Checks if current class manager instance is ready and was
+         * initialized by invoking onReady registered callback functions
+         *
+         * @method isReady
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        isReady: function()
+        {
+            return this._ready;
+        },
+
+        /**
+         * Checks whether the all module plug-ins are ready
+         *
+         * @method isPluginsReady
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        isPluginsReady: function()
+        {
+            var moduleStorage = this.getModuleStorage();
+            var plugins = moduleStorage.getPlugins();
+
+            if (moduleStorage.hasLazyModules()) {
                 return false;
             }
-        }
-        return true;
-    };
-
-    /**
-     * Allows to add plug-in to the current module.
-     * If specified the second argument it means that first
-     * will be loaded the specified files and then the plug-in module
-     * will be added to current module and will be invoked
-     * it onReady callback functions.
-     *
-     * @method addPlugin
-     * @memberOf Subclass.Module.prototype
-     *
-     * @param {string} moduleName
-     *      The name of the module which you want to add to the current one as a plug-in
-     *
-     * @param {(Array.<Object>|string)} [moduleFile]
-     *      A file name with the definition of plug-in module.
-     *
-     * @param {Function} [callback]
-     *      The callback function which will be invoked when plug-in module becomes ready.
-     *      It is actual only if the module files (the second argument) was specified.
-     *      Otherwise it will never be invoked.
-     *
-     * @returns {Subclass.Module}
-     */
-    Module.prototype.addPlugin = function(moduleName, moduleFile, callback)
-    {
-        var loadManager = this.getLoadManager();
-        var $this = this;
-
-        if (!moduleName || typeof moduleName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of module", false)
-                .received(moduleName)
-                .expected("a string")
-                .apply()
-            ;
-        } else if (
-            Subclass.issetModule(moduleName)
-            && Subclass.getModule(moduleName).getParentModule()
-        ) {
-            Subclass.Error.create(
-                'The module "' + moduleName + '" is already ' +
-                'added as a plug-in to another module.'
-            );
-        }
-        if (moduleFile && typeof moduleFile != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of module", false)
-                .received(moduleFile)
-                .expected("a string or be omitted")
-                .apply()
-            ;
-        }
-        if (callback && typeof callback != 'function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the callback", false)
-                .received(callback)
-                .expected("a function")
-                .apply()
-            ;
-        }
-        if (!moduleFile && callback) {
-            Subclass.Error.create(
-                'You can\'t specify the callback function without ' +
-                'file of module "' + moduleName + '".'
-            );
-        }
-        if (moduleFile) {
-            loadManager.loadFile(moduleFile, function() {
-                if (callback) {
-                    var module = Subclass.getModule(moduleName).getModule();
-                    var moduleEventManager = module.getEventManager();
-
-                    moduleEventManager.getEvent('onLoadingEnd').addListener(callback);
+            for (var i = 0; i < plugins.length; i++) {
+                if (
+                    !plugins[i].isPrepared()
+                    || !plugins[i].isPluginsReady()
+                ) {
+                    return false;
                 }
-                $this.addPlugin(moduleName);
-            });
+            }
+            return true;
+        },
+
+        /**
+         * Allows to add plug-in to the current module.
+         *
+         * If specified the second argument it means that first
+         * will be loaded the specified files and then the plug-in module
+         * will be added to current module and will be invoked
+         * it onReady callback functions.
+         *
+         * @method addPlugin
+         * @memberOf Subclass.Module.prototype
+         *
+         * @param {string} moduleName
+         *      The name of the module which you want to add to the current one as a plug-in
+         *
+         * @param {(Array.<Object>|string)} [moduleFile]
+         *      A file name with the definition of plug-in module.
+         *
+         * @param {Function} [callback]
+         *      The callback function which will be invoked when plug-in module becomes ready.
+         *      It is actual only if the module files (the second argument) was specified.
+         *      Otherwise it will never be invoked.
+         *
+         * @returns {Subclass.Module}
+         */
+        addPlugin: function(moduleName, moduleFile, callback)
+        {
+            var loadManager = this.getLoadManager();
+            var $this = this;
+
+            if (!moduleName || typeof moduleName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of module", false)
+                    .received(moduleName)
+                    .expected("a string")
+                    .apply()
+                ;
+            } else if (
+                Subclass.issetModule(moduleName)
+                && Subclass.getModule(moduleName).getParentModule()
+            ) {
+                Subclass.Error.create(
+                    'The module "' + moduleName + '" is already ' +
+                    'added as a plug-in to another module.'
+                );
+            }
+            if (moduleFile && typeof moduleFile != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of module", false)
+                    .received(moduleFile)
+                    .expected("a string or be omitted")
+                    .apply()
+                ;
+            }
+            if (callback && typeof callback != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the callback", false)
+                    .received(callback)
+                    .expected("a function")
+                    .apply()
+                ;
+            }
+            if (!moduleFile && callback) {
+                Subclass.Error.create(
+                    'You can\'t specify the callback function without ' +
+                    'file of module "' + moduleName + '".'
+                );
+            }
+            if (moduleFile) {
+                loadManager.loadFile(moduleFile, function() {
+                    if (callback) {
+                        var module = Subclass.getModule(moduleName).getModule();
+                        var moduleEventManager = module.getEventManager();
+
+                        moduleEventManager.getEvent('onLoadingEnd').addListener(callback);
+                    }
+                    $this.addPlugin(moduleName);
+                });
+
+                return this;
+            }
+
+            var eventManager = this.getEventManager();
+            var moduleStorage = this.getModuleStorage();
+                moduleStorage.addPlugin(moduleName);
+
+            if (this.isPrepared()) {
+                var pluginModule = Subclass.getModule(moduleName).getModule();
+                var pluginEventManager = pluginModule.getEventManager();
+                var pluginLoadManager = pluginModule.getLoadManager();
+
+                if (pluginModule.isPrepared()) {
+                    eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
+                } else {
+                    pluginLoadManager.startLoading();
+                    pluginEventManager.getEvent('onLoadingEnd').addListener(100000, function (evt) {
+                        eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
+                    });
+                }
+            }
 
             return this;
+        },
+
+        /**
+         * Checks whether current module has any plugins
+         *
+         * @method hasPlugins
+         * @memberOf Subclass.Module.prototype
+         *
+         * @returns {boolean}
+         */
+        hasPlugins: function()
+        {
+            return !!this.getModuleStorage().getPlugins().length;
         }
-
-        var eventManager = this.getEventManager();
-        var moduleStorage = this.getModuleStorage();
-            moduleStorage.addPlugin(moduleName);
-
-        if (this.isPrepared()) {
-            var pluginModule = Subclass.getModule(moduleName).getModule();
-            var pluginEventManager = pluginModule.getEventManager();
-            var pluginLoadManager = pluginModule.getLoadManager();
-
-            if (pluginModule.isPrepared()) {
-                eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
-            } else {
-                pluginLoadManager.startLoading();
-                pluginEventManager.getEvent('onLoadingEnd').addListener(100000, function (evt) {
-                    eventManager.getEvent('onAddPlugin').triggerPrivate(pluginModule);
-                });
-            }
-        }
-
-        return this;
-    };
-
-    /**
-     * Checks whether current module has any plugins
-     *
-     * @method hasPlugins
-     * @memberOf Subclass.Module.prototype
-     *
-     * @returns {boolean}
-     */
-    Module.prototype.hasPlugins = function()
-    {
-        return !!this.getModuleStorage().getPlugins().length;
     };
 
     return Module;
@@ -4753,281 +4789,284 @@ Subclass.ModuleAPI = (function()
 
     ModuleAPI.$mixins = [Subclass.Event.EventableMixin];
 
-    /**
-     * Returns module instance
-     *
-     * @method getModule
-     * @memberOf Subclass.ModuleAPI.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    ModuleAPI.prototype.getModule = function()
-    {
-        return this._module;
-    };
+    ModuleAPI.prototype = {
 
-    /**
-     * The same as the {@link Subclass.Module#getName}
-     *
-     * @method getName
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getName = function()
-    {
-        return this.getModule().getName.apply(this.getModule(), arguments);
-    };
+        /**
+         * Returns module instance
+         *
+         * @method getModule
+         * @memberOf Subclass.ModuleAPI.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        getModule: function()
+        {
+            return this._module;
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#addPlugin}
-     *
-     * @method addPlugin
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.addPlugin = function()
-    {
-        return this.getModule().addPlugin.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getName}
+         *
+         * @method getName
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getName: function()
+        {
+            return this.getModule().getName.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.ClassManager#get}
-     *
-     * @method getClass
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getClass = function()
-    {
-        return this.getModule().getClassManager().get.apply(
-            this.getModule().getClassManager(),
-            arguments
-        );
-    };
+        /**
+         * The same as the {@link Subclass.Module#addPlugin}
+         *
+         * @method addPlugin
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        addPlugin: function()
+        {
+            return this.getModule().addPlugin.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.ClassManager#issetClass}
-     *
-     * @method issetClass
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.issetClass = function()
-    {
-        return this.getModule().getClassManager().isset.apply(
-            this.getModule().getClassManager(),
-            arguments
-        );
-    };
+        /**
+         * The same as the {@link Subclass.ClassManager#get}
+         *
+         * @method getClass
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getClass: function()
+        {
+            return this.getModule().getClassManager().get.apply(
+                this.getModule().getClassManager(),
+                arguments
+            );
+        },
 
-    /**
-     * The same as the {@link Subclass.ClassManager#buildClass}
-     *
-     * @method buildClass
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.buildClass = function()
-    {
-        return this.getModule().getClassManager().build.apply(
-            this.getModule().getClassManager(),
-            arguments
-        );
-    };
+        /**
+         * The same as the {@link Subclass.ClassManager#issetClass}
+         *
+         * @method issetClass
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        issetClass: function()
+        {
+            return this.getModule().getClassManager().isset.apply(
+                this.getModule().getClassManager(),
+                arguments
+            );
+        },
 
-    /**
-     * The same as the {@link Subclass.ClassManager#alterClass}
-     *
-     * @method alterClass
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.alterClass = function()
-    {
-        return this.getModule().getClassManager().alter.apply(
-            this.getModule().getClassManager(),
-            arguments
-        );
-    };
+        /**
+         * The same as the {@link Subclass.ClassManager#buildClass}
+         *
+         * @method buildClass
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        buildClass: function()
+        {
+            return this.getModule().getClassManager().build.apply(
+                this.getModule().getClassManager(),
+                arguments
+            );
+        },
 
-    /**
-     * The same as the {@link Subclass.ClassManager#copy}
-     *
-     * @method copyClass
-     * @memberOf Subclass.ModuleAPI.prototype
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ModuleAPI.prototype.copyClass = function()
-    {
-        return this.getModule().getClassManager().copy.apply(
-            this.getModule().getClassManager(),
-            arguments
-        );
-    };
+        /**
+         * The same as the {@link Subclass.ClassManager#alterClass}
+         *
+         * @method alterClass
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        alterClass: function()
+        {
+            return this.getModule().getClassManager().alter.apply(
+                this.getModule().getClassManager(),
+                arguments
+            );
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#onSetup}
-     *
-     * @method onSetup
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.onSetup = function()
-    {
-        return this.getModule().onSetup.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.ClassManager#copy}
+         *
+         * @method copyClass
+         * @memberOf Subclass.ModuleAPI.prototype
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        copyClass: function()
+        {
+            return this.getModule().getClassManager().copy.apply(
+                this.getModule().getClassManager(),
+                arguments
+            );
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#triggerOnSetup}
-     *
-     * @method triggerOnSetup
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.triggerOnSetup = function()
-    {
-        return this.getModule().triggerOnSetup.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#onSetup}
+         *
+         * @method onSetup
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        onSetup: function()
+        {
+            return this.getModule().onSetup.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#isSetupped}
-     *
-     * @method isSetupped
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.isSetupped = function()
-    {
-        return this.getModule().isSetupped.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#triggerOnSetup}
+         *
+         * @method triggerOnSetup
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        triggerOnSetup: function()
+        {
+            return this.getModule().triggerOnSetup.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#onReady}
-     *
-     * @method onReady
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.onReady = function()
-    {
-        return this.getModule().onReady.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#isSetupped}
+         *
+         * @method isSetupped
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        isSetupped: function()
+        {
+            return this.getModule().isSetupped.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#triggerOnReady}
-     *
-     * @method triggerOnReady
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.triggerOnReady = function()
-    {
-        return this.getModule().triggerOnReady.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#onReady}
+         *
+         * @method onReady
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        onReady: function()
+        {
+            return this.getModule().onReady.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#isReady}
-     *
-     * @method isReady
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.isReady = function()
-    {
-        return this.getModule().isReady.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#triggerOnReady}
+         *
+         * @method triggerOnReady
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        triggerOnReady: function()
+        {
+            return this.getModule().triggerOnReady.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#setSettings}
-     *
-     * @method setSettings
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.setSettings = function()
-    {
-        return this.getModule().setSettings.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#isReady}
+         *
+         * @method isReady
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        isReady: function()
+        {
+            return this.getModule().isReady.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getSettingsManager}
-     *
-     * @method getSettingsManager
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getSettingsManager = function()
-    {
-        return this.getModule().getSettingsManager.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#setSettings}
+         *
+         * @method setSettings
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        setSettings: function()
+        {
+            return this.getModule().setSettings.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getEventManager}
-     *
-     * @method getEventManager
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getEventManager = function()
-    {
-        return this.getModule().getEventManager.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getSettingsManager}
+         *
+         * @method getSettingsManager
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getSettingsManager: function()
+        {
+            return this.getModule().getSettingsManager.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getLoadManager}
-     *
-     * @method getLoadManager
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getLoadManager = function()
-    {
-        return this.getModule().getLoadManager.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getEventManager}
+         *
+         * @method getEventManager
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getEventManager: function()
+        {
+            return this.getModule().getEventManager.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getClassManager}
-     *
-     * @method getClassManager
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getClassManager = function()
-    {
-        return this.getModule().getClassManager.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getLoadManager}
+         *
+         * @method getLoadManager
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getLoadManager: function()
+        {
+            return this.getModule().getLoadManager.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getModuleStorage}
-     *
-     * @method getModuleStorage
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getModuleStorage = function()
-    {
-        return this.getModule().getModuleStorage.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getClassManager}
+         *
+         * @method getClassManager
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getClassManager: function()
+        {
+            return this.getModule().getClassManager.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getRoot}
-     *
-     * @method getRootModule
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getRootModule = function()
-    {
-        return this.getModule().getRoot.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getModuleStorage}
+         *
+         * @method getModuleStorage
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getModuleStorage: function()
+        {
+            return this.getModule().getModuleStorage.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#isRoot}
-     *
-     * @method isRootModule
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.isRootModule = function()
-    {
-        return this.getModule().isRoot.apply(this.getModule(), arguments);
-    };
+        /**
+         * The same as the {@link Subclass.Module#getRoot}
+         *
+         * @method getRootModule
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getRootModule: function()
+        {
+            return this.getModule().getRoot.apply(this.getModule(), arguments);
+        },
 
-    /**
-     * The same as the {@link Subclass.Module#getParent}
-     *
-     * @method getParentModule
-     * @memberOf Subclass.ModuleAPI.prototype
-     */
-    ModuleAPI.prototype.getParentModule = function()
-    {
-        var parent = this.getModule().getParent.apply(this.getModule(), arguments);
+        /**
+         * The same as the {@link Subclass.Module#isRoot}
+         *
+         * @method isRootModule
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        isRootModule: function()
+        {
+            return this.getModule().isRoot.apply(this.getModule(), arguments);
+        },
 
-        if (parent == this.getModule()) {
-            parent = null;
+        /**
+         * The same as the {@link Subclass.Module#getParent}
+         *
+         * @method getParentModule
+         * @memberOf Subclass.ModuleAPI.prototype
+         */
+        getParentModule: function()
+        {
+            var parent = this.getModule().getParent.apply(this.getModule(), arguments);
+
+            if (parent == this.getModule()) {
+                parent = null;
+            }
+            return parent;
         }
-        return parent;
     };
 
     return ModuleAPI;
@@ -5087,544 +5126,547 @@ Subclass.ClassManager = (function()
         this._loader = Subclass.Tools.createClassInstance(Subclass.Class.ClassLoader, this);
     }
 
-    /**
-     * Initializes the class manager
-     *
-     * @method initialize
-     * @memberOf Subclass.ClassManager.prototype
-     */
-    ClassManager.prototype.initialize = function()
-    {
-        var module = this.getModule();
-        var $this = this;
+    ClassManager.prototype = {
 
-        // Registering basic classes for the root module
+        /**
+         * Initializes the class manager
+         *
+         * @method initialize
+         * @memberOf Subclass.ClassManager.prototype
+         */
+        initialize: function()
+        {
+            var module = this.getModule();
+            var $this = this;
 
-        if (module.isRoot()) {
-            var defaultClasses = ClassManager.getClasses();
+            // Registering basic classes for the root module
 
-            for (var classTypeName in defaultClasses) {
-                if (!defaultClasses.hasOwnProperty(classTypeName)) {
-                    continue;
+            if (module.isRoot()) {
+                var defaultClasses = ClassManager.getClasses();
+
+                for (var classTypeName in defaultClasses) {
+                    if (!defaultClasses.hasOwnProperty(classTypeName)) {
+                        continue;
+                    }
+                    for (var className in defaultClasses[classTypeName]) {
+                        if (
+                            !defaultClasses[classTypeName].hasOwnProperty(className)
+                            || this.isset(className)
+                        ) {
+                            continue;
+                        }
+                        var classDefinition = defaultClasses[classTypeName][className];
+
+                        this.add(
+                            classTypeName,
+                            className,
+                            classDefinition
+                        );
+                    }
                 }
-                for (var className in defaultClasses[classTypeName]) {
+            }
+
+            // Adding event listeners
+
+            var eventManager = module.getEventManager();
+
+            // Checking for classes with the same name in module (and its plug-ins)
+
+            eventManager.getEvent('onLoadingEnd').addListener(function(evt) {
+                $this.checkForClones();
+                $this.initializeClasses();
+            });
+
+            // Checking for classes with the same name in module (and its plug-ins)
+            // after the new plug-in module was added
+
+            eventManager.getEvent('onAddPlugin').addListener(function(evt, pluginModule) {
+                $this.checkForClones();
+                pluginModule.getClassManager().initializeClasses();
+            });
+
+            // Start loading classes
+
+            setTimeout(function() {
+                if (!module.isRoot()) {
+                    return;
+                }
+                var classesLength = Object.keys($this.getClasses()).length;
+                var standardClassesLength = Object.keys(ClassManager.getClasses()).length;
+
+                if (classesLength == standardClassesLength) {
+                    module.getLoadManager().startLoading();
+                }
+            }, 20);
+        },
+
+        /**
+         * Initializes registered classes
+         *
+         * @method initializeClasses
+         * @memberOf Subclass.ClassManager.prototype
+         */
+        initializeClasses: function()
+        {
+            var classes = this.getClasses();
+
+            for (var className in classes) {
+                if (classes.hasOwnProperty(className)) {
+                    classes[className].createConstructor();
+                }
+            }
+        },
+
+        /**
+         * Returns the module instance
+         *
+         * @method getModule
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @returns {Subclass.Module}
+         *      The module instance
+         */
+        getModule: function()
+        {
+            return this._module;
+        },
+
+        /**
+         * Returns the instance of class loader
+         *
+         * @method getLoader
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @returns {Subclass.Class.ClassLoader|*}
+         */
+        getLoader: function()
+        {
+            return this._loader;
+        },
+
+        /**
+         * Return all registered classes
+         *
+         * @method getClasses
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {boolean} [privateClasses=false]
+         *      If it's true it returns classes only from current module
+         *      without classes from its plug-ins
+         *
+         * @param {boolean} [withParentClasses=true]
+         *      Should or not will be returned the classes from the parent
+         *      modules (it is actual if the current module is a plug-in)
+         *
+         * @returns {Object.<Subclass.Class.ClassType>}
+         */
+        getClasses: function(privateClasses, withParentClasses)
+        {
+            var mainModule = this.getModule();
+            var moduleStorage = mainModule.getModuleStorage();
+            var classes = {};
+            var $this = this;
+
+            if (privateClasses !== true) {
+                privateClasses = false;
+            }
+            if (withParentClasses !== false) {
+                withParentClasses = true;
+            }
+
+            // Returning classes from current module with classes from its parent modules
+
+            if (!privateClasses && withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
+                return mainModule.getRoot().getClassManager().getClasses(false, false, mainModule);
+
+            // Returning classes from current module (without its plug-ins)
+
+            } else if (privateClasses) {
+                return this._classes;
+            }
+
+            // Adding classes from plug-in modules to result of searching
+
+            moduleStorage.eachModule(function(module) {
+                if (module == mainModule) {
+                    Subclass.Tools.extend(classes, $this.getClasses(true, false));
+                    return;
+                }
+                var moduleClassManager = module.getClassManager();
+                var moduleClasses = moduleClassManager.getClasses(false, false);
+
+                Subclass.Tools.extend(classes, moduleClasses);
+            });
+
+            return classes;
+        },
+
+        /**
+         * Checks whether class manager contains any class
+         *
+         * @method isEmpty
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isEmpty: function()
+        {
+            return Subclass.Tools.isEmpty(this._classes);
+        },
+
+        /**
+         * Returns module names where is defined class with specified name.<br /><br />
+         *
+         * It is especially actual if class with specified name is defined
+         * at once in several modules. So it's convenient to use for searching
+         * classes with the same name defined in multiple modules.
+         *
+         * @method findLocations
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {string} className
+         * @returns {string[]}
+         */
+        findLocations: function(className)
+        {
+            var mainModule = this.getModule().getRoot();
+            var locations = [];
+
+            if (arguments[1]) {
+                mainModule = arguments[1];
+            }
+            var moduleStorage = this.getModule().getModuleStorage();
+
+            moduleStorage.eachModule(function(module) {
+                var classManager = module.getClassManager();
+
+                if (classManager.isset(className, true)) {
+                    locations.push(module.getName());
+                }
+                if (module == mainModule) {
+                    return;
+                }
+                if (module.hasPlugins()) {
+                    var pluginModuleStorage = module.getModuleStorage();
+                    var plugins = pluginModuleStorage.getPlugins();
+
+                    for (var i = 0; i < plugins.length; i++) {
+                        var subPlugin = plugins[i];
+                        var subPluginClassManager = subPlugin.getClassManager();
+                        var subPluginLocations = subPluginClassManager.findLocations(className, subPlugin);
+
+                        locations = locations.concat(subPluginLocations);
+                    }
+                }
+            });
+
+            return locations;
+        },
+
+        /**
+         * Validates whether there are classes with the same names in the module and its plug-ins
+         *
+         * @method checkForClones
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if definition multiple definition of class with the same name
+         */
+        checkForClones: function()
+        {
+            var mainModule = this.getModule();
+            var moduleStorage = mainModule.getModuleStorage();
+            var $this = this;
+            var classes = {};
+
+            moduleStorage.eachModule(function(module) {
+                if (module == mainModule) {
+                    Subclass.Tools.extend(classes, $this._classes);
+                    return;
+                }
+                var moduleClassManager = module.getClassManager();
+                var moduleClasses = moduleClassManager.getClasses(false, false);
+
+                for (var className in moduleClasses) {
                     if (
-                        !defaultClasses[classTypeName].hasOwnProperty(className)
-                        || this.isset(className)
+                        !moduleClasses.hasOwnProperty(className)
+                        || ClassManager.isset(className)
                     ) {
                         continue;
                     }
-                    var classDefinition = defaultClasses[classTypeName][className];
+                    if (classes[className]) {
+                        var classLocations = $this.findLocations(className);
 
-                    this.add(
-                        classTypeName,
-                        className,
-                        classDefinition
-                    );
+                        Subclass.Error.create(
+                            'Multiple class definition detected. Class "' + className + '" defined ' +
+                            'in modules: "' + classLocations.join('", "') + '".'
+                        );
+                    }
+                    classes[className] = 1;
                 }
+            });
+        },
+
+        /**
+         * The same as the {@link Subclass.Class.ClassLoader#loadClass}
+         *
+         * @method load
+         * @memberOf Subclass.ClassManager.prototype
+         * @alias Subclass.Class.ClassLoader#loadClass
+         */
+        load: function()
+        {
+            var classLoader = this.getLoader();
+
+            classLoader.loadClass.apply(classLoader, arguments);
+        },
+
+        /**
+         * Creates the instance of class definition
+         *
+         * @method create
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {Function} classConstructor
+         *      Class constructor of specific class type
+         *
+         * @param {string} className
+         *      A name of the future class
+         *
+         * @param {Object} classDefinition
+         *      A definition of the creating class
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        create: function(classConstructor, className, classDefinition)
+        {
+            return Subclass.Tools.createClassInstance(
+                classConstructor,
+                this,
+                className,
+                classDefinition
+            );
+        },
+
+        /**
+         * Adds a new class
+         *
+         * @method add
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if:
+         *      - The class type name was not specified
+         *      - Specified non existent class type name
+         *      - Missed or not valid the name class
+         *      - Missed or not valid the definition of class
+         *      - Trying to redefine already existent class
+         *
+         * @param {string} classTypeName
+         *      The name of class type (i.e. "Class", "AbstractClass", "Interface" etc.)
+         *
+         * @param {string} className
+         *      The name of future class
+         *
+         * @param {object} classDefinition
+         *      The object with definition of the creating class
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        add: function(classTypeName, className, classDefinition)
+        {
+            if (!classTypeName) {
+                Subclass.Error.create(
+                    'Trying to register the class "' + className + '" ' +
+                    'without specifying class type.'
+                );
             }
-        }
-
-        // Adding event listeners
-
-        var eventManager = module.getEventManager();
-
-        // Checking for classes with the same name in module (and its plug-ins)
-
-        eventManager.getEvent('onLoadingEnd').addListener(function(evt) {
-            $this.checkForClones();
-            $this.initializeClasses();
-        });
-
-        // Checking for classes with the same name in module (and its plug-ins)
-        // after the new plug-in module was added
-
-        eventManager.getEvent('onAddPlugin').addListener(function(evt, pluginModule) {
-            $this.checkForClones();
-            pluginModule.getClassManager().initializeClasses();
-        });
-
-        // Start loading classes
-
-        setTimeout(function() {
-            if (!module.isRoot()) {
-                return;
+            if (!Subclass.ClassManager.issetType(classTypeName)) {
+                Subclass.Error.create(
+                    'Trying to register the class "' + className + '" ' +
+                    'of unknown class type "' + classTypeName + '".'
+                );
             }
-            var classesLength = Object.keys($this.getClasses()).length;
-            var standardClassesLength = Object.keys(ClassManager.getClasses()).length;
-
-            if (classesLength == standardClassesLength) {
-                module.getLoadManager().startLoading();
+            if (!className || typeof className != 'string') {
+                Subclass.Error.create(
+                    'Trying to register the class with wrong name "' + className + '".'
+                );
             }
-        }, 20);
-    };
-
-    /**
-     * Initializes registered classes
-     *
-     * @method initializeClasses
-     * @memberOf Subclass.ClassManager.prototype
-     */
-    ClassManager.prototype.initializeClasses = function()
-    {
-        var classes = this.getClasses();
-
-        for (var className in classes) {
-            if (classes.hasOwnProperty(className)) {
-                classes[className].createConstructor();
+            if (!classDefinition || typeof classDefinition != 'object') {
+                Subclass.Error.create(
+                    'Trying to register the class "' + className + '" ' +
+                    'with empty or not valid class definition.'
+                );
             }
-        }
-    };
-
-    /**
-     * Returns the module instance
-     *
-     * @method getModule
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @returns {Subclass.Module}
-     *      The module instance
-     */
-    ClassManager.prototype.getModule = function()
-    {
-        return this._module;
-    };
-
-    /**
-     * Returns the instance of class loader
-     *
-     * @method getLoader
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @returns {Subclass.Class.ClassLoader|*}
-     */
-    ClassManager.prototype.getLoader = function()
-    {
-        return this._loader;
-    };
-
-    /**
-     * Return all registered classes
-     *
-     * @method getClasses
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {boolean} [privateClasses=false]
-     *      If it's true it returns classes only from current module
-     *      without classes from its plug-ins
-     *
-     * @param {boolean} [withParentClasses=true]
-     *      Should or not will be returned the classes from the parent
-     *      modules (it is actual if the current module is a plug-in)
-     *
-     * @returns {Object.<Subclass.Class.ClassType>}
-     */
-    ClassManager.prototype.getClasses = function(privateClasses, withParentClasses)
-    {
-        var mainModule = this.getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var classes = {};
-        var $this = this;
-
-        if (privateClasses !== true) {
-            privateClasses = false;
-        }
-        if (withParentClasses !== false) {
-            withParentClasses = true;
-        }
-
-        // Returning classes from current module with classes from its parent modules
-
-        if (!privateClasses && withParentClasses && !mainModule.isRoot() && arguments[2] != mainModule) {
-            return mainModule.getRoot().getClassManager().getClasses(false, false, mainModule);
-
-        // Returning classes from current module (without its plug-ins)
-
-        } else if (privateClasses) {
-            return this._classes;
-        }
-
-        // Adding classes from plug-in modules to result of searching
-
-        moduleStorage.eachModule(function(module) {
-            if (module == mainModule) {
-                Subclass.Tools.extend(classes, $this.getClasses(true, false));
-                return;
+            if (this.isset(className)) {
+                Subclass.Error.create(
+                    'Trying to define class with already ' +
+                    'existed class name "' + className + '".'
+                );
             }
-            var moduleClassManager = module.getClassManager();
-            var moduleClasses = moduleClassManager.getClasses(false, false);
+            var classTypeConstructor = Subclass.ClassManager.getType(classTypeName);
+            var classTypeInstance = this.create(classTypeConstructor, className, classDefinition);
 
-            Subclass.Tools.extend(classes, moduleClasses);
-        });
+            this._classes[className] = classTypeInstance;
+            this.getLoader().setClassLoaded(className);
 
-        return classes;
-    };
+            return classTypeInstance;
+        },
 
-    /**
-     * Checks whether class manager contains any class
-     *
-     * @method isEmpty
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @returns {boolean}
-     */
-    ClassManager.prototype.isEmpty = function()
-    {
-        return Subclass.Tools.isEmpty(this._classes);
-    };
-
-    /**
-     * Returns module names where is defined class with specified name.<br /><br />
-     *
-     * It is especially actual if class with specified name is defined
-     * at once in several modules. So it's convenient to use for searching
-     * classes with the same name defined in multiple modules.
-     *
-     * @method findLocations
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {string} className
-     * @returns {string[]}
-     */
-    ClassManager.prototype.findLocations = function(className)
-    {
-        var mainModule = this.getModule().getRoot();
-        var locations = [];
-
-        if (arguments[1]) {
-            mainModule = arguments[1];
-        }
-        var moduleStorage = this.getModule().getModuleStorage();
-
-        moduleStorage.eachModule(function(module) {
-            var classManager = module.getClassManager();
-
-            if (classManager.isset(className, true)) {
-                locations.push(module.getName());
+        /**
+         * Returns the class definition instance
+         *
+         * @method get
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if trying to get non existent class definition instance
+         *
+         * @param {string} className
+         *      The name of needed class
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        get: function(className)
+        {
+            if (!this.isset(className)) {
+                Subclass.Error.create('Trying to call to none existed class "' + className + '".');
             }
-            if (module == mainModule) {
-                return;
+            return this.getClasses()[className];
+        },
+
+        /**
+         * Checks if class with specified name was ever registered
+         *
+         * @method isset
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {string} className
+         *      The name of needed class
+         *
+         * @param {boolean} [privateClasses=false]
+         *      If it's true then the checking will be performed only between classes
+         *      from current module without classes from its plugins
+         *
+         * @returns {boolean}
+         */
+        isset: function(className, privateClasses)
+        {
+            var withParentClasses = true;
+
+            if (privateClasses === true) {
+                withParentClasses = false;
             }
-            if (module.hasPlugins()) {
-                var pluginModuleStorage = module.getModuleStorage();
-                var plugins = pluginModuleStorage.getPlugins();
+            return !!this.getClasses(privateClasses, withParentClasses)[className];
+        },
 
-                for (var i = 0; i < plugins.length; i++) {
-                    var subPlugin = plugins[i];
-                    var subPluginClassManager = subPlugin.getClassManager();
-                    var subPluginLocations = subPluginClassManager.findLocations(className, subPlugin);
+        /**
+         * Builds the new class of specified class type.
+         * Creates the class builder instance.
+         *
+         * @method build
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {string} classType
+         *      The type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
+         *
+         * @param {string} [className]
+         *      The name of creating class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        build: function(classType, className)
+        {
+            return this.createBuilder(classType, className);
+        },
 
-                    locations = locations.concat(subPluginLocations);
-                }
+        /**
+         * Modifies existed class definition
+         *
+         * @method alter
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {string} className
+         *      The name of class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        alter: function(className)
+        {
+            return this.createBuilder(null, className);
+        },
+
+        /**
+         * Registers and returns copy of specified class with specified name
+         *
+         * @method copy
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @param {string} className
+         *      The name of source class
+         *
+         * @param {string} classNameNew
+         *      The name of new class
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        copy: function(className, classNameNew)
+        {
+            var classInst = this.get(className);
+            var classDefinition = classInst.getDefinition().getData();
+            var replicaInst = this.add(
+                classInst.getType(),
+                classNameNew,
+                classDefinition
+            );
+            replicaInst.createConstructor();
+
+            return replicaInst;
+        },
+
+        /**
+         * Creates the instance of class builder
+         *
+         * @method createBuilder
+         * @memberOf Subclass.ClassManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if it was specified the name of class
+         *      which you want to alter but it doesn't exist
+         *
+         * @param {string} classType
+         *      The name of class type
+         *
+         * @param {string} [className]
+         *      The name class you want to alter.
+         *      If it is missing the creating of new class definition will be started.
+         */
+        createBuilder: function(classType, className)
+        {
+            var classBuilderConstructor = null;
+
+            if (!classType && className && !this.isset(className)) {
+                Subclass.Error.create(
+                    'Can\'t alter definition of class "' + className + '". ' +
+                    'It does not exists.'
+                );
             }
-        });
+            if (!classType && className) {
+                classBuilderConstructor = this.get(className).constructor.getBuilderClass();
 
-        return locations;
-    };
-
-    /**
-     * Validates whether there are classes with the same names in the module and its plug-ins
-     *
-     * @method checkForClones
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if definition multiple definition of class with the same name
-     */
-    ClassManager.prototype.checkForClones = function()
-    {
-        var mainModule = this.getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var $this = this;
-        var classes = {};
-
-        moduleStorage.eachModule(function(module) {
-            if (module == mainModule) {
-                Subclass.Tools.extend(classes, $this._classes);
-                return;
+            } else {
+                classBuilderConstructor = Subclass.ClassManager
+                    .getType(classType)
+                    .getBuilderClass()
+                ;
             }
-            var moduleClassManager = module.getClassManager();
-            var moduleClasses = moduleClassManager.getClasses(false, false);
-
-            for (var className in moduleClasses) {
-                if (
-                    !moduleClasses.hasOwnProperty(className)
-                    || ClassManager.isset(className)
-                ) {
-                    continue;
-                }
-                if (classes[className]) {
-                    var classLocations = $this.findLocations(className);
-
-                    Subclass.Error.create(
-                        'Multiple class definition detected. Class "' + className + '" defined ' +
-                        'in modules: "' + classLocations.join('", "') + '".'
-                    );
-                }
-                classes[className] = 1;
-            }
-        });
-    };
-
-    /**
-     * The same as the {@link Subclass.Class.ClassLoader#loadClass}
-     *
-     * @method load
-     * @memberOf Subclass.ClassManager.prototype
-     * @alias Subclass.Class.ClassLoader#loadClass
-     */
-    ClassManager.prototype.load = function()
-    {
-        var classLoader = this.getLoader();
-
-        classLoader.loadClass.apply(classLoader, arguments);
-    };
-
-    /**
-     * Creates the instance of class definition
-     *
-     * @method create
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {Function} classConstructor
-     *      Class constructor of specific class type
-     *
-     * @param {string} className
-     *      A name of the future class
-     *
-     * @param {Object} classDefinition
-     *      A definition of the creating class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.create = function(classConstructor, className, classDefinition)
-    {
-        return Subclass.Tools.createClassInstance(
-            classConstructor,
-            this,
-            className,
-            classDefinition
-        );
-    };
-
-    /**
-     * Adds a new class
-     *
-     * @method add
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:
-     *      - The class type name was not specified
-     *      - Specified non existent class type name
-     *      - Missed or not valid the name class
-     *      - Missed or not valid the definition of class
-     *      - Trying to redefine already existent class
-     *
-     * @param {string} classTypeName
-     *      The name of class type (i.e. "Class", "AbstractClass", "Interface" etc.)
-     *
-     * @param {string} className
-     *      The name of future class
-     *
-     * @param {object} classDefinition
-     *      The object with definition of the creating class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.add = function(classTypeName, className, classDefinition)
-    {
-        if (!classTypeName) {
-            Subclass.Error.create(
-                'Trying to register the class "' + className + '" ' +
-                'without specifying class type.'
+            return Subclass.Tools.createClassInstance(
+                classBuilderConstructor,
+                this,
+                classType,
+                className
             );
         }
-        if (!Subclass.ClassManager.issetType(classTypeName)) {
-            Subclass.Error.create(
-                'Trying to register the class "' + className + '" ' +
-                'of unknown class type "' + classTypeName + '".'
-            );
-        }
-        if (!className || typeof className != 'string') {
-            Subclass.Error.create(
-                'Trying to register the class with wrong name "' + className + '".'
-            );
-        }
-        if (!classDefinition || typeof classDefinition != 'object') {
-            Subclass.Error.create(
-                'Trying to register the class "' + className + '" ' +
-                'with empty or not valid class definition.'
-            );
-        }
-        if (this.isset(className)) {
-            Subclass.Error.create(
-                'Trying to define class with already ' +
-                'existed class name "' + className + '".'
-            );
-        }
-        var classTypeConstructor = Subclass.ClassManager.getType(classTypeName);
-        var classTypeInstance = this.create(classTypeConstructor, className, classDefinition);
-
-        this._classes[className] = classTypeInstance;
-        this.getLoader().setClassLoaded(className);
-
-        return classTypeInstance;
-    };
-
-    /**
-     * Returns the class definition instance
-     *
-     * @method get
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if trying to get non existent class definition instance
-     *
-     * @param {string} className
-     *      The name of needed class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.get = function(className)
-    {
-        if (!this.isset(className)) {
-            Subclass.Error.create('Trying to call to none existed class "' + className + '".');
-        }
-        return this.getClasses()[className];
-    };
-
-    /**
-     * Checks if class with specified name was ever registered
-     *
-     * @method isset
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {string} className
-     *      The name of needed class
-     *
-     * @param {boolean} [privateClasses=false]
-     *      If it's true then the checking will be performed only between classes
-     *      from current module without classes from its plugins
-     *
-     * @returns {boolean}
-     */
-    ClassManager.prototype.isset = function(className, privateClasses)
-    {
-        var withParentClasses = true;
-
-        if (privateClasses === true) {
-            withParentClasses = false;
-        }
-        return !!this.getClasses(privateClasses, withParentClasses)[className];
-    };
-
-    /**
-     * Builds the new class of specified class type.
-     * Creates the class builder instance.
-     *
-     * @method build
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {string} classType
-     *      The type of class, i.e. 'Class', 'AbstractClass', 'Config', 'Interface', 'Trait'
-     *
-     * @param {string} [className]
-     *      The name of creating class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassManager.prototype.build = function(classType, className)
-    {
-        return this.createBuilder(classType, className);
-    };
-
-    /**
-     * Modifies existed class definition
-     *
-     * @method alter
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {string} className
-     *      The name of class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassManager.prototype.alter = function(className)
-    {
-        return this.createBuilder(null, className);
-    };
-
-    /**
-     * Registers and returns copy of specified class with specified name
-     *
-     * @method copy
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @param {string} className
-     *      The name of source class
-     *
-     * @param {string} classNameNew
-     *      The name of new class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassManager.prototype.copy = function(className, classNameNew)
-    {
-        var classInst = this.get(className);
-        var classDefinition = classInst.getDefinition().getData();
-        var replicaInst = this.add(
-            classInst.getType(),
-            classNameNew,
-            classDefinition
-        );
-        replicaInst.createConstructor();
-
-        return replicaInst;
-    };
-
-    /**
-     * Creates the instance of class builder
-     *
-     * @method createBuilder
-     * @memberOf Subclass.ClassManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if it was specified the name of class
-     *      which you want to alter but it doesn't exist
-     *
-     * @param {string} classType
-     *      The name of class type
-     *
-     * @param {string} [className]
-     *      The name class you want to alter.
-     *      If it is missing the creating of new class definition will be started.
-     */
-    ClassManager.prototype.createBuilder = function(classType, className)
-    {
-        var classBuilderConstructor = null;
-
-        if (!classType && className && !this.isset(className)) {
-            Subclass.Error.create(
-                'Can\'t alter definition of class "' + className + '". ' +
-                'It does not exists.'
-            );
-        }
-        if (!classType && className) {
-            classBuilderConstructor = this.get(className).constructor.getBuilderClass();
-
-        } else {
-            classBuilderConstructor = Subclass.ClassManager
-                .getType(classType)
-                .getBuilderClass()
-            ;
-        }
-        return Subclass.Tools.createClassInstance(
-            classBuilderConstructor,
-            this,
-            classType,
-            className
-        );
     };
 
 
@@ -6011,604 +6053,607 @@ Subclass.Class.ClassType = function()
         return Subclass.Class.ClassDefinition;
     };
 
-    /**
-     * Initializes class on creation stage.<br /><br />
-     *
-     * Current method invokes automatically right at the end of the class type constructor.
-     * It can contain different manipulations with class definition or other manipulations that is needed
-     */
-    ClassType.prototype.initialize = function()
-    {
-        this.initializeExtensions();
-        this.getEvent('onInitialize').trigger();
-        this._definition = this.createDefinition(this._definition);
+    ClassType.prototype = {
 
-        var classDefinition = this.getDefinition();
-            classDefinition.processRelatedClasses();
-    };
-
-    /**
-     * Returns name of class type
-     *
-     * @returns {string}
-     */
-    ClassType.prototype.getType = function()
-    {
-        return this.constructor.getClassTypeName();
-    };
-
-    /**
-     * Returns class manager instance
-     *
-     * @returns {Subclass.ClassManager}
-     */
-    ClassType.prototype.getClassManager = function ()
-    {
-        return this._classManager;
-    };
-
-    /**
-     * Returns name of the current class instance
-     *
-     * @returns {string}
-     */
-    ClassType.prototype.getName = function()
-    {
-        return this._name;
-    };
-
-    /**
-     * Creates and returns class definition instance.
-     *
-     * @param {Object} classDefinition
-     * @returns {Subclass.Class.ClassDefinition}
-     */
-    ClassType.prototype.createDefinition = function(classDefinition)
-    {
-        return Subclass.Tools.createClassInstance(
-            this.constructor.getDefinitionClass(),
-            this,
-            classDefinition
-        );
-    };
-
-    /**
-     * Sets class definition
-     *
-     * @param {Object} classDefinition
-     */
-    ClassType.prototype.setDefinition = function(classDefinition)
-    {
-        var classChildren = this.getClassChildren();
-        var classParents = this.getClassParents();
-        var classManager = this.getClassManager();
-
-        for (var i = 0; i < classParents.length; i++) {
-            var parentClass = classManager.get(classParents[i]);
-                parentClass.removeChildClass(this.getName());
-        }
-        this.constructor.call(
-            this,
-            this.getClassManager(),
-            this.getName(),
-            classDefinition
-        );
-        this._children = classChildren;
-        this.createConstructor();
-    };
-
-    /**
-     * Returns class definition object
-     *
-     * @returns {Subclass.Class.ClassDefinition}
-     */
-    ClassType.prototype.getDefinition = function()
-    {
-        return this._definition;
-    };
-
-    /**
-     * Adds name of child class to current class
-     *
-     * @param {string} className
-     *      The name of class
-     */
-    ClassType.prototype.addChildClass = function(className)
-    {
-        if (!className || typeof className != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of child class', false)
-                .expected('a string')
-                .received(className)
-                .apply()
-            ;
-        }
-        if (this.hasChild(className)) {
-            return;
-        }
-        this._children.push(className);
-
-        var classManager = this.getClassManager();
-        var classInst = classManager.get(className);
-        var classInstChildren = classInst.getClassChildren();
-        var classParents = this.getClassParents();
-
-        for (var i = 0; i < classParents.length; i++) {
-            var parentClassInst = classManager.get(classParents[i]);
-            parentClassInst.addChildClass(className);
-        }
-        for (i = 0; i < classInstChildren.length; i++) {
-            if (!this.hasChild(classInstChildren[i])) {
-                this.addChildClass(classInstChildren[i]);
-            }
-        }
-        this
-            .getEvent('onAddChildClass')
-            .trigger(className)
-        ;
-    };
-
-    /**
-     * Checks whether current class has children with specified class name
-     *
-     * @param {string} className
-     * @returns {boolean}
-     */
-    ClassType.prototype.hasChild = function(className)
-    {
-        return this._children.indexOf(className) >= 0;
-    };
-
-    /**
-     * Removes name of child class from current class
-     *
-     * @param {string} className
-     *      The name of class
-     */
-    ClassType.prototype.removeChildClass = function(className)
-    {
-        if (!className || typeof className != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of child class', false)
-                .expected('a string')
-                .received(className)
-                .apply()
-            ;
-        }
-        var classIndex = this._children.indexOf(className);
-
-        if (classIndex >= 0) {
-            this._children.splice(classIndex, 1);
-        }
-        if (this.hasParent()) {
-            this.getParent().removeChildClass(className);
-        }
-        this
-            .getEvent('onRemoveChildClass')
-            .trigger(className)
-        ;
-    };
-
-    /**
-     * Returns array of children class names which inherits current class
-     *
-     * @param {boolean} [grouping=false]
-     *      Whether the class names should be grouped
-     *
-     * @return {(string[]|Object)}
-     */
-    ClassType.prototype.getClassChildren = function(grouping)
-    {
-        if (grouping !== true) {
-            return this._children;
-        }
-        var classes = {};
-
-        for (var i = 0; i < this._children.length; i++) {
-            var childClassName = this._children[i];
-            var childClassType = this.getClassManager().get(this._children[i]).getType();
-
-            if (!classes.hasOwnProperty(childClassType)) {
-                classes[childClassType] = [];
-            }
-            classes[childClassType].push(childClassName);
-        }
-        this
-            .getEvent('onGetClassChildren')
-            .trigger(classes)
-        ;
-        return classes;
-    };
-
-    /**
-     * Returns chain of parent class names
-     *
-     * @param {boolean} [grouping=false]
-     *      Whether the class names should be grouped
-     *
-     * @returns {(string[]|Object)}
-     */
-    ClassType.prototype.getClassParents = function(grouping)
-    {
-        var classes = [];
-
-        function addClassName(classes, className)
+        /**
+         * Initializes class on creation stage.<br /><br />
+         *
+         * Current method invokes automatically right at the end of the class type constructor.
+         * It can contain different manipulations with class definition or other manipulations that is needed
+         */
+        initialize: function()
         {
-            if (classes.indexOf(className) < 0) {
-                classes.push(className);
+            this.initializeExtensions();
+            this.getEvent('onInitialize').trigger();
+            this._definition = this.createDefinition(this._definition);
+
+            var classDefinition = this.getDefinition();
+                classDefinition.processRelatedClasses();
+        },
+
+        /**
+         * Returns name of class type
+         *
+         * @returns {string}
+         */
+        getType: function()
+        {
+            return this.constructor.getClassTypeName();
+        },
+
+        /**
+         * Returns class manager instance
+         *
+         * @returns {Subclass.ClassManager}
+         */
+        getClassManager: function ()
+        {
+            return this._classManager;
+        },
+
+        /**
+         * Returns name of the current class instance
+         *
+         * @returns {string}
+         */
+        getName: function()
+        {
+            return this._name;
+        },
+
+        /**
+         * Creates and returns class definition instance.
+         *
+         * @param {Object} classDefinition
+         * @returns {Subclass.Class.ClassDefinition}
+         */
+        createDefinition: function(classDefinition)
+        {
+            return Subclass.Tools.createClassInstance(
+                this.constructor.getDefinitionClass(),
+                this,
+                classDefinition
+            );
+        },
+
+        /**
+         * Sets class definition
+         *
+         * @param {Object} classDefinition
+         */
+        setDefinition: function(classDefinition)
+        {
+            var classChildren = this.getClassChildren();
+            var classParents = this.getClassParents();
+            var classManager = this.getClassManager();
+
+            for (var i = 0; i < classParents.length; i++) {
+                var parentClass = classManager.get(classParents[i]);
+                    parentClass.removeChildClass(this.getName());
             }
-        }
-        if (grouping !== true) {
-            grouping = false;
-        }
-        if (grouping) {
-            classes = {};
-        }
-        if (arguments[1]) {
-            classes = arguments[1];
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
-            var parentName = parent.getName();
+            this.constructor.call(
+                this,
+                this.getClassManager(),
+                this.getName(),
+                classDefinition
+            );
+            this._children = classChildren;
+            this.createConstructor();
+        },
 
-            if (grouping) {
-                var parentType = parent.getType();
+        /**
+         * Returns class definition object
+         *
+         * @returns {Subclass.Class.ClassDefinition}
+         */
+        getDefinition: function()
+        {
+            return this._definition;
+        },
 
-                if (!classes.hasOwnProperty(parentType)) {
-                    classes[parentType] = [];
+        /**
+         * Adds name of child class to current class
+         *
+         * @param {string} className
+         *      The name of class
+         */
+        addChildClass: function(className)
+        {
+            if (!className || typeof className != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of child class', false)
+                    .expected('a string')
+                    .received(className)
+                    .apply()
+                ;
+            }
+            if (this.hasChild(className)) {
+                return;
+            }
+            this._children.push(className);
+
+            var classManager = this.getClassManager();
+            var classInst = classManager.get(className);
+            var classInstChildren = classInst.getClassChildren();
+            var classParents = this.getClassParents();
+
+            for (var i = 0; i < classParents.length; i++) {
+                var parentClassInst = classManager.get(classParents[i]);
+                parentClassInst.addChildClass(className);
+            }
+            for (i = 0; i < classInstChildren.length; i++) {
+                if (!this.hasChild(classInstChildren[i])) {
+                    this.addChildClass(classInstChildren[i]);
                 }
-                addClassName(classes[parentType], parentName);
+            }
+            this
+                .getEvent('onAddChildClass')
+                .trigger(className)
+            ;
+        },
+
+        /**
+         * Checks whether current class has children with specified class name
+         *
+         * @param {string} className
+         * @returns {boolean}
+         */
+        hasChild: function(className)
+        {
+            return this._children.indexOf(className) >= 0;
+        },
+
+        /**
+         * Removes name of child class from current class
+         *
+         * @param {string} className
+         *      The name of class
+         */
+        removeChildClass: function(className)
+        {
+            if (!className || typeof className != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of child class', false)
+                    .expected('a string')
+                    .received(className)
+                    .apply()
+                ;
+            }
+            var classIndex = this._children.indexOf(className);
+
+            if (classIndex >= 0) {
+                this._children.splice(classIndex, 1);
+            }
+            if (this.hasParent()) {
+                this.getParent().removeChildClass(className);
+            }
+            this
+                .getEvent('onRemoveChildClass')
+                .trigger(className)
+            ;
+        },
+
+        /**
+         * Returns array of children class names which inherits current class
+         *
+         * @param {boolean} [grouping=false]
+         *      Whether the class names should be grouped
+         *
+         * @return {(string[]|Object)}
+         */
+        getClassChildren: function(grouping)
+        {
+            if (grouping !== true) {
+                return this._children;
+            }
+            var classes = {};
+
+            for (var i = 0; i < this._children.length; i++) {
+                var childClassName = this._children[i];
+                var childClassType = this.getClassManager().get(this._children[i]).getType();
+
+                if (!classes.hasOwnProperty(childClassType)) {
+                    classes[childClassType] = [];
+                }
+                classes[childClassType].push(childClassName);
+            }
+            this
+                .getEvent('onGetClassChildren')
+                .trigger(classes)
+            ;
+            return classes;
+        },
+
+        /**
+         * Returns chain of parent class names
+         *
+         * @param {boolean} [grouping=false]
+         *      Whether the class names should be grouped
+         *
+         * @returns {(string[]|Object)}
+         */
+        getClassParents: function(grouping)
+        {
+            var classes = [];
+
+            function addClassName(classes, className)
+            {
+                if (classes.indexOf(className) < 0) {
+                    classes.push(className);
+                }
+            }
+            if (grouping !== true) {
+                grouping = false;
+            }
+            if (grouping) {
+                classes = {};
+            }
+            if (arguments[1]) {
+                classes = arguments[1];
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+                var parentName = parent.getName();
+
+                if (grouping) {
+                    var parentType = parent.getType();
+
+                    if (!classes.hasOwnProperty(parentType)) {
+                        classes[parentType] = [];
+                    }
+                    addClassName(classes[parentType], parentName);
+
+                } else {
+                    addClassName(classes, parentName);
+                }
+                classes = parent.getClassParents(grouping, classes);
+            }
+            this
+                .getEvent('onGetClassParents')
+                .trigger(classes, grouping)
+            ;
+            return classes;
+        },
+
+        /**
+         * Sets class parent
+         *
+         * @param {string} parentClassName
+         */
+        setParent: function (parentClassName)
+        {
+            if (parentClassName == this.getName()) {
+                Subclass.Tools.create("Trying to set class as the parent for itself.")
+            }
+            if (typeof parentClassName == 'string') {
+                this._parent = this.getClassManager().get(parentClassName);
+                this._parent.addChildClass(this.getName());
+
+            } else if (parentClassName === null) {
+                if (this.hasParent()) {
+                    this._parent.removeChildClass(this.getName());
+                }
+                this._parent = null;
 
             } else {
-                addClassName(classes, parentName);
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of parent class", false)
+                    .received(parentClassName)
+                    .expected('a name of parent class or null in class "' + this.getName() + '"')
+                    .apply()
+                ;
             }
-            classes = parent.getClassParents(grouping, classes);
-        }
-        this
-            .getEvent('onGetClassParents')
-            .trigger(classes, grouping)
-        ;
-        return classes;
-    };
+            this
+                .getEvent('onSetParent')
+                .trigger(parentClassName)
+            ;
+        },
 
-    /**
-     * Sets class parent
-     *
-     * @param {string} parentClassName
-     */
-    ClassType.prototype.setParent = function (parentClassName)
-    {
-        if (parentClassName == this.getName()) {
-            Subclass.Tools.create("Trying to set class as the parent for itself.")
-        }
-        if (typeof parentClassName == 'string') {
-            this._parent = this.getClassManager().get(parentClassName);
-            this._parent.addChildClass(this.getName());
+        /**
+         * Returns parent class instance
+         *
+         * @return {(Subclass.Class.ClassType|null)}
+         */
+        getParent: function ()
+        {
+            return this._parent;
+        },
 
-        } else if (parentClassName === null) {
-            if (this.hasParent()) {
-                this._parent.removeChildClass(this.getName());
+        /**
+         * Checks whether current class extends another one
+         *
+         * @returns {boolean}
+         */
+        hasParent: function()
+        {
+            return !!this._parent;
+        },
+
+        /**
+         * Sets constants of the class
+         *
+         * @param {Object} constants
+         *      The plain object which keys are names and values are values of constants
+         */
+        setConstants: function(constants)
+        {
+            if (!constants || !Subclass.Tools.isPlainObject(constants)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the constants definition', false)
+                    .expected('a plain object')
+                    .received(constants)
+                    .apply()
+                ;
             }
-            this._parent = null;
+            for (var constantName in constants) {
+                if (constants.hasOwnProperty(constantName)) {
+                    this.setConstant(constantName, constants[constantName]);
+                }
+            }
+        },
 
-        } else {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of parent class", false)
-                .received(parentClassName)
-                .expected('a name of parent class or null in class "' + this.getName() + '"')
+        /**
+         * Creates the new (or redefines) constant with specified name and value
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid constant name
+         *
+         * @param {string} constantName
+         *      The name of constant
+         *
+         * @param {*} constantValue
+         *      The value of constant
+         */
+        setConstant: function(constantName, constantValue)
+        {
+            if (!constantName || typeof constantName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of constant', false)
+                    .expected('a string')
+                    .received(constantName)
+                    .apply()
+                ;
+            }
+            this._constants.push(constantName);
+
+            Object.defineProperty(this, constantName, {
+                enumerable: true,
+                configurable: false,
+                writable: false,
+                value: constantValue
+            });
+
+            this
+                .getEvent('onSetConstant')
+                .trigger(constantName, constantValue)
+            ;
+        },
+
+        /**
+         * Returns class constants
+         *
+         * @param {boolean} [withInherited=false]
+         *
+         * @returns {Object}
+         */
+        getConstants: function(withInherited)
+        {
+            var constantNames = this._constants;
+            var constants = {};
+
+            for (var i = 0; i < constantNames.length; i++) {
+                constants[constantNames[i]] = this[constantNames[i]];
+            }
+            return constants;
+        },
+
+        /**
+         * Returns constructor function for current class type
+         *
+         * @returns {function} Returns named function
+         * @throws {Error}
+         */
+        getConstructorEmpty: function ()
+        {
+            Subclass.Error.create("NotImplementedMethod")
+                .method("getConstructorEmpty")
                 .apply()
             ;
-        }
-        this
-            .getEvent('onSetParent')
-            .trigger(parentClassName)
-        ;
-    };
+        },
 
-    /**
-     * Returns parent class instance
-     *
-     * @return {(Subclass.Class.ClassType|null)}
-     */
-    ClassType.prototype.getParent = function ()
-    {
-        return this._parent;
-    };
-
-    /**
-     * Checks whether current class extends another one
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.hasParent = function()
-    {
-        return !!this._parent;
-    };
-
-    /**
-     * Sets constants of the class
-     *
-     * @param {Object} constants
-     *      The plain object which keys are names and values are values of constants
-     */
-    ClassType.prototype.setConstants = function(constants)
-    {
-        if (!constants || !Subclass.Tools.isPlainObject(constants)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the constants definition', false)
-                .expected('a plain object')
-                .received(constants)
-                .apply()
-            ;
-        }
-        for (var constantName in constants) {
-            if (constants.hasOwnProperty(constantName)) {
-                this.setConstant(constantName, constants[constantName]);
+        /**
+         * Returns class constructor
+         *
+         * @returns {Function}
+         */
+        getConstructor: function ()
+        {
+            if (!this.isConstructorCreated()) {
+                this.createConstructor();
             }
-        }
-    };
-
-    /**
-     * Creates the new (or redefines) constant with specified name and value
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid constant name
-     *
-     * @param {string} constantName
-     *      The name of constant
-     *
-     * @param {*} constantValue
-     *      The value of constant
-     */
-    ClassType.prototype.setConstant = function(constantName, constantValue)
-    {
-        if (!constantName || typeof constantName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of constant', false)
-                .expected('a string')
-                .received(constantName)
-                .apply()
-            ;
-        }
-        this._constants.push(constantName);
-
-        Object.defineProperty(this, constantName, {
-            enumerable: true,
-            configurable: false,
-            writable: false,
-            value: constantValue
-        });
-
-        this
-            .getEvent('onSetConstant')
-            .trigger(constantName, constantValue)
-        ;
-    };
-
-    /**
-     * Returns class constants
-     *
-     * @param {boolean} [withInherited=false]
-     *
-     * @returns {Object}
-     */
-    ClassType.prototype.getConstants = function(withInherited)
-    {
-        var constantNames = this._constants;
-        var constants = {};
-
-        for (var i = 0; i < constantNames.length; i++) {
-            constants[constantNames[i]] = this[constantNames[i]];
-        }
-        return constants;
-    };
-
-    /**
-     * Returns constructor function for current class type
-     *
-     * @returns {function} Returns named function
-     * @throws {Error}
-     */
-    ClassType.prototype.getConstructorEmpty = function ()
-    {
-        Subclass.Error.create("NotImplementedMethod")
-            .method("getConstructorEmpty")
-            .apply()
-        ;
-    };
-
-    /**
-     * Returns class constructor
-     *
-     * @returns {Function}
-     */
-    ClassType.prototype.getConstructor = function ()
-    {
-        if (!this.isConstructorCreated()) {
-            this.createConstructor();
-        }
-        return this._constructor;
-    };
-
-    /**
-     * Checks whether class constructor is created
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.isConstructorCreated = function()
-    {
-        return !!this._constructor;
-    };
-
-    /**
-     * Generates and returns current class instance constructor
-     *
-     * @returns {function}
-     */
-    ClassType.prototype.createConstructor = function ()
-    {
-        if (this.isConstructorCreated()) {
             return this._constructor;
-        }
+        },
 
-        // Processing class definition
+        /**
+         * Checks whether class constructor is created
+         *
+         * @returns {boolean}
+         */
+        isConstructorCreated: function()
+        {
+            return !!this._constructor;
+        },
 
-        var classDefinition = this.getDefinition();
-        var baseClassDefinition = classDefinition.getBaseData();
-        classDefinition.normalizeData();
-
-        this.getEvent('onCreateClassBefore').trigger(classDefinition);
-
-        classDefinition.setData(Subclass.Tools.extend(
-            baseClassDefinition,
-            classDefinition.getData()
-        ));
-        classDefinition.validateData();
-        classDefinition.processData();
-
-
-        // Creating constructor
-
-        var classConstructor = this.getConstructorEmpty();
-        var parentClass = this.getParent();
-
-        if (parentClass) {
-            var parentClassConstructor = parentClass.getConstructor();
-            var classConstructorProto = Object.create(parentClassConstructor.prototype);
-
-            Subclass.Tools.extend(classConstructorProto, classConstructor.prototype);
-            classConstructor.prototype = classConstructorProto;
-        }
-
-        this.getEvent('onCreateClass').trigger(classConstructor);
-
-        Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
-        Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
-
-        Object.defineProperty(classConstructor.prototype, "constructor", {
-            enumerable: false,
-            configurable: true,
-            value: classConstructor
-        });
-
-        classConstructor.prototype.$_className = this.getName();
-        classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
-        classConstructor.prototype.$_class = this;
-
-        this._constructor = classConstructor;
-        this.getEvent('onCreateClassAfter').trigger(classConstructor);
-
-        return classConstructor;
-    };
-
-    /**
-     * Creates class instance of current class type
-     *
-     * @returns {object} Class instance
-     */
-    ClassType.prototype.createInstance = function()
-    {
-        var args = [];
-
-        for (var i = 0; i < arguments.length; i++) {
-            args.push(arguments[i]);
-        }
-
-        var classConstructor = this.getConstructor();
-        var classInstance = new classConstructor();
-
-        this.getEvent('onCreateInstanceBefore').trigger(classInstance);
-
-        // Adding no methods to class instance
-
-        var classNoMethods = this.getDefinition().getNoMethods(true);
-
-        for (var propName in classNoMethods) {
-            if (!classNoMethods.hasOwnProperty(propName)) {
-                continue;
+        /**
+         * Generates and returns current class instance constructor
+         *
+         * @returns {function}
+         */
+        createConstructor: function ()
+        {
+            if (this.isConstructorCreated()) {
+                return this._constructor;
             }
-            classInstance[propName] = Subclass.Tools.copy(classNoMethods[propName]);
+
+            // Processing class definition
+
+            var classDefinition = this.getDefinition();
+            var baseClassDefinition = classDefinition.getBaseData();
+            classDefinition.normalizeData();
+
+            this.getEvent('onCreateClassBefore').trigger(classDefinition);
+
+            classDefinition.setData(Subclass.Tools.extend(
+                baseClassDefinition,
+                classDefinition.getData()
+            ));
+            classDefinition.validateData();
+            classDefinition.processData();
+
+
+            // Creating constructor
+
+            var classConstructor = this.getConstructorEmpty();
+            var parentClass = this.getParent();
+
+            if (parentClass) {
+                var parentClassConstructor = parentClass.getConstructor();
+                var classConstructorProto = Object.create(parentClassConstructor.prototype);
+
+                Subclass.Tools.extend(classConstructorProto, classConstructor.prototype);
+                classConstructor.prototype = classConstructorProto;
+            }
+
+            this.getEvent('onCreateClass').trigger(classConstructor);
+
+            Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMethods());
+            Subclass.Tools.extend(classConstructor.prototype, this.getDefinition().getMetaData());
+
+            Object.defineProperty(classConstructor.prototype, "constructor", {
+                enumerable: false,
+                configurable: true,
+                value: classConstructor
+            });
+
+            classConstructor.prototype.$_className = this.getName();
+            classConstructor.prototype.$_classType = this.constructor.getClassTypeName();
+            classConstructor.prototype.$_class = this;
+
+            this._constructor = classConstructor;
+            this.getEvent('onCreateClassAfter').trigger(classConstructor);
+
+            return classConstructor;
+        },
+
+        /**
+         * Creates class instance of current class type
+         *
+         * @returns {object} Class instance
+         */
+        createInstance: function()
+        {
+            var args = [];
+
+            for (var i = 0; i < arguments.length; i++) {
+                args.push(arguments[i]);
+            }
+
+            var classConstructor = this.getConstructor();
+            var classInstance = new classConstructor();
+
+            this.getEvent('onCreateInstanceBefore').trigger(classInstance);
+
+            // Adding no methods to class instance
+
+            var classNoMethods = this.getDefinition().getNoMethods(true);
+
+            for (var propName in classNoMethods) {
+                if (!classNoMethods.hasOwnProperty(propName)) {
+                    continue;
+                }
+                classInstance[propName] = Subclass.Tools.copy(classNoMethods[propName]);
+            }
+
+            this.getEvent('onCreateInstance').trigger(classInstance);
+
+            Object.seal(classInstance);
+
+            if (classInstance.$_constructor) {
+                classInstance.$_constructor.apply(classInstance, args);
+            }
+
+            // Telling that instance of current class was created
+
+            this.setInstanceCreated();
+            this.getEvent('onCreateInstanceAfter').trigger(classInstance);
+
+            return classInstance;
+        },
+
+        /**
+         * Sets state that the instance of current class was created
+         */
+        setInstanceCreated: function()
+        {
+            var classManager = this.getClassManager();
+            var classParents = this.getClassParents();
+
+            for (var i = 0; i < classParents.length; i++) {
+                classManager.get(classParents[i]).setInstanceCreated();
+            }
+            this._created = true;
+        },
+
+        /**
+         * Reports whether the instance of current class was ever created
+         *
+         * @returns {boolean}
+         */
+        wasInstanceCreated: function()
+        {
+            if (this._created) {
+                return true;
+            }
+            if (this.hasParent()) {
+                return this.getParent().wasInstanceCreated();
+            }
+            return false;
+        },
+
+        /**
+         * Checks if current class is instance of another class
+         *
+         * @param {string|Subclass.Class.ClassType} className
+         * @return {boolean}
+         */
+        isInstanceOf: function (className)
+        {
+            if (
+                !className
+                || (
+                    typeof className != 'string'
+                    && typeof className != 'object'
+                ) || (
+                    typeof className == 'object'
+                    && !(className instanceof Subclass.Class.ClassType)
+                )
+            ) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of class", false)
+                    .received(className)
+                    .expected("a string or an instance of Subclass.Class.ClassType")
+                    .apply()
+                ;
+            }
+            if (typeof className == 'object') {
+                className = className.getName();
+            }
+            if (this.getName() == className) {
+                return true;
+
+            }
+            return this.getClassParents().indexOf(className) >= 0;
         }
-
-        this.getEvent('onCreateInstance').trigger(classInstance);
-
-        Object.seal(classInstance);
-
-        if (classInstance.$_constructor) {
-            classInstance.$_constructor.apply(classInstance, args);
-        }
-
-        // Telling that instance of current class was created
-
-        this.setInstanceCreated();
-        this.getEvent('onCreateInstanceAfter').trigger(classInstance);
-
-        return classInstance;
-    };
-
-    /**
-     * Sets state that the instance of current class was created
-     */
-    ClassType.prototype.setInstanceCreated = function()
-    {
-        var classManager = this.getClassManager();
-        var classParents = this.getClassParents();
-
-        for (var i = 0; i < classParents.length; i++) {
-            classManager.get(classParents[i]).setInstanceCreated();
-        }
-        this._created = true;
-    };
-
-    /**
-     * Reports whether the instance of current class was ever created
-     *
-     * @returns {boolean}
-     */
-    ClassType.prototype.wasInstanceCreated = function()
-    {
-        if (this._created) {
-            return true;
-        }
-        if (this.hasParent()) {
-            return this.getParent().wasInstanceCreated();
-        }
-        return false;
-    };
-
-    /**
-     * Checks if current class is instance of another class
-     *
-     * @param {string|Subclass.Class.ClassType} className
-     * @return {boolean}
-     */
-    ClassType.prototype.isInstanceOf = function (className)
-    {
-        if (
-            !className
-            || (
-                typeof className != 'string'
-                && typeof className != 'object'
-            ) || (
-                typeof className == 'object'
-                && !(className instanceof Subclass.Class.ClassType)
-            )
-        ) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of class", false)
-                .received(className)
-                .expected("a string or an instance of Subclass.Class.ClassType")
-                .apply()
-            ;
-        }
-        if (typeof className == 'object') {
-            className = className.getName();
-        }
-        if (this.getName() == className) {
-            return true;
-
-        }
-        return this.getClassParents().indexOf(className) >= 0;
     };
 
     return ClassType;
@@ -6679,690 +6724,693 @@ Subclass.Class.ClassDefinition = (function()
 
     ClassDefinition.$mixins = [Subclass.Event.EventableMixin];
 
-    /**
-     * Initializes class definition
-     */
-    ClassDefinition.prototype.initialize = function()
-    {
-        this.initializeExtensions();
-        this.getEvent('onInitialize').trigger();
-    };
+    ClassDefinition.prototype = {
 
-    /**
-     * Returns class definition object
-     *
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getData = function()
-    {
-        return this._data;
-    };
+        /**
+         * Initializes class definition
+         */
+        initialize: function()
+        {
+            this.initializeExtensions();
+            this.getEvent('onInitialize').trigger();
+        },
 
-    /**
-     * Sets class definition data
-     *
-     * @param data
-     */
-    ClassDefinition.prototype.setData = function(data)
-    {
-        if (!data || typeof data != 'object') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the definition data", false)
-                .received(data)
-                .expected("a plain object")
-                .apply()
-            ;
-        }
-        this._data = data;
-    };
+        /**
+         * Returns class definition object
+         *
+         * @returns {Object}
+         */
+        getData: function()
+        {
+            return this._data;
+        },
 
-    /**
-     * Returns class instance
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassDefinition.prototype.getClass = function()
-    {
-        return this._class;
-    };
+        /**
+         * Sets class definition data
+         *
+         * @param data
+         */
+        setData: function(data)
+        {
+            if (!data || typeof data != 'object') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the definition data", false)
+                    .received(data)
+                    .expected("a plain object")
+                    .apply()
+                ;
+            }
+            this._data = data;
+        },
 
-    /**
-     * Validates "$_requires" option value
-     *
-     * @param {*} requires
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateRequires = function(requires)
-    {
-        if (requires && typeof requires != 'object') {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_requires')
-                .received(requires)
-                .className(this.getClass().getName())
-                .expected('a plain object with string properties')
-                .apply()
-            ;
-        }
-        if (requires) {
-            if (Array.isArray(requires)) {
-                for (var i = 0; i < requires.length; i++) {
-                    if (typeof requires[i] != 'string') {
-                        Subclass.Error.create('InvalidClassOption')
-                            .option('$_requires')
-                            .received(requires)
-                            .className(this.getClass().getName())
-                            .expected('a plain object with string properties')
-                            .apply()
-                        ;
+        /**
+         * Returns class instance
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        getClass: function()
+        {
+            return this._class;
+        },
+
+        /**
+         * Validates "$_requires" option value
+         *
+         * @param {*} requires
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateRequires: function(requires)
+        {
+            if (requires && typeof requires != 'object') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_requires')
+                    .received(requires)
+                    .className(this.getClass().getName())
+                    .expected('a plain object with string properties')
+                    .apply()
+                ;
+            }
+            if (requires) {
+                if (Array.isArray(requires)) {
+                    for (var i = 0; i < requires.length; i++) {
+                        if (typeof requires[i] != 'string') {
+                            Subclass.Error.create('InvalidClassOption')
+                                .option('$_requires')
+                                .received(requires)
+                                .className(this.getClass().getName())
+                                .expected('a plain object with string properties')
+                                .apply()
+                            ;
+                        }
+                    }
+                } else {
+                    for (var alias in requires) {
+                        if (!requires.hasOwnProperty(alias)) {
+                            continue;
+                        }
+                        if (!alias[0].match(/[a-z$_]/i)) {
+                            Subclass.Error.create(
+                                'Invalid alias name for required class "' + requires[alias] + '" ' +
+                                'in class "' + this.getClass().getName() + '".'
+                            );
+                        }
+                        if (typeof requires[alias] != 'string') {
+                            Subclass.Error.create('InvalidClassOption')
+                                .option('$_requires')
+                                .received(requires)
+                                .className(this.getClass().getName())
+                                .expected('a plain object with string properties')
+                                .apply()
+                            ;
+                        }
                     }
                 }
-            } else {
-                for (var alias in requires) {
-                    if (!requires.hasOwnProperty(alias)) {
+            }
+            return true;
+        },
+
+        /**
+         * Sets "$_requires" option value
+         *
+         * @param {Object.<string>} requires
+         *
+         * List of the classes that current one requires. It can be specified in two ways:
+         *
+         * 1. As an array of class names:
+         *
+         * Example:
+         * [
+         *    "Namespace/Of/Class1",
+         *    "Namespace/Of/Class2",
+         *    ...
+         * ]
+        */
+        setRequires: function(requires)
+        {
+            this.validateRequires(requires);
+            this.getData().$_requires = requires || null;
+        },
+
+        /**
+         * Return "$_requires" option value
+         *
+         * @returns {Object.<string>}
+         */
+        getRequires: function()
+        {
+            return this.getData().$_requires;
+        },
+
+        /**
+         * Validates "$_extends" option value
+         *
+         * @param {*} parentClassName
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateExtends: function(parentClassName)
+        {
+            if (parentClassName !== null && typeof parentClassName != 'string') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_extends')
+                    .received(parentClassName)
+                    .className(this.getClass().getName())
+                    .expected('a string or null')
+                    .apply()
+                ;
+            }
+            return true;
+        },
+
+        /**
+         * Sets "$_extends" option value
+         *
+         * @param {string} parentClassName  Name of parent class, i.e. "Namespace/Of/ParentClass"
+         */
+        setExtends: function(parentClassName)
+        {
+            this.validateExtends(parentClassName);
+            this.getData().$_extends = parentClassName;
+
+            if (parentClassName) {
+                this.getClass().setParent(parentClassName);
+            }
+        },
+
+        /**
+         * Returns "$_extends" option value
+         *
+         * @returns {string}
+         */
+        getExtends: function()
+        {
+            return this.getData().$_extends;
+        },
+
+        /**
+         * Validates "$_constants" option value
+         *
+         * @param {*} constants
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateConstants: function(constants)
+        {
+            if (constants !== null && !Subclass.Tools.isPlainObject(constants)) {
+                Subclass.Error.create("InvalidClassOption")
+                    .option('$_constants')
+                    .className(this.getClass().getName())
+                    .received(constants)
+                    .expected('a plain object with not function values')
+                    .apply()
+                ;
+            } else if (constants) {
+                for (var constantName in constants) {
+                    if (!constants.hasOwnProperty(constantName)) {
                         continue;
                     }
-                    if (!alias[0].match(/[a-z$_]/i)) {
-                        Subclass.Error.create(
-                            'Invalid alias name for required class "' + requires[alias] + '" ' +
-                            'in class "' + this.getClass().getName() + '".'
-                        );
-                    }
-                    if (typeof requires[alias] != 'string') {
-                        Subclass.Error.create('InvalidClassOption')
-                            .option('$_requires')
-                            .received(requires)
+                    if (typeof constants[constantName] == 'function') {
+                        Subclass.Error.create("InvalidClassOption")
+                            .option('$_constants')
                             .className(this.getClass().getName())
-                            .expected('a plain object with string properties')
+                            .expected('a plain object with not function values')
                             .apply()
                         ;
                     }
                 }
             }
-        }
-        return true;
-    };
+        },
 
-    /**
-     * Sets "$_requires" option value
-     *
-     * @param {Object.<string>} requires
-     *
-     * List of the classes that current one requires. It can be specified in two ways:
-     *
-     * 1. As an array of class names:
-     *
-     * Example:
-     * [
-     *    "Namespace/Of/Class1",
-     *    "Namespace/Of/Class2",
-     *    ...
-     * ]
-    */
-    ClassDefinition.prototype.setRequires = function(requires)
-    {
-        this.validateRequires(requires);
-        this.getData().$_requires = requires || null;
-    };
+        /**
+         * Sets "$_constants" option value
+         *
+         * @param {Object} constants
+         *      Name of parent class, i.e. "Namespace/Of/ParentClass"
+         */
+        setConstants: function(constants)
+        {
+            this.validateConstants(constants);
+            this._constants = constants;
 
-    /**
-     * Return "$_requires" option value
-     *
-     * @returns {Object.<string>}
-     */
-    ClassDefinition.prototype.getRequires = function()
-    {
-        return this.getData().$_requires;
-    };
-
-    /**
-     * Validates "$_extends" option value
-     *
-     * @param {*} parentClassName
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateExtends = function(parentClassName)
-    {
-        if (parentClassName !== null && typeof parentClassName != 'string') {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_extends')
-                .received(parentClassName)
-                .className(this.getClass().getName())
-                .expected('a string or null')
-                .apply()
-            ;
-        }
-        return true;
-    };
-
-    /**
-     * Sets "$_extends" option value
-     *
-     * @param {string} parentClassName  Name of parent class, i.e. "Namespace/Of/ParentClass"
-     */
-    ClassDefinition.prototype.setExtends = function(parentClassName)
-    {
-        this.validateExtends(parentClassName);
-        this.getData().$_extends = parentClassName;
-
-        if (parentClassName) {
-            this.getClass().setParent(parentClassName);
-        }
-    };
-
-    /**
-     * Returns "$_extends" option value
-     *
-     * @returns {string}
-     */
-    ClassDefinition.prototype.getExtends = function()
-    {
-        return this.getData().$_extends;
-    };
-
-    /**
-     * Validates "$_constants" option value
-     *
-     * @param {*} constants
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateConstants = function(constants)
-    {
-        if (constants !== null && !Subclass.Tools.isPlainObject(constants)) {
-            Subclass.Error.create("InvalidClassOption")
-                .option('$_constants')
-                .className(this.getClass().getName())
-                .received(constants)
-                .expected('a plain object with not function values')
-                .apply()
-            ;
-        } else if (constants) {
-            for (var constantName in constants) {
-                if (!constants.hasOwnProperty(constantName)) {
-                    continue;
-                }
-                if (typeof constants[constantName] == 'function') {
-                    Subclass.Error.create("InvalidClassOption")
-                        .option('$_constants')
-                        .className(this.getClass().getName())
-                        .expected('a plain object with not function values')
-                        .apply()
-                    ;
-                }
+            if (constants) {
+                this.getClass().setConstants(constants);
             }
-        }
-    };
+        },
 
-    /**
-     * Sets "$_constants" option value
-     *
-     * @param {Object} constants
-     *      Name of parent class, i.e. "Namespace/Of/ParentClass"
-     */
-    ClassDefinition.prototype.setConstants = function(constants)
-    {
-        this.validateConstants(constants);
-        this._constants = constants;
+        /**
+         * Returns "$_constants" option value
+         *
+         * @returns {Object}
+         */
+        getConstants: function()
+        {
+            return this._constants;
+        },
 
-        if (constants) {
-            this.getClass().setConstants(constants);
-        }
-    };
+        /**
+         * Returns all properties which names started from symbols "$_"
+         *
+         * @param {boolean} [withInherited = false]
+         * @returns {Object}
+         */
+        getMetaData: function(withInherited)
+        {
+            var metaData = this._getDataPart('metaData', withInherited);
 
-    /**
-     * Returns "$_constants" option value
-     *
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getConstants = function()
-    {
-        return this._constants;
-    };
+            this.getEvent('onGetMetaData').trigger(metaData);
 
-    /**
-     * Returns all properties which names started from symbols "$_"
-     *
-     * @param {boolean} [withInherited = false]
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getMetaData = function(withInherited)
-    {
-        var metaData = this._getDataPart('metaData', withInherited);
+            return metaData;
+        },
 
-        this.getEvent('onGetMetaData').trigger(metaData);
+        /**
+         * Returns all class methods (except methods which names started from symbols "$_")
+         *
+         * @param {boolean} [withInherited = false]
+         * @returns {Object}
+         */
+        getMethods: function(withInherited)
+        {
+            var methods = this._getDataPart('methods', withInherited);
 
-        return metaData;
-    };
+            this.getEvent('onGetMethods').trigger(methods);
 
-    /**
-     * Returns all class methods (except methods which names started from symbols "$_")
-     *
-     * @param {boolean} [withInherited = false]
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getMethods = function(withInherited)
-    {
-        var methods = this._getDataPart('methods', withInherited);
+            return methods;
+        },
 
-        this.getEvent('onGetMethods').trigger(methods);
+        /**
+         * Returns class to which belongs specified method body
+         *
+         * @param {Function} methodName
+         *      The name of class method
+         *
+         * @returns {(Subclass.Class.ClassType|null)}
+         */
+        getMethodClass: function(methodName)
+        {
+            var classInst = this.getData();
 
-        return methods;
-    };
-
-    /**
-     * Returns class to which belongs specified method body
-     *
-     * @param {Function} methodName
-     *      The name of class method
-     *
-     * @returns {(Subclass.Class.ClassType|null)}
-     */
-    ClassDefinition.prototype.getMethodClass = function(methodName)
-    {
-        var classInst = this.getData();
-
-        if (classInst.hasOwnProperty(methodName)) {
-            return this.getClass();
-        }
-        if (this.getClass().hasParent()) {
-            return this.getClass()
-                .getParent()
-                .getDefinition()
-                .getMethodClass(methodName)
-            ;
-        }
-        return null;
-    };
-
-    /**
-     * Returns class method by its name
-     *
-     * @param {string} methodName
-     *      The name of method
-     */
-    ClassDefinition.prototype.getMethod = function(methodName)
-    {
-        if (!this.issetMethod(methodName)) {
-            Subclass.Error.create(
-                'Trying to get non existent method "' + methodName + '" ' +
-                'from definition of class "' + this.getClass().getName() + '".'
-            );
-        }
-        return this.getMethods(true)[methodName];
-    };
-
-    /**
-     * Checks whether method with specified name exists
-     *
-     * @param {string} methodName
-     *      The name of method
-     */
-    ClassDefinition.prototype.issetMethod = function(methodName)
-    {
-        return this.getMethods(true).hasOwnProperty(methodName);
-    };
-
-    /**
-     * Returns all class properties (except properties which names started from symbols "$_")
-     * that are not methods
-     *
-     * @param {boolean} [withInherited = false]
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getNoMethods = function(withInherited)
-    {
-        var noMethods = this._getDataPart('noMethods', withInherited);
-
-        this.getEvent('onGetNoMethods').trigger(noMethods);
-
-        return noMethods;
-    };
-
-    /**
-     * Returns some grouped parts of class definition depending on specified typeName.
-     *
-     * @param {string} typeName
-     *      Can be one of the followed values: 'noMethods', 'methods' or 'metaData'
-     *
-     *      noMethods - Returns all class properties (except properties which names started from symbols "$_")
-     *      that are not methods
-     *
-     *      methods - Returns all class methods (except methods which names started from symbols "$_")
-     *
-     *      metaData - Returns all properties which names started from symbols "$_"
-     *
-     * @param {boolean} [withInherited = false]
-     * @returns {Object}
-     * @private
-     */
-    ClassDefinition.prototype._getDataPart = function(typeName, withInherited)
-    {
-        if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
-            Subclass.Error.create(
-                'Trying to get not existent ' +
-                'class definition part data "' + typeName + '".'
-            );
-        }
-        if (withInherited !== true) {
-            withInherited = false;
-        }
-        var definition = this.getData();
-        var classInst = this.getClass();
-        var parts = {};
-
-        if (classInst.hasParent() && withInherited) {
-            var classParent = classInst.getParent();
-            var classParentDefinition = classParent.getDefinition();
-
-            parts = classParentDefinition._getDataPart(
-                typeName,
-                withInherited
-            );
-        }
-
-        for (var propName in definition) {
-            if (
-                !definition.hasOwnProperty(propName)
-                || (
-                    (typeName == 'noMethods' && (
-                        typeof definition[propName] == 'function'
-                        || propName.match(/^\$_/i)
-
-                    )) || (typeName == 'methods' && (
-                        typeof definition[propName] != 'function'
-                        || propName.match(/^\$_/i)
-
-                    )) || (typeName == 'metaData' && (
-                        !propName.match(/^\$_/i)
-                    ))
-                )
-            ) {
-                continue;
+            if (classInst.hasOwnProperty(methodName)) {
+                return this.getClass();
             }
-            parts[propName] = definition[propName];
-        }
-        return parts;
-    };
-
-    /**
-     * Modifies class definition
-     *
-     * @returns {object}
-     */
-    ClassDefinition.prototype.createBaseData = function()
-    {
-        return {
-
-            /**
-             * Required classes
-             *
-             * @type {(string[]|Object.<string>|null)}
-             */
-            $_requires: null,
-
-            /**
-             * Parent class name
-             *
-             * @type {string}
-             */
-            $_extends: null,
-
-            /**
-             * Constants list
-             *
-             * @type {Object}
-             */
-            $_constants: null,
-
-            /**
-             * Returns class manager instance
-             *
-             * @returns {Subclass.ClassManager}
-             */
-            getClassManager: function()
-            {
-                return this.$_class.getClassManager();
-            },
-
-            /**
-             * Returns class definition instance
-             *
-             * @returns {Subclass.Class.ClassType}
-             */
-            getClass: function()
-            {
-                return this.$_class;
-            },
-
-            /**
-             * Returns class name
-             *
-             * @returns {string}
-             */
-            getClassName: function()
-            {
-                return this.$_className;
-            },
-
-            /**
-             * Returns type name of class
-             *
-             * @returns {*}
-             */
-            getClassType: function()
-            {
-                return this.$_classType;
-            },
-
-            /**
-             * Checks if current class instance of passed class with specified name
-             *
-             * @param {string} className
-             * @returns {boolean}
-             */
-            isInstanceOf: function (className)
-            {
-                return this.$_class.isInstanceOf(className);
-            },
-
-            /**
-             * Returns parent class
-             *
-             * @returns {Object} parent class.
-             */
-            getParent: function ()
-            {
-                if (this.$_class.hasParent()) {
-                    return this.$_class.getParent();
-                }
-                return null;
-            },
-
-            /**
-             *
-             * @param {string} methodName
-             * @param [arguments]
-             */
-            callParent: function (methodName)
-            {
-                var methodFunc = this[methodName];
-
-                if (!methodFunc || typeof methodFunc != 'function') {
-                    Subclass.Error.create(
-                        'Trying to call to non existent method "' + methodName + '" ' +
-                        'in class "' + this.getClass().getName() + '"'
-                    );
-                }
-                var parentClass = this
+            if (this.getClass().hasParent()) {
+                return this.getClass()
                     .getParent()
                     .getDefinition()
                     .getMethodClass(methodName)
                 ;
-                if (!parentClass) {
-                    Subclass.Error.create(
-                        'Trying to call parent method "' + methodName + '" ' +
-                        'in class "' + this.getClass().getName() + '" which hasn\'t parent'
-                    );
-                }
-                if (methodFunc == parentClass.getDefinition().getData()[methodName]) {
-                    parentClass = parentClass.getParent();
-                }
-                var args = [];
+            }
+            return null;
+        },
 
-                for (var i = 1; i < arguments.length; i++) {
-                    args.push(arguments[i]);
+        /**
+         * Returns class method by its name
+         *
+         * @param {string} methodName
+         *      The name of method
+         */
+        getMethod: function(methodName)
+        {
+            if (!this.issetMethod(methodName)) {
+                Subclass.Error.create(
+                    'Trying to get non existent method "' + methodName + '" ' +
+                    'from definition of class "' + this.getClass().getName() + '".'
+                );
+            }
+            return this.getMethods(true)[methodName];
+        },
+
+        /**
+         * Checks whether method with specified name exists
+         *
+         * @param {string} methodName
+         *      The name of method
+         */
+        issetMethod: function(methodName)
+        {
+            return this.getMethods(true).hasOwnProperty(methodName);
+        },
+
+        /**
+         * Returns all class properties (except properties which names started from symbols "$_")
+         * that are not methods
+         *
+         * @param {boolean} [withInherited = false]
+         * @returns {Object}
+         */
+        getNoMethods: function(withInherited)
+        {
+            var noMethods = this._getDataPart('noMethods', withInherited);
+
+            this.getEvent('onGetNoMethods').trigger(noMethods);
+
+            return noMethods;
+        },
+
+        /**
+         * Returns some grouped parts of class definition depending on specified typeName.
+         *
+         * @param {string} typeName
+         *      Can be one of the followed values: 'noMethods', 'methods' or 'metaData'
+         *
+         *      noMethods - Returns all class properties (except properties which names started from symbols "$_")
+         *      that are not methods
+         *
+         *      methods - Returns all class methods (except methods which names started from symbols "$_")
+         *
+         *      metaData - Returns all properties which names started from symbols "$_"
+         *
+         * @param {boolean} [withInherited = false]
+         * @returns {Object}
+         * @private
+         */
+        _getDataPart: function(typeName, withInherited)
+        {
+            if (['noMethods', 'methods', 'metaData'].indexOf(typeName) < 0) {
+                Subclass.Error.create(
+                    'Trying to get not existent ' +
+                    'class definition part data "' + typeName + '".'
+                );
+            }
+            if (withInherited !== true) {
+                withInherited = false;
+            }
+            var definition = this.getData();
+            var classInst = this.getClass();
+            var parts = {};
+
+            if (classInst.hasParent() && withInherited) {
+                var classParent = classInst.getParent();
+                var classParentDefinition = classParent.getDefinition();
+
+                parts = classParentDefinition._getDataPart(
+                    typeName,
+                    withInherited
+                );
+            }
+
+            for (var propName in definition) {
+                if (
+                    !definition.hasOwnProperty(propName)
+                    || (
+                        (typeName == 'noMethods' && (
+                            typeof definition[propName] == 'function'
+                            || propName.match(/^\$_/i)
+
+                        )) || (typeName == 'methods' && (
+                            typeof definition[propName] != 'function'
+                            || propName.match(/^\$_/i)
+
+                        )) || (typeName == 'metaData' && (
+                            !propName.match(/^\$_/i)
+                        ))
+                    )
+                ) {
+                    continue;
                 }
-                return parentClass
-                    .getDefinition()
-                    .getData()[methodName]
-                    .apply(this, args)
-                ;
-            },
+                parts[propName] = definition[propName];
+            }
+            return parts;
+        },
+
+        /**
+         * Modifies class definition
+         *
+         * @returns {object}
+         */
+        createBaseData: function()
+        {
+            return {
+
+                /**
+                 * Required classes
+                 *
+                 * @type {(string[]|Object.<string>|null)}
+                 */
+                $_requires: null,
+
+                /**
+                 * Parent class name
+                 *
+                 * @type {string}
+                 */
+                $_extends: null,
+
+                /**
+                 * Constants list
+                 *
+                 * @type {Object}
+                 */
+                $_constants: null,
+
+                /**
+                 * Returns class manager instance
+                 *
+                 * @returns {Subclass.ClassManager}
+                 */
+                getClassManager: function()
+                {
+                    return this.$_class.getClassManager();
+                },
+
+                /**
+                 * Returns class definition instance
+                 *
+                 * @returns {Subclass.Class.ClassType}
+                 */
+                getClass: function()
+                {
+                    return this.$_class;
+                },
+
+                /**
+                 * Returns class name
+                 *
+                 * @returns {string}
+                 */
+                getClassName: function()
+                {
+                    return this.$_className;
+                },
+
+                /**
+                 * Returns type name of class
+                 *
+                 * @returns {*}
+                 */
+                getClassType: function()
+                {
+                    return this.$_classType;
+                },
+
+                /**
+                 * Checks if current class instance of passed class with specified name
+                 *
+                 * @param {string} className
+                 * @returns {boolean}
+                 */
+                isInstanceOf: function (className)
+                {
+                    return this.$_class.isInstanceOf(className);
+                },
+
+                /**
+                 * Returns parent class
+                 *
+                 * @returns {Object} parent class.
+                 */
+                getParent: function ()
+                {
+                    if (this.$_class.hasParent()) {
+                        return this.$_class.getParent();
+                    }
+                    return null;
+                },
+
+                /**
+                 *
+                 * @param {string} methodName
+                 * @param [arguments]
+                 */
+                callParent: function (methodName)
+                {
+                    var methodFunc = this[methodName];
+
+                    if (!methodFunc || typeof methodFunc != 'function') {
+                        Subclass.Error.create(
+                            'Trying to call to non existent method "' + methodName + '" ' +
+                            'in class "' + this.getClass().getName() + '"'
+                        );
+                    }
+                    var parentClass = this
+                        .getParent()
+                        .getDefinition()
+                        .getMethodClass(methodName)
+                    ;
+                    if (!parentClass) {
+                        Subclass.Error.create(
+                            'Trying to call parent method "' + methodName + '" ' +
+                            'in class "' + this.getClass().getName() + '" which hasn\'t parent'
+                        );
+                    }
+                    if (methodFunc == parentClass.getDefinition().getData()[methodName]) {
+                        parentClass = parentClass.getParent();
+                    }
+                    var args = [];
+
+                    for (var i = 1; i < arguments.length; i++) {
+                        args.push(arguments[i]);
+                    }
+                    return parentClass
+                        .getDefinition()
+                        .getData()[methodName]
+                        .apply(this, args)
+                    ;
+                },
+
+                /**
+                 * Returns copy of current class instance
+                 *
+                 * @returns {Object}
+                 */
+                getCopy: function()
+                {
+                    var copyInst = new this.constructor();
+                    var props = Object.getOwnPropertyNames(this);
+
+                    for (var i = 0; i < props.length; i++) {
+                        copyInst[props[i]] = this[props[i]];
+                    }
+                    return copyInst;
+                }
+            };
+        },
+
+        /**
+         * Returns base class definition data
+         *
+         * @returns {Object}
+         */
+        getBaseData: function()
+        {
+            var data = this.createBaseData();
+
+            // Because many class types redefine methods #createBaseData without
+            // calling its parent realisation some required properties can lose.
+            // To avoid it, the required properties were placed here.
 
             /**
-             * Returns copy of current class instance
+             * Class name
              *
-             * @returns {Object}
+             * @type {string}
              */
-            getCopy: function()
-            {
-                var copyInst = new this.constructor();
-                var props = Object.getOwnPropertyNames(this);
+            data.$_className = null;
 
-                for (var i = 0; i < props.length; i++) {
-                    copyInst[props[i]] = this[props[i]];
+            /**
+             * Class type
+             *
+             * @type {string}
+             */
+            data.$_classType = null;
+
+            /**
+             * Class definition closure
+             *
+             * @type {Subclass.Class.ClassType}
+             */
+            data.$_class = null;
+
+
+            // Triggering event handlers
+
+            this.getEvent("onGetBaseData").trigger(data);
+
+            return data;
+        },
+
+        /**
+         * Normalizes definition data
+         */
+        normalizeData: function()
+        {
+            // Do some manipulations with class definition data
+
+            this.getEvent('onNormalizeData').trigger(this.getData());
+        },
+
+        /**
+         * Validates class definition
+         *
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateData: function ()
+        {
+            // Do some validation manipulations with class definition data
+
+            this.getEvent('onValidateData').trigger(this.getData());
+
+            return true;
+        },
+
+        /**
+         * Processes class definition. Getting info from classDefinition.
+         */
+        processData: function()
+        {
+            var definition = this.getData();
+
+            for (var attrName in definition) {
+                if (
+                    !definition.hasOwnProperty(attrName)
+                    || !attrName.match(/^\$_/i)
+                ) {
+                    continue;
                 }
-                return copyInst;
+                var setterMethod = "set" + attrName.substr(2)[0].toUpperCase() + attrName.substr(3);
+
+                if (this[setterMethod]) {
+                    this[setterMethod](definition[attrName]);
+                }
             }
-        };
-    };
 
-    /**
-     * Returns base class definition data
-     *
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getBaseData = function()
-    {
-        var data = this.createBaseData();
-
-        // Because many class types redefine methods #createBaseData without
-        // calling its parent realisation some required properties can lose.
-        // To avoid it, the required properties were placed here.
+            this.getEvent('onProcessData').trigger(definition);
+        },
 
         /**
-         * Class name
-         *
-         * @type {string}
+         * Searches for the names of classes which are needed to be loaded
          */
-        data.$_className = null;
+        processRelatedClasses: function()
+        {
+            var classInst = this.getClass();
+            var classManager = classInst.getClassManager();
+            var requires = this.getRequires();
+            var parentClass = this.getExtends();
 
-        /**
-         * Class type
-         *
-         * @type {string}
-         */
-        data.$_classType = null;
+            // Performing $_requires option
 
-        /**
-         * Class definition closure
-         *
-         * @type {Subclass.Class.ClassType}
-         */
-        data.$_class = null;
-
-
-        // Triggering event handlers
-
-        this.getEvent("onGetBaseData").trigger(data);
-
-        return data;
-    };
-
-    /**
-     * Normalizes definition data
-     */
-    ClassDefinition.prototype.normalizeData = function()
-    {
-        // Do some manipulations with class definition data
-
-        this.getEvent('onNormalizeData').trigger(this.getData());
-    };
-
-    /**
-     * Validates class definition
-     *
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateData = function ()
-    {
-        // Do some validation manipulations with class definition data
-
-        this.getEvent('onValidateData').trigger(this.getData());
-
-        return true;
-    };
-
-    /**
-     * Processes class definition. Getting info from classDefinition.
-     */
-    ClassDefinition.prototype.processData = function()
-    {
-        var definition = this.getData();
-
-        for (var attrName in definition) {
-            if (
-                !definition.hasOwnProperty(attrName)
-                || !attrName.match(/^\$_/i)
-            ) {
-                continue;
-            }
-            var setterMethod = "set" + attrName.substr(2)[0].toUpperCase() + attrName.substr(3);
-
-            if (this[setterMethod]) {
-                this[setterMethod](definition[attrName]);
-            }
-        }
-
-        this.getEvent('onProcessData').trigger(definition);
-    };
-
-    /**
-     * Searches for the names of classes which are needed to be loaded
-     */
-    ClassDefinition.prototype.processRelatedClasses = function()
-    {
-        var classInst = this.getClass();
-        var classManager = classInst.getClassManager();
-        var requires = this.getRequires();
-        var parentClass = this.getExtends();
-
-        // Performing $_requires option
-
-        if (requires && this.validateRequires(requires)) {
-            if (Subclass.Tools.isPlainObject(requires)) {
-                for (var alias in requires) {
-                    if (requires.hasOwnProperty(alias)) {
-                        classManager.load(requires[alias]);
+            if (requires && this.validateRequires(requires)) {
+                if (Subclass.Tools.isPlainObject(requires)) {
+                    for (var alias in requires) {
+                        if (requires.hasOwnProperty(alias)) {
+                            classManager.load(requires[alias]);
+                        }
+                    }
+                } else if (Array.isArray(requires)) {
+                    for (var i = 0; i < requires.length; i++) {
+                        classManager.load(requires[i]);
                     }
                 }
-            } else if (Array.isArray(requires)) {
-                for (var i = 0; i < requires.length; i++) {
-                    classManager.load(requires[i]);
-                }
             }
+
+            // Performing $_extends option
+
+            if (parentClass && this.validateExtends(parentClass)) {
+                classManager.load(parentClass);
+            }
+
+            this.getEvent('onProcessRelatedClasses').trigger();
         }
-
-        // Performing $_extends option
-
-        if (parentClass && this.validateExtends(parentClass)) {
-            classManager.load(parentClass);
-        }
-
-        this.getEvent('onProcessRelatedClasses').trigger();
     };
 
     return ClassDefinition;
@@ -7434,93 +7482,96 @@ Subclass.Class.ClassLoader = (function()
         ;
     }
 
-    /**
-     * Returns the instance of class manager
-     *
-     * @method getClassManager
-     * @memberOf Subclass.Class.ClassLoader.prototype
-     *
-     * @returns {Subclass.ClassManager}
-     */
-    ClassLoader.prototype.getClassManager = function()
-    {
-        return this._classManager;
-    };
+    ClassLoader.prototype = {
 
-    /**
-     * Returns the instance of load manager
-     *
-     * @method getLoadManager
-     * @memberOf Subclass.Class.ClassLoader.prototype
-     *
-     * @returns {Subclass.LoadManager}
-     */
-    ClassLoader.prototype.getLoadManager = function()
-    {
-        return this.getClassManager()
-            .getModule()
-            .getLoadManager()
-        ;
-    };
+        /**
+         * Returns the instance of class manager
+         *
+         * @method getClassManager
+         * @memberOf Subclass.Class.ClassLoader.prototype
+         *
+         * @returns {Subclass.ClassManager}
+         */
+        getClassManager: function()
+        {
+            return this._classManager;
+        },
 
-    /**
-     * Loads the class by its name
-     *
-     * @method loadClass
-     * @memberOf Subclass.Class.ClassLoader.prototype
-     *
-     * @param className
-     *      The name of class. It should be compatible with the file path where
-     *      it is located relative to "rootPath" setting option of module.
-     *
-     * @param {Function} callback
-     *      The callback function which will be invoked after the class will be loaded
-     */
-    ClassLoader.prototype.loadClass = function(className, callback)
-    {
-        var classManager = this.getClassManager();
-        var loadManager = this.getLoadManager();
-        var fileName = className + ".js";
-
-        if (classManager.isset(className)) {
-            return;
-        }
-        if (callback && typeof callback != 'function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the callback', false)
-                .received(callback)
-                .expected('a function')
-                .apply()
+        /**
+         * Returns the instance of load manager
+         *
+         * @method getLoadManager
+         * @memberOf Subclass.Class.ClassLoader.prototype
+         *
+         * @returns {Subclass.LoadManager}
+         */
+        getLoadManager: function()
+        {
+            return this.getClassManager()
+                .getModule()
+                .getLoadManager()
             ;
-        }
-        loadManager.loadFile(fileName, function() {
-            if (!classManager.isset(className)) {
-                Subclass.Error.create('The class "' + className + '" was not loaded.');
+        },
+
+        /**
+         * Loads the class by its name
+         *
+         * @method loadClass
+         * @memberOf Subclass.Class.ClassLoader.prototype
+         *
+         * @param className
+         *      The name of class. It should be compatible with the file path where
+         *      it is located relative to "rootPath" setting option of module.
+         *
+         * @param {Function} callback
+         *      The callback function which will be invoked after the class will be loaded
+         */
+        loadClass: function(className, callback)
+        {
+            var classManager = this.getClassManager();
+            var loadManager = this.getLoadManager();
+            var fileName = className + ".js";
+
+            if (classManager.isset(className)) {
+                return;
             }
-            if (callback) {
-                return callback();
+            if (callback && typeof callback != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the callback', false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
+                ;
             }
-        });
-    };
+            loadManager.loadFile(fileName, function() {
+                if (!classManager.isset(className)) {
+                    Subclass.Error.create('The class "' + className + '" was not loaded.');
+                }
+                if (callback) {
+                    return callback();
+                }
+            });
+        },
 
-    /**
-     * Tells that the class with specified name was loaded
-     *
-     * @method setClassLoaded
-     * @memberOf Subclass.Class.ClassLoader.prototype
-     *
-     * @param {string} className
-     *      The name of class
-     */
-    ClassLoader.prototype.setClassLoaded = function(className)
-    {
-        var loadManager = this.getLoadManager();
-        var fileName = className + '.js';
+        /**
+         * Tells that the class with specified name was loaded
+         *
+         * @method setClassLoaded
+         * @memberOf Subclass.Class.ClassLoader.prototype
+         *
+         * @param {string} className
+         *      The name of class
+         */
+        setClassLoaded: function(className)
+        {
+            var loadManager = this.getLoadManager();
+            var fileName = className + '.js';
 
-        loadManager.removeFromStack(fileName);
+            loadManager.removeFromStack(fileName);
 
-        if (loadManager.isStackEmpty()) {
-            loadManager.completeLoading();
+            if (loadManager.isStackEmpty()) {
+                loadManager.completeLoading();
+            }
         }
     };
 
@@ -7638,694 +7689,700 @@ Subclass.Class.ClassBuilder = (function()
 
     ClassBuilder.$mixins = [Subclass.Event.EventableMixin];
 
-    ClassBuilder.prototype.initialize = function()
-    {
-        this.initializeExtensions();
-        this.getEvent('onInitialize').trigger();
+    ClassBuilder.prototype = {
 
-        if (this.getName() && this.getClassManager().isset(this.getName())) {
-            this._setClass(this.getName());
-        }
-    };
+        /**
+         * Initializes class builder
+         */
+        initialize: function()
+        {
+            this.initializeExtensions();
+            this.getEvent('onInitialize').trigger();
 
-    /**
-     * Returns the class manager instance
-     *
-     * @method getClassManager
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Subclass.ClassManager}
-     */
-    ClassBuilder.prototype.getClassManager = function()
-    {
-        return this._classManager;
-    };
+            if (this.getName() && this.getClassManager().isset(this.getName())) {
+                this._setClass(this.getName());
+            }
+        },
 
-    /**
-     * Sets the class instance which will be altered
-     *
-     * @method _setClass
-     * @private
-     *
-     * @param {string} className
-     *      The name of class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype._setClass = function(className)
-    {
-        var classInst = this.getClassManager().get(className);
-        var classDefinition = classInst.getDefinition().getData();
+        /**
+         * Returns the class manager instance
+         *
+         * @method getClassManager
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Subclass.ClassManager}
+         */
+        getClassManager: function()
+        {
+            return this._classManager;
+        },
 
-        if (classInst.wasInstanceCreated()) {
-            Subclass.Error.create(
-                'Can\'t alter class "' + className + '". ' +
-                'The one or more instances of this class was already created ' +
-                'or was created one or more instance of class for which inherits from current one.'
+        /**
+         * Sets the class instance which will be altered
+         *
+         * @method _setClass
+         * @private
+         *
+         * @param {string} className
+         *      The name of class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        _setClass: function(className)
+        {
+            var classInst = this.getClassManager().get(className);
+            var classDefinition = classInst.getDefinition().getData();
+
+            if (classInst.wasInstanceCreated()) {
+                Subclass.Error.create(
+                    'Can\'t alter class "' + className + '". ' +
+                    'The one or more instances of this class was already created ' +
+                    'or was created one or more instance of class for which inherits from current one.'
+                );
+            }
+            this.setName(classInst.getName());
+            this._setType(classInst.constructor.getClassTypeName());
+            this._class = classInst;
+            this._setDefinition(Subclass.Tools.copy(classDefinition));
+            this.getEvent('onSetClass').trigger(className);
+
+            return this;
+        },
+
+        /**
+         * Sets the definition of class
+         *
+         * @method _setDefinition
+         * @private
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid definition of class
+         *
+         * @param {Object} classDefinition
+         *      The plain object with definition of class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        _setDefinition: function(classDefinition)
+        {
+            if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the definition of class", false)
+                    .received(classDefinition)
+                    .expected("a plain object")
+                    .apply()
+                ;
+            }
+            this._definition = classDefinition;
+
+            return this;
+        },
+
+        /**
+         * Returns class definition
+         *
+         * @method getDefinition
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Object}
+         */
+        getDefinition: function()
+        {
+            return this._definition;
+        },
+
+        /**
+         * Sets the class type
+         *
+         * @method _setType
+         * @private
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid name of class type
+         *
+         * @param {string} classType
+         *      The name of class type
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        _setType: function(classType)
+        {
+            if (typeof classType !== 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the type of class", false)
+                    .received(classType)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            if (this._class) {
+                Subclass.Error.create('Can\'t redefine class type of already registered class.');
+            }
+            this._type = classType;
+
+            return this;
+        },
+
+        /**
+         * Returns the name of class type
+         *
+         * @method getType
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {string}
+         */
+        getType: function()
+        {
+            return this._type;
+        },
+
+        /**
+         * Sets the name of class
+         *
+         * @method setName
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if class with specified name already exists
+         *
+         * @param {string} className
+         *      The name of class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        setName: function(className)
+        {
+            if (this._class) {
+                Subclass.Error.create('Can\'t redefine class name of already registered class.');
+            }
+            this._name = className;
+
+            return this;
+        },
+
+        /**
+         * Returns the name of class
+         *
+         * @method getName
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {string}
+         */
+        getName: function()
+        {
+            return this._name;
+        },
+
+        /**
+         * Sets the parent of class (the class which the current one will extend)
+         *
+         * @method setParent
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @param {string} parentClassName
+         *      The name of parent class which the current one will extend
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        setParent: function(parentClassName)
+        {
+            this.getDefinition().$_extends = parentClassName;
+
+            return this;
+        },
+
+        /**
+         * Returns the name of parent class
+         *
+         * @method getParent
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {string}
+         */
+        getParent: function()
+        {
+            return this.getDefinition().$_extends || null;
+        },
+
+        /**
+         * Removes class parent
+         *
+         * @method removeParent
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        removeParent: function()
+        {
+            delete this.getDefinition().$_extends;
+
+            return this;
+        },
+
+        /**
+         * Sets constants of the class
+         *
+         * @method setConstants
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid definition of constants
+         *
+         * @param {Object} constants
+         *      The plain object with constants definitions.
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         *
+         * @example
+         * ...
+         *
+         * app.buildClass("Class")
+         *      .setName("Foo/Bar/TestClass")
+         *      .setConstants({
+         *          FOO_CONST: 10,
+         *          BAR_CONST: 20
+         *      })
+         *      .save()
+         * ;
+         * ...
+         *
+         * var TestClass = app.getClass("Foo/Bar/TestClass");
+         * var testClassInst = TestClass.createInstance();
+         * console.log(testClassInst.FOO_CONST);   // 10
+         * console.log(testClassInst.BAR_CONST);   // 20
+         */
+        setConstants: function(constants)
+        {
+            if (!constants || !Subclass.Tools.isPlainObject(constants)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the constants definition", false)
+                    .received(constants)
+                    .expected("a plain object")
+                    .apply()
+                ;
+            }
+            this.getDefinition().$_constants = constants;
+
+            return this;
+        },
+
+        /**
+         * Returns constants of the class
+         *
+         * @method getConstants
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Object}
+         */
+        getConstants: function()
+        {
+            return this.getDefinition().$_constants || {};
+        },
+
+        /**
+         * Sets constant of the class
+         *
+         * @method setConstant
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified not allowed name of constant
+         *
+         * @param {string} constantName
+         *      The name of constant
+         *
+         * @param {*} constantValue
+         *      The value of constant
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         *
+         * @example
+         * ...
+         *
+         * builder
+         *      .setConstant("FOO_CONST", 10)
+         *      .setConstant("BAR_CONST", 20)
+         *      .save()
+         * ;
+         */
+        setConstant: function(constantName, constantValue)
+        {
+            if (typeof constantName !== 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of constant", false)
+                    .received(constantName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            this.getDefinition().$_constants[constantName] = constantValue;
+
+            return this;
+        },
+
+        /**
+         * Removes the constant
+         *
+         * @method removeConstant
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified not allowed name of constant
+         *
+         * @param {string} constantName
+         *      The name of constant
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        removeConstant: function(constantName)
+        {
+            if (typeof constantName !== 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of constant", false)
+                    .received(constantName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            delete this.getDefinition().$_constants[constantName];
+
+            return this;
+        },
+
+        /**
+         * Prepares the object with class definition (the class body)
+         *
+         * @method _prepareBody
+         * @private
+         *
+         * @param {Object} classBody
+         *      The object with definition of class
+         *
+         * @returns {*}
+         */
+        _prepareBody: function(classBody)
+        {
+            if (!classBody || typeof classBody != 'object') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the class body", false)
+                    .received(classBody)
+                    .expected("a plain object")
+                    .apply()
+                ;
+            }
+            for (var propName in classBody) {
+                if (!classBody.hasOwnProperty(propName)) {
+                    continue;
+                }
+                if (propName.match(/^\$_/i)) {
+                    delete classBody[propName];
+                }
+            }
+            this
+                .getEvent('onPrepareBody')
+                .trigger(classBody)
+            ;
+            return classBody;
+        },
+
+        /**
+         * Adds new methods and properties to definition of class (the class body)
+         *
+         * @method addBody
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @param {Object} classBody
+         *      The plain object with definitions of properties and methods of the class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         *
+         * @example
+         * ...
+         *
+         * app.registerClass("Foo/Bar/TestClass", {
+         *     _bar: 0,
+         *
+         *     $_constructor: function(bar) {
+         *          this._bar = bar;
+         *     }
+         * });
+         * ...
+         *
+         * app.alterClass("Foo/Bar/TestClass")
+         *     .addBody({
+         *
+         *         _foo: 10,
+         *
+         *         setFoo: function(foo) {
+         *             this._foo = foo;
+         *         },
+         *
+         *         getFoo: function() {
+         *             return this._foo;
+         *         }
+         *     })
+         *     .save()
+         * ;
+         * ...
+         *
+         * var TestClass = app.getClass("Foo/Bar/TestClass");
+         * var testClassDefinition = TestClass.getDefinition().getData();
+         * console.log(testClassDefinition);
+         *
+         * // {
+         * //   ...
+         * //   _bar: 0,
+         * //   _foo: 10,
+         * //   $_constructor: function(bar) { ... },
+         * //   setFoo: function(foo) { ... },
+         * //   getFoo: function() { ... },
+         * //   ...
+         * // }
+         */
+        addBody: function(classBody)
+        {
+            classBody = this._prepareBody(classBody);
+
+            var classDefinition = this.getDefinition();
+            Subclass.Tools.extend(classDefinition, classBody);
+
+            return this;
+        },
+
+        /**
+         * Sets properties and methods of the class.<br /><br />
+         *
+         * Defines the class body except special properties which names start from "$_" symbols.
+         * The such properties will be omitted.
+         *
+         * If you alter someone class then the call of this method removes all methods and properties
+         * from the class body which not start from "$_" symbols and will be replaced by the new ones
+         * from the object which is specified in current method as argument.
+         *
+         * @param {Object} classBody
+         *      The plain object with definitions of properties and methods of the class
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         *
+         * @example
+         *
+         * app.buildClass("Class")
+         *      .setName("Foo/Bar/TestClass")
+         *      .setBody({
+         *
+         *          _bar: 0,
+         *
+         *          _foo: 10,
+         *
+         *          $_constructor: function(bar) {
+         *              this._bar = bar;
+         *          },
+         *
+         *          setFoo: function(foo) {
+         *              this._foo = foo;
+         *          },
+         *
+         *          getFoo: function() {
+         *              return this._foo;
+         *          }
+         *      })
+         *      .save()
+         * ;
+         */
+        setBody: function(classBody)
+        {
+            classBody = this._prepareBody(classBody);
+
+            var classDefinition = this.getDefinition();
+
+            for (var propName in classDefinition) {
+                if (!classDefinition.hasOwnProperty(propName)) {
+                    continue;
+                }
+                if (!propName.match(/^$_/)) {
+                    delete classDefinition[propName];
+                }
+            }
+            Subclass.Tools.extend(classDefinition, classBody);
+
+            return this;
+        },
+
+        /**
+         * Sets constructor function of the class
+         *
+         * @method setConstructor
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @param {Function} constructorFunction
+         *      The function which will be invoked every time the instance of class will be created
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         *
+         * @example
+         * ...
+         *
+         * app.buildClass("Class")
+         *      .setName("Foo/Bar/TestClass")
+         *      .setConstructor(function(bar) {
+         *          this._bar = bar;
+         *      })
+         *      .setBody({
+         *          _bar: 0
+         *      })
+         *      .save()
+         * ;
+         */
+        setConstructor: function(constructorFunction)
+        {
+            this.getDefinition().$_constructor = constructorFunction;
+
+            return this;
+        },
+
+        /**
+         * Returns constructor function of the class
+         *
+         * @method getConstructor
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {(Function|null)}
+         */
+        getConstructor: function()
+        {
+            return this.getDefinition().$_constructor || null;
+        },
+
+        /**
+         * Removes class constructor function
+         *
+         * @method removeConstructor
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        removeConstructor: function()
+        {
+            var classDefinition = this.getDefinition();
+
+            delete classDefinition.$_constructor;
+
+            return this;
+        },
+
+        /**
+         * Validates the result class definition object
+         *
+         * @method _validate
+         * @private
+         *
+         * @throws {Error}
+         *      Throws error if:
+         *      - The name of class was missed
+         *      - The type of class was missed
+         *
+         * @returns {Subclass.Class.ClassBuilder}
+         */
+        _validate: function()
+        {
+            this.getEvent('onValidateBefore').trigger();
+
+            if (!this.getType()) {
+                Subclass.Error.create('The type of the future class must be specified.');
+            }
+            this.getEvent('onValidateAfter').trigger();
+
+            return this;
+        },
+
+        /**
+         * Creates class type instance without its registration,
+         * i.e. creates anonymous class
+         *
+         * @method create
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        create: function()
+        {
+            this._validate();
+            this.getEvent('onCreateBefore').trigger();
+
+            if (this._class) {
+                this._class.setDefinition(this.getDefinition());
+                return this._class;
+            }
+
+            var classTypeConstructor = Subclass.ClassManager.getType(this.getType());
+            var classTypeInstance = this.getClassManager().create(
+                classTypeConstructor,
+                this.getName() || ('AnonymousClass_' + String(Math.round(Math.random() * (new Date).valueOf() / 100000))),
+                this.getDefinition()
             );
-        }
-        this.setName(classInst.getName());
-        this._setType(classInst.constructor.getClassTypeName());
-        this._class = classInst;
-        this._setDefinition(Subclass.Tools.copy(classDefinition));
-        this.getEvent('onSetClass').trigger(className);
+            this.getEvent('onCreateAfter').trigger(classTypeInstance);
 
-        return this;
-    };
+            return classTypeInstance;
+        },
 
-    /**
-     * Sets the definition of class
-     *
-     * @method _setDefinition
-     * @private
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid definition of class
-     *
-     * @param {Object} classDefinition
-     *      The plain object with definition of class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype._setDefinition = function(classDefinition)
-    {
-        if (!classDefinition || !Subclass.Tools.isPlainObject(classDefinition)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the definition of class", false)
-                .received(classDefinition)
-                .expected("a plain object")
-                .apply()
-            ;
-        }
-        this._definition = classDefinition;
-
-        return this;
-    };
-
-    /**
-     * Returns class definition
-     *
-     * @method getDefinition
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Object}
-     */
-    ClassBuilder.prototype.getDefinition = function()
-    {
-        return this._definition;
-    };
-
-    /**
-     * Sets the class type
-     *
-     * @method _setType
-     * @private
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid name of class type
-     *
-     * @param {string} classType
-     *      The name of class type
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype._setType = function(classType)
-    {
-        if (typeof classType !== 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the type of class", false)
-                .received(classType)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        if (this._class) {
-            Subclass.Error.create('Can\'t redefine class type of already registered class.');
-        }
-        this._type = classType;
-
-        return this;
-    };
-
-    /**
-     * Returns the name of class type
-     *
-     * @method getType
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {string}
-     */
-    ClassBuilder.prototype.getType = function()
-    {
-        return this._type;
-    };
-
-    /**
-     * Sets the name of class
-     *
-     * @method setName
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if class with specified name already exists
-     *
-     * @param {string} className
-     *      The name of class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.setName = function(className)
-    {
-        if (this._class) {
-            Subclass.Error.create('Can\'t redefine class name of already registered class.');
-        }
-        this._name = className;
-
-        return this;
-    };
-
-    /**
-     * Returns the name of class
-     *
-     * @method getName
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {string}
-     */
-    ClassBuilder.prototype.getName = function()
-    {
-        return this._name;
-    };
-
-    /**
-     * Sets the parent of class (the class which the current one will extend)
-     *
-     * @method setParent
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @param {string} parentClassName
-     *      The name of parent class which the current one will extend
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.setParent = function(parentClassName)
-    {
-        this.getDefinition().$_extends = parentClassName;
-
-        return this;
-    };
-
-    /**
-     * Returns the name of parent class
-     *
-     * @method getParent
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {string}
-     */
-    ClassBuilder.prototype.getParent = function()
-    {
-        return this.getDefinition().$_extends || null;
-    };
-
-    /**
-     * Removes class parent
-     *
-     * @method removeParent
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.removeParent = function()
-    {
-        delete this.getDefinition().$_extends;
-
-        return this;
-    };
-
-    /**
-     * Sets constants of the class
-     *
-     * @method setConstants
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid definition of constants
-     *
-     * @param {Object} constants
-     *      The plain object with constants definitions.
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     *
-     * @example
-     * ...
-     *
-     * app.buildClass("Class")
-     *      .setName("Foo/Bar/TestClass")
-     *      .setConstants({
-     *          FOO_CONST: 10,
-     *          BAR_CONST: 20
-     *      })
-     *      .save()
-     * ;
-     * ...
-     *
-     * var TestClass = app.getClass("Foo/Bar/TestClass");
-     * var testClassInst = TestClass.createInstance();
-     * console.log(testClassInst.FOO_CONST);   // 10
-     * console.log(testClassInst.BAR_CONST);   // 20
-     */
-    ClassBuilder.prototype.setConstants = function(constants)
-    {
-        if (!constants || !Subclass.Tools.isPlainObject(constants)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the constants definition", false)
-                .received(constants)
-                .expected("a plain object")
-                .apply()
-            ;
-        }
-        this.getDefinition().$_constants = constants;
-
-        return this;
-    };
-
-    /**
-     * Returns constants of the class
-     *
-     * @method getConstants
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Object}
-     */
-    ClassBuilder.prototype.getConstants = function()
-    {
-        return this.getDefinition().$_constants || {};
-    };
-
-    /**
-     * Sets constant of the class
-     *
-     * @method setConstant
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified not allowed name of constant
-     *
-     * @param {string} constantName
-     *      The name of constant
-     *
-     * @param {*} constantValue
-     *      The value of constant
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     *
-     * @example
-     * ...
-     *
-     * builder
-     *      .setConstant("FOO_CONST", 10)
-     *      .setConstant("BAR_CONST", 20)
-     *      .save()
-     * ;
-     */
-    ClassBuilder.prototype.setConstant = function(constantName, constantValue)
-    {
-        if (typeof constantName !== 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of constant", false)
-                .received(constantName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        this.getDefinition().$_constants[constantName] = constantValue;
-
-        return this;
-    };
-
-    /**
-     * Removes the constant
-     *
-     * @method removeConstant
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified not allowed name of constant
-     *
-     * @param {string} constantName
-     *      The name of constant
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.removeConstant = function(constantName)
-    {
-        if (typeof constantName !== 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of constant", false)
-                .received(constantName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        delete this.getDefinition().$_constants[constantName];
-
-        return this;
-    };
-
-    /**
-     * Prepares the object with class definition (the class body)
-     *
-     * @method _prepareBody
-     * @private
-     *
-     * @param {Object} classBody
-     *      The object with definition of class
-     *
-     * @returns {*}
-     */
-    ClassBuilder.prototype._prepareBody = function(classBody)
-    {
-        if (!classBody || typeof classBody != 'object') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the class body", false)
-                .received(classBody)
-                .expected("a plain object")
-                .apply()
-            ;
-        }
-        for (var propName in classBody) {
-            if (!classBody.hasOwnProperty(propName)) {
-                continue;
+        /**
+         * Saves class definition changes and registers class
+         * if the current one with the same name does not exist
+         *
+         * @method save
+         * @memberOf Subclass.Class.ClassBuilder.prototype
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        save: function()
+        {
+            if (!this.getName()) {
+                Subclass.Error.create('The future class must be named.');
             }
-            if (propName.match(/^\$_/i)) {
-                delete classBody[propName];
+            this._validate();
+            this.getEvent('onSaveBefore').trigger();
+
+            if (this._class) {
+                this._class.setDefinition(this.getDefinition());
+                return this._class;
             }
-        }
-        this
-            .getEvent('onPrepareBody')
-            .trigger(classBody)
-        ;
-        return classBody;
-    };
+            var classTypeInst = this.getClassManager().add(
+                this.getType(),
+                this.getName(),
+                this.getDefinition()
+            );
+            classTypeInst.getConstructor();
+            this.getEvent('onSaveAfter').trigger(classTypeInst);
 
-    /**
-     * Adds new methods and properties to definition of class (the class body)
-     *
-     * @method addBody
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @param {Object} classBody
-     *      The plain object with definitions of properties and methods of the class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     *
-     * @example
-     * ...
-     *
-     * app.registerClass("Foo/Bar/TestClass", {
-     *     _bar: 0,
-     *
-     *     $_constructor: function(bar) {
-     *          this._bar = bar;
-     *     }
-     * });
-     * ...
-     *
-     * app.alterClass("Foo/Bar/TestClass")
-     *     .addBody({
-     *
-     *         _foo: 10,
-     *
-     *         setFoo: function(foo) {
-     *             this._foo = foo;
-     *         },
-     *
-     *         getFoo: function() {
-     *             return this._foo;
-     *         }
-     *     })
-     *     .save()
-     * ;
-     * ...
-     *
-     * var TestClass = app.getClass("Foo/Bar/TestClass");
-     * var testClassDefinition = TestClass.getDefinition().getData();
-     * console.log(testClassDefinition);
-     *
-     * // {
-     * //   ...
-     * //   _bar: 0,
-     * //   _foo: 10,
-     * //   $_constructor: function(bar) { ... },
-     * //   setFoo: function(foo) { ... },
-     * //   getFoo: function() { ... },
-     * //   ...
-     * // }
-     */
-    ClassBuilder.prototype.addBody = function(classBody)
-    {
-        classBody = this._prepareBody(classBody);
+            return classTypeInst;
+        },
 
-        var classDefinition = this.getDefinition();
-        Subclass.Tools.extend(classDefinition, classBody);
-
-        return this;
-    };
-
-    /**
-     * Sets properties and methods of the class.<br /><br />
-     *
-     * Defines the class body except special properties which names start from "$_" symbols.
-     * The such properties will be omitted.
-     *
-     * If you alter someone class then the call of this method removes all methods and properties
-     * from the class body which not start from "$_" symbols and will be replaced by the new ones
-     * from the object which is specified in current method as argument.
-     *
-     * @param {Object} classBody
-     *      The plain object with definitions of properties and methods of the class
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     *
-     * @example
-     *
-     * app.buildClass("Class")
-     *      .setName("Foo/Bar/TestClass")
-     *      .setBody({
-     *
-     *          _bar: 0,
-     *
-     *          _foo: 10,
-     *
-     *          $_constructor: function(bar) {
-     *              this._bar = bar;
-     *          },
-     *
-     *          setFoo: function(foo) {
-     *              this._foo = foo;
-     *          },
-     *
-     *          getFoo: function() {
-     *              return this._foo;
-     *          }
-     *      })
-     *      .save()
-     * ;
-     */
-    ClassBuilder.prototype.setBody = function(classBody)
-    {
-        classBody = this._prepareBody(classBody);
-
-        var classDefinition = this.getDefinition();
-
-        for (var propName in classDefinition) {
-            if (!classDefinition.hasOwnProperty(propName)) {
-                continue;
+        /**
+         * Allows to create copy of class with definition of current class builder
+         *
+         * @param {string} className
+         *      The name of new class
+         *
+         * @returns {Subclass.Class.ClassType}
+         */
+        saveAs: function(className)
+        {
+            if (!this.getName()) {
+                Subclass.Error.create('The future class must be named.');
             }
-            if (!propName.match(/^$_/)) {
-                delete classDefinition[propName];
-            }
+            this._validate();
+            this.getEvent('onSaveAsBefore').trigger();
+
+            var classInst = this.getClassManager().add(
+                this.getType(),
+                className,
+                this.getDefinition()
+            );
+            classInst.getConstructor();
+            this.getEvent('onSaveAsAfter').trigger(classInst);
+
+            return classInst;
         }
-        Subclass.Tools.extend(classDefinition, classBody);
-
-        return this;
-    };
-
-    /**
-     * Sets constructor function of the class
-     *
-     * @method setConstructor
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @param {Function} constructorFunction
-     *      The function which will be invoked every time the instance of class will be created
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     *
-     * @example
-     * ...
-     *
-     * app.buildClass("Class")
-     *      .setName("Foo/Bar/TestClass")
-     *      .setConstructor(function(bar) {
-     *          this._bar = bar;
-     *      })
-     *      .setBody({
-     *          _bar: 0
-     *      })
-     *      .save()
-     * ;
-     */
-    ClassBuilder.prototype.setConstructor = function(constructorFunction)
-    {
-        this.getDefinition().$_constructor = constructorFunction;
-
-        return this;
-    };
-
-    /**
-     * Returns constructor function of the class
-     *
-     * @method getConstructor
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {(Function|null)}
-     */
-    ClassBuilder.prototype.getConstructor = function()
-    {
-        return this.getDefinition().$_constructor || null;
-    };
-
-    /**
-     * Removes class constructor function
-     *
-     * @method removeConstructor
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.removeConstructor = function()
-    {
-        var classDefinition = this.getDefinition();
-
-        delete classDefinition.$_constructor;
-
-        return this;
-    };
-
-    /**
-     * Validates the result class definition object
-     *
-     * @method _validate
-     * @private
-     *
-     * @throws {Error}
-     *      Throws error if:
-     *      - The name of class was missed
-     *      - The type of class was missed
-     *
-     * @returns {Subclass.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype._validate = function()
-    {
-        this.getEvent('onValidateBefore').trigger();
-
-        if (!this.getType()) {
-            Subclass.Error.create('The type of the future class must be specified.');
-        }
-        this.getEvent('onValidateAfter').trigger();
-
-        return this;
-    };
-
-    /**
-     * Creates class type instance without its registration,
-     * i.e. creates anonymous class
-     *
-     * @method create
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassBuilder.prototype.create = function()
-    {
-        this._validate();
-        this.getEvent('onCreateBefore').trigger();
-
-        if (this._class) {
-            this._class.setDefinition(this.getDefinition());
-            return this._class;
-        }
-
-        var classTypeConstructor = Subclass.ClassManager.getType(this.getType());
-        var classTypeInstance = this.getClassManager().create(
-            classTypeConstructor,
-            this.getName() || ('AnonymousClass_' + String(Math.round(Math.random() * (new Date).valueOf() / 100000))),
-            this.getDefinition()
-        );
-        this.getEvent('onCreateAfter').trigger(classTypeInstance);
-
-        return classTypeInstance;
-    };
-
-    /**
-     * Saves class definition changes and registers class
-     * if the current one with the same name does not exist
-     *
-     * @method save
-     * @memberOf Subclass.Class.ClassBuilder.prototype
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassBuilder.prototype.save = function()
-    {
-        if (!this.getName()) {
-            Subclass.Error.create('The future class must be named.');
-        }
-        this._validate();
-        this.getEvent('onSaveBefore').trigger();
-
-        if (this._class) {
-            this._class.setDefinition(this.getDefinition());
-            return this._class;
-        }
-        var classTypeInst = this.getClassManager().add(
-            this.getType(),
-            this.getName(),
-            this.getDefinition()
-        );
-        classTypeInst.getConstructor();
-        this.getEvent('onSaveAfter').trigger(classTypeInst);
-
-        return classTypeInst;
-    };
-
-    /**
-     * Allows to create copy of class with definition of current class builder
-     *
-     * @param {string} className
-     *      The name of new class
-     *
-     * @returns {Subclass.Class.ClassType}
-     */
-    ClassBuilder.prototype.saveAs = function(className)
-    {
-        if (!this.getName()) {
-            Subclass.Error.create('The future class must be named.');
-        }
-        this._validate();
-        this.getEvent('onSaveAsBefore').trigger();
-
-        var classInst = this.getClassManager().add(
-            this.getType(),
-            className,
-            this.getDefinition()
-        );
-        classInst.getConstructor();
-        this.getEvent('onSaveAsAfter').trigger(classInst);
-
-        return classInst;
     };
 
     return ClassBuilder;
@@ -8433,292 +8490,295 @@ Subclass.Class.Type.Class.Class = (function() {
         return Subclass.Class.Type.Class.ClassDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    Class.prototype.getConstructorEmpty = function ()
-    {
-        return function Class() {
+    Class.prototype = {
 
-            // Hook for the grunt-contrib-uglify plugin
-            return Class.name;
-        };
-    };
+        /**
+         * @inheritDoc
+         */
+        getConstructorEmpty: function ()
+        {
+            return function Class() {
 
-    /**
-     * @inheritDoc
-     * @throws {Error}
-     */
-    Class.prototype.createConstructor = function ()
-    {
-        var classConstructor = Class.$parent.prototype.createConstructor.call(this);
-        var abstractMethods = this._abstractMethods = this.getAbstractMethods();
-        var notImplementedMethods = [];
+                // Hook for the grunt-contrib-uglify plugin
+                return Class.name;
+            };
+        },
 
-        if (this.hasParent()) {
-            var parent = this.getParent();
+        /**
+         * @inheritDoc
+         * @throws {Error}
+         */
+        createConstructor: function ()
+        {
+            var classConstructor = Class.$parent.prototype.createConstructor.call(this);
+            var abstractMethods = this._abstractMethods = this.getAbstractMethods();
+            var notImplementedMethods = [];
 
-            // Adding parent abstract methods
+            if (this.hasParent()) {
+                var parent = this.getParent();
 
-            if (parent.getAbstractMethods) {
-                this.extendAbstractMethods(parent);
-            }
+                // Adding parent abstract methods
 
-            // Adding parent static properties
-
-            if (parent.getStaticProperties) {
-                this.extendStaticProperties(parent);
-            }
-        }
-
-        // Checking for not implemented methods
-
-        if (this.constructor != Subclass.Class.Type.AbstractClass.AbstractClass) {
-            for (var abstractMethodName in abstractMethods) {
-                if (!abstractMethods.hasOwnProperty(abstractMethodName)) {
-                    continue;
+                if (parent.getAbstractMethods) {
+                    this.extendAbstractMethods(parent);
                 }
-                if (
-                    !classConstructor.prototype[abstractMethodName]
-                    || typeof classConstructor.prototype[abstractMethodName] != 'function'
-                ) {
-                    notImplementedMethods.push(abstractMethodName);
+
+                // Adding parent static properties
+
+                if (parent.getStaticProperties) {
+                    this.extendStaticProperties(parent);
                 }
             }
-            if (notImplementedMethods.length) {
+
+            // Checking for not implemented methods
+
+            if (this.constructor != Subclass.Class.Type.AbstractClass.AbstractClass) {
+                for (var abstractMethodName in abstractMethods) {
+                    if (!abstractMethods.hasOwnProperty(abstractMethodName)) {
+                        continue;
+                    }
+                    if (
+                        !classConstructor.prototype[abstractMethodName]
+                        || typeof classConstructor.prototype[abstractMethodName] != 'function'
+                    ) {
+                        notImplementedMethods.push(abstractMethodName);
+                    }
+                }
+                if (notImplementedMethods.length) {
+                    Subclass.Error.create(
+                        'The class "' + this.getName() + '" must be an abstract or implement abstract methods: ' +
+                        '"' + notImplementedMethods.join('", "') + '".'
+                    );
+                }
+            }
+
+            return classConstructor;
+        },
+
+        /**
+         * @inheritDoc
+         */
+        setParent: function (parentClassName)
+        {
+            Class.$parent.prototype.setParent.call(this, parentClassName);
+
+            if (
+                this._parent
+                && this._parent.constructor != Class
+                && this._parent.constructor != Subclass.ClassManager.getType('AbstractClass')
+            ) {
                 Subclass.Error.create(
-                    'The class "' + this.getName() + '" must be an abstract or implement abstract methods: ' +
-                    '"' + notImplementedMethods.join('", "') + '".'
+                    'The class "' + this.getName() + '" can be inherited ' +
+                    'only from another class or abstract class.'
                 );
             }
-        }
+            if (
+                this._parent
+                && this._parent.constructor == Class
+                && this._parent.getDefinition().isFinal()
+            ) {
+                Subclass.Error.create(
+                    'The class "' + this.getName() + '" can\'t extend the final class ' +
+                    '"' + this._parent.getName() + '"'
+                );
+            }
+        },
 
-        return classConstructor;
-    };
+        /**
+         * Returns class static properties and methods
+         *
+         * @returns {Object}
+         */
+        getStaticContext: function()
+        {
+            var $this = this;
 
-    /**
-     * @inheritDoc
-     */
-    Class.prototype.setParent = function (parentClassName)
-    {
-        Class.$parent.prototype.setParent.call(this, parentClassName);
+            if (!this._staticContext) {
+                this._staticContext = {
 
-        if (
-            this._parent
-            && this._parent.constructor != Class
-            && this._parent.constructor != Subclass.ClassManager.getType('AbstractClass')
-        ) {
-            Subclass.Error.create(
-                'The class "' + this.getName() + '" can be inherited ' +
-                'only from another class or abstract class.'
-            );
-        }
-        if (
-            this._parent
-            && this._parent.constructor == Class
-            && this._parent.getDefinition().isFinal()
-        ) {
-            Subclass.Error.create(
-                'The class "' + this.getName() + '" can\'t extend the final class ' +
-                '"' + this._parent.getName() + '"'
-            );
-        }
-    };
+                    /**
+                     * Returns current class declaration instance
+                     *
+                     * @returns {Subclass.Class.ClassType}
+                     */
+                    getClass: function()
+                    {
+                        return $this;
+                    },
 
-    /**
-     * Returns class static properties and methods
-     *
-     * @returns {Object}
-     */
-    Class.prototype.getStaticContext = function()
-    {
-        var $this = this;
-
-        if (!this._staticContext) {
-            this._staticContext = {
-
-                /**
-                 * Returns current class declaration instance
-                 *
-                 * @returns {Subclass.Class.ClassType}
-                 */
-                getClass: function()
-                {
-                    return $this;
-                },
-
-                /**
-                 * Returns parent of current class
-                 *
-                 * @returns {(Subclass.Class.ClassType|null)}
-                 */
-                getParent: function()
-                {
-                    return $this.getParent();
+                    /**
+                     * Returns parent of current class
+                     *
+                     * @returns {(Subclass.Class.ClassType|null)}
+                     */
+                    getParent: function()
+                    {
+                        return $this.getParent();
+                    }
                 }
             }
-        }
-        return this._staticContext;
-    };
+            return this._staticContext;
+        },
 
-    /**
-     * Adds static properties
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid static properties definition
-     *
-     * @param {Object} properties
-     */
-    Class.prototype.addStaticProperties = function(properties)
-    {
-        if (!properties || !Subclass.Tools.isPlainObject(properties)) {
-            Subclass.Error.create("InvalidArgument")
-                .argument('the static properties definition', false)
-                .expected('a plain object')
-                .received(properties)
-                .apply()
-            ;
-        }
-        for (var propName in properties) {
-            if (properties.hasOwnProperty(propName)) {
-                this.addStaticProperty(propName, properties[propName]);
+        /**
+         * Adds static properties
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid static properties definition
+         *
+         * @param {Object} properties
+         */
+        addStaticProperties: function(properties)
+        {
+            if (!properties || !Subclass.Tools.isPlainObject(properties)) {
+                Subclass.Error.create("InvalidArgument")
+                    .argument('the static properties definition', false)
+                    .expected('a plain object')
+                    .received(properties)
+                    .apply()
+                ;
             }
-        }
-    };
-
-    /**
-     * Adds the new static property.<br />
-     *
-     * If the static property value was specified as a function then it will contain
-     * specific static context object with all earlier defined static properties and methods.<br />
-     *
-     * If you'll want call static method with another context, you should use the "origin" property of it.
-     * For example, instead of using expression myClass.staticMethod.call(obj) you should use this:
-     * myClass.staticMethod.<b>origin</b>.call(obj).
-     *
-     * @thorws {Error}
-     *      Throws error if specified invalid static property name
-     *
-     * @param {string} propertyName
-     *      The name of static property
-     *
-     * @param {*} propertyValue
-     *      The value of static property
-     */
-    Class.prototype.addStaticProperty = function(propertyName, propertyValue)
-    {
-        if (!propertyName || typeof propertyName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of static property', false)
-                .expected('a string')
-                .received(propertyName)
-                .apply()
-            ;
-        }
-        var staticContext = this.getStaticContext();
-            staticContext[propertyName] = propertyValue;
-
-        this._static.push(propertyName);
-
-        if (typeof propertyValue == 'function') {
-            this[propertyName] = function() {
-                return staticContext[propertyName].apply(staticContext, arguments);
-            };
-            this[propertyName].origin = propertyValue;
-
-        } else {
-            Object.defineProperty(this, propertyName, {
-                configurable: true,
-                enumerable: true,
-                set: function(value) {
-                    staticContext[propertyName] = value;
-                },
-                get: function() {
-                    return staticContext[propertyName];
+            for (var propName in properties) {
+                if (properties.hasOwnProperty(propName)) {
+                    this.addStaticProperty(propName, properties[propName]);
                 }
-            });
+            }
+        },
+
+        /**
+         * Adds the new static property.<br />
+         *
+         * If the static property value was specified as a function then it will contain
+         * specific static context object with all earlier defined static properties and methods.<br />
+         *
+         * If you'll want call static method with another context, you should use the "origin" property of it.
+         * For example, instead of using expression myClass.staticMethod.call(obj) you should use this:
+         * myClass.staticMethod.<b>origin</b>.call(obj).
+         *
+         * @thorws {Error}
+         *      Throws error if specified invalid static property name
+         *
+         * @param {string} propertyName
+         *      The name of static property
+         *
+         * @param {*} propertyValue
+         *      The value of static property
+         */
+        addStaticProperty: function(propertyName, propertyValue)
+        {
+            if (!propertyName || typeof propertyName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of static property', false)
+                    .expected('a string')
+                    .received(propertyName)
+                    .apply()
+                ;
+            }
+            var staticContext = this.getStaticContext();
+                staticContext[propertyName] = propertyValue;
+
+            this._static.push(propertyName);
+
+            if (typeof propertyValue == 'function') {
+                this[propertyName] = function() {
+                    return staticContext[propertyName].apply(staticContext, arguments);
+                };
+                this[propertyName].origin = propertyValue;
+
+            } else {
+                Object.defineProperty(this, propertyName, {
+                    configurable: true,
+                    enumerable: true,
+                    set: function(value) {
+                        staticContext[propertyName] = value;
+                    },
+                    get: function() {
+                        return staticContext[propertyName];
+                    }
+                });
+            }
+        },
+
+        /**
+         * Extends static properties from parent to current class
+         *
+         * @param {Subclass.Class.Type.Class.Class} parentClass
+         *      The parent class declaration instance
+         */
+        extendStaticProperties: function(parentClass)
+        {
+            var ownStaticPropertyNames = Subclass.Tools.copy(this.getStaticPropertyNames());
+            var ownStaticContext = Subclass.Tools.copy(this.getStaticContext());
+            var parentStaticContext = parentClass.getStaticContext();
+            var parentStaticPropertyNames = parentClass.getStaticPropertyNames();
+            var propName, propValue;
+
+            for (var i = 0; i < parentStaticPropertyNames.length; i++) {
+                propName = parentStaticPropertyNames[i];
+                propValue = parentStaticContext[propName];
+
+                this.addStaticProperty(propName, propValue);
+            }
+            for (i = 0; i < ownStaticPropertyNames.length; i++) {
+                propName = ownStaticPropertyNames[i];
+                propValue = ownStaticContext[propName];
+
+                this.addStaticProperty(propName, propValue);
+            }
+        },
+
+        /**
+         * Returns all defined static class properties
+         *
+         * @returns {Object}
+         */
+        getStaticProperties: function()
+        {
+            var staticPropertyNames = this._static;
+            var staticProperties = {};
+
+            for (var i = 0; i < staticPropertyNames.length; i++) {
+                staticProperties[staticPropertyNames[i]] = this[staticPropertyNames];
+            }
+        },
+
+        /**
+         * Returns array with names of static class properties
+         *
+         * @returns {Array}
+         */
+        getStaticPropertyNames: function()
+        {
+            return this._static;
+        },
+
+        /**
+         * Returns all abstract methods
+         *
+         * @returns {Array}
+         */
+        getAbstractMethods: function ()
+        {
+            return this._abstractMethods;
+        },
+
+        /**
+         * Adds new abstract methods to be implemented
+         *
+         * @param methods
+         */
+        addAbstractMethods: function(methods)
+        {
+            Subclass.Tools.extend(this._abstractMethods, methods);
+        },
+
+        extendAbstractMethods: function(parentClass)
+        {
+            Subclass.Tools.extend(
+                this.getAbstractMethods(),
+                parentClass.getAbstractMethods()
+            );
         }
-    };
-
-    /**
-     * Extends static properties from parent to current class
-     *
-     * @param {Subclass.Class.Type.Class.Class} parentClass
-     *      The parent class declaration instance
-     */
-    Class.prototype.extendStaticProperties = function(parentClass)
-    {
-        var ownStaticPropertyNames = Subclass.Tools.copy(this.getStaticPropertyNames());
-        var ownStaticContext = Subclass.Tools.copy(this.getStaticContext());
-        var parentStaticContext = parentClass.getStaticContext();
-        var parentStaticPropertyNames = parentClass.getStaticPropertyNames();
-        var propName, propValue;
-
-        for (var i = 0; i < parentStaticPropertyNames.length; i++) {
-            propName = parentStaticPropertyNames[i];
-            propValue = parentStaticContext[propName];
-
-            this.addStaticProperty(propName, propValue);
-        }
-        for (i = 0; i < ownStaticPropertyNames.length; i++) {
-            propName = ownStaticPropertyNames[i];
-            propValue = ownStaticContext[propName];
-
-            this.addStaticProperty(propName, propValue);
-        }
-    };
-
-    /**
-     * Returns all defined static class properties
-     *
-     * @returns {Object}
-     */
-    Class.prototype.getStaticProperties = function()
-    {
-        var staticPropertyNames = this._static;
-        var staticProperties = {};
-
-        for (var i = 0; i < staticPropertyNames.length; i++) {
-            staticProperties[staticPropertyNames[i]] = this[staticPropertyNames];
-        }
-    };
-
-    /**
-     * Returns array with names of static class properties
-     *
-     * @returns {Array}
-     */
-    Class.prototype.getStaticPropertyNames = function()
-    {
-        return this._static;
-    };
-
-    /**
-     * Returns all abstract methods
-     *
-     * @returns {Array}
-     */
-    Class.prototype.getAbstractMethods = function ()
-    {
-        return this._abstractMethods;
-    };
-
-    /**
-     * Adds new abstract methods to be implemented
-     *
-     * @param methods
-     */
-    Class.prototype.addAbstractMethods = function(methods)
-    {
-        Subclass.Tools.extend(this._abstractMethods, methods);
-    };
-
-    Class.prototype.extendAbstractMethods = function(parentClass)
-    {
-        Subclass.Tools.extend(
-            this.getAbstractMethods(),
-            parentClass.getAbstractMethods()
-        );
     };
 
     /*************************************************/
@@ -8746,173 +8806,176 @@ Subclass.Class.Type.Class.ClassBuilder = (function()
 
     ClassBuilder.$parent = Subclass.Class.ClassBuilder;
 
-    /**
-     * Makes class either final or not
-     *
-     * @method setFinal
-     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid definition of final option
-     *
-     * @param {boolean} isFinal
-     */
-    ClassBuilder.prototype.setFinal = function(isFinal)
-    {
-        if (typeof isFinal != 'boolean') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('is final option value', false)
-                .expected('a boolean')
-                .received(isFinal)
-                .apply()
-            ;
+    ClassBuilder.prototype = {
+
+        /**
+         * Makes class either final or not
+         *
+         * @method setFinal
+         * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid definition of final option
+         *
+         * @param {boolean} isFinal
+         */
+        setFinal: function(isFinal)
+        {
+            if (typeof isFinal != 'boolean') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('is final option value', false)
+                    .expected('a boolean')
+                    .received(isFinal)
+                    .apply()
+                ;
+            }
+            this.getDefinition().$_final = isFinal;
+
+            return this;
+        },
+
+        /**
+         * Returns $_final option value
+         *
+         * @method getFinal
+         * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+         *
+         * @returns {boolean}
+         */
+        getFinal: function()
+        {
+            return this.getDefinition().$_final;
+        },
+
+        /**
+         * Sets static properties and methods of the class
+         *
+         * @method setStaticProperties
+         * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified invalid definition of static properties
+         *
+         * @param {Object} staticProperties
+         *      The plain object with definitions of static properties.
+         *
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         *
+         * @example
+         * ...
+         *
+         * app.buildClass("Class")
+         *     .setName("Foo/Bar/TestClass")
+         *     .setStatic({
+         *         staticProp: "static value",
+         *         staticMethod: function() {
+         *             alert(this.staticProp);
+         *         }
+         *     })
+         *     .save()
+         * ;
+         * ...
+         *
+         * var TestClass = app.getClass("Foo/Bar/TestClass");
+         * var staticProp = TestClass.staticProp;  // "static value"
+         * TestClass.staticMethod();               // alerts "static value"
+         */
+        setStaticProperties: function(staticProperties)
+        {
+            if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the static properties", false)
+                    .received(staticProperties)
+                    .expected("a plain object")
+                    .apply()
+                ;
+            }
+            this.getDefinition().$_static = staticProperties;
+
+            return this;
+        },
+
+        /**
+         * Returns static properties and methods of the class
+         *
+         * @method getStaticProperties
+         * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+         *
+         * @returns {Object}
+         */
+        getStaticProperties: function()
+        {
+            return this.getDefinition().$_static || {};
+        },
+
+        /**
+         * Sets static property or method of the class
+         *
+         * @method setStaticProperty
+         * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified not allowed name of static property or method
+         *
+         * @param {string} staticPropertyName
+         *      The name of static property or method
+         *
+         * @param {*} staticPropertyValue
+         *      The value of static property or method
+         *
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         *
+         * @example
+         * ...
+         *
+         * // Defining few static properties
+         * builder
+         *     .setStaticProperty("foo", "foo value")
+         *     .setStaticProperty("bar", 100)
+         * ;
+         */
+        setStaticProperty: function(staticPropertyName, staticPropertyValue)
+        {
+            if (typeof staticPropertyName !== 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of static property", false)
+                    .received(staticPropertyName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            this.getDefinition().$_static[staticPropertyName] = staticPropertyValue;
+
+            return this;
+        },
+
+        /**
+         * Removes the static property or method
+         *
+         * @method removeStaticProperty
+         * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified not allowed name of static property or name
+         *
+         * @param {string} staticPropertyName
+         *      The name of static property or method
+         *
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         */
+        removeStaticProperty: function(staticPropertyName)
+        {
+            if (typeof staticPropertyName !== 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of static property", false)
+                    .received(staticPropertyName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            delete this.getDefinition().$_static[staticPropertyName];
+            return this;
         }
-        this.getDefinition().$_final = isFinal;
-
-        return this;
-    };
-
-    /**
-     * Returns $_final option value
-     *
-     * @method getFinal
-     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
-     *
-     * @returns {boolean}
-     */
-    ClassBuilder.prototype.getFinal = function()
-    {
-        return this.getDefinition().$_final;
-    };
-
-    /**
-     * Sets static properties and methods of the class
-     *
-     * @method setStaticProperties
-     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified invalid definition of static properties
-     *
-     * @param {Object} staticProperties
-     *      The plain object with definitions of static properties.
-     *
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     *
-     * @example
-     * ...
-     *
-     * app.buildClass("Class")
-     *     .setName("Foo/Bar/TestClass")
-     *     .setStatic({
-     *         staticProp: "static value",
-     *         staticMethod: function() {
-     *             alert(this.staticProp);
-     *         }
-     *     })
-     *     .save()
-     * ;
-     * ...
-     *
-     * var TestClass = app.getClass("Foo/Bar/TestClass");
-     * var staticProp = TestClass.staticProp;  // "static value"
-     * TestClass.staticMethod();               // alerts "static value"
-     */
-    ClassBuilder.prototype.setStaticProperties = function(staticProperties)
-    {
-        if (!staticProperties || !Subclass.Tools.isPlainObject(staticProperties)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the static properties", false)
-                .received(staticProperties)
-                .expected("a plain object")
-                .apply()
-            ;
-        }
-        this.getDefinition().$_static = staticProperties;
-
-        return this;
-    };
-
-    /**
-     * Returns static properties and methods of the class
-     *
-     * @method getStaticProperties
-     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
-     *
-     * @returns {Object}
-     */
-    ClassBuilder.prototype.getStaticProperties = function()
-    {
-        return this.getDefinition().$_static || {};
-    };
-
-    /**
-     * Sets static property or method of the class
-     *
-     * @method setStaticProperty
-     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified not allowed name of static property or method
-     *
-     * @param {string} staticPropertyName
-     *      The name of static property or method
-     *
-     * @param {*} staticPropertyValue
-     *      The value of static property or method
-     *
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     *
-     * @example
-     * ...
-     *
-     * // Defining few static properties
-     * builder
-     *     .setStaticProperty("foo", "foo value")
-     *     .setStaticProperty("bar", 100)
-     * ;
-     */
-    ClassBuilder.prototype.setStaticProperty = function(staticPropertyName, staticPropertyValue)
-    {
-        if (typeof staticPropertyName !== 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of static property", false)
-                .received(staticPropertyName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        this.getDefinition().$_static[staticPropertyName] = staticPropertyValue;
-
-        return this;
-    };
-
-    /**
-     * Removes the static property or method
-     *
-     * @method removeStaticProperty
-     * @memberOf Subclass.Class.Type.Class.ClassBuilder.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified not allowed name of static property or name
-     *
-     * @param {string} staticPropertyName
-     *      The name of static property or method
-     *
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.removeStaticProperty = function(staticPropertyName)
-    {
-        if (typeof staticPropertyName !== 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of static property", false)
-                .received(staticPropertyName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        delete this.getDefinition().$_static[staticPropertyName];
-        return this;
     };
 
     return ClassBuilder;
@@ -8936,126 +8999,129 @@ Subclass.Class.Type.Class.ClassDefinition = (function()
 
     ClassDefinition.$parent = Subclass.Class.ClassDefinition;
 
-    /**
-     * Validates "$_final" option value
-     *
-     * @param {*} isFinal
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateFinal = function(isFinal)
-    {
-        if (typeof isFinal != 'boolean') {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_final')
-                .received(isFinal)
-                .className(this.getClass().getName())
-                .expected('a boolean')
-                .apply()
-            ;
-        }
-        return true;
-    };
-
-    /**
-     * Sets "$_final" option value
-     *
-     * @param {boolean} isFinal
-     */
-    ClassDefinition.prototype.setFinal = function(isFinal)
-    {
-        this.validateFinal(isFinal);
-        this.getData().$_final = isFinal;
-    };
-
-    /**
-     * Returns "$_final" option value
-     *
-     * @returns {boolean}
-     */
-    ClassDefinition.prototype.getFinal = function()
-    {
-        return this.getData().$_final;
-    };
-
-    /**
-     * @alias {Subclass.Class.Type.Class.ClassDefinition.prototype#getFinal}
-     *
-     * @returns {boolean}
-     */
-    ClassDefinition.prototype.isFinal = function()
-    {
-        return this.getFinal();
-    };
-
-    /**
-     * Validates "$_static" attribute value
-     *
-     * @param {*} value
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateStatic = function(value)
-    {
-        if (value !== null && !Subclass.Tools.isPlainObject(value)) {
-            Subclass.Error.create('InvalidClassOption')
-                .option('$_static')
-                .className(this.getClass().getName())
-                .received(value)
-                .expected('a plain object or null')
-                .apply()
-            ;
-        }
-        return true;
-    };
-
-    /**
-     * Sets "$_static" attribute value
-     *
-     * @param {Object} value Plain object with different properties and methods
-     */
-    ClassDefinition.prototype.setStatic = function(value)
-    {
-        this.validateStatic(value);
-        this.getData().$_static = value || {};
-
-        if (value) {
-            this.getClass().addStaticProperties(value);
-        }
-    };
-
-    /**
-     * Returns "$_static" attribute value
-     *
-     * @returns {Object}
-     */
-    ClassDefinition.prototype.getStatic = function()
-    {
-        return this.getData().$_static;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ClassDefinition.prototype.createBaseData = function ()
-    {
-        var classDefinition = ClassDefinition.$parent.prototype.createBaseData();
+    ClassDefinition.prototype = {
 
         /**
-         * Makes class final. It means that it can't be parent for any another class
+         * Validates "$_final" option value
          *
-         * @type {boolean}
+         * @param {*} isFinal
+         * @returns {boolean}
+         * @throws {Error}
          */
-        classDefinition.$_final = false;
+        validateFinal: function(isFinal)
+        {
+            if (typeof isFinal != 'boolean') {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_final')
+                    .received(isFinal)
+                    .className(this.getClass().getName())
+                    .expected('a boolean')
+                    .apply()
+                ;
+            }
+            return true;
+        },
 
         /**
-         * Static properties and methods for current class constructor
+         * Sets "$_final" option value
          *
-         * @type {Object}
+         * @param {boolean} isFinal
          */
-        classDefinition.$_static = {};
+        setFinal: function(isFinal)
+        {
+            this.validateFinal(isFinal);
+            this.getData().$_final = isFinal;
+        },
 
-        return classDefinition;
+        /**
+         * Returns "$_final" option value
+         *
+         * @returns {boolean}
+         */
+        getFinal: function()
+        {
+            return this.getData().$_final;
+        },
+
+        /**
+         * @alias {Subclass.Class.Type.Class.ClassDefinition.prototype#getFinal}
+         *
+         * @returns {boolean}
+         */
+        isFinal: function()
+        {
+            return this.getFinal();
+        },
+
+        /**
+         * Validates "$_static" attribute value
+         *
+         * @param {*} value
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateStatic: function(value)
+        {
+            if (value !== null && !Subclass.Tools.isPlainObject(value)) {
+                Subclass.Error.create('InvalidClassOption')
+                    .option('$_static')
+                    .className(this.getClass().getName())
+                    .received(value)
+                    .expected('a plain object or null')
+                    .apply()
+                ;
+            }
+            return true;
+        },
+
+        /**
+         * Sets "$_static" attribute value
+         *
+         * @param {Object} value Plain object with different properties and methods
+         */
+        setStatic: function(value)
+        {
+            this.validateStatic(value);
+            this.getData().$_static = value || {};
+
+            if (value) {
+                this.getClass().addStaticProperties(value);
+            }
+        },
+
+        /**
+         * Returns "$_static" attribute value
+         *
+         * @returns {Object}
+         */
+        getStatic: function()
+        {
+            return this.getData().$_static;
+        },
+
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function ()
+        {
+            var classDefinition = ClassDefinition.$parent.prototype.createBaseData();
+
+            /**
+             * Makes class final. It means that it can't be parent for any another class
+             *
+             * @type {boolean}
+             */
+            classDefinition.$_final = false;
+
+            /**
+             * Static properties and methods for current class constructor
+             *
+             * @type {Object}
+             */
+            classDefinition.$_static = {};
+
+            return classDefinition;
+        }
     };
 
     return ClassDefinition;
@@ -9124,42 +9190,46 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
         return Subclass.Class.Type.AbstractClass.AbstractClassDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClass.prototype.setParent = function (parentClassName)
-    {
-        Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
+    AbstractClass.prototype = {
 
-        if (
-            this._parent
-            && this._parent.constructor != AbstractClass
-            && !(this._parent instanceof AbstractClass)
-        ) {
-            Subclass.Error.create(
-                'The abstract class "' + this.getName() + '" can be ' +
-                'inherited only from the another abstract class.'
-            );
-        }
+        /**
+         * @inheritDoc
+         */
+        setParent: function (parentClassName)
+        {
+            Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
+
+            if (
+                this._parent
+                && this._parent.constructor != AbstractClass
+                && !(this._parent instanceof AbstractClass)
+            ) {
+                Subclass.Error.create(
+                    'The abstract class "' + this.getName() + '" can be ' +
+                    'inherited only from the another abstract class.'
+                );
+            }
+        },
+
+        /**
+         * @inheritDoc
+         */
+        getConstructorEmpty: function ()
+        {
+            return function AbstractClass(){
+
+                // Hook for the grunt-contrib-uglify plugin
+                return AbstractClass.name;
+            };
+        },
+
+        /**
+         * @inheritDoc
+         * @throws {Error}
+         */
+        createInstance: undefined
     };
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClass.prototype.getConstructorEmpty = function ()
-    {
-        return function AbstractClass(){
-
-            // Hook for the grunt-contrib-uglify plugin
-            return AbstractClass.name;
-        };
-    };
-
-    /**
-     * @inheritDoc
-     * @throws {Error}
-     */
-    AbstractClass.prototype.createInstance = undefined;
 
 
     /*************************************************/
@@ -9176,6 +9246,7 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
 
 /**
  * @class
+ * @constructor
  * @extends {Subclass.Class.ClassBuilder}
  */
 Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
@@ -9187,137 +9258,139 @@ Subclass.Class.Type.AbstractClass.AbstractClassBuilder = (function()
 
     AbstractClassBuilder.$parent = Subclass.Class.Type.Class.ClassBuilder;
 
-    AbstractClassBuilder.prototype.setFinal = undefined;
+    AbstractClassBuilder.prototype = {
 
-    AbstractClassBuilder.prototype.getFinal = undefined;
+        setFinal: undefined,
 
-    /**
-     * Validates abstract methods argument
-     *
-     * @param {Object.<Function>} abstractMethods
-     * @private
-     */
-    AbstractClassBuilder.prototype._validateAbstractMethods = function(abstractMethods)
-    {
-        if (!Subclass.Tools.isPlainObject(abstractMethods)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the list of abstract methods", false)
-                .received(abstractMethods)
-                .expected("a plain object with functions")
-                .apply()
-            ;
-        }
-        for (var methodName in abstractMethods) {
-            if (abstractMethods.hasOwnProperty(methodName)) {
-                this._validateAbstractMethod(abstractMethods[methodName]);
+        getFinal: undefined,
+
+        /**
+         * Validates abstract methods argument
+         *
+         * @param {Object.<Function>} abstractMethods
+         * @private
+         */
+        _validateAbstractMethods: function(abstractMethods)
+        {
+            if (!Subclass.Tools.isPlainObject(abstractMethods)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the list of abstract methods", false)
+                    .received(abstractMethods)
+                    .expected("a plain object with functions")
+                    .apply()
+                ;
             }
+            for (var methodName in abstractMethods) {
+                if (abstractMethods.hasOwnProperty(methodName)) {
+                    this._validateAbstractMethod(abstractMethods[methodName]);
+                }
+            }
+        },
+
+        /**
+         * Validates abstract method
+         *
+         * @param abstractMethod
+         * @private
+         */
+        _validateAbstractMethod: function(abstractMethod)
+        {
+            if (typeof abstractMethod != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of abstract method', false)
+                    .received(abstractMethod)
+                    .expected('a function')
+                    .apply()
+                ;
+            }
+        },
+
+        /**
+         * Sets abstract methods
+         *
+         * @param {Object.<Function>} abstractMethods
+         * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
+         */
+        setAbstractMethods: function(abstractMethods)
+        {
+            this._validateAbstractMethods(abstractMethods);
+            this.getDefinition().$_abstract = abstractMethods;
+
+            return this;
+        },
+
+        /**
+         * Adds new abstract methods
+         *
+         * @param {Object.<Function>} abstractMethods
+         * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
+         */
+        addAbstractMethods: function(abstractMethods)
+        {
+            this._validateAbstractMethods(abstractMethods);
+
+            if (!this.getDefinition().$_abstract) {
+                this.getDefinition().$_abstract = {};
+            }
+            Subclass.Tools.extend(
+                this.getDefinition().$_abstract,
+                abstractMethods
+            );
+
+            return this;
+        },
+
+        /**
+         * Adds new abstract method
+         *
+         * @param {string} methodName
+         * @param {Function} methodFunction
+         * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
+         */
+        addAbstractMethod: function(methodName, methodFunction)
+        {
+            this._validateAbstractMethod(methodFunction);
+
+            if (!methodName || typeof methodName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of abstract method', false)
+                    .received(methodName)
+                    .expected('a string')
+                    .apply()
+                ;
+            }
+            if (!this.getDefinition().$_abstract) {
+                this.getDefinition().$_abstract = {};
+            }
+            this.getDefinition().$_abstract[methodName] = methodFunction;
+
+            return this;
+        },
+
+        /**
+         * Returns abstract methods
+         *
+         * @returns {Object.<Function>}
+         */
+        getAbstractMethods: function()
+        {
+            return this.getDefinition().$_abstract || {};
+        },
+
+        /**
+         * Removes abstract method with specified method name
+         *
+         * @param {string} abstractMethodName
+         * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
+         */
+        removeAbstractMethod: function(abstractMethodName)
+        {
+            var abstractMethods = this.getAbstractMethods();
+
+            delete abstractMethods[abstractMethodName];
+
+            return this;
         }
-    };
-
-    /**
-     * Validates abstract method
-     *
-     * @param abstractMethod
-     * @private
-     */
-    AbstractClassBuilder.prototype._validateAbstractMethod = function(abstractMethod)
-    {
-        if (typeof abstractMethod != 'function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of abstract method', false)
-                .received(abstractMethod)
-                .expected('a function')
-                .apply()
-            ;
-        }
-    };
-
-    /**
-     * Sets abstract methods
-     *
-     * @param {Object.<Function>} abstractMethods
-     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
-     */
-    AbstractClassBuilder.prototype.setAbstractMethods = function(abstractMethods)
-    {
-        this._validateAbstractMethods(abstractMethods);
-        this.getDefinition().$_abstract = abstractMethods;
-
-        return this;
-    };
-
-    /**
-     * Adds new abstract methods
-     *
-     * @param {Object.<Function>} abstractMethods
-     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
-     */
-    AbstractClassBuilder.prototype.addAbstractMethods = function(abstractMethods)
-    {
-        this._validateAbstractMethods(abstractMethods);
-
-        if (!this.getDefinition().$_abstract) {
-            this.getDefinition().$_abstract = {};
-        }
-        Subclass.Tools.extend(
-            this.getDefinition().$_abstract,
-            abstractMethods
-        );
-
-        return this;
-    };
-
-    /**
-     * Adds new abstract method
-     *
-     * @param {string} methodName
-     * @param {Function} methodFunction
-     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
-     */
-    AbstractClassBuilder.prototype.addAbstractMethod = function(methodName, methodFunction)
-    {
-        this._validateAbstractMethod(methodFunction);
-
-        if (!methodName || typeof methodName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of abstract method', false)
-                .received(methodName)
-                .expected('a string')
-                .apply()
-            ;
-        }
-        if (!this.getDefinition().$_abstract) {
-            this.getDefinition().$_abstract = {};
-        }
-        this.getDefinition().$_abstract[methodName] = methodFunction;
-
-        return this;
-    };
-
-
-    /**
-     * Returns abstract methods
-     *
-     * @returns {Object.<Function>}
-     */
-    AbstractClassBuilder.prototype.getAbstractMethods = function()
-    {
-        return this.getDefinition().$_abstract || {};
-    };
-
-    /**
-     * Removes abstract method with specified method name
-     *
-     * @param {string} abstractMethodName
-     * @returns {Subclass.Class.Type.AbstractClass.AbstractClassBuilder}
-     */
-    AbstractClassBuilder.prototype.removeAbstractMethod = function(abstractMethodName)
-    {
-        var abstractMethods = this.getAbstractMethods();
-
-        delete abstractMethods[abstractMethodName];
-
-        return this;
     };
 
     return AbstractClassBuilder;
@@ -9341,116 +9414,119 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
 
     AbstractClassDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClassDefinition.prototype.validateFinal = function(isFinal)
-    {
-        Subclass.Error.create(
-            'Abstract class definition cannot contain $_final option ' +
-            'and consequently can\'t be final.'
-        )
-    };
+    AbstractClassDefinition.prototype = {
 
-    /**
-     * Validates "$_abstract" attribute value
-     *
-     * @param {*} value
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    AbstractClassDefinition.prototype.validateAbstract = function(value)
-    {
-        try {
-            if (value !== null && !Subclass.Tools.isPlainObject(value)) {
-                throw 'error';
-            }
-            if (value) {
-                for (var methodName in value) {
-                    if (!value.hasOwnProperty(methodName)) {
-                        continue;
-                    }
-                    if (typeof value[methodName] != 'function') {
-                        throw 'error';
+        /**
+         * @inheritDoc
+         */
+        validateFinal: function(isFinal)
+        {
+            Subclass.Error.create(
+                'Abstract class definition cannot contain $_final option ' +
+                'and consequently can\'t be final.'
+            )
+        },
+
+        /**
+         * Validates "$_abstract" attribute value
+         *
+         * @param {*} value
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateAbstract: function(value)
+        {
+            try {
+                if (value !== null && !Subclass.Tools.isPlainObject(value)) {
+                    throw 'error';
+                }
+                if (value) {
+                    for (var methodName in value) {
+                        if (!value.hasOwnProperty(methodName)) {
+                            continue;
+                        }
+                        if (typeof value[methodName] != 'function') {
+                            throw 'error';
+                        }
                     }
                 }
+            } catch (e) {
+                if (e == 'error') {
+                    Subclass.Error.create('InvalidClassOption')
+                        .option('$_abstract')
+                        .className(this.getClass().getName())
+                        .expected('a plain object with methods or a null')
+                        .received(value)
+                        .apply()
+                    ;
+                } else {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_abstract')
-                    .className(this.getClass().getName())
-                    .expected('a plain object with methods or a null')
-                    .received(value)
-                    .apply()
-                ;
-            } else {
-                throw e;
+            return true;
+        },
+
+        /**
+         * Sets "$_abstract" attribute value
+         *
+         * @param {Object} value
+         *      The plain object with different properties and methods
+         */
+        setAbstract: function(value)
+        {
+            this.validateAbstract(value);
+            this.getData().$_abstract = value || {};
+
+            if (value) {
+                this.getClass().addAbstractMethods(value);
             }
-        }
-        return true;
-    };
+        },
 
-    /**
-     * Sets "$_abstract" attribute value
-     *
-     * @param {Object} value
-     *      The plain object with different properties and methods
-     */
-    AbstractClassDefinition.prototype.setAbstract = function(value)
-    {
-        this.validateAbstract(value);
-        this.getData().$_abstract = value || {};
+        /**
+         * Returns "$_abstract" attribute value
+         *
+         * @returns {Object}
+         */
+        getAbstract: function()
+        {
+            return this.getData().$_abstract;
+        },
 
-        if (value) {
-            this.getClass().addAbstractMethods(value);
-        }
-    };
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function ()
+        {
+            return {
 
-    /**
-     * Returns "$_abstract" attribute value
-     *
-     * @returns {Object}
-     */
-    AbstractClassDefinition.prototype.getAbstract = function()
-    {
-        return this.getData().$_abstract;
-    };
+                /**
+                 * Required classes
+                 *
+                 * @type {(string[]|Object.<string>|null)}
+                 */
+                $_requires: null,
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClassDefinition.prototype.createBaseData = function ()
-    {
-        return {
+                /**
+                 * Parent class name
+                 *
+                 * @type {string}
+                 */
+                $_extends: null,
 
-            /**
-             * Required classes
-             *
-             * @type {(string[]|Object.<string>|null)}
-             */
-            $_requires: null,
+                /**
+                 * Constants list
+                 *
+                 * @type {Object}
+                 */
+                $_constants: null,
 
-            /**
-             * Parent class name
-             *
-             * @type {string}
-             */
-            $_extends: null,
-
-            /**
-             * Constants list
-             *
-             * @type {Object}
-             */
-            $_constants: null,
-
-            /**
-             * Object that contains abstract methods
-             *
-             * @type {Object}
-             */
-            $_abstract: {}
+                /**
+                 * Object that contains abstract methods
+                 *
+                 * @type {Object}
+                 */
+                $_abstract: {}
+            }
         }
     };
 
@@ -9582,61 +9658,41 @@ Subclass.Class.Type.Interface.Interface = (function()
         return Subclass.Class.Type.Interface.InterfaceDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    Interface.prototype.setParent = function (parentClassName)
-    {
-        Interface.$parent.prototype.setParent.call(this, parentClassName);
+    Interface.prototype = {
 
-        if (
-            this._parent
-            && this._parent.constructor != Interface
-            && !(this._parent instanceof Interface)
-        ) {
-            Subclass.Error.create(
-                'Interface "' + this.getName() + '" can be inherited ' +
-                'only from the another interface.'
-            );
-        }
+        /**
+         * @inheritDoc
+         */
+        setParent: function (parentClassName)
+        {
+            Interface.$parent.prototype.setParent.call(this, parentClassName);
+
+            if (
+                this._parent
+                && this._parent.constructor != Interface
+                && !(this._parent instanceof Interface)
+            ) {
+                Subclass.Error.create(
+                    'Interface "' + this.getName() + '" can be inherited ' +
+                    'only from the another interface.'
+                );
+            }
+        },
+
+        /**
+         * @inheritDoc
+         */
+        getConstructorEmpty: function ()
+        {
+            return function Interface(){
+
+                // Hook for the grunt-contrib-uglify plugin
+                return Interface.name;
+            };
+        },
+
+        createInstance: undefined
     };
-    //
-    //Interface.prototype.getClassDefinitionProperties = function()
-    //{
-    //    var classDefinition = this.getDefinition();
-    //    var classProperties = {};
-    //
-    //    if (this.hasParent()) {
-    //        classProperties = this.getParent().getClassDefinitionProperties();
-    //    }
-    //    return Subclass.Tools.extend(
-    //        classProperties,
-    //        classDefinition.getProperties()
-    //    );
-    //};
-
-    /**
-     * @inheritDoc
-     */
-    Interface.prototype.getConstructorEmpty = function ()
-    {
-        return function Interface(){
-
-            // Hook for the grunt-contrib-uglify plugin
-            return Interface.name;
-        };
-    };
-    //
-    ///**
-    // * @inheritDoc
-    // */
-    //Interface.prototype.attachProperties = function() {};
-
-    /**
-     * @inheritDoc
-     * @throws {Error}
-     */
-    Interface.prototype.createInstance = undefined;
 
 
     /*************************************************/
@@ -9672,104 +9728,107 @@ Subclass.Class.Type.Interface.Extension.ClassBuilderExtension = function() {
 
     var ClassBuilder = Subclass.Class.Type.Class.ClassBuilder;
 
-    /**
-     * Validates list of interfaces
-     *
-     * @param {string} interfacesList
-     * @private
-     */
-    ClassBuilder.prototype._validateInterfaces = function(interfacesList)
-    {
-        if (!Array.isArray(interfacesList)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the list of interface names", false)
-                .received(interfacesList)
-                .expected("an array of strings")
-                .apply()
-            ;
+    Subclass.Tools.extend(ClassBuilder.prototype, {
+
+        /**
+         * Validates list of interfaces
+         *
+         * @param {string} interfacesList
+         * @private
+         */
+        _validateInterfaces: function(interfacesList)
+        {
+            if (!Array.isArray(interfacesList)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the list of interface names", false)
+                    .received(interfacesList)
+                    .expected("an array of strings")
+                    .apply()
+                ;
+            }
+            for (var i = 0; i < interfacesList.length; i++) {
+                this._validateInterface(interfacesList[i]);
+            }
+        },
+
+        /**
+         * Validates interface name
+         *
+         * @param interfaceName
+         * @private
+         */
+        _validateInterface: function(interfaceName)
+        {
+            if (typeof interfaceName != "string") {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the interface name", false)
+                    .received(interfaceName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+        },
+
+        /**
+         * Sets interfaces list
+         *
+         * @param {string[]} interfacesList
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         */
+        setInterfaces: function(interfacesList)
+        {
+            this._validateInterfaces(interfacesList);
+            this.getDefinition().$_implements = interfacesList;
+
+            return this;
+        },
+
+        /**
+         * Adds new interfaces
+         *
+         * @param {string} interfacesList
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         */
+        addInterfaces: function(interfacesList)
+        {
+            this._validateInterfaces(interfacesList);
+
+            if (!this.getDefinition().$_implements) {
+                this.getDefinition().$_implements = [];
+            }
+            this.getDefinition().$_implements = this.getDefinition().$_implements.concat(interfacesList);
+
+            return this;
+        },
+
+        /**
+         * Adds new include
+         *
+         * @param {string[]} interfaceName
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         */
+        addInterface: function(interfaceName)
+        {
+            this._validateInclude(interfaceName);
+
+            if (!this.getDefinition().$_implements) {
+                this.getDefinition().$_implements = [];
+            }
+            this.getDefinition().$_implements.push(interfaceName);
+
+            return this;
+        },
+
+        /**
+         * Returns interfaces list
+         *
+         * @returns {string[]}
+         */
+        getInterfaces: function()
+        {
+            return this.getDefinition().$_implements || [];
         }
-        for (var i = 0; i < interfacesList.length; i++) {
-            this._validateInterface(interfacesList[i]);
-        }
-    };
-
-    /**
-     * Validates interface name
-     *
-     * @param interfaceName
-     * @private
-     */
-    ClassBuilder.prototype._validateInterface = function(interfaceName)
-    {
-        if (typeof interfaceName != "string") {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the interface name", false)
-                .received(interfaceName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-    };
-
-    /**
-     * Sets interfaces list
-     *
-     * @param {string[]} interfacesList
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.setInterfaces = function(interfacesList)
-    {
-        this._validateInterfaces(interfacesList);
-        this.getDefinition().$_implements = interfacesList;
-
-        return this;
-    };
-
-    /**
-     * Adds new interfaces
-     *
-     * @param {string} interfacesList
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.addInterfaces = function(interfacesList)
-    {
-        this._validateInterfaces(interfacesList);
-
-        if (!this.getDefinition().$_implements) {
-            this.getDefinition().$_implements = [];
-        }
-        this.getDefinition().$_implements = this.getDefinition().$_implements.concat(interfacesList);
-
-        return this;
-    };
-
-    /**
-     * Adds new include
-     *
-     * @param {string[]} interfaceName
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.addInterface = function(interfaceName)
-    {
-        this._validateInclude(interfaceName);
-
-        if (!this.getDefinition().$_implements) {
-            this.getDefinition().$_implements = [];
-        }
-        this.getDefinition().$_implements.push(interfaceName);
-
-        return this;
-    };
-
-    /**
-     * Returns interfaces list
-     *
-     * @returns {string[]}
-     */
-    ClassBuilder.prototype.getInterfaces = function()
-    {
-        return this.getDefinition().$_implements || [];
-    };
+    });
 
 
     //=========================================================================
@@ -9858,74 +9917,77 @@ Subclass.Class.Type.Interface.Extension.ClassDefinitionExtension = function() {
 
     var ClassDefinition = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * Validates "$_implements" attribute value
-     *
-     * @param {*} interfaces
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateImplements = function(interfaces)
-    {
-        try {
-            if (interfaces && !Array.isArray(interfaces)) {
-                throw 'error';
-            }
-            if (interfaces) {
-                for (var i = 0; i < interfaces.length; i++) {
-                    if (typeof interfaces[i] != 'string') {
-                        throw 'error';
+    Subclass.Tools.extend(ClassDefinition.prototype, {
+
+        /**
+         * Validates "$_implements" attribute value
+         *
+         * @param {*} interfaces
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateImplements: function(interfaces)
+        {
+            try {
+                if (interfaces && !Array.isArray(interfaces)) {
+                    throw 'error';
+                }
+                if (interfaces) {
+                    for (var i = 0; i < interfaces.length; i++) {
+                        if (typeof interfaces[i] != 'string') {
+                            throw 'error';
+                        }
                     }
                 }
+            } catch (e) {
+                if (e == 'error') {
+                    Subclass.Error.create('InvalidClassOption')
+                        .option('$_implements')
+                        .className(this.getClass().getName())
+                        .received(interfaces)
+                        .expected('an array of strings')
+                        .apply()
+                    ;
+                } else {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_implements')
-                    .className(this.getClass().getName())
-                    .received(interfaces)
-                    .expected('an array of strings')
-                    .apply()
-                ;
-            } else {
-                throw e;
+            return true;
+        },
+
+        /**
+         * Sets "$_implements" attribute value
+         *
+         * @param {string[]} interfaces
+         *
+         *      List of the interfaces witch current one will implement.
+         *
+         *      Example: [
+         *         "Namespace/Of/Interface1",
+         *         "Namespace/Of/Interface2",
+         *         ...
+         *      ]
+         */
+        setImplements: function(interfaces)
+        {
+            this.validateImplements(interfaces);
+            this.getData().$_implements = interfaces || [];
+
+            if (interfaces) {
+                this.getClass().addInterfaces(interfaces);
             }
+        },
+
+        /**
+         * Return "$_implements" attribute value
+         *
+         * @returns {string[]}
+         */
+        getImplements: function()
+        {
+            return this.getData().$_implements;
         }
-        return true;
-    };
-
-    /**
-     * Sets "$_implements" attribute value
-     *
-     * @param {string[]} interfaces
-     *
-     *      List of the interfaces witch current one will implement.
-     *
-     *      Example: [
-     *         "Namespace/Of/Interface1",
-     *         "Namespace/Of/Interface2",
-     *         ...
-     *      ]
-     */
-    ClassDefinition.prototype.setImplements = function(interfaces)
-    {
-        this.validateImplements(interfaces);
-        this.getData().$_implements = interfaces || [];
-
-        if (interfaces) {
-            this.getClass().addInterfaces(interfaces);
-        }
-    };
-
-    /**
-     * Return "$_implements" attribute value
-     *
-     * @returns {string[]}
-     */
-    ClassDefinition.prototype.getImplements = function()
-    {
-        return this.getData().$_implements;
-    };
+    });
 
 
     //=========================================================================
@@ -10023,143 +10085,146 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
 
     var Class = Subclass.Class.Type.Class.Class;
 
-    /**
-     * Adds interfaces
-     *
-     * @param {Object} interfaces
-     */
-    Class.prototype.addInterfaces = function(interfaces)
-    {
-        if (!interfaces || !Array.isArray(interfaces)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the traits list', false)
-                .expected('an array')
-                .received(interfaces)
-                .apply()
-            ;
-        }
-        for (var i = 0; i < interfaces.length; i++) {
-            this.addInterface(interfaces[i]);
-        }
-    };
+    Subclass.Tools.extend(Class.prototype, {
 
-    /**
-     * Adds new interface
-     *
-     * @param {string} interfaceName
-     * @throws {Error}
-     */
-    Class.prototype.addInterface = function (interfaceName)
-    {
-        if (!interfaceName || typeof interfaceName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of interface", false)
-                .received(interfaceName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        var interfaceClass = this.getClassManager().get(interfaceName);
-        interfaceClass.addChildClass(this.getName());
-
-        if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
-            Subclass.Error.create(
-                'Can\'t implement no interface "' + interfaceName + '" ' +
-                'in class "' + this.getName() + '".'
-            );
-        }
-
-        var interfaceClassConstructor = interfaceClass.getConstructor();
-        var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
-        var abstractMethods = {};
-
-        if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
-            Subclass.Error.create(
-                'Trying add to "$_implements" option ' +
-                'the new class "' + interfaceName + '" that is not an interface.'
-            );
-        }
-
-        // Add all interface prototype properties (with inherited)
-
-        loop: for (var methodName in interfaceClassConstructorProto) {
-            if (typeof interfaceClassConstructorProto[methodName] != 'function') {
-                continue;
+        /**
+         * Adds interfaces
+         *
+         * @param {Object} interfaces
+         */
+        addInterfaces: function(interfaces)
+        {
+            if (!interfaces || !Array.isArray(interfaces)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the traits list', false)
+                    .expected('an array')
+                    .received(interfaces)
+                    .apply()
+                ;
             }
-            abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
-        }
-        this.addAbstractMethods(abstractMethods);
-        this.getInterfaces().push(interfaceClass);
-    };
-
-    /**
-     * Returns interface names list
-     *
-     * @throws {Error}
-     *
-     * @param {boolean} [withInherited=false]
-     *      Whether the inherited interfaces should be returned
-     *
-     * @returns {Array<Subclass.Class.Interface.Interface>}
-     */
-    Class.prototype.getInterfaces = function(withInherited)
-    {
-        if (withInherited !== true) {
-            return this._interfaces;
-        }
-        var classManager = this.getClassManager();
-        var interfaces = Subclass.Tools.copy(this._interfaces);
-
-        for (var i = 0; i < interfaces.length; i++) {
-            var interfaceParents = interfaces[i].getClassParents();
-
-            for (var j = 0; j < interfaceParents.length; j++) {
-                interfaces.push(classManager.get(interfaceParents[j]));
+            for (var i = 0; i < interfaces.length; i++) {
+                this.addInterface(interfaces[i]);
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
+        },
 
-            if (parent.getInterfaces) {
-                interfaces = interfaces.concat(parent.getInterfaces(withInherited))
+        /**
+         * Adds new interface
+         *
+         * @param {string} interfaceName
+         * @throws {Error}
+         */
+        addInterface: function (interfaceName)
+        {
+            if (!interfaceName || typeof interfaceName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of interface", false)
+                    .received(interfaceName)
+                    .expected("a string")
+                    .apply()
+                ;
             }
-        }
-        return interfaces;
-    };
+            var interfaceClass = this.getClassManager().get(interfaceName);
+            interfaceClass.addChildClass(this.getName());
 
-    /**
-     * Checks if current class implements specified interface
-     *
-     * @param interfaceName
-     * @returns {*}
-     * @throws {Error}
-     */
-    Class.prototype.isImplements = function (interfaceName)
-    {
-        if (!interfaceName || typeof interfaceName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of interface", false)
-                .received(interfaceName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        var interfaces = this.getInterfaces();
-
-        for (var i = 0; i < interfaces.length; i++) {
-            if (interfaces[i].isInstanceOf(interfaceName)) {
-                return true;
+            if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
+                Subclass.Error.create(
+                    'Can\'t implement no interface "' + interfaceName + '" ' +
+                    'in class "' + this.getName() + '".'
+                );
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
 
-            if (parent.isImplements) {
-                return parent.isImplements(interfaceName);
+            var interfaceClassConstructor = interfaceClass.getConstructor();
+            var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
+            var abstractMethods = {};
+
+            if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
+                Subclass.Error.create(
+                    'Trying add to "$_implements" option ' +
+                    'the new class "' + interfaceName + '" that is not an interface.'
+                );
             }
+
+            // Add all interface prototype properties (with inherited)
+
+            loop: for (var methodName in interfaceClassConstructorProto) {
+                if (typeof interfaceClassConstructorProto[methodName] != 'function') {
+                    continue;
+                }
+                abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
+            }
+            this.addAbstractMethods(abstractMethods);
+            this.getInterfaces().push(interfaceClass);
+        },
+
+        /**
+         * Returns interface names list
+         *
+         * @throws {Error}
+         *
+         * @param {boolean} [withInherited=false]
+         *      Whether the inherited interfaces should be returned
+         *
+         * @returns {Array<Subclass.Class.Interface.Interface>}
+         */
+        getInterfaces: function(withInherited)
+        {
+            if (withInherited !== true) {
+                return this._interfaces;
+            }
+            var classManager = this.getClassManager();
+            var interfaces = Subclass.Tools.copy(this._interfaces);
+
+            for (var i = 0; i < interfaces.length; i++) {
+                var interfaceParents = interfaces[i].getClassParents();
+
+                for (var j = 0; j < interfaceParents.length; j++) {
+                    interfaces.push(classManager.get(interfaceParents[j]));
+                }
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.getInterfaces) {
+                    interfaces = interfaces.concat(parent.getInterfaces(withInherited))
+                }
+            }
+            return interfaces;
+        },
+
+        /**
+         * Checks if current class implements specified interface
+         *
+         * @param interfaceName
+         * @returns {*}
+         * @throws {Error}
+         */
+        isImplements: function (interfaceName)
+        {
+            if (!interfaceName || typeof interfaceName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of interface", false)
+                    .received(interfaceName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            var interfaces = this.getInterfaces();
+
+            for (var i = 0; i < interfaces.length; i++) {
+                if (interfaces[i].isInstanceOf(interfaceName)) {
+                    return true;
+                }
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.isImplements) {
+                    return parent.isImplements(interfaceName);
+                }
+            }
+            return false;
         }
-        return false;
-    };
+    });
 
 
     //=========================================================================
@@ -10193,11 +10258,14 @@ Subclass.Class.Type.Interface.InterfaceBuilder = (function()
 
     InterfaceBuilder.$parent = Subclass.Class.ClassBuilder;
 
-    InterfaceBuilder.prototype.setConstructor = undefined;
+    InterfaceBuilder.prototype = {
 
-    InterfaceBuilder.prototype.getConstructor = undefined;
+        setConstructor: undefined,
 
-    InterfaceBuilder.prototype.removeConstructor = undefined;
+        getConstructor: undefined,
+
+        removeConstructor: undefined
+    };
 
     return InterfaceBuilder;
 
@@ -10221,47 +10289,50 @@ Subclass.Class.Type.Interface.InterfaceDefinition = (function()
 
     InterfaceDefinition.$parent = Subclass.Class.ClassDefinition;
 
-    /**
-     * @inheritDoc
-     */
-    InterfaceDefinition.prototype.createBaseData = function()
-    {
-        return {
-            
-            /**
-             * Parent class name
-             *
-             * @type {(string|null)}
-             */
-            $_extends: null,
+    InterfaceDefinition.prototype = {
 
-            /**
-             * List of constants
-             *
-             * @type {(Object|null)}
-             */
-            $_constants: null
-        };
-    };
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function()
+        {
+            return {
 
-    /**
-     * Normalizes definition data
-     */
-    InterfaceDefinition.prototype.normalizeData = function()
-    {
-        InterfaceDefinition.$parent.prototype.normalizeData.call(this);
+                /**
+                 * Parent class name
+                 *
+                 * @type {(string|null)}
+                 */
+                $_extends: null,
 
-        var data = this.getData();
-        var constants = this.getNoMethods();
+                /**
+                 * List of constants
+                 *
+                 * @type {(Object|null)}
+                 */
+                $_constants: null
+            };
+        },
 
-        if (!data.hasOwnProperty('$_constants')) {
-            data.$_constants = {};
-        }
+        /**
+         * Normalizes definition data
+         */
+        normalizeData: function()
+        {
+            InterfaceDefinition.$parent.prototype.normalizeData.call(this);
 
-        for (var constantName in constants) {
-            if (constants.hasOwnProperty(constantName)) {
-                data.$_constants[constantName] = constants[constantName];
-                delete data[constantName];
+            var data = this.getData();
+            var constants = this.getNoMethods();
+
+            if (!data.hasOwnProperty('$_constants')) {
+                data.$_constants = {};
+            }
+
+            for (var constantName in constants) {
+                if (constants.hasOwnProperty(constantName)) {
+                    data.$_constants[constantName] = constants[constantName];
+                    delete data[constantName];
+                }
             }
         }
     };
@@ -10341,53 +10412,53 @@ Subclass.Class.Type.Trait.Trait = (function()
         return Subclass.Class.Type.Trait.TraitDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.getConstructorEmpty = function ()
-    {
-        return function Trait() {
+    Trait.prototype = {
 
-            // Hook for the grunt-contrib-uglify plugin
-            return Trait.name;
-        };
+        /**
+         * @inheritDoc
+         */
+        getConstructorEmpty: function ()
+        {
+            return function Trait() {
+
+                // Hook for the grunt-contrib-uglify plugin
+                return Trait.name;
+            };
+        },
+
+        /**
+         * @inheritDoc
+         */
+        setParent: function (parentClassName)
+        {
+            Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
+
+            if (
+                this._parent
+                && this._parent.constructor != Trait
+                && !(this._parent instanceof Trait)
+            ) {
+                Subclass.Error.create(
+                    'The trait "' + this.getName() + '" can be ' +
+                    'inherited only from the another trait.'
+                );
+            }
+        },
+
+        /**
+         * @inheritDoc
+         */
+        createConstructor: function()
+        {
+            return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
+        },
+
+        getAbstractMethods: undefined,
+
+        addAbstractMethods: undefined,
+
+        createInstance: undefined
     };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.setParent = function (parentClassName)
-    {
-        Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
-
-        if (
-            this._parent
-            && this._parent.constructor != Trait
-            && !(this._parent instanceof Trait)
-        ) {
-            Subclass.Error.create(
-                'The trait "' + this.getName() + '" can be ' +
-                'inherited only from the another trait.'
-            );
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.createConstructor = function()
-    {
-        return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
-    };
-
-    Trait.prototype.getAbstractMethods = undefined;
-
-    Trait.prototype.addAbstractMethods = undefined;
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.createInstance = undefined;
 
 
     /*************************************************/
@@ -10422,104 +10493,107 @@ Subclass.Class.Type.Trait.Extension.ClassBuilderExtension = function() {
 
     var ClassBuilder = Subclass.Class.Type.Class.ClassBuilder;
 
-    /**
-     * Validates list of traits
-     *
-     * @param {string[]} traitsList
-     * @private
-     */
-    ClassBuilder.prototype._validateTraits = function(traitsList)
-    {
-        if (!Array.isArray(traitsList)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the list of trait names", false)
-                .received(traitsList)
-                .expected("an array of strings")
-                .apply()
-            ;
+    Subclass.Tools.extend(ClassBuilder.prototype, {
+
+        /**
+         * Validates list of traits
+         *
+         * @param {string[]} traitsList
+         * @private
+         */
+        _validateTraits: function(traitsList)
+        {
+            if (!Array.isArray(traitsList)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the list of trait names", false)
+                    .received(traitsList)
+                    .expected("an array of strings")
+                    .apply()
+                ;
+            }
+            for (var i = 0; i < traitsList.length; i++) {
+                this._validateTrait(traitsList[i]);
+            }
+        },
+
+        /**
+         * Validates trait name
+         *
+         * @param traitName
+         * @private
+         */
+        _validateTrait: function(traitName)
+        {
+            if (typeof traitName != "string") {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the trait name", false)
+                    .received(traitName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+        },
+
+        /**
+         * Sets traits list
+         *
+         * @param {string[]} traitsList
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         */
+        setTraits: function(traitsList)
+        {
+            this._validateTraits(traitsList);
+            this.getDefinition().$_traits = traitsList;
+
+            return this;
+        },
+
+        /**
+         * Adds new traits
+         *
+         * @param {string} traitsList
+         * @returns {Subclass.Class.Type.Class.ClassBuilder}
+         */
+        addTraits: function(traitsList)
+        {
+            this._validateTraits(traitsList);
+
+            if (!this.getDefinition().$_traits) {
+                this.getDefinition().$_traits = [];
+            }
+            this.getDefinition().$_traits = this.getDefinition().$_traits.concat(traitsList);
+
+            return this;
+        },
+
+        /**
+         * Adds new trait
+         *
+         * @param {string[]} traitName
+         * @returns {Subclass.Class.Type.Trait.TraitBuilder}
+         */
+        addTrait: function(traitName)
+        {
+            this._validateTrait(traitName);
+
+            if (!this.getDefinition().$_traits) {
+                this.getDefinition().$_traits = [];
+            }
+            this.getDefinition().$_traits.push(traitName);
+
+            return this;
+        },
+
+        /**
+         * Returns traits list
+         *
+         * @returns {string[]}
+         */
+        getTraits: function()
+        {
+            return this.getDefinition().$_traits || [];
         }
-        for (var i = 0; i < traitsList.length; i++) {
-            this._validateTrait(traitsList[i]);
-        }
-    };
-
-    /**
-     * Validates trait name
-     *
-     * @param traitName
-     * @private
-     */
-    ClassBuilder.prototype._validateTrait = function(traitName)
-    {
-        if (typeof traitName != "string") {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the trait name", false)
-                .received(traitName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-    };
-
-    /**
-     * Sets traits list
-     *
-     * @param {string[]} traitsList
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.setTraits = function(traitsList)
-    {
-        this._validateTraits(traitsList);
-        this.getDefinition().$_traits = traitsList;
-
-        return this;
-    };
-
-    /**
-     * Adds new traits
-     *
-     * @param {string} traitsList
-     * @returns {Subclass.Class.Type.Class.ClassBuilder}
-     */
-    ClassBuilder.prototype.addTraits = function(traitsList)
-    {
-        this._validateTraits(traitsList);
-
-        if (!this.getDefinition().$_traits) {
-            this.getDefinition().$_traits = [];
-        }
-        this.getDefinition().$_traits = this.getDefinition().$_traits.concat(traitsList);
-
-        return this;
-    };
-
-    /**
-     * Adds new trait
-     *
-     * @param {string[]} traitName
-     * @returns {Subclass.Class.Type.Trait.TraitBuilder}
-     */
-    ClassBuilder.prototype.addTrait = function(traitName)
-    {
-        this._validateTrait(traitName);
-
-        if (!this.getDefinition().$_traits) {
-            this.getDefinition().$_traits = [];
-        }
-        this.getDefinition().$_traits.push(traitName);
-
-        return this;
-    };
-
-    /**
-     * Returns traits list
-     *
-     * @returns {string[]}
-     */
-    ClassBuilder.prototype.getTraits = function()
-    {
-        return this.getDefinition().$_traits || [];
-    };
+    });
 
 
     //=========================================================================
@@ -10608,74 +10682,77 @@ Subclass.Class.Type.Trait.Extension.ClassDefinitionExtension = function() {
 
     var ClassDefinition = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * Validates "$_traits" attribute value
-     *
-     * @param {*} traits
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateTraits = function(traits)
-    {
-        try {
-            if (traits && !Array.isArray(traits)) {
-                throw 'error';
-            }
-            if (traits) {
-                for (var i = 0; i < traits.length; i++) {
-                    if (typeof traits[i] != 'string') {
-                        throw 'error';
+    Subclass.Tools.extend(ClassDefinition.prototype, {
+
+        /**
+         * Validates "$_traits" attribute value
+         *
+         * @param {*} traits
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateTraits: function(traits)
+        {
+            try {
+                if (traits && !Array.isArray(traits)) {
+                    throw 'error';
+                }
+                if (traits) {
+                    for (var i = 0; i < traits.length; i++) {
+                        if (typeof traits[i] != 'string') {
+                            throw 'error';
+                        }
                     }
                 }
+            } catch (e) {
+                if (e == 'error') {
+                    Subclass.Error.create('InvalidClassOption')
+                        .option('$_traits')
+                        .className(this.getClass().getName())
+                        .received(traits)
+                        .expected('an array of strings')
+                        .apply()
+                    ;
+                } else {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_traits')
-                    .className(this.getClass().getName())
-                    .received(traits)
-                    .expected('an array of strings')
-                    .apply()
-                ;
-            } else {
-                throw e;
+            return true;
+        },
+
+        /**
+         * Sets "$_traits" attribute value
+         *
+         * @param {string[]} traits
+         *
+         *      List of the classes which properties and method current one will contain.
+         *
+         *      Example: [
+         *         "Namespace/Of/Trait1",
+         *         "Namespace/Of/Trait2",
+         *         ...
+         *      ]
+         */
+        setTraits: function(traits)
+        {
+            this.validateTraits(traits);
+            this.getData().$_traits = traits || [];
+
+            if (traits) {
+                this.getClass().addTraits(traits);
             }
+        },
+
+        /**
+         * Return "$_traits" attribute value
+         *
+         * @returns {string[]}
+         */
+        getTraits: function()
+        {
+            return this.getData().$_traits;
         }
-        return true;
-    };
-
-    /**
-     * Sets "$_traits" attribute value
-     *
-     * @param {string[]} traits
-     *
-     *      List of the classes which properties and method current one will contain.
-     *
-     *      Example: [
-     *         "Namespace/Of/Trait1",
-     *         "Namespace/Of/Trait2",
-     *         ...
-     *      ]
-     */
-    ClassDefinition.prototype.setTraits = function(traits)
-    {
-        this.validateTraits(traits);
-        this.getData().$_traits = traits || [];
-
-        if (traits) {
-            this.getClass().addTraits(traits);
-        }
-    };
-
-    /**
-     * Return "$_traits" attribute value
-     *
-     * @returns {string[]}
-     */
-    ClassDefinition.prototype.getTraits = function()
-    {
-        return this.getData().$_traits;
-    };
+    });
 
 
     //=========================================================================
@@ -10783,143 +10860,146 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
 
     var Class = Subclass.Class.Type.Class.Class;
 
-    /**
-     * Adds traits
-     *
-     * @param {Object} traits
-     */
-    Class.prototype.addTraits = function(traits)
-    {
-        if (!traits || !Array.isArray(traits)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the traits list', false)
-                .expected('an array')
-                .received(traits)
-                .apply()
-            ;
-        }
-        for (var i = 0; i < traits.length; i++) {
-            this.addTrait(traits[i]);
-        }
-    };
+    Subclass.Tools.extend(Class.prototype, {
 
-    /**
-     * Returns trait names list
-     *
-     * @throws {Error}
-     *
-     * @param {boolean} [withInherited=false]
-     *      Whether the inherited traits should be returned
-     *
-     * @returns {Array<Subclass.Class.Trait.Trait>}
-     */
-    Class.prototype.getTraits = function(withInherited)
-    {
-        if (withInherited !== true) {
-            return this._traits;
-        }
-        var classManager = this.getClassManager();
-        var traits = Subclass.Tools.copy(this._traits);
-
-        for (var i = 0; i < traits.length; i++) {
-            var traitParents = traits[i].getClassParents();
-
-            for (var j = 0; j < traitParents.length; j++) {
-                traits.push(classManager.get(traitParents[j]));
+        /**
+         * Adds traits
+         *
+         * @param {Object} traits
+         */
+        addTraits: function(traits)
+        {
+            if (!traits || !Array.isArray(traits)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the traits list', false)
+                    .expected('an array')
+                    .received(traits)
+                    .apply()
+                ;
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
-
-            if (parent.getTraits) {
-                traits = traits.concat(parent.getTraits(withInherited))
+            for (var i = 0; i < traits.length; i++) {
+                this.addTrait(traits[i]);
             }
-        }
-        return traits;
-    };
+        },
 
-    /**
-     * Adds trait class name
-     *
-     * @param {string} traitName
-     * @throws {Error}
-     */
-    Class.prototype.addTrait = function (traitName)
-    {
-        var classDefinition = this.getDefinition();
-
-        if (!traitName || typeof traitName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of trait", false)
-                .received(traitName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        var traitClass = this.getClassManager().get(traitName);
-        var traitClassDefinition = traitClass.getDefinition();
-        var traitProps = {};
-
-        traitClass.addChildClass(this.getName());
-
-        if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
-            Subclass.Error.create(
-                'Trying add to "$_traits" option ' +
-                'the new class "' + traitName + '" that is not a trait.'
-            );
-        }
-
-        this.getEvent('onAddTrait').trigger(traitClass);
-
-        // Copying all static properties to current class
-
-        this.extendStaticProperties(traitClass);
-        this.getTraits().push(traitClass);
-
-        // Copying all properties and methods (with inherited) from trait to class definition
-
-        Subclass.Tools.extend(traitProps, traitClassDefinition.getNoMethods(true));
-        Subclass.Tools.extend(traitProps, traitClassDefinition.getMethods(true));
-
-        classDefinition.setData(Subclass.Tools.extend(
-            traitProps,
-            classDefinition.getData()
-        ));
-    };
-
-    /**
-     * Checks if current class has specified trait class name
-     *
-     * @param {string} traitName
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    Class.prototype.hasTrait = function (traitName)
-    {
-        if (!traitName || typeof traitName != "string") {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of trait', false)
-                .received(traitName)
-                .expected('a string')
-                .apply()
-            ;
-        }
-        var traits = this.getTraits();
-
-        for (var i = 0; i < traits.length; i++) {
-            if (traits[i].isInstanceOf(traitName)) {
-                return true;
+        /**
+         * Returns trait names list
+         *
+         * @throws {Error}
+         *
+         * @param {boolean} [withInherited=false]
+         *      Whether the inherited traits should be returned
+         *
+         * @returns {Array<Subclass.Class.Trait.Trait>}
+         */
+        getTraits: function(withInherited)
+        {
+            if (withInherited !== true) {
+                return this._traits;
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
+            var classManager = this.getClassManager();
+            var traits = Subclass.Tools.copy(this._traits);
 
-            if (parent.hasTrait) {
-                return parent.hasTrait(traitName);
+            for (var i = 0; i < traits.length; i++) {
+                var traitParents = traits[i].getClassParents();
+
+                for (var j = 0; j < traitParents.length; j++) {
+                    traits.push(classManager.get(traitParents[j]));
+                }
             }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.getTraits) {
+                    traits = traits.concat(parent.getTraits(withInherited))
+                }
+            }
+            return traits;
+        },
+
+        /**
+         * Adds trait class name
+         *
+         * @param {string} traitName
+         * @throws {Error}
+         */
+        addTrait: function (traitName)
+        {
+            var classDefinition = this.getDefinition();
+
+            if (!traitName || typeof traitName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of trait", false)
+                    .received(traitName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            var traitClass = this.getClassManager().get(traitName);
+            var traitClassDefinition = traitClass.getDefinition();
+            var traitProps = {};
+
+            traitClass.addChildClass(this.getName());
+
+            if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
+                Subclass.Error.create(
+                    'Trying add to "$_traits" option ' +
+                    'the new class "' + traitName + '" that is not a trait.'
+                );
+            }
+
+            this.getEvent('onAddTrait').trigger(traitClass);
+
+            // Copying all static properties to current class
+
+            this.extendStaticProperties(traitClass);
+            this.getTraits().push(traitClass);
+
+            // Copying all properties and methods (with inherited) from trait to class definition
+
+            Subclass.Tools.extend(traitProps, traitClassDefinition.getNoMethods(true));
+            Subclass.Tools.extend(traitProps, traitClassDefinition.getMethods(true));
+
+            classDefinition.setData(Subclass.Tools.extend(
+                traitProps,
+                classDefinition.getData()
+            ));
+        },
+
+        /**
+         * Checks if current class has specified trait class name
+         *
+         * @param {string} traitName
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        hasTrait: function (traitName)
+        {
+            if (!traitName || typeof traitName != "string") {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of trait', false)
+                    .received(traitName)
+                    .expected('a string')
+                    .apply()
+                ;
+            }
+            var traits = this.getTraits();
+
+            for (var i = 0; i < traits.length; i++) {
+                if (traits[i].isInstanceOf(traitName)) {
+                    return true;
+                }
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.hasTrait) {
+                    return parent.hasTrait(traitName);
+                }
+            }
+            return false;
         }
-        return false;
-    };
+    });
 
 
     //=========================================================================
@@ -10953,17 +11033,20 @@ Subclass.Class.Type.Trait.TraitBuilder = (function()
 
     TraitBuilder.$parent = Subclass.Class.ClassBuilder;
 
-    TraitBuilder.prototype.setFinal = undefined;
+    TraitBuilder.prototype = {
 
-    TraitBuilder.prototype.getFinal = undefined;
+        setFinal: undefined,
 
-    TraitBuilder.prototype.setStatic = undefined;
+        getFinal: undefined,
 
-    TraitBuilder.prototype.getStatic = undefined;
+        setStatic: undefined,
 
-    TraitBuilder.prototype.setStaticProperty = undefined;
+        getStatic: undefined,
 
-    TraitBuilder.prototype.removeStaticProperty = undefined;
+        setStaticProperty: undefined,
+
+        removeStaticProperty: undefined
+    };
 
     return TraitBuilder;
 
@@ -10987,31 +11070,34 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
 
     TraitDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * @inheritDoc
-     */
-    TraitDefinition.prototype.validateFinal = function(isFinal)
-    {
-        Subclass.Error.create(
-            'Trait class definition cannot contain $_final option ' +
-            'and consequently can\'t be final.'
-        )
-    };
+    TraitDefinition.prototype = {
 
-    /**
-     * @inheritDoc
-     */
-    TraitDefinition.prototype.createBaseData = function()
-    {
-        return {
+        /**
+         * @inheritDoc
+         */
+        validateFinal: function(isFinal)
+        {
+            Subclass.Error.create(
+                'Trait class definition cannot contain $_final option ' +
+                'and consequently can\'t be final.'
+            )
+        },
 
-            /**
-             * The name of parent class
-             *
-             * @type {string}
-             */
-            $_extends: null
-        };
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function()
+        {
+            return {
+
+                /**
+                 * The name of parent class
+                 *
+                 * @type {string}
+                 */
+                $_extends: null
+            };
+        }
     };
 
     return TraitDefinition;
@@ -11294,94 +11380,97 @@ Subclass.EventManager = function()
 
     EventManager.$mixins = [Subclass.Event.EventableMixin];
 
-    /**
-     * Returns instance of module
-     *
-     * @method getModule
-     * @memberOf Subclass.EventManager.prototype
-     *
-     * @returns {*}
-     */
-    EventManager.prototype.getModule = function()
-    {
-        return this._module;
-    };
+    EventManager.prototype = {
 
-    /**
-     * Returns all registered events
-     *
-     * @method getEvents
-     * @memberOf Subclass.EventManager.prototype
-     *
-     * @param {boolean} [privateEvents=false]
-     *      If passed true it returns events only from current module
-     *      without events from it plug-in modules.
-     *
-     * @returns {Object.<Subclass.Event.Event>}
-     */
-    EventManager.prototype.getEvents = function(privateEvents)
-    {
-        var mainModule = this.getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var events = {};
-        var $this = this;
+        /**
+         * Returns instance of module
+         *
+         * @method getModule
+         * @memberOf Subclass.EventManager.prototype
+         *
+         * @returns {*}
+         */
+        getModule: function()
+        {
+            return this._module;
+        },
 
-        if (privateEvents !== true) {
-            privateEvents = false;
-        }
-        if (privateEvents) {
-            return this._events;
-        }
+        /**
+         * Returns all registered events
+         *
+         * @method getEvents
+         * @memberOf Subclass.EventManager.prototype
+         *
+         * @param {boolean} [privateEvents=false]
+         *      If passed true it returns events only from current module
+         *      without events from it plug-in modules.
+         *
+         * @returns {Object.<Subclass.Event.Event>}
+         */
+        getEvents: function(privateEvents)
+        {
+            var mainModule = this.getModule();
+            var moduleStorage = mainModule.getModuleStorage();
+            var events = {};
+            var $this = this;
 
-        moduleStorage.eachModule(true, function(module) {
-            if (module == mainModule) {
-                Subclass.Tools.extend(events, $this._events);
-                return;
+            if (privateEvents !== true) {
+                privateEvents = false;
             }
-            var moduleEventManager = module.getEventManager();
-            var moduleEvents = moduleEventManager.getEvents();
+            if (privateEvents) {
+                return this._events;
+            }
 
-            Subclass.Tools.extend(events, moduleEvents);
-        });
+            moduleStorage.eachModule(true, function(module) {
+                if (module == mainModule) {
+                    Subclass.Tools.extend(events, $this._events);
+                    return;
+                }
+                var moduleEventManager = module.getEventManager();
+                var moduleEvents = moduleEventManager.getEvents();
 
-        return events;
-    };
+                Subclass.Tools.extend(events, moduleEvents);
+            });
 
-    /**
-     * @inheritDoc
-     */
-    EventManager.prototype.registerEvent = function(eventName)
-    {
-        if (this.issetEvent(eventName, true)) {
+            return events;
+        },
+
+        /**
+         * @inheritDoc
+         */
+        registerEvent: function(eventName)
+        {
+            if (this.issetEvent(eventName, true)) {
+                return this;
+            }
+            this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.ModuleEvent,
+                this,
+                eventName,
+                this.getModule()
+            );
+
             return this;
+        },
+
+        /**
+         * Checks whether event with specified name was registered
+         *
+         * @method issetEvent
+         * @memberOf Subclass.Event.EventableMixin.prototype
+         *
+         * @param {string} eventName
+         *      The name of interesting event
+         *
+         * @param {boolean} [privateEvents]
+         *      Checks whether is event with specified name was registered
+         *      specificly in this module without checking in plug-in modules.
+         *
+         * @returns {boolean}
+         */
+        issetEvent: function(eventName, privateEvents)
+        {
+            return !!this.getEvents(privateEvents)[eventName];
         }
-        this._events[eventName] = Subclass.Tools.createClassInstance(Subclass.ModuleEvent,
-            this,
-            eventName,
-            this.getModule()
-        );
-
-        return this;
-    };
-
-    /**
-     * Checks whether event with specified name was registered
-     *
-     * @method issetEvent
-     * @memberOf Subclass.Event.EventableMixin.prototype
-     *
-     * @param {string} eventName
-     *      The name of interesting event
-     *
-     * @param {boolean} [privateEvents]
-     *      Checks whether is event with specified name was registered
-     *      specificly in this module without checking in plug-in modules.
-     *
-     * @returns {boolean}
-     */
-    EventManager.prototype.issetEvent = function(eventName, privateEvents)
-    {
-        return !!this.getEvents(privateEvents)[eventName];
     };
 
     return EventManager;
@@ -11480,491 +11569,497 @@ Subclass.LoadManager = (function()
         ;
     }
 
-    /**
-     * Initializes instance of load manager
-     *
-     * @method initialize
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.initialize = function()
-    {
-        var module = this.getModule();
-        var eventManager = module.getEventManager();
-        var $this = this;
+    LoadManager.prototype = {
 
-        // Starting load files of plug-in modules after the files
-        // of current module (to which the current one instance of load manager belongs) were fully loaded
+        /**
+         * Initializes instance of load manager
+         *
+         * @method initialize
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        initialize: function()
+        {
+            var module = this.getModule();
+            var eventManager = module.getEventManager();
+            var $this = this;
 
-        eventManager.getEvent('onLoadingEnd').addListener(-10000000, function(evt) {
-            module.getModuleStorage().eachModule(function(module) {
-                if (module != $this.getModule()) {
-                    module.getLoadManager().startLoading();
-                }
+            // Starting load files of plug-in modules after the files
+            // of current module (to which the current one instance of load manager belongs) were fully loaded
+
+            eventManager.getEvent('onLoadingEnd').addListener(-10000000, function(evt) {
+                module.getModuleStorage().eachModule(function(module) {
+                    if (module != $this.getModule()) {
+                        module.getLoadManager().startLoading();
+                    }
+                });
             });
-        });
-    };
+        },
 
-    /**
-     * Returns the instance of module to which current instance of load manager belongs
-     *
-     * @method getModule
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    LoadManager.prototype.getModule = function()
-    {
-        return this._module;
-    };
+        /**
+         * Returns the instance of module to which current instance of load manager belongs
+         *
+         * @method getModule
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        getModule: function()
+        {
+            return this._module;
+        },
 
-    /**
-     * Starts the process of loading files with new classes
-     *
-     * @method startLoading
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.startLoading = function()
-    {
-        var module = this.getModule();
-        var $this = this;
+        /**
+         * Starts the process of loading files with new classes
+         *
+         * @method startLoading
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        startLoading: function()
+        {
+            var module = this.getModule();
+            var $this = this;
 
-        if (
-            module.isPlugin()
-            && (
-                !module.getParent()
-                || !module.getRoot().isPrepared()
-            )
-        ) {
-            return;
-        }
-        $this._loading = true;
-        $this._loadingPause = false;
-        $this.processStack();
+            if (
+                module.isPlugin()
+                && (
+                    !module.getParent()
+                    || !module.getRoot().isPrepared()
+                )
+            ) {
+                return;
+            }
+            $this._loading = true;
+            $this._loadingPause = false;
+            $this.processStack();
 
-        $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
+            $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
 
-        if ($this.isStackEmpty()) {
-            $this.completeLoading();
-        }
-    };
+            if ($this.isStackEmpty()) {
+                $this.completeLoading();
+            }
+        },
 
-    /**
-     * Pauses the process of loading files with new classes
-     *
-     * @method pauseLoading
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.pauseLoading = function()
-    {
-        clearTimeout(this._loadingEndTimeout);
-        this._loadingPause = true;
-    };
+        /**
+         * Pauses the process of loading files with new classes
+         *
+         * @method pauseLoading
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        pauseLoading: function()
+        {
+            clearTimeout(this._loadingEndTimeout);
+            this._loadingPause = true;
+        },
 
-    /**
-     * Reports whether the process of loading files with new classes was paused
-     *
-     * @method isLoadingPaused
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isLoadingPaused = function()
-    {
-        return this._loadingPause;
-    };
+        /**
+         * Reports whether the process of loading files with new classes was paused
+         *
+         * @method isLoadingPaused
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isLoadingPaused: function()
+        {
+            return this._loadingPause;
+        },
 
-    /**
-     * Tries to complete the process of loading files with new classes.
-     * If it was completed then will be triggered the appropriate event.
-     *
-     * @method completeLoading
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.completeLoading = function()
-    {
-        if (!this.isLoading()) {
-            return;
-        }
-        clearTimeout(this._loadingEndTimeout);
-        var $this = this;
+        /**
+         * Tries to complete the process of loading files with new classes.
+         * If it was completed then will be triggered the appropriate event.
+         *
+         * @method completeLoading
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        completeLoading: function()
+        {
+            if (!this.isLoading()) {
+                return;
+            }
+            clearTimeout(this._loadingEndTimeout);
+            var $this = this;
 
-        if (
-            !this.isLoadingPaused()
-            && this.isStackEmpty()
-        ) {
-            this._loadingEndTimeout = setTimeout(function() {
-                var module = $this.getModule();
-                var eventManager = module.getEventManager();
-                $this._loading = false;
+            if (
+                !this.isLoadingPaused()
+                && this.isStackEmpty()
+            ) {
+                this._loadingEndTimeout = setTimeout(function() {
+                    var module = $this.getModule();
+                    var eventManager = module.getEventManager();
+                    $this._loading = false;
 
-                eventManager
-                    .getEvent('onLoadingEnd')
-                    .triggerPrivate()
+                    eventManager
+                        .getEvent('onLoadingEnd')
+                        .triggerPrivate()
+                    ;
+                }, 20);
+            }
+        },
+
+        /**
+         * Checks whether the loading process continues
+         *
+         * @method isLoading
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isLoading: function()
+        {
+            return this._loading;
+        },
+
+        /**
+         * Adds the new file to load stack
+         *
+         * @method addToStack
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         *      The name of file relative to the "rootPath" module settings option.
+         *      Also it is possible to specify an absolute path using the "^" symbol at the start of the path.
+         *
+         * @param {function} [callback]
+         *      The callback function which will be invoked after file will be loaded
+         */
+        addToStack: function(fileName, callback)
+        {
+            var $this = this;
+
+            if (callback && typeof callback != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the callback', false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
                 ;
-            }, 20);
-        }
-    };
-
-    /**
-     * Checks whether the loading process continues
-     *
-     * @method isLoading
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isLoading = function()
-    {
-        return this._loading;
-    };
-
-    /**
-     * Adds the new file to load stack
-     *
-     * @method addToStack
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {string} fileName
-     *      The name of file relative to the "rootPath" module settings option.
-     *      Also it is possible to specify an absolute path using the "^" symbol at the start of the path.
-     *
-     * @param {function} [callback]
-     *      The callback function which will be invoked after file will be loaded
-     */
-    LoadManager.prototype.addToStack = function(fileName, callback)
-    {
-        var $this = this;
-
-        if (callback && typeof callback != 'function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the callback', false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
-        }
-        if (this.isInStack(fileName)) {
-            return;
-        }
-
-        this._stack.push({
-            file: fileName,
-            fileFull: null,
-            callback: callback || function() {},
-            xmlhttp: null
-        });
-
-        clearTimeout(this._addToStackTimeout);
-        this.getModule().getEventManager().getEvent('onAddToLoadStack').trigger(
-            fileName,
-            callback
-        );
-
-        this._addToStackTimeout = setTimeout(function() {
-            $this.startLoading();
-        }, 10);
-    };
-
-    /**
-     * Alias of {@link Subclass.LoadManager#addToStack}
-     *
-     * @method load
-     * @memberOf Subclass.LoadManager.prototype
-     * @alias Subclass.LoadManager#addToStack
-     */
-    LoadManager.prototype.loadFile = LoadManager.prototype.addToStack;
-
-    /**
-     * Returns the object of loading file from the load stack
-     *
-     * @method getStackItem
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param fileName
-     *      The name of loading file
-     *
-     * @returns {*}
-     */
-    LoadManager.prototype.getStackItem = function(fileName)
-    {
-        var stackItem = null;
-
-        for (var i = 0; i < this._stack.length; i++) {
-            if (this._stack[i].file == fileName) {
-                stackItem = this._stack[i];
             }
-        }
-
-        return stackItem;
-    };
-
-    /**
-     * Returns the index of file name in load stack
-     *
-     * @method getStackItemIndex
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param fileName
-     *      The name of file
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.getStackItemIndex = function(fileName)
-    {
-        var stackItemIndex = false;
-
-        for (var i = 0; i < this._stack.length; i++) {
-            if (this._stack[i].file == fileName) {
-                stackItemIndex = i;
+            if (this.isInStack(fileName)) {
+                return;
             }
-        }
 
-        return stackItemIndex;
-    };
+            this._stack.push({
+                file: fileName,
+                fileFull: null,
+                callback: callback || function() {},
+                xmlhttp: null
+            });
 
-    /**
-     * Removes specified class from the load stack
-     *
-     * @method removeFromLoadStack
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {string} fileName
-     *      The name of class
-     */
-    LoadManager.prototype.removeFromStack = function(fileName)
-    {
-        var mainModule = this.getModule().getRoot();
-
-        if (arguments[1]) {
-            mainModule = this.getModule();
-        }
-
-        var loadManager = mainModule.getLoadManager();
-        var stackItem = loadManager.getStackItem(fileName);
-        var stackItemIndex = loadManager.getStackItemIndex(fileName);
-
-        if (stackItem && stackItemIndex !== false) {
-            mainModule.getEventManager().getEvent('onRemoveFromLoadStack').trigger(
-                stackItem,
-                stackItemIndex
+            clearTimeout(this._addToStackTimeout);
+            this.getModule().getEventManager().getEvent('onAddToLoadStack').trigger(
+                fileName,
+                callback
             );
 
-            if (stackItem.xmlhttp) {
-                stackItem.xmlhttp.abort();
+            this._addToStackTimeout = setTimeout(function() {
+                $this.startLoading();
+            }, 10);
+        },
+
+        /**
+         * Alias of {@link Subclass.LoadManager#addToStack}
+         *
+         * @method load
+         * @memberOf Subclass.LoadManager.prototype
+         * @alias Subclass.LoadManager#addToStack
+         */
+        loadFile: function()
+        {
+            return this.addToStack.apply(this, arguments);
+        },
+
+        /**
+         * Returns the object of loading file from the load stack
+         *
+         * @method getStackItem
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param fileName
+         *      The name of loading file
+         *
+         * @returns {*}
+         */
+        getStackItem: function(fileName)
+        {
+            var stackItem = null;
+
+            for (var i = 0; i < this._stack.length; i++) {
+                if (this._stack[i].file == fileName) {
+                    stackItem = this._stack[i];
+                }
             }
-            loadManager._stack.splice(stackItemIndex, 1);
-        }
 
-        // Removing from stack from all modules
+            return stackItem;
+        },
 
-        var moduleStorage = mainModule.getModuleStorage();
+        /**
+         * Returns the index of file name in load stack
+         *
+         * @method getStackItemIndex
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param fileName
+         *      The name of file
+         *
+         * @returns {boolean}
+         */
+        getStackItemIndex: function(fileName)
+        {
+            var stackItemIndex = false;
 
-        moduleStorage.eachModule(function (module, moduleName) {
-            if (module != mainModule) {
-                module.getLoadManager().removeFromStack(fileName, true);
+            for (var i = 0; i < this._stack.length; i++) {
+                if (this._stack[i].file == fileName) {
+                    stackItemIndex = i;
+                }
             }
-        });
-    };
 
-    /**
-     * Processes files from the load stack. Loads files from stack.
-     *
-     * @method processStack
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.processStack = function()
-    {
-        var module = this.getModule();
-        var moduleSettings = module.getSettingsManager();
-        var rootPath = moduleSettings.getRootPath();
-        var stackPortion = [];
-        var $this = this;
+            return stackItemIndex;
+        },
 
-        if (!this.isStackPortionEmpty()) {
-            return;
-        }
+        /**
+         * Removes specified class from the load stack
+         *
+         * @method removeFromLoadStack
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         *      The name of class
+         */
+        removeFromStack: function(fileName)
+        {
+            var mainModule = this.getModule().getRoot();
 
-        for (var i = 0; i < this._stack.length; i++) {
-            var stackItem = this._stack[i];
-            stackPortion.push(stackItem.file);
-
-            if (!stackItem.file.match(/^\^/i)) {
-                stackItem.fileFull = rootPath + stackItem.file;
-
-            } else {
-                stackItem.fileFull = stackItem.file.substr(1);
+            if (arguments[1]) {
+                mainModule = this.getModule();
             }
-        }
 
-        // Creating the pack of loading files.
-        // While this portion loads the new files will not start loading.
+            var loadManager = mainModule.getLoadManager();
+            var stackItem = loadManager.getStackItem(fileName);
+            var stackItemIndex = loadManager.getStackItemIndex(fileName);
 
-        this.setStackPortion(stackPortion);
+            if (stackItem && stackItemIndex !== false) {
+                mainModule.getEventManager().getEvent('onRemoveFromLoadStack').trigger(
+                    stackItem,
+                    stackItemIndex
+                );
 
-        // Triggering the event when processing the new portion of files
-
-        module.getEventManager().getEvent('onProcessLoadStack').trigger(this._stack);
-
-        // Loading files
-
-        !function loadFile(fileName) {
-            if (!fileName) {
-                return;
+                if (stackItem.xmlhttp) {
+                    stackItem.xmlhttp.abort();
+                }
+                loadManager._stack.splice(stackItemIndex, 1);
             }
-            var stackItem = $this.getStackItem(fileName);
 
-            if (!stackItem) {
-                return;
-            }
-            stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileFull, function() {
-                $this.removeFromStackPortion(stackItem.file);
-                $this.removeFromStack(stackItem.file);
-                stackItem.callback();
+            // Removing from stack from all modules
 
-                var newFileName = $this.getStackPortion()[0];
+            var moduleStorage = mainModule.getModuleStorage();
 
-                if (newFileName) {
-                    loadFile(newFileName);
-
-                } else {
-                    $this.startLoading();
+            moduleStorage.eachModule(function (module, moduleName) {
+                if (module != mainModule) {
+                    module.getLoadManager().removeFromStack(fileName, true);
                 }
             });
-        }(stackPortion[0]);
+        },
 
-        // If loading of files from the portion was not completed
-        // then pause the loading of new files while the portion becomes empty
+        /**
+         * Processes files from the load stack. Loads files from stack.
+         *
+         * @method processStack
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        processStack: function()
+        {
+            var module = this.getModule();
+            var moduleSettings = module.getSettingsManager();
+            var rootPath = moduleSettings.getRootPath();
+            var stackPortion = [];
+            var $this = this;
 
-        if (!this.isStackEmpty()) {
-            this.pauseLoading();
-        }
-    };
-
-    /**
-     * Checks whether the specified files is in load stack
-     *
-     * @method isInStack
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {string} fileName
-     *      The name of file
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isInStack = function(fileName)
-    {
-        var mainModule = this.getModule().getRoot();
-
-        if (arguments[1]) {
-            mainModule = this.getModule();
-        }
-
-        var loadManager = mainModule.getLoadManager();
-
-        for (var i = 0; i < loadManager._stack.length; i++) {
-            if (loadManager._stack[i].file == fileName) {
-                return true;
+            if (!this.isStackPortionEmpty()) {
+                return;
             }
-        }
 
-        // Searching file with specified name in all modules
+            for (var i = 0; i < this._stack.length; i++) {
+                var stackItem = this._stack[i];
+                stackPortion.push(stackItem.file);
 
-        var moduleStorage = mainModule.getModuleStorage();
-        var result = false;
+                if (!stackItem.file.match(/^\^/i)) {
+                    stackItem.fileFull = rootPath + stackItem.file;
 
-        moduleStorage.eachModule(function (module, moduleName) {
-            if (module != mainModule) {
-                result = module.getLoadManager().removeFromStack(fileName, true);
-
-                if (result) {
-                    return false;
+                } else {
+                    stackItem.fileFull = stackItem.file.substr(1);
                 }
             }
-        });
 
-        return result;
-    };
+            // Creating the pack of loading files.
+            // While this portion loads the new files will not start loading.
 
-    /**
-     * Checks whether the load stack is empty
-     *
-     * @method isStackEmpty
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isStackEmpty = function()
-    {
-        return !this._stack.length;
-    };
+            this.setStackPortion(stackPortion);
 
-    /**
-     * Sets the stack portion.<br /><br />
-     *
-     * It is a pack of file names which will be loaded first.
-     * The files, which was added after the portion was created, will be loaded only after
-     * the files from current portion will be loaded.
-     *
-     * @method setStackPortion
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {Array.<string>} fileNames
-     *      The array of file names.
-     */
-    LoadManager.prototype.setStackPortion = function(fileNames)
-    {
-        if (!Array.isArray(fileNames)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('list of file names', false)
-                .received(fileNames)
-                .expected('array of strings')
-                .apply()
-            ;
-        }
-        this._stackPortion = fileNames;
-    };
+            // Triggering the event when processing the new portion of files
 
-    /**
-     * Returns the stack portion
-     *
-     * @method getStackPortion
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {Array.<string>}
-     */
-    LoadManager.prototype.getStackPortion = function()
-    {
-        return this._stackPortion;
-    };
+            module.getEventManager().getEvent('onProcessLoadStack').trigger(this._stack);
 
-    /**
-     * Reports whether the stack portion is empty
-     *
-     * @method isStackPortionEmpty
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isStackPortionEmpty = function()
-    {
-        return !this.getStackPortion().length;
-    };
+            // Loading files
 
-    /**
-    * Removes file name from the stack portion
-    *
-    * @method removeFromStackPortion
-    * @memberOf Subclass.LoadManager.prototype
-    *
-    * @param {string} fileName
-    */
-    LoadManager.prototype.removeFromStackPortion = function(fileName)
-    {
-        var stackPortion = this.getStackPortion();
-        var index = stackPortion.indexOf(fileName);
+            !function loadFile(fileName) {
+                if (!fileName) {
+                    return;
+                }
+                var stackItem = $this.getStackItem(fileName);
 
-        if (index >= 0) {
-            stackPortion.splice(index, 1);
+                if (!stackItem) {
+                    return;
+                }
+                stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileFull, function() {
+                    $this.removeFromStackPortion(stackItem.file);
+                    $this.removeFromStack(stackItem.file);
+                    stackItem.callback();
+
+                    var newFileName = $this.getStackPortion()[0];
+
+                    if (newFileName) {
+                        loadFile(newFileName);
+
+                    } else {
+                        $this.startLoading();
+                    }
+                });
+            }(stackPortion[0]);
+
+            // If loading of files from the portion was not completed
+            // then pause the loading of new files while the portion becomes empty
+
+            if (!this.isStackEmpty()) {
+                this.pauseLoading();
+            }
+        },
+
+        /**
+         * Checks whether the specified files is in load stack
+         *
+         * @method isInStack
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         *      The name of file
+         *
+         * @returns {boolean}
+         */
+        isInStack: function(fileName)
+        {
+            var mainModule = this.getModule().getRoot();
+
+            if (arguments[1]) {
+                mainModule = this.getModule();
+            }
+
+            var loadManager = mainModule.getLoadManager();
+
+            for (var i = 0; i < loadManager._stack.length; i++) {
+                if (loadManager._stack[i].file == fileName) {
+                    return true;
+                }
+            }
+
+            // Searching file with specified name in all modules
+
+            var moduleStorage = mainModule.getModuleStorage();
+            var result = false;
+
+            moduleStorage.eachModule(function (module, moduleName) {
+                if (module != mainModule) {
+                    result = module.getLoadManager().removeFromStack(fileName, true);
+
+                    if (result) {
+                        return false;
+                    }
+                }
+            });
+
+            return result;
+        },
+
+        /**
+         * Checks whether the load stack is empty
+         *
+         * @method isStackEmpty
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isStackEmpty: function()
+        {
+            return !this._stack.length;
+        },
+
+        /**
+         * Sets the stack portion.<br /><br />
+         *
+         * It is a pack of file names which will be loaded first.
+         * The files, which was added after the portion was created, will be loaded only after
+         * the files from current portion will be loaded.
+         *
+         * @method setStackPortion
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {Array.<string>} fileNames
+         *      The array of file names.
+         */
+        setStackPortion: function(fileNames)
+        {
+            if (!Array.isArray(fileNames)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('list of file names', false)
+                    .received(fileNames)
+                    .expected('array of strings')
+                    .apply()
+                ;
+            }
+            this._stackPortion = fileNames;
+        },
+
+        /**
+         * Returns the stack portion
+         *
+         * @method getStackPortion
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {Array.<string>}
+         */
+        getStackPortion: function()
+        {
+            return this._stackPortion;
+        },
+
+        /**
+         * Reports whether the stack portion is empty
+         *
+         * @method isStackPortionEmpty
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isStackPortionEmpty: function()
+        {
+            return !this.getStackPortion().length;
+        },
+
+        /**
+         * Removes file name from the stack portion
+         *
+         * @method removeFromStackPortion
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         */
+        removeFromStackPortion: function(fileName)
+        {
+            var stackPortion = this.getStackPortion();
+            var index = stackPortion.indexOf(fileName);
+
+            if (index >= 0) {
+                stackPortion.splice(index, 1);
+            }
         }
     };
 
@@ -12004,159 +12099,160 @@ Subclass.ModuleEvent = function()
 
     ModuleEvent.$parent = Subclass.Event.Event;
 
+    ModuleEvent.prototype = {
 
+        /**
+         * Returns event manager instance
+         *
+         * @method getEventManager
+         * @memberOf Subclass.ModuleEvent.prototype
+         *
+         * @returns {Subclass.EventManager}
+         */
+        getEventManager: function()
+        {
+            return this._eventManager;
+        },
 
-    /**
-     * Returns event manager instance
-     *
-     * @method getEventManager
-     * @memberOf Subclass.ModuleEvent.prototype
-     *
-     * @returns {Subclass.EventManager}
-     */
-    ModuleEvent.prototype.getEventManager = function()
-    {
-        return this._eventManager;
-    };
+        /**
+         * Returns all registered event listeners
+         *
+         * @method getListeners
+         * @memberOf Subclass.ModuleEvent.prototype
+         *
+         * @param {boolean} [privateListeners = false]
+         *      If passed true it returns event listeners only from event instance from current module
+         *      without listeners from its plug-in module events with the same name.
+         *
+         * @returns {Object.<Subclass.Event.EventListener>}
+         */
+        getListeners: function(privateListeners)
+        {
+            var mainModule = this.getEventManager().getModule();
+            var moduleStorage = mainModule.getModuleStorage();
+            var listeners = [];
+            var $this = this;
 
-    /**
-     * Returns all registered event listeners
-     *
-     * @method getListeners
-     * @memberOf Subclass.ModuleEvent.prototype
-     *
-     * @param {boolean} [privateListeners = false]
-     *      If passed true it returns event listeners only from event instance from current module
-     *      without listeners from its plug-in module events with the same name.
-     *
-     * @returns {Object.<Subclass.Event.EventListener>}
-     */
-    ModuleEvent.prototype.getListeners = function(privateListeners)
-    {
-        var mainModule = this.getEventManager().getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var listeners = [];
-        var $this = this;
-
-        if (privateListeners !== true) {
-            privateListeners = false;
-        }
-        if (privateListeners) {
-            return this._listeners;
-        }
-
-        moduleStorage.eachModule(function(module) {
-            if (module == mainModule) {
-                Subclass.Tools.extend(listeners, $this._listeners);
-                return;
+            if (privateListeners !== true) {
+                privateListeners = false;
             }
-            var moduleEventManager = module.getEventManager();
-            var moduleEventListeners = moduleEventManager.getEvent($this.getName()).getListeners();
+            if (privateListeners) {
+                return this._listeners;
+            }
 
-            Subclass.Tools.extend(listeners, moduleEventListeners);
-        });
-
-        return Subclass.Tools.unique(listeners);
-    };
-
-    /**
-     * Returns event listener by specified callback function
-     *
-     * @method getListenerByCallback
-     * @memberOf Subclass.ModuleEvent.prototype
-     *
-     * @throws {Error}
-     *      Throws error if was specified not a function callback
-     *
-     * @param {Function} callback
-     *      Function which was early used in registering event listener
-     *
-     * @returns {(Subclass.Event.EventListener|null)}
-     */
-    ModuleEvent.prototype.getListenerByCallback = function(callback)
-    {
-        if (!callback || typeof callback != 'Function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the callback", false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
-        }
-        var mainModule = this.getEventManager().getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var listener = null;
-        var $this = this;
-
-        moduleStorage.eachModule(function(module) {
-            var moduleEventManager = module.getEventManager();
-            var moduleEvent = moduleEventManager.getEvent($this.getName());
-            var listeners = moduleEvent.getListeners(true);
-
-            for (var i = 0; i < listeners.length; i++) {
-                if (listeners[i].getCallback() == callback) {
-                    listener = listeners[i];
-                    return false;
+            moduleStorage.eachModule(function(module) {
+                if (module == mainModule) {
+                    Subclass.Tools.extend(listeners, $this._listeners);
+                    return;
                 }
+                var moduleEventManager = module.getEventManager();
+                var moduleEventListeners = moduleEventManager.getEvent($this.getName()).getListeners();
+
+                Subclass.Tools.extend(listeners, moduleEventListeners);
+            });
+
+            return Subclass.Tools.unique(listeners);
+        },
+
+        /**
+         * Returns event listener by specified callback function
+         *
+         * @method getListenerByCallback
+         * @memberOf Subclass.ModuleEvent.prototype
+         *
+         * @throws {Error}
+         *      Throws error if was specified not a function callback
+         *
+         * @param {Function} callback
+         *      Function which was early used in registering event listener
+         *
+         * @returns {(Subclass.Event.EventListener|null)}
+         */
+        getListenerByCallback: function(callback)
+        {
+            if (!callback || typeof callback != 'Function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the callback", false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
+                ;
             }
-        });
+            var mainModule = this.getEventManager().getModule();
+            var moduleStorage = mainModule.getModuleStorage();
+            var listener = null;
+            var $this = this;
 
-        return listener;
-    };
+            moduleStorage.eachModule(function(module) {
+                var moduleEventManager = module.getEventManager();
+                var moduleEvent = moduleEventManager.getEvent($this.getName());
+                var listeners = moduleEvent.getListeners(true);
 
-    /**
-     * @inheritDoc
-     */
-    ModuleEvent.prototype.removeListener = function(callback)
-    {
-        if (!callback || typeof callback != 'Function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the callback", false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
+                for (var i = 0; i < listeners.length; i++) {
+                    if (listeners[i].getCallback() == callback) {
+                        listener = listeners[i];
+                        return false;
+                    }
+                }
+            });
+
+            return listener;
+        },
+
+        /**
+         * @inheritDoc
+         */
+        removeListener: function(callback)
+        {
+            if (!callback || typeof callback != 'Function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the callback", false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
+                ;
+            }
+            var mainModule = this.getEventManager().getModule();
+            var moduleStorage = mainModule.getModuleStorage();
+            var $this = this;
+
+            moduleStorage.eachModule(function(module) {
+                var moduleEventManager = module.getEventManager();
+                var moduleEvent = moduleEventManager.getEvent($this.getName());
+                var listeners = moduleEvent.getListeners(true);
+                var listenerIndex = listeners.indexOf(callback);
+
+                if (listenerIndex >= 0) {
+                    listeners.splice(listenerIndex, 1);
+                }
+            });
+
+            return this;
+        },
+
+        /**
+         * Invokes event listeners only from module to which event with specified name belongs to.<br /><br />
+         *
+         * Will be invoked all listener callback functions only from
+         * current module (without plug-ins) event.<br /><br />
+         *
+         * Each event listener callback function will receive as arguments all arguments from current method call.
+         * If listener callback function returns false then it will bring to stop propagation of event.
+         *
+         * @method triggerPrivate
+         * @memberOf Subclass.ModuleEvent.prototype
+         *
+         * @param [arguments]
+         *      Any number of any needed arguments
+         *
+         * @returns {Subclass.Event.EventData}
+         */
+        triggerPrivate: function()
+        {
+            var listeners = this.getListeners(true);
+
+            return this._processTrigger(listeners, arguments);
         }
-        var mainModule = this.getEventManager().getModule();
-        var moduleStorage = mainModule.getModuleStorage();
-        var $this = this;
-
-        moduleStorage.eachModule(function(module) {
-            var moduleEventManager = module.getEventManager();
-            var moduleEvent = moduleEventManager.getEvent($this.getName());
-            var listeners = moduleEvent.getListeners(true);
-            var listenerIndex = listeners.indexOf(callback);
-
-            if (listenerIndex >= 0) {
-                listeners.splice(listenerIndex, 1);
-            }
-        });
-
-        return this;
-    };
-
-    /**
-     * Invokes event listeners only from module to which event with specified name belongs to.<br /><br />
-     *
-     * Will be invoked all listener callback functions only from
-     * current module (without plug-ins) event.<br /><br />
-     *
-     * Each event listener callback function will receive as arguments all arguments from current method call.
-     * If listener callback function returns false then it will bring to stop propagation of event.
-     *
-     * @method triggerPrivate
-     * @memberOf Subclass.ModuleEvent.prototype
-     *
-     * @param [arguments]
-     *      Any number of any needed arguments
-     *
-     * @returns {Subclass.Event.EventData}
-     */
-    ModuleEvent.prototype.triggerPrivate = function()
-    {
-        var listeners = this.getListeners(true);
-
-        return this._processTrigger(listeners, arguments);
     };
 
     return ModuleEvent;
@@ -12240,242 +12336,245 @@ Subclass.ModuleStorage = (function()
         this._lazyModules = lazyModuleNames;
     }
 
-    /**
-     * Returns main module instance (the module to
-     * which belongs current instance of module manager)
-     *
-     * @method getMainModule
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    ModuleStorage.prototype.getMainModule = function()
-    {
-        return this._module;
-    };
+    ModuleStorage.prototype = {
 
-    /**
-     * Returns array with all module instances (including main module)
-     *
-     * @method getModules
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @returns {Array.<Subclass.Module>}
-     */
-    ModuleStorage.prototype.getModules = function()
-    {
-        return this._modules;
-    };
+        /**
+         * Returns main module instance (the module to
+         * which belongs current instance of module manager)
+         *
+         * @method getMainModule
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        getMainModule: function()
+        {
+            return this._module;
+        },
 
-    /**
-     * Returns the list of all not resolved lazy plug-in modules
-     *
-     * @method getLazyModules
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @returns {string[]}
-     */
-    ModuleStorage.prototype.getLazyModules = function()
-    {
-        return this._lazyModules;
-    };
+        /**
+         * Returns array with all module instances (including main module)
+         *
+         * @method getModules
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @returns {Array.<Subclass.Module>}
+         */
+        getModules: function()
+        {
+            return this._modules;
+        },
 
-    /**
-     * Checks whether module with specified name is lazy
-     *
-     * @mthod issetLazyModule
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @param {string} moduleName
-     *      A name of lazy module
-     *
-     * @returns {boolean}
-     */
-    ModuleStorage.prototype.issetLazyModule = function(moduleName)
-    {
-        return !!this.getLazyModules().hasOwnProperty(moduleName);
-    };
+        /**
+         * Returns the list of all not resolved lazy plug-in modules
+         *
+         * @method getLazyModules
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @returns {string[]}
+         */
+        getLazyModules: function()
+        {
+            return this._lazyModules;
+        },
 
-    /**
-     * Reports whether current module has not resolved lazy plug-in modules
-     *
-     * @method hasLazyModules
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @returns {boolean}
-     */
-    ModuleStorage.prototype.hasLazyModules = function()
-    {
-        return !!Object.keys(this.getLazyModules()).length;
-    };
+        /**
+         * Checks whether module with specified name is lazy
+         *
+         * @mthod issetLazyModule
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @param {string} moduleName
+         *      A name of lazy module
+         *
+         * @returns {boolean}
+         */
+        issetLazyModule: function(moduleName)
+        {
+            return !!this.getLazyModules().hasOwnProperty(moduleName);
+        },
 
-    /**
-     * Resolves lazy module (plug-in in this case).
-     * It means that lazy module was loaded.
-     *
-     * @method resolveLazyModule
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @param {string} moduleName
-     *      The name of lazy plug-in module
-     */
-    ModuleStorage.prototype.resolveLazyModule = function(moduleName)
-    {
-        if (!this.issetLazyModule(moduleName)) {
-            return;
-        }
-        delete this.getLazyModules()[moduleName];
-    };
+        /**
+         * Reports whether current module has not resolved lazy plug-in modules
+         *
+         * @method hasLazyModules
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @returns {boolean}
+         */
+        hasLazyModules: function()
+        {
+            return !!Object.keys(this.getLazyModules()).length;
+        },
 
-    /**
-     * Normalizes plugin modules
-     *
-     * @method _processModules
-     *
-     * @throws {Error}
-     *      Throws error if specified in plugins module that is not a plugin.
-     *
-     * @param {string[]} moduleNames
-     *      Array of module names. Each module should be marked as a plugin
-     *      (by the "plugin" or "pluginOf" setting parameters)
-     *
-     * @returns {Array.<Subclass.Module>}
-     * @private
-     * @ignore
-     */
-    ModuleStorage.prototype._processModules = function(moduleNames)
-    {
-        var mainModule = this.getMainModule();
-        var modules = [];
-
-        for (var i = 0; i < moduleNames.length; i++) {
-            var childModule = Subclass.getModule(moduleNames[i]).getModule();
-            var childModuleSettings = childModule.getSettingsManager();
-
-            if (!childModuleSettings.isPlugin()) {
-                Subclass.Error.create(
-                    'Specified in plugins module "' + moduleNames[i] + '" ' +
-                    'that is not a plugin.'
-                );
+        /**
+         * Resolves lazy module (plug-in in this case).
+         * It means that lazy module was loaded.
+         *
+         * @method resolveLazyModule
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @param {string} moduleName
+         *      The name of lazy plug-in module
+         */
+        resolveLazyModule: function(moduleName)
+        {
+            if (!this.issetLazyModule(moduleName)) {
+                return;
             }
-            childModule.setParent(mainModule);
-            modules.push(childModule);
-        }
+            delete this.getLazyModules()[moduleName];
+        },
 
-        return modules;
-    };
+        /**
+         * Normalizes plugin modules
+         *
+         * @method _processModules
+         *
+         * @throws {Error}
+         *      Throws error if specified in plugins module that is not a plugin.
+         *
+         * @param {string[]} moduleNames
+         *      Array of module names. Each module should be marked as a plugin
+         *      (by the "plugin" or "pluginOf" setting parameters)
+         *
+         * @returns {Array.<Subclass.Module>}
+         * @private
+         * @ignore
+         */
+        _processModules: function(moduleNames)
+        {
+            var mainModule = this.getMainModule();
+            var modules = [];
 
-    /**
-     * Adds the new plugin module
-     *
-     * @method addPlugin
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @param {string} moduleName
-     *      The name of plug-in module
-     */
-    ModuleStorage.prototype.addPlugin = function(moduleName)
-    {
-        var processedModule = this._processModules([moduleName])[0];
+            for (var i = 0; i < moduleNames.length; i++) {
+                var childModule = Subclass.getModule(moduleNames[i]).getModule();
+                var childModuleSettings = childModule.getSettingsManager();
 
-        if (this.issetLazyModule(moduleName)) {
-            var lazyModuleIndex = parseInt(this.getLazyModules()[moduleName]) + 1;
-            this._modules.splice(lazyModuleIndex, 0, processedModule)
-
-        } else {
-            this._modules.push(processedModule);
-        }
-    };
-
-    /**
-     * Returns all plug-in module instances of the current module
-     *
-     * @method getPlugins
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @returns {Array.<Subclass.Module>}
-     */
-    ModuleStorage.prototype.getPlugins = function()
-    {
-        var modules = this.getModules();
-        var modulesCopy = [];
-
-        for (var i = 0; i < modules.length; i++) {
-            if (i > 0) {
-                modulesCopy.push(modules[i]);
+                if (!childModuleSettings.isPlugin()) {
+                    Subclass.Error.create(
+                        'Specified in plugins module "' + moduleNames[i] + '" ' +
+                        'that is not a plugin.'
+                    );
+                }
+                childModule.setParent(mainModule);
+                modules.push(childModule);
             }
-        }
-        return modulesCopy;
-    };
 
-    /**
-     * Returns all plug-in module names of the current module
-     *
-     * @method getPluginNames
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @returns {Array.<string>}
-     */
-    ModuleStorage.prototype.getPluginNames = function()
-    {
-        var plugins = this.getPlugins();
-        var names = [];
+            return modules;
+        },
 
-        for (var i = 0; i < plugins.length; i++) {
-            names.push(plugins[i].getName());
-        }
-        return names;
-    };
+        /**
+         * Adds the new plugin module
+         *
+         * @method addPlugin
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @param {string} moduleName
+         *      The name of plug-in module
+         */
+        addPlugin: function(moduleName)
+        {
+            var processedModule = this._processModules([moduleName])[0];
 
-    /**
-     * Sorts out each module by specified callback
-     *
-     * @method eachModule
-     * @memberOf Subclass.ModuleStorage.prototype
-     *
-     * @param {boolean} [reverse]
-     *      Optional parameter which allows to sort out modules in a reverse order
-     *
-     * @param {Function} callback
-     *      Callback function which will perform each module in the sor ordering process.<br /><br />
-     *
-     *      Function will receive two arguments:<br />
-     *      - the first one is an instance of module;<br />
-     *      - the second one is a module name.<br /><br />
-     *
-     *      If callback function returns false, the sorting out will break.
-     *
-     * @example
-     * ...
-     *
-     * var ModuleStorage = moduleInst.getModuleStorage();
-     *
-     * moduleStorage.eachModule(function(module, moduleName) {
-     *     // some manipulations
-     *     ...
-     *
-     *     if (moduleName == 'app') {  // or any other condition.
-     *         return false;           // breaks sort ordering and the rest modules
-     *                                 // will not processed by this function
-     *     }
-     * });
-     * ...
-     */
-    ModuleStorage.prototype.eachModule = function(reverse, callback)
-    {
-        if (typeof reverse == 'function') {
-            callback = reverse;
-            reverse = false;
-        }
-        var modules = Subclass.Tools.extend([], this.getModules());
+            if (this.issetLazyModule(moduleName)) {
+                var lazyModuleIndex = parseInt(this.getLazyModules()[moduleName]) + 1;
+                this._modules.splice(lazyModuleIndex, 0, processedModule)
 
-        if (reverse) {
-            modules.reverse();
-        }
+            } else {
+                this._modules.push(processedModule);
+            }
+        },
 
-        for (var i = 0; i < modules.length; i++) {
-            if (callback(modules[i], modules[i].getName()) === false) {
-                break;
+        /**
+         * Returns all plug-in module instances of the current module
+         *
+         * @method getPlugins
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @returns {Array.<Subclass.Module>}
+         */
+        getPlugins: function()
+        {
+            var modules = this.getModules();
+            var modulesCopy = [];
+
+            for (var i = 0; i < modules.length; i++) {
+                if (i > 0) {
+                    modulesCopy.push(modules[i]);
+                }
+            }
+            return modulesCopy;
+        },
+
+        /**
+         * Returns all plug-in module names of the current module
+         *
+         * @method getPluginNames
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @returns {Array.<string>}
+         */
+        getPluginNames: function()
+        {
+            var plugins = this.getPlugins();
+            var names = [];
+
+            for (var i = 0; i < plugins.length; i++) {
+                names.push(plugins[i].getName());
+            }
+            return names;
+        },
+
+        /**
+         * Sorts out each module by specified callback
+         *
+         * @method eachModule
+         * @memberOf Subclass.ModuleStorage.prototype
+         *
+         * @param {boolean} [reverse]
+         *      Optional parameter which allows to sort out modules in a reverse order
+         *
+         * @param {Function} callback
+         *      Callback function which will perform each module in the sor ordering process.<br /><br />
+         *
+         *      Function will receive two arguments:<br />
+         *      - the first one is an instance of module;<br />
+         *      - the second one is a module name.<br /><br />
+         *
+         *      If callback function returns false, the sorting out will break.
+         *
+         * @example
+         * ...
+         *
+         * var ModuleStorage = moduleInst.getModuleStorage();
+         *
+         * moduleStorage.eachModule(function(module, moduleName) {
+         *     // some manipulations
+         *     ...
+         *
+         *     if (moduleName == 'app') {  // or any other condition.
+         *         return false;           // breaks sort ordering and the rest modules
+         *                                 // will not processed by this function
+         *     }
+         * });
+         * ...
+         */
+        eachModule: function(reverse, callback)
+        {
+            if (typeof reverse == 'function') {
+                callback = reverse;
+                reverse = false;
+            }
+            var modules = Subclass.Tools.extend([], this.getModules());
+
+            if (reverse) {
+                modules.reverse();
+            }
+
+            for (var i = 0; i < modules.length; i++) {
+                if (callback(modules[i], modules[i].getName()) === false) {
+                    break;
+                }
             }
         }
     };
@@ -12567,391 +12666,397 @@ Subclass.SettingsManager = function()
 
     SettingsManager.$mixins = [Subclass.Event.EventableMixin];
 
-    /**
-     * Sets new module settings.
-     *
-     * New setting parameters will rewrite earlier ones, for example,
-     * specified in module constructor or in earlier call of SettingsManager#setSettings method.
-     *
-     * @method setSettings
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *     Throws error when:<br />
-     *     - if module is ready;<br />
-     *     - specified argument is not a plain object;<br />
-     *     - in settings object specified non agreed parameter.
-     *
-     * @param {Object} moduleSettings
-     *     Object with module setting parameters
-     *
-     * @example
-     * ...
-     *
-     * var moduleInst = Subclass.createModule('myApp');
-     *
-     * ...
-     * var moduleSettings = moduleInst.getSettingsManager();
-     * var parameterManager = moduleInst.getParameterManager();
-     *
-     * moduleSettings.setSettings({ // or easily use moduleInst.setSettings({...});
-     *     rootPath: "path/to/project/root/dir",  // adds new parameter
-     * });
-     *
-     * moduleSettings.getRootPath();               // Return "path/to/project/root/dir"
-     * ...
-     */
-    SettingsManager.prototype.setSettings = function (moduleSettings)
-    {
-        var $this = this;
+    SettingsManager.prototype = {
 
-        if (this.getModule().isReady()) {
-            Subclass.Error.create('Can\'t change settings in ready module.');
-        }
-        if (moduleSettings && !Subclass.Tools.isPlainObject(moduleSettings)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the module settings", false)
-                .received(moduleSettings)
-                .expected("a plain object")
-                .apply()
-            ;
-        }
-        if (moduleSettings) {
-            if (moduleSettings.hasOwnProperty('pluginOf')) {
-                this.setPluginOf(moduleSettings.pluginOf);
-            }
-            if (moduleSettings.hasOwnProperty('files')) {
-                this.setFiles(moduleSettings.files);
-            }
+        /**
+         * Sets new module settings.
+         *
+         * New setting parameters will rewrite earlier ones, for example,
+         * specified in module constructor or in earlier call of SettingsManager#setSettings method.
+         *
+         * @method setSettings
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *     Throws error when:<br />
+         *     - if module is ready;<br />
+         *     - specified argument is not a plain object;<br />
+         *     - in settings object specified non agreed parameter.
+         *
+         * @param {Object} moduleSettings
+         *     Object with module setting parameters
+         *
+         * @example
+         * ...
+         *
+         * var moduleInst = Subclass.createModule('myApp');
+         *
+         * ...
+         * var moduleSettings = moduleInst.getSettingsManager();
+         * var parameterManager = moduleInst.getParameterManager();
+         *
+         * moduleSettings.setSettings({ // or easily use moduleInst.setSettings({...});
+         *     rootPath: "path/to/project/root/dir",  // adds new parameter
+         * });
+         *
+         * moduleSettings.getRootPath();               // Return "path/to/project/root/dir"
+         * ...
+         */
+        setSettings: function (moduleSettings)
+        {
+            var $this = this;
 
-            for (var settingName in moduleSettings) {
-                if (
-                    !moduleSettings.hasOwnProperty(settingName)
-                    || [
-                        'pluginOf',
-                        'files',
-                        'onReady'
-                    ].indexOf(settingName) >= 0
-                ) {
-                    continue;
+            if (this.getModule().isReady()) {
+                Subclass.Error.create('Can\'t change settings in ready module.');
+            }
+            if (moduleSettings && !Subclass.Tools.isPlainObject(moduleSettings)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the module settings", false)
+                    .received(moduleSettings)
+                    .expected("a plain object")
+                    .apply()
+                ;
+            }
+            if (moduleSettings) {
+                if (moduleSettings.hasOwnProperty('pluginOf')) {
+                    this.setPluginOf(moduleSettings.pluginOf);
                 }
-                var setterName = "set" + settingName[0].toUpperCase() + settingName.substr(1);
-
-                if (!this[setterName]) {
-                    Subclass.Error.create(
-                        'Setting option "' + settingName + '" is not allowed ' +
-                        'by the module.'
-                    );
+                if (moduleSettings.hasOwnProperty('files')) {
+                    this.setFiles(moduleSettings.files);
                 }
-                this[setterName](moduleSettings[settingName]);
+
+                for (var settingName in moduleSettings) {
+                    if (
+                        !moduleSettings.hasOwnProperty(settingName)
+                        || [
+                            'pluginOf',
+                            'files',
+                            'onReady'
+                        ].indexOf(settingName) >= 0
+                    ) {
+                        continue;
+                    }
+                    var setterName = "set" + settingName[0].toUpperCase() + settingName.substr(1);
+
+                    if (!this[setterName]) {
+                        Subclass.Error.create(
+                            'Setting option "' + settingName + '" is not allowed ' +
+                            'by the module.'
+                        );
+                    }
+                    this[setterName](moduleSettings[settingName]);
+                }
+                if (moduleSettings.hasOwnProperty('onReady')) {
+                    $this.setOnReady(moduleSettings.onReady);
+                }
             }
-            if (moduleSettings.hasOwnProperty('onReady')) {
-                $this.setOnReady(moduleSettings.onReady);
+        },
+
+        /**
+         * Returns module instance to which current settings manager belongs
+         *
+         * @method getModule
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        getModule: function()
+        {
+            return this._module;
+        },
+
+        /**
+         * Sets a specific state would be current module a plug-in or not.
+         *
+         * If module is marked as a plug-in then its registered onReady callback functions
+         * will be invoked only when the root module becomes ready.
+         *
+         * @method setPlugin
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if:<br />
+         *      - trying to change value after the module became ready<br />
+         *      - was specified not boolean value
+         *
+         * @param {boolean} isPlugin
+         *      Should be current module a plugin or not
+         */
+        setPlugin: function(isPlugin)
+        {
+            this.checkModuleIsReady();
+
+            if (typeof isPlugin != 'boolean') {
+                Subclass.Error.create('InvalidModuleOption')
+                    .option('plugin')
+                    .module(this.getModule().getName())
+                    .received(isPlugin)
+                    .expected('a boolean value')
+                    .apply()
+                ;
             }
-        }
-    };
+            this._plugin = isPlugin;
+        },
 
-    /**
-     * Returns module instance to which current settings manager belongs
-     *
-     * @method getModule
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    SettingsManager.prototype.getModule = function()
-    {
-        return this._module;
-    };
+        /**
+         * Reports whether the current module is a plug-in of another module or not
+         *
+         * @method getPlugin
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @returns {boolean}
+         */
+        getPlugin: function()
+        {
+            return this._plugin;
+        },
 
-    /**
-     * Sets a specific state would be current module a plug-in or not.
-     *
-     * If module is marked as a plug-in then its registered onReady callback functions
-     * will be invoked only when the root module becomes ready.
-     *
-     * @method setPlugin
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - was specified not boolean value
-     *
-     * @param {boolean} isPlugin
-     *      Should be current module a plugin or not
-     */
-    SettingsManager.prototype.setPlugin = function(isPlugin)
-    {
-        this.checkModuleIsReady();
+        /**
+         * @method isPlugin
+         * @memberOf Subclass.SettingsManager.prototype
+         * @alias Subclass.SettingsManager#getPlugin
+         */
+        isPlugin: function()
+        {
+            return this.getPlugin.apply(this, arguments);
+        },
 
-        if (typeof isPlugin != 'boolean') {
-            Subclass.Error.create('InvalidModuleOption')
-                .option('plugin')
-                .module(this.getModule().getName())
-                .received(isPlugin)
-                .expected('a boolean value')
-                .apply()
-            ;
-        }
-        this._plugin = isPlugin;
-    };
+        /**
+         * Marks current module that it should be a plug-in of the module with specified name.
+         *
+         * If was specified name of parent module then the module setting parameter
+         * "plugin" will forcibly set to true.
+         *
+         * @method setPluginOf
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if specified argument is not string or null
+         *
+         * @param {string} parentModuleName
+         *      A name of the parent module
+         */
+        setPluginOf: function(parentModuleName)
+        {
+            this.checkModuleIsReady();
 
-    /**
-     * Reports whether the current module is a plug-in of another module or not
-     *
-     * @method getPlugin
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @returns {boolean}
-     */
-    SettingsManager.prototype.getPlugin = function()
-    {
-        return this._plugin;
-    };
+            if (parentModuleName !== null && typeof parentModuleName != 'string') {
+                Subclass.Error.create('InvalidModuleOption')
+                    .option('pluginOf')
+                    .module(this.getModule().getName())
+                    .received(parentModuleName)
+                    .expected('a string (name of another module that is not marked as a plugin)')
+                    .apply()
+                ;
+            }
+            this._pluginOf = parentModuleName;
+            this.setPlugin(true);
+        },
 
-    /**
-     * @method isPlugin
-     * @memberOf Subclass.SettingsManager.prototype
-     * @alias Subclass.SettingsManager#getPlugin
-     */
-    SettingsManager.prototype.isPlugin = SettingsManager.prototype.getPlugin;
+        /**
+         * Returns name of the parent module if current one is a plug-in of the specified module
+         *
+         * @method getPluginOf
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @returns {(string|null)}
+         */
+        getPluginOf: function()
+        {
+            return this._pluginOf;
+        },
 
-    /**
-     * Marks current module that it should be a plug-in of the module with specified name.
-     *
-     * If was specified name of parent module then the module setting parameter
-     * "plugin" will forcibly set to true.
-     *
-     * @method setPluginOf
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if specified argument is not string or null
-     *
-     * @param {string} parentModuleName
-     *      A name of the parent module
-     */
-    SettingsManager.prototype.setPluginOf = function(parentModuleName)
-    {
-        this.checkModuleIsReady();
+        /**
+         * Sets root directory path of the project.
+         *
+         * @method setRootPath
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if:<br />
+         *      - trying to change value after the module became ready<br />
+         *      - specified not string argument value
+         *
+         * @param {string} rootPath
+         *      A path to the project root directory
+         *
+         * @example
+         *
+         * ...
+         * var moduleSettings = moduleInst.getSettingsManager();
+         *     moduleSettings.setRootPath("path/to/the/directory/root");
+         * ...
+         */
+        setRootPath: function(rootPath)
+        {
+            this.checkModuleIsReady();
 
-        if (parentModuleName !== null && typeof parentModuleName != 'string') {
-            Subclass.Error.create('InvalidModuleOption')
-                .option('pluginOf')
-                .module(this.getModule().getName())
-                .received(parentModuleName)
-                .expected('a string (name of another module that is not marked as a plugin)')
-                .apply()
-            ;
-        }
-        this._pluginOf = parentModuleName;
-        this.setPlugin(true);
-    };
+            if (typeof rootPath != 'string') {
+                Subclass.Error.create('InvalidModuleOption')
+                    .option('rootPath')
+                    .module(this.getModule().getName())
+                    .received(rootPath)
+                    .expected('a string')
+                    .apply()
+                ;
+            }
+            this._rootPath = rootPath;
+        },
 
-    /**
-     * Returns name of the parent module if current one is a plug-in of the specified module
-     *
-     * @method getPluginOf
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @returns {(string|null)}
-     */
-    SettingsManager.prototype.getPluginOf = function()
-    {
-        return this._pluginOf;
-    };
+        /**
+         * Returns root directory path of the project
+         *
+         * @method getRootPath
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @returns {(string|null)}
+         */
+        getRootPath: function()
+        {
+            return this._rootPath;
+        },
 
-    /**
-     * Sets root directory path of the project.
-     *
-     * @method setRootPath
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - specified not string argument value
-     *
-     * @param {string} rootPath
-     *      A path to the project root directory
-     *
-     * @example
-     *
-     * ...
-     * var moduleSettings = moduleInst.getSettingsManager();
-     *     moduleSettings.setRootPath("path/to/the/directory/root");
-     * ...
-     */
-    SettingsManager.prototype.setRootPath = function(rootPath)
-    {
-        this.checkModuleIsReady();
+        /**
+         * Sets and loads specified files.
+         *
+         * @method setFiles
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if:<br />
+         *      - trying to change value after the module became ready<br />
+         *      - specified not array of strings argument value
+         *
+         * @param {string[]} files
+         *      An array with file names which will be loaded before module
+         *      will become ready. Each file name can be an absolute or relative.
+         *      If file name specified with sign "^" at start it means that is an absolute path.
+         *      Otherwise it is a path of file relative to "rootPath".
+         *
+         * @param {Function} callback
+         *      The callback function which will invoked after
+         *      the specified main file will loaded
+         */
+        setFiles: function(files, callback)
+        {
+            this.checkModuleIsReady();
 
-        if (typeof rootPath != 'string') {
-            Subclass.Error.create('InvalidModuleOption')
-                .option('rootPath')
-                .module(this.getModule().getName())
-                .received(rootPath)
-                .expected('a string')
-                .apply()
-            ;
-        }
-        this._rootPath = rootPath;
-    };
+            if (!files || !Array.isArray(files)) {
+                Subclass.Error.create(
+                    "Trying to set invalid files array in module settings set. " +
+                    "It must contain the names of files."
+                );
+            }
 
-    /**
-     * Returns root directory path of the project
-     *
-     * @method getRootPath
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @returns {(string|null)}
-     */
-    SettingsManager.prototype.getRootPath = function()
-    {
-        return this._rootPath;
-    };
+            var module = this.getModule();
+            var loadManager = module.getLoadManager();
 
-    /**
-     * Sets and loads specified files.
-     *
-     * @method setFiles
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - specified not array of strings argument value
-     *
-     * @param {string[]} files
-     *      An array with file names which will be loaded before module
-     *      will become ready. Each file name can be an absolute or relative.
-     *      If file name specified with sign "^" at start it means that is an absolute path.
-     *      Otherwise it is a path of file relative to "rootPath".
-     *
-     * @param {Function} callback
-     *      The callback function which will invoked after
-     *      the specified main file will loaded
-     */
-    SettingsManager.prototype.setFiles = function(files, callback)
-    {
-        this.checkModuleIsReady();
+            for (var i = 0; i < files.length; i++) {
+                loadManager.loadFile(files[i]);
+            }
+        },
 
-        if (!files || !Array.isArray(files)) {
-            Subclass.Error.create(
-                "Trying to set invalid files array in module settings set. " +
-                "It must contain the names of files."
-            );
-        }
+        /**
+         * Reports whether current module loads some files
+         *
+         * @method hasFiles
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @returns {boolean}
+         */
+        hasFiles: function()
+        {
+            return !!this._files.length;
+        },
 
-        var module = this.getModule();
-        var loadManager = module.getLoadManager();
+        /**
+         * Sets callback function which will be invoked before all registered user application
+         * parts (i.e. classes) will be set upped.
+         *
+         * It is a good opportunity to modify its settings using plugins of application.
+         *
+         * @method setOnSetup
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if:<br />
+         *      - trying to change value after the module became ready<br />
+         *      - specified not function argument value
+         *
+         * @param callback
+         */
+        setOnSetup: function(callback)
+        {
+            this.checkModuleIsReady();
 
-        for (var i = 0; i < files.length; i++) {
-            loadManager.loadFile(files[i]);
-        }
-    };
+            if (typeof callback != "function") {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the callback', false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
+                ;
+            }
+            var eventManager = this.getModule().getEventManager();
+            var onSetupEvent = eventManager.getEvent('onSetup');
 
-    /**
-     * Reports whether current module loads some files
-     *
-     * @method hasFiles
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @returns {boolean}
-     */
-    SettingsManager.prototype.hasFiles = function()
-    {
-        return !!this._files.length;
-    };
+            onSetupEvent.addListener(callback);
+        },
 
-    /**
-     * Sets callback function which will be invoked before all registered user application
-     * parts (i.e. classes) will be set upped.
-     *
-     * It is a good opportunity to modify its settings using plugins of application.
-     *
-     * @method setOnSetup
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - specified not function argument value
-     *
-     * @param callback
-     */
-    SettingsManager.prototype.setOnSetup = function(callback)
-    {
-        this.checkModuleIsReady();
+        /**
+         * Sets callback function which will be invoked after the all classes of the module
+         * will be loaded and registered.<br><br>
+         *
+         * It is the same as "onReady" parameter in module settings. If it was defined
+         * in module settings too the new callback function will be added to the onReady
+         * callbacks storage and will be invoked after other callback functions
+         * which were registered earlier.<br><br>
+         *
+         * If there were no classes registered in module at the moment and onReady callback
+         * function was not set earlier, the call of current method invokes specified callback immediately.
+         *
+         * @method setOnReady
+         * @memberOf Subclass.SettingsManager.prototype
+         *
+         * @throws {Error}
+         *      Throws error if:<br />
+         *      - trying to change value after the module became ready<br />
+         *      - specified not function argument value
+         *
+         * @param {Function} callback
+         *      Callback function which will do some initializing manipulations
+         */
+        setOnReady: function(callback)
+        {
+            this.checkModuleIsReady();
 
-        if (typeof callback != "function") {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the callback', false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
-        }
-        var eventManager = this.getModule().getEventManager();
-        var onSetupEvent = eventManager.getEvent('onSetup');
+            if (typeof callback != "function") {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the callback', false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
+                ;
+            }
+            var module = this.getModule();
+            var eventManager = module.getEventManager();
+            var onReadyEvent = eventManager.getEvent('onReady');
 
-        onSetupEvent.addListener(callback);
-    };
+            onReadyEvent.addListener(callback);
+        },
 
-    /**
-     * Sets callback function which will be invoked after the all classes of the module
-     * will be loaded and registered.<br><br>
-     *
-     * It is the same as "onReady" parameter in module settings. If it was defined
-     * in module settings too the new callback function will be added to the onReady
-     * callbacks storage and will be invoked after other callback functions
-     * which were registered earlier.<br><br>
-     *
-     * If there were no classes registered in module at the moment and onReady callback
-     * function was not set earlier, the call of current method invokes specified callback immediately.
-     *
-     * @method setOnReady
-     * @memberOf Subclass.SettingsManager.prototype
-     *
-     * @throws {Error}
-     *      Throws error if:<br />
-     *      - trying to change value after the module became ready<br />
-     *      - specified not function argument value
-     *
-     * @param {Function} callback
-     *      Callback function which will do some initializing manipulations
-     */
-    SettingsManager.prototype.setOnReady = function(callback)
-    {
-        this.checkModuleIsReady();
-
-        if (typeof callback != "function") {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the callback', false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
-        }
-        var module = this.getModule();
-        var eventManager = module.getEventManager();
-        var onReadyEvent = eventManager.getEvent('onReady');
-
-        onReadyEvent.addListener(callback);
-    };
-
-    /**
-     * Ensures that the module is not ready
-     *
-     * @method checkModuleIsReady
-     * @private
-     * @ignore
-     */
-    SettingsManager.prototype.checkModuleIsReady = function()
-    {
-        if (this.getModule().isReady()) {
-            Subclass.Error.create('Can\'t change settings in ready module.');
+        /**
+         * Ensures that the module is not ready
+         *
+         * @method checkModuleIsReady
+         * @private
+         * @ignore
+         */
+        checkModuleIsReady: function()
+        {
+            if (this.getModule().isReady()) {
+                Subclass.Error.create('Can\'t change settings in ready module.');
+            }
         }
     };
 

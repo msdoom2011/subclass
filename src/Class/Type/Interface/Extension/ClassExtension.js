@@ -75,143 +75,146 @@ Subclass.Class.Type.Interface.Extension.ClassExtension = function() {
 
     var Class = Subclass.Class.Type.Class.Class;
 
-    /**
-     * Adds interfaces
-     *
-     * @param {Object} interfaces
-     */
-    Class.prototype.addInterfaces = function(interfaces)
-    {
-        if (!interfaces || !Array.isArray(interfaces)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the traits list', false)
-                .expected('an array')
-                .received(interfaces)
-                .apply()
-            ;
-        }
-        for (var i = 0; i < interfaces.length; i++) {
-            this.addInterface(interfaces[i]);
-        }
-    };
+    Subclass.Tools.extend(Class.prototype, {
 
-    /**
-     * Adds new interface
-     *
-     * @param {string} interfaceName
-     * @throws {Error}
-     */
-    Class.prototype.addInterface = function (interfaceName)
-    {
-        if (!interfaceName || typeof interfaceName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of interface", false)
-                .received(interfaceName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        var interfaceClass = this.getClassManager().get(interfaceName);
-        interfaceClass.addChildClass(this.getName());
-
-        if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
-            Subclass.Error.create(
-                'Can\'t implement no interface "' + interfaceName + '" ' +
-                'in class "' + this.getName() + '".'
-            );
-        }
-
-        var interfaceClassConstructor = interfaceClass.getConstructor();
-        var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
-        var abstractMethods = {};
-
-        if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
-            Subclass.Error.create(
-                'Trying add to "$_implements" option ' +
-                'the new class "' + interfaceName + '" that is not an interface.'
-            );
-        }
-
-        // Add all interface prototype properties (with inherited)
-
-        loop: for (var methodName in interfaceClassConstructorProto) {
-            if (typeof interfaceClassConstructorProto[methodName] != 'function') {
-                continue;
+        /**
+         * Adds interfaces
+         *
+         * @param {Object} interfaces
+         */
+        addInterfaces: function(interfaces)
+        {
+            if (!interfaces || !Array.isArray(interfaces)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the traits list', false)
+                    .expected('an array')
+                    .received(interfaces)
+                    .apply()
+                ;
             }
-            abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
-        }
-        this.addAbstractMethods(abstractMethods);
-        this.getInterfaces().push(interfaceClass);
-    };
-
-    /**
-     * Returns interface names list
-     *
-     * @throws {Error}
-     *
-     * @param {boolean} [withInherited=false]
-     *      Whether the inherited interfaces should be returned
-     *
-     * @returns {Array<Subclass.Class.Interface.Interface>}
-     */
-    Class.prototype.getInterfaces = function(withInherited)
-    {
-        if (withInherited !== true) {
-            return this._interfaces;
-        }
-        var classManager = this.getClassManager();
-        var interfaces = Subclass.Tools.copy(this._interfaces);
-
-        for (var i = 0; i < interfaces.length; i++) {
-            var interfaceParents = interfaces[i].getClassParents();
-
-            for (var j = 0; j < interfaceParents.length; j++) {
-                interfaces.push(classManager.get(interfaceParents[j]));
+            for (var i = 0; i < interfaces.length; i++) {
+                this.addInterface(interfaces[i]);
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
+        },
 
-            if (parent.getInterfaces) {
-                interfaces = interfaces.concat(parent.getInterfaces(withInherited))
+        /**
+         * Adds new interface
+         *
+         * @param {string} interfaceName
+         * @throws {Error}
+         */
+        addInterface: function (interfaceName)
+        {
+            if (!interfaceName || typeof interfaceName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of interface", false)
+                    .received(interfaceName)
+                    .expected("a string")
+                    .apply()
+                ;
             }
-        }
-        return interfaces;
-    };
+            var interfaceClass = this.getClassManager().get(interfaceName);
+            interfaceClass.addChildClass(this.getName());
 
-    /**
-     * Checks if current class implements specified interface
-     *
-     * @param interfaceName
-     * @returns {*}
-     * @throws {Error}
-     */
-    Class.prototype.isImplements = function (interfaceName)
-    {
-        if (!interfaceName || typeof interfaceName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of interface", false)
-                .received(interfaceName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        var interfaces = this.getInterfaces();
-
-        for (var i = 0; i < interfaces.length; i++) {
-            if (interfaces[i].isInstanceOf(interfaceName)) {
-                return true;
+            if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
+                Subclass.Error.create(
+                    'Can\'t implement no interface "' + interfaceName + '" ' +
+                    'in class "' + this.getName() + '".'
+                );
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
 
-            if (parent.isImplements) {
-                return parent.isImplements(interfaceName);
+            var interfaceClassConstructor = interfaceClass.getConstructor();
+            var interfaceClassConstructorProto = interfaceClassConstructor.prototype;
+            var abstractMethods = {};
+
+            if (interfaceClass.constructor != Subclass.Class.Type.Interface.Interface) {
+                Subclass.Error.create(
+                    'Trying add to "$_implements" option ' +
+                    'the new class "' + interfaceName + '" that is not an interface.'
+                );
             }
+
+            // Add all interface prototype properties (with inherited)
+
+            loop: for (var methodName in interfaceClassConstructorProto) {
+                if (typeof interfaceClassConstructorProto[methodName] != 'function') {
+                    continue;
+                }
+                abstractMethods[methodName] = interfaceClassConstructorProto[methodName];
+            }
+            this.addAbstractMethods(abstractMethods);
+            this.getInterfaces().push(interfaceClass);
+        },
+
+        /**
+         * Returns interface names list
+         *
+         * @throws {Error}
+         *
+         * @param {boolean} [withInherited=false]
+         *      Whether the inherited interfaces should be returned
+         *
+         * @returns {Array<Subclass.Class.Interface.Interface>}
+         */
+        getInterfaces: function(withInherited)
+        {
+            if (withInherited !== true) {
+                return this._interfaces;
+            }
+            var classManager = this.getClassManager();
+            var interfaces = Subclass.Tools.copy(this._interfaces);
+
+            for (var i = 0; i < interfaces.length; i++) {
+                var interfaceParents = interfaces[i].getClassParents();
+
+                for (var j = 0; j < interfaceParents.length; j++) {
+                    interfaces.push(classManager.get(interfaceParents[j]));
+                }
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.getInterfaces) {
+                    interfaces = interfaces.concat(parent.getInterfaces(withInherited))
+                }
+            }
+            return interfaces;
+        },
+
+        /**
+         * Checks if current class implements specified interface
+         *
+         * @param interfaceName
+         * @returns {*}
+         * @throws {Error}
+         */
+        isImplements: function (interfaceName)
+        {
+            if (!interfaceName || typeof interfaceName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of interface", false)
+                    .received(interfaceName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            var interfaces = this.getInterfaces();
+
+            for (var i = 0; i < interfaces.length; i++) {
+                if (interfaces[i].isInstanceOf(interfaceName)) {
+                    return true;
+                }
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.isImplements) {
+                    return parent.isImplements(interfaceName);
+                }
+            }
+            return false;
         }
-        return false;
-    };
+    });
 
 
     //=========================================================================

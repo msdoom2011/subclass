@@ -68,53 +68,53 @@ Subclass.Class.Type.Trait.Trait = (function()
         return Subclass.Class.Type.Trait.TraitDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.getConstructorEmpty = function ()
-    {
-        return function Trait() {
+    Trait.prototype = {
 
-            // Hook for the grunt-contrib-uglify plugin
-            return Trait.name;
-        };
+        /**
+         * @inheritDoc
+         */
+        getConstructorEmpty: function ()
+        {
+            return function Trait() {
+
+                // Hook for the grunt-contrib-uglify plugin
+                return Trait.name;
+            };
+        },
+
+        /**
+         * @inheritDoc
+         */
+        setParent: function (parentClassName)
+        {
+            Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
+
+            if (
+                this._parent
+                && this._parent.constructor != Trait
+                && !(this._parent instanceof Trait)
+            ) {
+                Subclass.Error.create(
+                    'The trait "' + this.getName() + '" can be ' +
+                    'inherited only from the another trait.'
+                );
+            }
+        },
+
+        /**
+         * @inheritDoc
+         */
+        createConstructor: function()
+        {
+            return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
+        },
+
+        getAbstractMethods: undefined,
+
+        addAbstractMethods: undefined,
+
+        createInstance: undefined
     };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.setParent = function (parentClassName)
-    {
-        Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
-
-        if (
-            this._parent
-            && this._parent.constructor != Trait
-            && !(this._parent instanceof Trait)
-        ) {
-            Subclass.Error.create(
-                'The trait "' + this.getName() + '" can be ' +
-                'inherited only from the another trait.'
-            );
-        }
-    };
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.createConstructor = function()
-    {
-        return Subclass.Class.ClassType.prototype.createConstructor.apply(this, arguments);
-    };
-
-    Trait.prototype.getAbstractMethods = undefined;
-
-    Trait.prototype.addAbstractMethods = undefined;
-
-    /**
-     * @inheritDoc
-     */
-    Trait.prototype.createInstance = undefined;
 
 
     /*************************************************/

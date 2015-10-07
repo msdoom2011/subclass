@@ -14,47 +14,50 @@ Subclass.Class.Type.Interface.InterfaceDefinition = (function()
 
     InterfaceDefinition.$parent = Subclass.Class.ClassDefinition;
 
-    /**
-     * @inheritDoc
-     */
-    InterfaceDefinition.prototype.createBaseData = function()
-    {
-        return {
-            
-            /**
-             * Parent class name
-             *
-             * @type {(string|null)}
-             */
-            $_extends: null,
+    InterfaceDefinition.prototype = {
 
-            /**
-             * List of constants
-             *
-             * @type {(Object|null)}
-             */
-            $_constants: null
-        };
-    };
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function()
+        {
+            return {
 
-    /**
-     * Normalizes definition data
-     */
-    InterfaceDefinition.prototype.normalizeData = function()
-    {
-        InterfaceDefinition.$parent.prototype.normalizeData.call(this);
+                /**
+                 * Parent class name
+                 *
+                 * @type {(string|null)}
+                 */
+                $_extends: null,
 
-        var data = this.getData();
-        var constants = this.getNoMethods();
+                /**
+                 * List of constants
+                 *
+                 * @type {(Object|null)}
+                 */
+                $_constants: null
+            };
+        },
 
-        if (!data.hasOwnProperty('$_constants')) {
-            data.$_constants = {};
-        }
+        /**
+         * Normalizes definition data
+         */
+        normalizeData: function()
+        {
+            InterfaceDefinition.$parent.prototype.normalizeData.call(this);
 
-        for (var constantName in constants) {
-            if (constants.hasOwnProperty(constantName)) {
-                data.$_constants[constantName] = constants[constantName];
-                delete data[constantName];
+            var data = this.getData();
+            var constants = this.getNoMethods();
+
+            if (!data.hasOwnProperty('$_constants')) {
+                data.$_constants = {};
+            }
+
+            for (var constantName in constants) {
+                if (constants.hasOwnProperty(constantName)) {
+                    data.$_constants[constantName] = constants[constantName];
+                    delete data[constantName];
+                }
             }
         }
     };

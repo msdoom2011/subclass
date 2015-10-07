@@ -66,74 +66,77 @@ Subclass.Class.Type.Trait.Extension.ClassDefinitionExtension = function() {
 
     var ClassDefinition = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * Validates "$_traits" attribute value
-     *
-     * @param {*} traits
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    ClassDefinition.prototype.validateTraits = function(traits)
-    {
-        try {
-            if (traits && !Array.isArray(traits)) {
-                throw 'error';
-            }
-            if (traits) {
-                for (var i = 0; i < traits.length; i++) {
-                    if (typeof traits[i] != 'string') {
-                        throw 'error';
+    Subclass.Tools.extend(ClassDefinition.prototype, {
+
+        /**
+         * Validates "$_traits" attribute value
+         *
+         * @param {*} traits
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateTraits: function(traits)
+        {
+            try {
+                if (traits && !Array.isArray(traits)) {
+                    throw 'error';
+                }
+                if (traits) {
+                    for (var i = 0; i < traits.length; i++) {
+                        if (typeof traits[i] != 'string') {
+                            throw 'error';
+                        }
                     }
                 }
+            } catch (e) {
+                if (e == 'error') {
+                    Subclass.Error.create('InvalidClassOption')
+                        .option('$_traits')
+                        .className(this.getClass().getName())
+                        .received(traits)
+                        .expected('an array of strings')
+                        .apply()
+                    ;
+                } else {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_traits')
-                    .className(this.getClass().getName())
-                    .received(traits)
-                    .expected('an array of strings')
-                    .apply()
-                ;
-            } else {
-                throw e;
+            return true;
+        },
+
+        /**
+         * Sets "$_traits" attribute value
+         *
+         * @param {string[]} traits
+         *
+         *      List of the classes which properties and method current one will contain.
+         *
+         *      Example: [
+         *         "Namespace/Of/Trait1",
+         *         "Namespace/Of/Trait2",
+         *         ...
+         *      ]
+         */
+        setTraits: function(traits)
+        {
+            this.validateTraits(traits);
+            this.getData().$_traits = traits || [];
+
+            if (traits) {
+                this.getClass().addTraits(traits);
             }
+        },
+
+        /**
+         * Return "$_traits" attribute value
+         *
+         * @returns {string[]}
+         */
+        getTraits: function()
+        {
+            return this.getData().$_traits;
         }
-        return true;
-    };
-
-    /**
-     * Sets "$_traits" attribute value
-     *
-     * @param {string[]} traits
-     *
-     *      List of the classes which properties and method current one will contain.
-     *
-     *      Example: [
-     *         "Namespace/Of/Trait1",
-     *         "Namespace/Of/Trait2",
-     *         ...
-     *      ]
-     */
-    ClassDefinition.prototype.setTraits = function(traits)
-    {
-        this.validateTraits(traits);
-        this.getData().$_traits = traits || [];
-
-        if (traits) {
-            this.getClass().addTraits(traits);
-        }
-    };
-
-    /**
-     * Return "$_traits" attribute value
-     *
-     * @returns {string[]}
-     */
-    ClassDefinition.prototype.getTraits = function()
-    {
-        return this.getData().$_traits;
-    };
+    });
 
 
     //=========================================================================

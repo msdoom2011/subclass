@@ -85,143 +85,146 @@ Subclass.Class.Type.Trait.Extension.ClassExtension = function() {
 
     var Class = Subclass.Class.Type.Class.Class;
 
-    /**
-     * Adds traits
-     *
-     * @param {Object} traits
-     */
-    Class.prototype.addTraits = function(traits)
-    {
-        if (!traits || !Array.isArray(traits)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the traits list', false)
-                .expected('an array')
-                .received(traits)
-                .apply()
-            ;
-        }
-        for (var i = 0; i < traits.length; i++) {
-            this.addTrait(traits[i]);
-        }
-    };
+    Subclass.Tools.extend(Class.prototype, {
 
-    /**
-     * Returns trait names list
-     *
-     * @throws {Error}
-     *
-     * @param {boolean} [withInherited=false]
-     *      Whether the inherited traits should be returned
-     *
-     * @returns {Array<Subclass.Class.Trait.Trait>}
-     */
-    Class.prototype.getTraits = function(withInherited)
-    {
-        if (withInherited !== true) {
-            return this._traits;
-        }
-        var classManager = this.getClassManager();
-        var traits = Subclass.Tools.copy(this._traits);
-
-        for (var i = 0; i < traits.length; i++) {
-            var traitParents = traits[i].getClassParents();
-
-            for (var j = 0; j < traitParents.length; j++) {
-                traits.push(classManager.get(traitParents[j]));
+        /**
+         * Adds traits
+         *
+         * @param {Object} traits
+         */
+        addTraits: function(traits)
+        {
+            if (!traits || !Array.isArray(traits)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the traits list', false)
+                    .expected('an array')
+                    .received(traits)
+                    .apply()
+                ;
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
-
-            if (parent.getTraits) {
-                traits = traits.concat(parent.getTraits(withInherited))
+            for (var i = 0; i < traits.length; i++) {
+                this.addTrait(traits[i]);
             }
-        }
-        return traits;
-    };
+        },
 
-    /**
-     * Adds trait class name
-     *
-     * @param {string} traitName
-     * @throws {Error}
-     */
-    Class.prototype.addTrait = function (traitName)
-    {
-        var classDefinition = this.getDefinition();
-
-        if (!traitName || typeof traitName != 'string') {
-            Subclass.Error.create('InvalidArgument')
-                .argument("the name of trait", false)
-                .received(traitName)
-                .expected("a string")
-                .apply()
-            ;
-        }
-        var traitClass = this.getClassManager().get(traitName);
-        var traitClassDefinition = traitClass.getDefinition();
-        var traitProps = {};
-
-        traitClass.addChildClass(this.getName());
-
-        if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
-            Subclass.Error.create(
-                'Trying add to "$_traits" option ' +
-                'the new class "' + traitName + '" that is not a trait.'
-            );
-        }
-
-        this.getEvent('onAddTrait').trigger(traitClass);
-
-        // Copying all static properties to current class
-
-        this.extendStaticProperties(traitClass);
-        this.getTraits().push(traitClass);
-
-        // Copying all properties and methods (with inherited) from trait to class definition
-
-        Subclass.Tools.extend(traitProps, traitClassDefinition.getNoMethods(true));
-        Subclass.Tools.extend(traitProps, traitClassDefinition.getMethods(true));
-
-        classDefinition.setData(Subclass.Tools.extend(
-            traitProps,
-            classDefinition.getData()
-        ));
-    };
-
-    /**
-     * Checks if current class has specified trait class name
-     *
-     * @param {string} traitName
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    Class.prototype.hasTrait = function (traitName)
-    {
-        if (!traitName || typeof traitName != "string") {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the name of trait', false)
-                .received(traitName)
-                .expected('a string')
-                .apply()
-            ;
-        }
-        var traits = this.getTraits();
-
-        for (var i = 0; i < traits.length; i++) {
-            if (traits[i].isInstanceOf(traitName)) {
-                return true;
+        /**
+         * Returns trait names list
+         *
+         * @throws {Error}
+         *
+         * @param {boolean} [withInherited=false]
+         *      Whether the inherited traits should be returned
+         *
+         * @returns {Array<Subclass.Class.Trait.Trait>}
+         */
+        getTraits: function(withInherited)
+        {
+            if (withInherited !== true) {
+                return this._traits;
             }
-        }
-        if (this.hasParent()) {
-            var parent = this.getParent();
+            var classManager = this.getClassManager();
+            var traits = Subclass.Tools.copy(this._traits);
 
-            if (parent.hasTrait) {
-                return parent.hasTrait(traitName);
+            for (var i = 0; i < traits.length; i++) {
+                var traitParents = traits[i].getClassParents();
+
+                for (var j = 0; j < traitParents.length; j++) {
+                    traits.push(classManager.get(traitParents[j]));
+                }
             }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.getTraits) {
+                    traits = traits.concat(parent.getTraits(withInherited))
+                }
+            }
+            return traits;
+        },
+
+        /**
+         * Adds trait class name
+         *
+         * @param {string} traitName
+         * @throws {Error}
+         */
+        addTrait: function (traitName)
+        {
+            var classDefinition = this.getDefinition();
+
+            if (!traitName || typeof traitName != 'string') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument("the name of trait", false)
+                    .received(traitName)
+                    .expected("a string")
+                    .apply()
+                ;
+            }
+            var traitClass = this.getClassManager().get(traitName);
+            var traitClassDefinition = traitClass.getDefinition();
+            var traitProps = {};
+
+            traitClass.addChildClass(this.getName());
+
+            if (traitClass.constructor != Subclass.Class.Type.Trait.Trait) {
+                Subclass.Error.create(
+                    'Trying add to "$_traits" option ' +
+                    'the new class "' + traitName + '" that is not a trait.'
+                );
+            }
+
+            this.getEvent('onAddTrait').trigger(traitClass);
+
+            // Copying all static properties to current class
+
+            this.extendStaticProperties(traitClass);
+            this.getTraits().push(traitClass);
+
+            // Copying all properties and methods (with inherited) from trait to class definition
+
+            Subclass.Tools.extend(traitProps, traitClassDefinition.getNoMethods(true));
+            Subclass.Tools.extend(traitProps, traitClassDefinition.getMethods(true));
+
+            classDefinition.setData(Subclass.Tools.extend(
+                traitProps,
+                classDefinition.getData()
+            ));
+        },
+
+        /**
+         * Checks if current class has specified trait class name
+         *
+         * @param {string} traitName
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        hasTrait: function (traitName)
+        {
+            if (!traitName || typeof traitName != "string") {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the name of trait', false)
+                    .received(traitName)
+                    .expected('a string')
+                    .apply()
+                ;
+            }
+            var traits = this.getTraits();
+
+            for (var i = 0; i < traits.length; i++) {
+                if (traits[i].isInstanceOf(traitName)) {
+                    return true;
+                }
+            }
+            if (this.hasParent()) {
+                var parent = this.getParent();
+
+                if (parent.hasTrait) {
+                    return parent.hasTrait(traitName);
+                }
+            }
+            return false;
         }
-        return false;
-    };
+    });
 
 
     //=========================================================================

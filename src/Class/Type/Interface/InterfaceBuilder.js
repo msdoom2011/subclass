@@ -11,11 +11,14 @@ Subclass.Class.Type.Interface.InterfaceBuilder = (function()
 
     InterfaceBuilder.$parent = Subclass.Class.ClassBuilder;
 
-    InterfaceBuilder.prototype.setConstructor = undefined;
+    InterfaceBuilder.prototype = {
 
-    InterfaceBuilder.prototype.getConstructor = undefined;
+        setConstructor: undefined,
 
-    InterfaceBuilder.prototype.removeConstructor = undefined;
+        getConstructor: undefined,
+
+        removeConstructor: undefined
+    };
 
     return InterfaceBuilder;
 

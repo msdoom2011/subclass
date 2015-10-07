@@ -11,17 +11,20 @@ Subclass.Class.Type.Trait.TraitBuilder = (function()
 
     TraitBuilder.$parent = Subclass.Class.ClassBuilder;
 
-    TraitBuilder.prototype.setFinal = undefined;
+    TraitBuilder.prototype = {
 
-    TraitBuilder.prototype.getFinal = undefined;
+        setFinal: undefined,
 
-    TraitBuilder.prototype.setStatic = undefined;
+        getFinal: undefined,
 
-    TraitBuilder.prototype.getStatic = undefined;
+        setStatic: undefined,
 
-    TraitBuilder.prototype.setStaticProperty = undefined;
+        getStatic: undefined,
 
-    TraitBuilder.prototype.removeStaticProperty = undefined;
+        setStaticProperty: undefined,
+
+        removeStaticProperty: undefined
+    };
 
     return TraitBuilder;
 

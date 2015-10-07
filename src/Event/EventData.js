@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @constructor
+ */
 Subclass.Event.EventData = function()
 {
     function EventData(eventInst, target)
@@ -43,132 +47,135 @@ Subclass.Event.EventData = function()
         this._defaultPrevented = false;
     }
 
-    /**
-     * Returns the event object instance
-     *
-     * @returns {Subclass.Event.Event}
-     */
-    EventData.prototype.getEvent = function()
-    {
-        return this._event;
-    };
+    EventData.prototype = {
 
-    /**
-     * Returns the object for which current event was triggered
-     * (matches with "this" variable in event listener callback function)
-     *
-     * @returns {Object}
-     */
-    EventData.prototype.getTarget = function()
-    {
-        return this._target;
-    };
+        /**
+         * Returns the event object instance
+         *
+         * @returns {Subclass.Event.Event}
+         */
+        getEvent: function()
+        {
+            return this._event;
+        },
 
-    /**
-     * Starts event propagation
-     */
-    EventData.prototype.startPropagation = function()
-    {
-        this._stopped = false;
-    };
+        /**
+         * Returns the object for which current event was triggered
+         * (matches with "this" variable in event listener callback function)
+         *
+         * @returns {Object}
+         */
+        getTarget: function()
+        {
+            return this._target;
+        },
 
-    /**
-     * Stops event propagation
-     */
-    EventData.prototype.stopPropagation = function()
-    {
-        this._stopped = true;
-    };
+        /**
+         * Starts event propagation
+         */
+        startPropagation: function()
+        {
+            this._stopped = false;
+        },
 
-    /**
-     * Reports whether event propagation stopped
-     *
-     * @returns {boolean}
-     */
-    EventData.prototype.isPropagationStopped = function()
-    {
-        return this._stopped;
-    };
+        /**
+         * Stops event propagation
+         */
+        stopPropagation: function()
+        {
+            this._stopped = true;
+        },
 
-    /**
-     * Prevents call of default event listener
-     */
-    EventData.prototype.preventDefault = function()
-    {
-        this._defaultPrevented = true;
-    };
+        /**
+         * Reports whether event propagation stopped
+         *
+         * @returns {boolean}
+         */
+        isPropagationStopped: function()
+        {
+            return this._stopped;
+        },
 
-    /**
-     * Allows call of default event listener
-     */
-    EventData.prototype.allowDefault = function()
-    {
-        this._defaultPrevented = false;
-    };
+        /**
+         * Prevents call of default event listener
+         */
+        preventDefault: function()
+        {
+            this._defaultPrevented = true;
+        },
 
-    /**
-     * Reports whether allows call of default event listener
-     *
-     * @returns {boolean}
-     */
-    EventData.prototype.isDefaultPrevented = function()
-    {
-        return this._defaultPrevented;
-    };
+        /**
+         * Allows call of default event listener
+         */
+        allowDefault: function()
+        {
+            this._defaultPrevented = false;
+        },
 
-    /**
-     * Adds new event listener execution result
-     *
-     * @param {*} result
-     *      Event listener execution result
-     */
-    EventData.prototype.addResult = function(result)
-    {
-        this._results.push(result);
-    };
+        /**
+         * Reports whether allows call of default event listener
+         *
+         * @returns {boolean}
+         */
+        isDefaultPrevented: function()
+        {
+            return this._defaultPrevented;
+        },
 
-    /**
-     * Returns all results of event listeners executions
-     *
-     * @returns {Array.<*>}
-     */
-    EventData.prototype.getResults = function()
-    {
-        return this._results;
-    };
+        /**
+         * Adds new event listener execution result
+         *
+         * @param {*} result
+         *      Event listener execution result
+         */
+        addResult: function(result)
+        {
+            this._results.push(result);
+        },
 
-    /**
-     * Returns first result of event listeners executions
-     *
-     * @returns {*}
-     */
-    EventData.prototype.getFirstResult = function()
-    {
-        return this._results.length
-            ? this._results[0]
-            : undefined
-        ;
-    };
+        /**
+         * Returns all results of event listeners executions
+         *
+         * @returns {Array.<*>}
+         */
+        getResults: function()
+        {
+            return this._results;
+        },
 
-    /**
-     * Returns last result of event listeners executions
-     *
-     * @returns {*}
-     */
-    EventData.prototype.getLastResult = function()
-    {
-        return this._results.length
-            ? this._results[this._results.length - 1]
-            : undefined
-        ;
-    };
+        /**
+         * Returns first result of event listeners executions
+         *
+         * @returns {*}
+         */
+        getFirstResult: function()
+        {
+            return this._results.length
+                ? this._results[0]
+                : undefined
+            ;
+        },
 
-    /**
-     * Clears event listeners execution results
-     */
-    EventData.prototype.clearResults = function()
-    {
-        this._results = [];
+        /**
+         * Returns last result of event listeners executions
+         *
+         * @returns {*}
+         */
+        getLastResult: function()
+        {
+            return this._results.length
+                ? this._results[this._results.length - 1]
+                : undefined
+            ;
+        },
+
+        /**
+         * Clears event listeners execution results
+         */
+        clearResults: function()
+        {
+            this._results = [];
+        }
     };
 
     return EventData;

@@ -33,6 +33,36 @@ window.Subclass = (function()
      */
     var _plugins = {};
 
+    /**
+     * Initializes Subclass
+     *
+     * @method _initialize
+     * @private
+     * @static
+     */
+    var _initialize = function()
+    {
+        if (_initialized) {
+            return;
+        }
+        for (var pluginName in _plugins) {
+            if (!_plugins.hasOwnProperty(pluginName)) {
+                continue;
+            }
+            var plugin = _plugins[pluginName];
+            var pluginDependencies = plugin.getDependencies();
+
+            for (var i = 0; i < pluginDependencies.length; i++) {
+                if (!Subclass.issetPlugin(pluginDependencies[i])) {
+                    Subclass.Error.create(
+                        'The Subclass plug-in "' + pluginName + '" ' +
+                        'requires the "' + pluginDependencies.join('", "') + '" plug-in(s) to be uploaded.'
+                    );
+                }
+            }
+            _initialized = true;
+        }
+    };
 
     return {
 
@@ -113,7 +143,7 @@ window.Subclass = (function()
 
             // Initializes Subclass
 
-            this._initialize();
+            _initialize();
 
             // If for registering module exists plugins
 
@@ -290,37 +320,6 @@ window.Subclass = (function()
         getPlugins: function()
         {
             return _plugins;
-        },
-
-        /**
-         * Initializes Subclass
-         *
-         * @method _initialize
-         * @private
-         * @static
-         */
-        _initialize: function()
-        {
-            if (_initialized) {
-                return;
-            }
-            for (var pluginName in _plugins) {
-                if (!_plugins.hasOwnProperty(pluginName)) {
-                    continue;
-                }
-                var plugin = _plugins[pluginName];
-                var pluginDependencies = plugin.getDependencies();
-
-                for (var i = 0; i < pluginDependencies.length; i++) {
-                    if (!Subclass.issetPlugin(pluginDependencies[i])) {
-                        Subclass.Error.create(
-                            'The Subclass plug-in "' + pluginName + '" ' +
-                            'requires the "' + pluginDependencies.join('", "') + '" plug-in(s) to be uploaded.'
-                        );
-                    }
-                }
-                _initialized = true;
-            }
         }
     };
 })();

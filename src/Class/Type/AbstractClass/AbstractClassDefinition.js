@@ -14,116 +14,119 @@ Subclass.Class.Type.AbstractClass.AbstractClassDefinition = (function()
 
     AbstractClassDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClassDefinition.prototype.validateFinal = function(isFinal)
-    {
-        Subclass.Error.create(
-            'Abstract class definition cannot contain $_final option ' +
-            'and consequently can\'t be final.'
-        )
-    };
+    AbstractClassDefinition.prototype = {
 
-    /**
-     * Validates "$_abstract" attribute value
-     *
-     * @param {*} value
-     * @returns {boolean}
-     * @throws {Error}
-     */
-    AbstractClassDefinition.prototype.validateAbstract = function(value)
-    {
-        try {
-            if (value !== null && !Subclass.Tools.isPlainObject(value)) {
-                throw 'error';
-            }
-            if (value) {
-                for (var methodName in value) {
-                    if (!value.hasOwnProperty(methodName)) {
-                        continue;
-                    }
-                    if (typeof value[methodName] != 'function') {
-                        throw 'error';
+        /**
+         * @inheritDoc
+         */
+        validateFinal: function(isFinal)
+        {
+            Subclass.Error.create(
+                'Abstract class definition cannot contain $_final option ' +
+                'and consequently can\'t be final.'
+            )
+        },
+
+        /**
+         * Validates "$_abstract" attribute value
+         *
+         * @param {*} value
+         * @returns {boolean}
+         * @throws {Error}
+         */
+        validateAbstract: function(value)
+        {
+            try {
+                if (value !== null && !Subclass.Tools.isPlainObject(value)) {
+                    throw 'error';
+                }
+                if (value) {
+                    for (var methodName in value) {
+                        if (!value.hasOwnProperty(methodName)) {
+                            continue;
+                        }
+                        if (typeof value[methodName] != 'function') {
+                            throw 'error';
+                        }
                     }
                 }
+            } catch (e) {
+                if (e == 'error') {
+                    Subclass.Error.create('InvalidClassOption')
+                        .option('$_abstract')
+                        .className(this.getClass().getName())
+                        .expected('a plain object with methods or a null')
+                        .received(value)
+                        .apply()
+                    ;
+                } else {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if (e == 'error') {
-                Subclass.Error.create('InvalidClassOption')
-                    .option('$_abstract')
-                    .className(this.getClass().getName())
-                    .expected('a plain object with methods or a null')
-                    .received(value)
-                    .apply()
-                ;
-            } else {
-                throw e;
+            return true;
+        },
+
+        /**
+         * Sets "$_abstract" attribute value
+         *
+         * @param {Object} value
+         *      The plain object with different properties and methods
+         */
+        setAbstract: function(value)
+        {
+            this.validateAbstract(value);
+            this.getData().$_abstract = value || {};
+
+            if (value) {
+                this.getClass().addAbstractMethods(value);
             }
-        }
-        return true;
-    };
+        },
 
-    /**
-     * Sets "$_abstract" attribute value
-     *
-     * @param {Object} value
-     *      The plain object with different properties and methods
-     */
-    AbstractClassDefinition.prototype.setAbstract = function(value)
-    {
-        this.validateAbstract(value);
-        this.getData().$_abstract = value || {};
+        /**
+         * Returns "$_abstract" attribute value
+         *
+         * @returns {Object}
+         */
+        getAbstract: function()
+        {
+            return this.getData().$_abstract;
+        },
 
-        if (value) {
-            this.getClass().addAbstractMethods(value);
-        }
-    };
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function ()
+        {
+            return {
 
-    /**
-     * Returns "$_abstract" attribute value
-     *
-     * @returns {Object}
-     */
-    AbstractClassDefinition.prototype.getAbstract = function()
-    {
-        return this.getData().$_abstract;
-    };
+                /**
+                 * Required classes
+                 *
+                 * @type {(string[]|Object.<string>|null)}
+                 */
+                $_requires: null,
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClassDefinition.prototype.createBaseData = function ()
-    {
-        return {
+                /**
+                 * Parent class name
+                 *
+                 * @type {string}
+                 */
+                $_extends: null,
 
-            /**
-             * Required classes
-             *
-             * @type {(string[]|Object.<string>|null)}
-             */
-            $_requires: null,
+                /**
+                 * Constants list
+                 *
+                 * @type {Object}
+                 */
+                $_constants: null,
 
-            /**
-             * Parent class name
-             *
-             * @type {string}
-             */
-            $_extends: null,
-
-            /**
-             * Constants list
-             *
-             * @type {Object}
-             */
-            $_constants: null,
-
-            /**
-             * Object that contains abstract methods
-             *
-             * @type {Object}
-             */
-            $_abstract: {}
+                /**
+                 * Object that contains abstract methods
+                 *
+                 * @type {Object}
+                 */
+                $_abstract: {}
+            }
         }
     };
 

@@ -89,491 +89,497 @@ Subclass.LoadManager = (function()
         ;
     }
 
-    /**
-     * Initializes instance of load manager
-     *
-     * @method initialize
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.initialize = function()
-    {
-        var module = this.getModule();
-        var eventManager = module.getEventManager();
-        var $this = this;
+    LoadManager.prototype = {
 
-        // Starting load files of plug-in modules after the files
-        // of current module (to which the current one instance of load manager belongs) were fully loaded
+        /**
+         * Initializes instance of load manager
+         *
+         * @method initialize
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        initialize: function()
+        {
+            var module = this.getModule();
+            var eventManager = module.getEventManager();
+            var $this = this;
 
-        eventManager.getEvent('onLoadingEnd').addListener(-10000000, function(evt) {
-            module.getModuleStorage().eachModule(function(module) {
-                if (module != $this.getModule()) {
-                    module.getLoadManager().startLoading();
-                }
+            // Starting load files of plug-in modules after the files
+            // of current module (to which the current one instance of load manager belongs) were fully loaded
+
+            eventManager.getEvent('onLoadingEnd').addListener(-10000000, function(evt) {
+                module.getModuleStorage().eachModule(function(module) {
+                    if (module != $this.getModule()) {
+                        module.getLoadManager().startLoading();
+                    }
+                });
             });
-        });
-    };
+        },
 
-    /**
-     * Returns the instance of module to which current instance of load manager belongs
-     *
-     * @method getModule
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {Subclass.Module}
-     */
-    LoadManager.prototype.getModule = function()
-    {
-        return this._module;
-    };
+        /**
+         * Returns the instance of module to which current instance of load manager belongs
+         *
+         * @method getModule
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {Subclass.Module}
+         */
+        getModule: function()
+        {
+            return this._module;
+        },
 
-    /**
-     * Starts the process of loading files with new classes
-     *
-     * @method startLoading
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.startLoading = function()
-    {
-        var module = this.getModule();
-        var $this = this;
+        /**
+         * Starts the process of loading files with new classes
+         *
+         * @method startLoading
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        startLoading: function()
+        {
+            var module = this.getModule();
+            var $this = this;
 
-        if (
-            module.isPlugin()
-            && (
-                !module.getParent()
-                || !module.getRoot().isPrepared()
-            )
-        ) {
-            return;
-        }
-        $this._loading = true;
-        $this._loadingPause = false;
-        $this.processStack();
+            if (
+                module.isPlugin()
+                && (
+                    !module.getParent()
+                    || !module.getRoot().isPrepared()
+                )
+            ) {
+                return;
+            }
+            $this._loading = true;
+            $this._loadingPause = false;
+            $this.processStack();
 
-        $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
+            $this.getModule().getEventManager().getEvent('onLoadingStart').trigger();
 
-        if ($this.isStackEmpty()) {
-            $this.completeLoading();
-        }
-    };
+            if ($this.isStackEmpty()) {
+                $this.completeLoading();
+            }
+        },
 
-    /**
-     * Pauses the process of loading files with new classes
-     *
-     * @method pauseLoading
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.pauseLoading = function()
-    {
-        clearTimeout(this._loadingEndTimeout);
-        this._loadingPause = true;
-    };
+        /**
+         * Pauses the process of loading files with new classes
+         *
+         * @method pauseLoading
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        pauseLoading: function()
+        {
+            clearTimeout(this._loadingEndTimeout);
+            this._loadingPause = true;
+        },
 
-    /**
-     * Reports whether the process of loading files with new classes was paused
-     *
-     * @method isLoadingPaused
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isLoadingPaused = function()
-    {
-        return this._loadingPause;
-    };
+        /**
+         * Reports whether the process of loading files with new classes was paused
+         *
+         * @method isLoadingPaused
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isLoadingPaused: function()
+        {
+            return this._loadingPause;
+        },
 
-    /**
-     * Tries to complete the process of loading files with new classes.
-     * If it was completed then will be triggered the appropriate event.
-     *
-     * @method completeLoading
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.completeLoading = function()
-    {
-        if (!this.isLoading()) {
-            return;
-        }
-        clearTimeout(this._loadingEndTimeout);
-        var $this = this;
+        /**
+         * Tries to complete the process of loading files with new classes.
+         * If it was completed then will be triggered the appropriate event.
+         *
+         * @method completeLoading
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        completeLoading: function()
+        {
+            if (!this.isLoading()) {
+                return;
+            }
+            clearTimeout(this._loadingEndTimeout);
+            var $this = this;
 
-        if (
-            !this.isLoadingPaused()
-            && this.isStackEmpty()
-        ) {
-            this._loadingEndTimeout = setTimeout(function() {
-                var module = $this.getModule();
-                var eventManager = module.getEventManager();
-                $this._loading = false;
+            if (
+                !this.isLoadingPaused()
+                && this.isStackEmpty()
+            ) {
+                this._loadingEndTimeout = setTimeout(function() {
+                    var module = $this.getModule();
+                    var eventManager = module.getEventManager();
+                    $this._loading = false;
 
-                eventManager
-                    .getEvent('onLoadingEnd')
-                    .triggerPrivate()
+                    eventManager
+                        .getEvent('onLoadingEnd')
+                        .triggerPrivate()
+                    ;
+                }, 20);
+            }
+        },
+
+        /**
+         * Checks whether the loading process continues
+         *
+         * @method isLoading
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isLoading: function()
+        {
+            return this._loading;
+        },
+
+        /**
+         * Adds the new file to load stack
+         *
+         * @method addToStack
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         *      The name of file relative to the "rootPath" module settings option.
+         *      Also it is possible to specify an absolute path using the "^" symbol at the start of the path.
+         *
+         * @param {function} [callback]
+         *      The callback function which will be invoked after file will be loaded
+         */
+        addToStack: function(fileName, callback)
+        {
+            var $this = this;
+
+            if (callback && typeof callback != 'function') {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('the callback', false)
+                    .received(callback)
+                    .expected('a function')
+                    .apply()
                 ;
-            }, 20);
-        }
-    };
-
-    /**
-     * Checks whether the loading process continues
-     *
-     * @method isLoading
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isLoading = function()
-    {
-        return this._loading;
-    };
-
-    /**
-     * Adds the new file to load stack
-     *
-     * @method addToStack
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {string} fileName
-     *      The name of file relative to the "rootPath" module settings option.
-     *      Also it is possible to specify an absolute path using the "^" symbol at the start of the path.
-     *
-     * @param {function} [callback]
-     *      The callback function which will be invoked after file will be loaded
-     */
-    LoadManager.prototype.addToStack = function(fileName, callback)
-    {
-        var $this = this;
-
-        if (callback && typeof callback != 'function') {
-            Subclass.Error.create('InvalidArgument')
-                .argument('the callback', false)
-                .received(callback)
-                .expected('a function')
-                .apply()
-            ;
-        }
-        if (this.isInStack(fileName)) {
-            return;
-        }
-
-        this._stack.push({
-            file: fileName,
-            fileFull: null,
-            callback: callback || function() {},
-            xmlhttp: null
-        });
-
-        clearTimeout(this._addToStackTimeout);
-        this.getModule().getEventManager().getEvent('onAddToLoadStack').trigger(
-            fileName,
-            callback
-        );
-
-        this._addToStackTimeout = setTimeout(function() {
-            $this.startLoading();
-        }, 10);
-    };
-
-    /**
-     * Alias of {@link Subclass.LoadManager#addToStack}
-     *
-     * @method load
-     * @memberOf Subclass.LoadManager.prototype
-     * @alias Subclass.LoadManager#addToStack
-     */
-    LoadManager.prototype.loadFile = LoadManager.prototype.addToStack;
-
-    /**
-     * Returns the object of loading file from the load stack
-     *
-     * @method getStackItem
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param fileName
-     *      The name of loading file
-     *
-     * @returns {*}
-     */
-    LoadManager.prototype.getStackItem = function(fileName)
-    {
-        var stackItem = null;
-
-        for (var i = 0; i < this._stack.length; i++) {
-            if (this._stack[i].file == fileName) {
-                stackItem = this._stack[i];
             }
-        }
-
-        return stackItem;
-    };
-
-    /**
-     * Returns the index of file name in load stack
-     *
-     * @method getStackItemIndex
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param fileName
-     *      The name of file
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.getStackItemIndex = function(fileName)
-    {
-        var stackItemIndex = false;
-
-        for (var i = 0; i < this._stack.length; i++) {
-            if (this._stack[i].file == fileName) {
-                stackItemIndex = i;
+            if (this.isInStack(fileName)) {
+                return;
             }
-        }
 
-        return stackItemIndex;
-    };
+            this._stack.push({
+                file: fileName,
+                fileFull: null,
+                callback: callback || function() {},
+                xmlhttp: null
+            });
 
-    /**
-     * Removes specified class from the load stack
-     *
-     * @method removeFromLoadStack
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {string} fileName
-     *      The name of class
-     */
-    LoadManager.prototype.removeFromStack = function(fileName)
-    {
-        var mainModule = this.getModule().getRoot();
-
-        if (arguments[1]) {
-            mainModule = this.getModule();
-        }
-
-        var loadManager = mainModule.getLoadManager();
-        var stackItem = loadManager.getStackItem(fileName);
-        var stackItemIndex = loadManager.getStackItemIndex(fileName);
-
-        if (stackItem && stackItemIndex !== false) {
-            mainModule.getEventManager().getEvent('onRemoveFromLoadStack').trigger(
-                stackItem,
-                stackItemIndex
+            clearTimeout(this._addToStackTimeout);
+            this.getModule().getEventManager().getEvent('onAddToLoadStack').trigger(
+                fileName,
+                callback
             );
 
-            if (stackItem.xmlhttp) {
-                stackItem.xmlhttp.abort();
+            this._addToStackTimeout = setTimeout(function() {
+                $this.startLoading();
+            }, 10);
+        },
+
+        /**
+         * Alias of {@link Subclass.LoadManager#addToStack}
+         *
+         * @method load
+         * @memberOf Subclass.LoadManager.prototype
+         * @alias Subclass.LoadManager#addToStack
+         */
+        loadFile: function()
+        {
+            return this.addToStack.apply(this, arguments);
+        },
+
+        /**
+         * Returns the object of loading file from the load stack
+         *
+         * @method getStackItem
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param fileName
+         *      The name of loading file
+         *
+         * @returns {*}
+         */
+        getStackItem: function(fileName)
+        {
+            var stackItem = null;
+
+            for (var i = 0; i < this._stack.length; i++) {
+                if (this._stack[i].file == fileName) {
+                    stackItem = this._stack[i];
+                }
             }
-            loadManager._stack.splice(stackItemIndex, 1);
-        }
 
-        // Removing from stack from all modules
+            return stackItem;
+        },
 
-        var moduleStorage = mainModule.getModuleStorage();
+        /**
+         * Returns the index of file name in load stack
+         *
+         * @method getStackItemIndex
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param fileName
+         *      The name of file
+         *
+         * @returns {boolean}
+         */
+        getStackItemIndex: function(fileName)
+        {
+            var stackItemIndex = false;
 
-        moduleStorage.eachModule(function (module, moduleName) {
-            if (module != mainModule) {
-                module.getLoadManager().removeFromStack(fileName, true);
+            for (var i = 0; i < this._stack.length; i++) {
+                if (this._stack[i].file == fileName) {
+                    stackItemIndex = i;
+                }
             }
-        });
-    };
 
-    /**
-     * Processes files from the load stack. Loads files from stack.
-     *
-     * @method processStack
-     * @memberOf Subclass.LoadManager.prototype
-     */
-    LoadManager.prototype.processStack = function()
-    {
-        var module = this.getModule();
-        var moduleSettings = module.getSettingsManager();
-        var rootPath = moduleSettings.getRootPath();
-        var stackPortion = [];
-        var $this = this;
+            return stackItemIndex;
+        },
 
-        if (!this.isStackPortionEmpty()) {
-            return;
-        }
+        /**
+         * Removes specified class from the load stack
+         *
+         * @method removeFromLoadStack
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         *      The name of class
+         */
+        removeFromStack: function(fileName)
+        {
+            var mainModule = this.getModule().getRoot();
 
-        for (var i = 0; i < this._stack.length; i++) {
-            var stackItem = this._stack[i];
-            stackPortion.push(stackItem.file);
-
-            if (!stackItem.file.match(/^\^/i)) {
-                stackItem.fileFull = rootPath + stackItem.file;
-
-            } else {
-                stackItem.fileFull = stackItem.file.substr(1);
+            if (arguments[1]) {
+                mainModule = this.getModule();
             }
-        }
 
-        // Creating the pack of loading files.
-        // While this portion loads the new files will not start loading.
+            var loadManager = mainModule.getLoadManager();
+            var stackItem = loadManager.getStackItem(fileName);
+            var stackItemIndex = loadManager.getStackItemIndex(fileName);
 
-        this.setStackPortion(stackPortion);
+            if (stackItem && stackItemIndex !== false) {
+                mainModule.getEventManager().getEvent('onRemoveFromLoadStack').trigger(
+                    stackItem,
+                    stackItemIndex
+                );
 
-        // Triggering the event when processing the new portion of files
-
-        module.getEventManager().getEvent('onProcessLoadStack').trigger(this._stack);
-
-        // Loading files
-
-        !function loadFile(fileName) {
-            if (!fileName) {
-                return;
+                if (stackItem.xmlhttp) {
+                    stackItem.xmlhttp.abort();
+                }
+                loadManager._stack.splice(stackItemIndex, 1);
             }
-            var stackItem = $this.getStackItem(fileName);
 
-            if (!stackItem) {
-                return;
-            }
-            stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileFull, function() {
-                $this.removeFromStackPortion(stackItem.file);
-                $this.removeFromStack(stackItem.file);
-                stackItem.callback();
+            // Removing from stack from all modules
 
-                var newFileName = $this.getStackPortion()[0];
+            var moduleStorage = mainModule.getModuleStorage();
 
-                if (newFileName) {
-                    loadFile(newFileName);
-
-                } else {
-                    $this.startLoading();
+            moduleStorage.eachModule(function (module, moduleName) {
+                if (module != mainModule) {
+                    module.getLoadManager().removeFromStack(fileName, true);
                 }
             });
-        }(stackPortion[0]);
+        },
 
-        // If loading of files from the portion was not completed
-        // then pause the loading of new files while the portion becomes empty
+        /**
+         * Processes files from the load stack. Loads files from stack.
+         *
+         * @method processStack
+         * @memberOf Subclass.LoadManager.prototype
+         */
+        processStack: function()
+        {
+            var module = this.getModule();
+            var moduleSettings = module.getSettingsManager();
+            var rootPath = moduleSettings.getRootPath();
+            var stackPortion = [];
+            var $this = this;
 
-        if (!this.isStackEmpty()) {
-            this.pauseLoading();
-        }
-    };
-
-    /**
-     * Checks whether the specified files is in load stack
-     *
-     * @method isInStack
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {string} fileName
-     *      The name of file
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isInStack = function(fileName)
-    {
-        var mainModule = this.getModule().getRoot();
-
-        if (arguments[1]) {
-            mainModule = this.getModule();
-        }
-
-        var loadManager = mainModule.getLoadManager();
-
-        for (var i = 0; i < loadManager._stack.length; i++) {
-            if (loadManager._stack[i].file == fileName) {
-                return true;
+            if (!this.isStackPortionEmpty()) {
+                return;
             }
-        }
 
-        // Searching file with specified name in all modules
+            for (var i = 0; i < this._stack.length; i++) {
+                var stackItem = this._stack[i];
+                stackPortion.push(stackItem.file);
 
-        var moduleStorage = mainModule.getModuleStorage();
-        var result = false;
+                if (!stackItem.file.match(/^\^/i)) {
+                    stackItem.fileFull = rootPath + stackItem.file;
 
-        moduleStorage.eachModule(function (module, moduleName) {
-            if (module != mainModule) {
-                result = module.getLoadManager().removeFromStack(fileName, true);
-
-                if (result) {
-                    return false;
+                } else {
+                    stackItem.fileFull = stackItem.file.substr(1);
                 }
             }
-        });
 
-        return result;
-    };
+            // Creating the pack of loading files.
+            // While this portion loads the new files will not start loading.
 
-    /**
-     * Checks whether the load stack is empty
-     *
-     * @method isStackEmpty
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isStackEmpty = function()
-    {
-        return !this._stack.length;
-    };
+            this.setStackPortion(stackPortion);
 
-    /**
-     * Sets the stack portion.<br /><br />
-     *
-     * It is a pack of file names which will be loaded first.
-     * The files, which was added after the portion was created, will be loaded only after
-     * the files from current portion will be loaded.
-     *
-     * @method setStackPortion
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @param {Array.<string>} fileNames
-     *      The array of file names.
-     */
-    LoadManager.prototype.setStackPortion = function(fileNames)
-    {
-        if (!Array.isArray(fileNames)) {
-            Subclass.Error.create('InvalidArgument')
-                .argument('list of file names', false)
-                .received(fileNames)
-                .expected('array of strings')
-                .apply()
-            ;
-        }
-        this._stackPortion = fileNames;
-    };
+            // Triggering the event when processing the new portion of files
 
-    /**
-     * Returns the stack portion
-     *
-     * @method getStackPortion
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {Array.<string>}
-     */
-    LoadManager.prototype.getStackPortion = function()
-    {
-        return this._stackPortion;
-    };
+            module.getEventManager().getEvent('onProcessLoadStack').trigger(this._stack);
 
-    /**
-     * Reports whether the stack portion is empty
-     *
-     * @method isStackPortionEmpty
-     * @memberOf Subclass.LoadManager.prototype
-     *
-     * @returns {boolean}
-     */
-    LoadManager.prototype.isStackPortionEmpty = function()
-    {
-        return !this.getStackPortion().length;
-    };
+            // Loading files
 
-    /**
-    * Removes file name from the stack portion
-    *
-    * @method removeFromStackPortion
-    * @memberOf Subclass.LoadManager.prototype
-    *
-    * @param {string} fileName
-    */
-    LoadManager.prototype.removeFromStackPortion = function(fileName)
-    {
-        var stackPortion = this.getStackPortion();
-        var index = stackPortion.indexOf(fileName);
+            !function loadFile(fileName) {
+                if (!fileName) {
+                    return;
+                }
+                var stackItem = $this.getStackItem(fileName);
 
-        if (index >= 0) {
-            stackPortion.splice(index, 1);
+                if (!stackItem) {
+                    return;
+                }
+                stackItem.xmlhttp = Subclass.Tools.loadJS(stackItem.fileFull, function() {
+                    $this.removeFromStackPortion(stackItem.file);
+                    $this.removeFromStack(stackItem.file);
+                    stackItem.callback();
+
+                    var newFileName = $this.getStackPortion()[0];
+
+                    if (newFileName) {
+                        loadFile(newFileName);
+
+                    } else {
+                        $this.startLoading();
+                    }
+                });
+            }(stackPortion[0]);
+
+            // If loading of files from the portion was not completed
+            // then pause the loading of new files while the portion becomes empty
+
+            if (!this.isStackEmpty()) {
+                this.pauseLoading();
+            }
+        },
+
+        /**
+         * Checks whether the specified files is in load stack
+         *
+         * @method isInStack
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         *      The name of file
+         *
+         * @returns {boolean}
+         */
+        isInStack: function(fileName)
+        {
+            var mainModule = this.getModule().getRoot();
+
+            if (arguments[1]) {
+                mainModule = this.getModule();
+            }
+
+            var loadManager = mainModule.getLoadManager();
+
+            for (var i = 0; i < loadManager._stack.length; i++) {
+                if (loadManager._stack[i].file == fileName) {
+                    return true;
+                }
+            }
+
+            // Searching file with specified name in all modules
+
+            var moduleStorage = mainModule.getModuleStorage();
+            var result = false;
+
+            moduleStorage.eachModule(function (module, moduleName) {
+                if (module != mainModule) {
+                    result = module.getLoadManager().removeFromStack(fileName, true);
+
+                    if (result) {
+                        return false;
+                    }
+                }
+            });
+
+            return result;
+        },
+
+        /**
+         * Checks whether the load stack is empty
+         *
+         * @method isStackEmpty
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isStackEmpty: function()
+        {
+            return !this._stack.length;
+        },
+
+        /**
+         * Sets the stack portion.<br /><br />
+         *
+         * It is a pack of file names which will be loaded first.
+         * The files, which was added after the portion was created, will be loaded only after
+         * the files from current portion will be loaded.
+         *
+         * @method setStackPortion
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {Array.<string>} fileNames
+         *      The array of file names.
+         */
+        setStackPortion: function(fileNames)
+        {
+            if (!Array.isArray(fileNames)) {
+                Subclass.Error.create('InvalidArgument')
+                    .argument('list of file names', false)
+                    .received(fileNames)
+                    .expected('array of strings')
+                    .apply()
+                ;
+            }
+            this._stackPortion = fileNames;
+        },
+
+        /**
+         * Returns the stack portion
+         *
+         * @method getStackPortion
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {Array.<string>}
+         */
+        getStackPortion: function()
+        {
+            return this._stackPortion;
+        },
+
+        /**
+         * Reports whether the stack portion is empty
+         *
+         * @method isStackPortionEmpty
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @returns {boolean}
+         */
+        isStackPortionEmpty: function()
+        {
+            return !this.getStackPortion().length;
+        },
+
+        /**
+         * Removes file name from the stack portion
+         *
+         * @method removeFromStackPortion
+         * @memberOf Subclass.LoadManager.prototype
+         *
+         * @param {string} fileName
+         */
+        removeFromStackPortion: function(fileName)
+        {
+            var stackPortion = this.getStackPortion();
+            var index = stackPortion.indexOf(fileName);
+
+            if (index >= 0) {
+                stackPortion.splice(index, 1);
+            }
         }
     };
 

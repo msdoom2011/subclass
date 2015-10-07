@@ -64,30 +64,33 @@ Subclass.Event.EventListener = (function()
         this._callback = callback;
     }
 
-    /**
-     * Returns event listener priority
-     *
-     * @method getPriority
-     * @memberOf Subclass.Event.EventListener.prototype
-     *
-     * @returns {number}
-     */
-    EventListener.prototype.getPriority = function()
-    {
-        return this._priority;
-    };
+    EventListener.prototype = {
 
-    /**
-     * Returns event listener callback
-     *
-     * @method getCallback
-     * @memberOf Subclass.Event.EventListener.prototype
-     *
-     * @returns {Function}
-     */
-    EventListener.prototype.getCallback = function()
-    {
-        return this._callback;
+        /**
+         * Returns event listener priority
+         *
+         * @method getPriority
+         * @memberOf Subclass.Event.EventListener.prototype
+         *
+         * @returns {number}
+         */
+        getPriority: function()
+        {
+            return this._priority;
+        },
+
+        /**
+         * Returns event listener callback
+         *
+         * @method getCallback
+         * @memberOf Subclass.Event.EventListener.prototype
+         *
+         * @returns {Function}
+         */
+        getCallback: function()
+        {
+            return this._callback;
+        }
     };
 
     return EventListener;

@@ -14,31 +14,34 @@ Subclass.Class.Type.Trait.TraitDefinition = (function()
 
     TraitDefinition.$parent = Subclass.Class.Type.Class.ClassDefinition;
 
-    /**
-     * @inheritDoc
-     */
-    TraitDefinition.prototype.validateFinal = function(isFinal)
-    {
-        Subclass.Error.create(
-            'Trait class definition cannot contain $_final option ' +
-            'and consequently can\'t be final.'
-        )
-    };
+    TraitDefinition.prototype = {
 
-    /**
-     * @inheritDoc
-     */
-    TraitDefinition.prototype.createBaseData = function()
-    {
-        return {
+        /**
+         * @inheritDoc
+         */
+        validateFinal: function(isFinal)
+        {
+            Subclass.Error.create(
+                'Trait class definition cannot contain $_final option ' +
+                'and consequently can\'t be final.'
+            )
+        },
 
-            /**
-             * The name of parent class
-             *
-             * @type {string}
-             */
-            $_extends: null
-        };
+        /**
+         * @inheritDoc
+         */
+        createBaseData: function()
+        {
+            return {
+
+                /**
+                 * The name of parent class
+                 *
+                 * @type {string}
+                 */
+                $_extends: null
+            };
+        }
     };
 
     return TraitDefinition;

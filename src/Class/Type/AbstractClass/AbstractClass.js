@@ -59,42 +59,46 @@ Subclass.Class.Type.AbstractClass.AbstractClass = (function() {
         return Subclass.Class.Type.AbstractClass.AbstractClassDefinition;
     };
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClass.prototype.setParent = function (parentClassName)
-    {
-        Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
+    AbstractClass.prototype = {
 
-        if (
-            this._parent
-            && this._parent.constructor != AbstractClass
-            && !(this._parent instanceof AbstractClass)
-        ) {
-            Subclass.Error.create(
-                'The abstract class "' + this.getName() + '" can be ' +
-                'inherited only from the another abstract class.'
-            );
-        }
+        /**
+         * @inheritDoc
+         */
+        setParent: function (parentClassName)
+        {
+            Subclass.Class.ClassType.prototype.setParent.call(this, parentClassName);
+
+            if (
+                this._parent
+                && this._parent.constructor != AbstractClass
+                && !(this._parent instanceof AbstractClass)
+            ) {
+                Subclass.Error.create(
+                    'The abstract class "' + this.getName() + '" can be ' +
+                    'inherited only from the another abstract class.'
+                );
+            }
+        },
+
+        /**
+         * @inheritDoc
+         */
+        getConstructorEmpty: function ()
+        {
+            return function AbstractClass(){
+
+                // Hook for the grunt-contrib-uglify plugin
+                return AbstractClass.name;
+            };
+        },
+
+        /**
+         * @inheritDoc
+         * @throws {Error}
+         */
+        createInstance: undefined
     };
 
-    /**
-     * @inheritDoc
-     */
-    AbstractClass.prototype.getConstructorEmpty = function ()
-    {
-        return function AbstractClass(){
-
-            // Hook for the grunt-contrib-uglify plugin
-            return AbstractClass.name;
-        };
-    };
-
-    /**
-     * @inheritDoc
-     * @throws {Error}
-     */
-    AbstractClass.prototype.createInstance = undefined;
 
 
     /*************************************************/

@@ -194,6 +194,14 @@ Subclass.Event.Event = (function()
         },
 
         /**
+         * Removes all listeners
+         */
+        removeListeners: function()
+        {
+            this._listeners = [];
+        },
+
+        /**
          * Returns all registered event listeners
          *
          * @method getListeners

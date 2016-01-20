@@ -88,7 +88,7 @@ Subclass.Tools.PropertyTools = (function()
         if (['get', 'set', 'is', 'validate'].indexOf(accessorType) < 0) {
             Subclass.Error.create('Invalid accessor type! It can be only "get", "set", "is" or "validate".');
         }
-        var propNameParts = propertyName.split("_");
+        var propNameParts = propertyName.split(/[_-]/);
 
         for (var i = 0; i < propNameParts.length; i++) {
             if (propNameParts[i] === "") {
